@@ -1,0 +1,176 @@
+#+TITLE: Transducers for people who don't understand the Clojure docs
+
+* Two types of functions
+
+Consider two types of functions.
+
+** Transformers
+
+The first is a function that takes a value and returns a changed (transformed) value. This is a *Transformer*.
+
+#+begin_example
+xf(a) -> a'
+#+end_example
+
+'increment' is a transformer: 
+
+#+begin_example
+inc(3) -> 4
+#+end_example
+
+so is 'filter odd': 
+
+#+begin_example
+filter-odd(3) -> 3
+filter-odd(2) -> (doesn't return anything)
+#+end_example
+
+You can throw streams of inputs at these transformers and they return streams of transformed ouput. 
+
+#+begin_example
+1 2 3 4 5 ->     inc(a)    -> 2 3 4 5 6
+1 2 3 4 5 -> filter-odd(a) -> 1 3 5
+#+end_example
+
+** Reducers
+
+The second type of function is one that takes two values and combines them in some way to get an output. Because this reduces two inputs to one output, we'll call this a *Reducer*.
+
+#+begin_example
+rf(A, b) -> A'
+#+end_example
+
+The way this will work with a stream of inputs is to 'step' through them. The function will interpret the first input as =b=, and it will execute against an =A= (that you have to tell it) to produce =A'=. 
+
+Then it will take the /next/ input as =b=, and it will take the =A'= it just calculated as its new =A=. We'll call A the *Accumulator*, because with each application it accumulates the effects of the input stream into a single value. 
+
+So, given a stream of =[b1 b2 b3 b4]= and an initial =A=, the reducer will do the following:
+
+ #+begin_src 
+rf(A, b1) -> A1
+rf(A1, b2) -> A2
+rf(A2, b3) -> A3
+rf(A3, b4) -> A4
+ #+end_src
+
+What this means is that when all inputs have been passed through the function, you're left with a final value for =A= which has accumulated all the inputs in the stream.
+
+One example of a reducer is 'add', a function that will take a stream of  inputs and add them all together, then when the stream is finished, return the added number (i.e. a single value)
+
+ #+begin_src 
+1 2 3 4 5 -> add(0, b) -> 15
+ #+end_src
+(note, the 0 is the initial value of the accumulator you have to pass in)
+
+Another is 'conj', a reducer that will take the next value in a sequence and conjugate it onto a accumulated collection.
+
+ #+begin_src 
+1 2 3 4 5 -> conj([], b) -> [1 2 3 4 5]
+ #+end_src
+(again, the =[]= is the initial empty list that is the first value of the accumulator)
+
+We're imposing a special restriction on our definition of reducers: they *can't change the input =b= in any way*, they can only take it as it is and combine it with the accumulator.
+
+* Transducers
+
+But let's say we want to do something like increment values and /then/ add them together:
+
+ #+begin_src 
+1 2 3 4 5 -> f(0, b) -> 20
+ #+end_src
+
+In other words we want to do both a transform and a reduce.
+
+In /other/ other words, we want a function that takes a transformer and a reducer, and /injects/ the transformer into the middle of the reduce operations like this:
+
+ #+begin_src 
+rf(A, xf(b)) -> A'
+ #+end_src
+
+So that before the input =b= is applied to the accumulator by =rf=, it's first transformed by =xf=.
+
+We'll define this as a *Transducer*, because it takes a transformer and a reducer, and combines them.
+
+ #+begin_src 
+t(rf xf) -> (rf(A, xf(b)) -> A')
+ #+end_src
+
+* Transducers in Clojure
+In Clojure a transducer is defined as a function that turns a reducer into another reducer, with a transformer in the middle. 
+
+That's pretty much the same as we had it above, except the the transformer function is already embedded in it, so you only need to pass in the reducer, not both reducer and transformer.
+
+A transducer in clojure is a transformer /waiting/ for a reducer to be used with.
+
+In general, you'll create a transducer by expressing a transformer with /no arguments to apply it to/. You can do this with many of standard library functions that will work on a collection.
+
+For example you'll create a transducer with 'increment' embedded in it with =(map inc)=
+
+You can apply the transducer using =transduce=. 
+
+ #+begin_src 
+(transduce transducer reducer collection)
+ #+end_src
+ 
+To replicate the 'increment and add' pattern from above, we would do
+ 
+ #+begin_src 
+(transduce (map inc) + [1 2 3 4 5])
+ #+end_src
+
+* What about =reduce= in Clojure?
+You might say this looks pretty similar to =reduce= in clojure with an extra step. The following does exactly the same thing as the transduce code above, just with the transducer and reducer combined.
+
+ #+begin_src 
+(reduce #(+ %1 (inc %2)) 0 [1 2 3 4 5])
+ #+end_src
+
+That's definitely correct! =reduce= takes a function that is either a reducer on its own (=rf(A, b)= like =+=), or a function that is a reducer combined with a transformer (=rf(A, xf(b))=, like the anonymous function in the above).
+
+All a transducer does is allow you to explicitly separate the transforming and reducing parts.
+
+* Transducible processes
+It's not just =reduce= that is uses reducers though, they're all over the place. Consider =into=, which takes a collection of inputs, and puts them into a another collection you pass it - i.e. just like the Accumulator. 
+
+=sequence= has a reduction in it; it accumlates a lazy sequence from its inputs.
+
+A reducer, generalised, is anything which is taking input step-by-step and putting it somewhere else, where it accumulates. Putting stuff on an async channel with =chan= is a reduction.
+
+And /all/ of these can be given a transducer, which /injects/ transformations to be applied to the inputs before the reduction bit happens. So for example
+
+ #+begin_src 
+(chan 1 my-transducer)
+ #+end_src
+
+creates a channel, where before input is put to the channel, the transformations that the transducer encapsulates are done.
+
+* Why bother?  
+What's the upside of doing this? Mostly it allows you to decouple transformations from the concrete contexts they're being used in, and express the transformation in general terms.
+
+Transformers are really nice things because they don't really care about how they receive their input stream, or where they put the result: a collection, a bytestream, a channel etc. They don't need any context.
+
+If you define a transformation like =filter odd= in these terms, you can reuse them all over the place, because you are expressing the transformation you want in a very general way: "hey is this thing odd? No? Then don't let it out."
+
+Compare this most of the reducers we used above, which /are/ tied to specific implementations - mostly we saw reducers that work with collections, like =conj= =into= =sequence=. We also saw =chan=, where the implementation is specifically about a async channel.
+
+Think of a reducer in terms of 'moving the stuff I'm getting to a particular place'.
+
+Being able to put transformers into transducers (things which can be injected into any reduction) means that you can reuse them in many contexts!
+
+* Other stuff
+** Transducers are composable
+You might notice that there's a difference between transformers and reducers: transformers are composable, and reducers are not. That is, you can chain together a bunch of transformers into a single pipeline and throw values through it. 
+
+You can chain several transducers together with =(comp t1 t2 t3)=.
+
+** Eduction
+'Normal' =reduce= packages the reducer and transformers together into it's function input, and you pass in the collection.
+
+You can do this the other way round: apply the transducer to the collection directly, then pass it to reduce. The function for this is =eduction=
+
+#+begin_example
+(reduce + 0 (eduction xf coll))
+#+end_example
+
+* Todo
+- Early termination
