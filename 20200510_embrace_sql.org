@@ -1,0 +1,24 @@
+#+TITLE: Embrace SQL thinking
+
+https://medium.com/97-things/embrace-sql-thinking-dbea4afce89b
+
+* A SQL vs. Java implementation of fetching things from a database
+
+#+begin_src sql
+  SELECT c.id, c.name, c.address, o.items 
+  FROM customers c
+  JOIN orders o
+  ON o.customer_id = c.id
+  GROUP BY c.id
+#+end_src
+
+The obvious idea here: Select all customers who have orders, along with details from those orders. Simple, understandable even by non-programmers.
+
+Consider a Java implementation: classes for Customer, Order, maybe even Customers. We need an ORM. 5 LOC to dozens, maybe hundreds.
+
+* The Qualities of the SQL implementation
++ *You don't need a new thing to hold the results, so you don't make one*: Excessive constructs and abstractions (e.g. Customers class) become very burdomsome. Don't over-model. Use built-in collections as given.
+
++ *The query is declarative*: That makes it more comprehensible. We state what we want, not how to get it (the imperative paradigm)
+
++ *The DSL matches the problem*: SQL is a (good) data DSL. The problem is one of data. It's a good match.
