@@ -1,0 +1,216 @@
+#+TITLE: Simple Made Easy
+https://www.youtube.com/watch?v=oytL881p-nQ
+
+This talk is about the difference between ease and simplicity. And about how to take the simple, and make it easy - close at hand.
+
+#+begin_quote
+Simplicity is prerequisite for reliability
+---Edsger W. Dijkstra
+#+end_quote
+
+* The difference between Simple and Easy 
+** The Origins of the words
+ Simplex - one fold/braid.
+ (vs. complex - to braid together)
+
+ Ease - to lie near
+
+** Simple means is about something being one thing - not being interleaved with another thing
+ One role, task, concept, dimension. Not one /instance/, one /operation/. It's about lack of interleaving, not about cardinality
+
+ Notice that Simplicity is objective, doesn't depend on your perspective
+
+** Easy is about how close to us something is
+ Construction 1: Literally close, its on our hard drive. In our tool box. Gem install
+
+ Construction 2: Near to our understanding, /familiar/ to us
+
+ Construction 3: Near our /capabilities/ - tough to talk about, an ego hit! But it's important to recognise we have limits.
+
+ The juggling analogy: A beginner juggler can juggle 3 things. How many can an expert juggle? More for sure (the record is 11). But not 500. not 1000.
+
+ Ease is /relative/ - near to what? Something near to / easy to you might not be easy to me
+
+** Distinguish the tool, the construct, from the artifact (the program, system, the thing that has to run)
+ to be changable, the Artifact has to be simple. The tools don't matter except to that extent
+
+** To Complect - to interleave, entwine, braid, to make complex
+   Don't do it!
+
+   "where does the third strand end?"
+
+   If you want to move forward you have to fix it (Even though it wasn't a 'mistake'). Disentangle
+
+* You understanding something is making it easy - being close to it, being able to reason about it
+** Why? Because you can't effectively change something you can't reason about
+If you can't you can't change it. And the more simple something is, the more you can reason about it.
+
+Inherent limits on our ability to reason about things do exist. We can only consider a few things at a time. If two things are intertwined, they by definition have to be considered together, and so you use up (exponentially with every thread) the space in your head.
+
+Understanding is a prerequisite for Change - if you can't reason about it you can't make decisions about it
+
+Having a great test suite isn't enough, it's your ability to understand your software. (If you haven't thought about a thing, you can't have written  test for it!)
+
+Debugging - You can't lean on it too much. Bugs in production by definition passed the typechecker, passed all the tests.
+    
+** Moving your mind to it vs. moving it towards your mind
+ Lets say you have this big thing you need make to easy, bring it close to you, understand
+
+ To make it physically near, accessible, get it on your box! You then can learn about it. take some courses, read some books.
+
+ (These two are up to you!)
+
+ The 3rd thing? The capability? Pretty tricky. You can't move your mental capability by much. You can't become orders of magnitude smarter
+
+ So you can't move your mind closer appreciably closer to the thing. You have to move the thing closer to your mind. You do this by making things simpler.
+
+** How reasonable something is is a function of how simple it is. How much /you/ are able to reason about it is how easy it is (for /you/)
+Obviously, you want something to be simple, so it takes less time for you and others to understand it (i.e. bring it close to them)
+
+** Example 1: Parens in Lisp!
+They are hard - they're not nearby, you're not familiar with them
+
+Are they simple? NO. Not in CL/Scheme at least, because they use lists (with parens) for everything. One thing isn't simple? No becuase have to represent everything, they are overloaded with a lot of responsibility. Overloading is complexity. More than one thing is simpler than one thing in this case!
+
+(This is a general principle - overloading one thing with multiple interpretations/responsibilities is introducing complexity)
+
+This is why clojure introduced multiple paren types to reduce the overloading, make it simpler
+
+** Programmers know the benefits of everything and the trade-offs of nothing.
+ It's always 'Look, it has that...'. Never 'but in order to do that is has this'
+
+* Beware: Easy is dangerous if it hides complexity! 
+  Putting too much reliance on easy is not a good thing: You learn only by choosing the /unfamiliar/
+  
+** Easy things are often extremely complex, and chosing the easy-yet-complex thing is incidental complexity (i.e. it's your fault)
+ Complex things can be familiar, available and easy to use. Assignment, x=5, is very easy, but the implications of x=5 in the middle of a block of code can be profound.
+ 
+A Library you chose to pull in with =pip install= is easy to get and easy to use - but it can hide an enourmous amount of complexity.
+
+ Any complexity that results from something you've decided to use is incidental (in the sense that it is /your fault/). 
+   
+** Choosing the easy-yet-complex makes you fast-at-first.
+ Ignoring complexity will make you fast at first, and slow you down over the long term. Your artifact becomes a team member, the fungus slowly growing in the corner of the room, and over time it will dominant the decisions you can make
+
+* Making things simple - simple constructs, abstractions, composability, data as data
+** Benefits of simplicity - Lego castles vs. knitted castles
+   Picture two castles, one made out of lego, and one knitted from yarn.
+
+   The lego castle will be easier to reason about, and therefore change! More flexibilty - if you're not intertwined, you have architectural flexibility. Changing the policy, or moving subsystems
+   
+** Constructs: Complex -> Simple
+ + State/Objects -> Values
+ + Methods -> Functions, namespaces
+ + Syntax -> Data
+ + Inheritance, switch, matching -> Polymorphism a la carte
+ + variables -> Managed Refs
+ + Imperative loops, fold -> set functions
+ + Actors -> Queues
+ + ORM -> Declarative data manipulation
+ + conditions -> tiles
+ + inconsistency -> consistency
+
+*** Table
+    
+ | Construct       | Complects                      |
+ |-----------------+--------------------------------|
+ | State           | Everyhing it touches           |
+ | Objects         | State, identity, value         |
+ | Methods         | Function and state, namespaces |
+ | Syntax          | Meaning, order                 |
+ | Inheritance     | types                          |
+ | switch/matching | Multiple who/what pairs        |
+ | variables       | value, time                    |
+ | loops/fold      | what/how                       |
+ | actors          | what/who                       |
+ | ORM             | OMG                            |
+ | Conditionals    | why, rest of the program       |
+
+
+ | Construct                     | Got by                        |
+ |-------------------------------+-------------------------------|
+ | Values                        | final, persistent collections |
+ | Functions                     | stateless methods             |
+ | namespaces                    | language support              |
+ | data                          | maps, arrays, sets, xml, json |
+ | polymorphism a la carte       | protocols, type classes       |
+ | managed refs                  | clojure/haskell refs          |
+ | set functions                 | libraries                     |
+ | queues                        | libraries                     |
+ | declarative data manipulation | SQL/LINQ/Datalog              |
+ | Rules                         | Libraries, prolog             |
+ | consistency                   | Transactions/values           |
+
+** Abstraction for simplicity - draw away the complexity
+ Abstract means to draw away
+
+ There are maybe dangers from overabstracting (IFactoryResourceManager)
+
+ Abstracting to simplify is different from abstracting as hiding /complexity/. 
+
+ I don't know, I don't want to know. I want to be able to use your thing without knowing it
+   
+** Composability (not physical separation)
+   Compose - to place together. Like legos. Composing simple components leads to robust software
+
+   OK, we know its not that straight forward. Modularity, just having two pieces of code sitting in their own modules (physically separated), they can still be deeply completed with eachother. Physical separation is a consequence of simplicity, not a guaranteed result of it.
+
+** State is NEVER simple. 
+   There is no way to uncomplect. It inherantly complects value and time. It complects everything it touches!
+
+   Be really scared of it. Label it. Make it explicit. Quarantine it on it's own
+
+   Your language can help you by having explicit refs/vars that compose value and time, i.e. make them distinct. Doesn't decomplect it to.
+
+** Environmental complexity - we can't do anything about it
+   Resources, CPU, memory
+
+ No good way to solve without introducing inefficiency!
+
+ Individual policies don't compose well - individual decisions don't combine to make good outcomes
+
+** Example 2: Lists and Order (complecting the thing with it's neighbour)
+ Every time you have a list you need to ask: Does order matter?
+
+ If I have =[depth width height]= <- I'm going to forget the order!
+
+ Use sets, because they advertise that they are orderless
+
+ Why care about order? Complects each thing with the next, infects usage points, inhibit change. =[name email] -> [name phone email]= is breaking!
+
+ Order is Baked into a ton of things!
+ + Positional args -> named args, map
+ + Syntax -> data
+ + product types -> associative records
+ + imperative programs -> declarative programs
+ + prolog -> datalog
+ + call chains -> queues
+ + xml -> JSON, EDN
+
+ (not saying don't use them - just be aware you are introducing complexity, be aware of the trade offs)
+
+ MAPS! USE MAPS! Make them powerful, make them idiomatic.
+   
+** Example 3: Data/Information is simple
+ There isn't a problem with information. Information is simple. But we make it a problem! We hide it behind a micro language - a class. You make a Box class and you have to invent a whole language to manipulate boxes.
+
+ Start representing data as data
+
+ When we use classes we think we are encapsulating. Encapsulation is about hiding implementation detail. But information doesn't have implementation, it's just data. There is no innards of information. You added it. Why?
+
+ The information /will/ eventually have representation - you don't get around that by wrapping it in a class, at some point someone is going to want to see the information a class contains.
+
+ The litmus test - can you move it?
+
+ Subsystems must have
+ + well defined boundaries
+ + absstracted operaitnal interface (verbs)
+ + general error handling (checked exceptions are a terrible terrible idea)
+ + take/return data (not IPersonInfo). Do this inside and outside systems
+ 
+** Simplify during analysis, modelling, waaaay before you implement
+* Simplicity is a choice
+Nothing manfactures simplicity. It's a decision making process, and you have to do it over and over again, get better at it. Develop 'entanglement' intuition
+
+Don't overestimate your reliability tools: they don't check for simplicity
+   
