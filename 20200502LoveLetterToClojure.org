@@ -1,0 +1,136 @@
+#+TITLE: A love letter to clojure, by Gene Kim
+https://itrevolution.com/love-letter-to-clojure-part-1
+
+* The Unicorn Project and Kim's 5 Ideals
+The unicorn project is about the invisible structures that enable developers to be productive
+
+1. Locality and Simplicity
+2. Focus, Flow and Joy 
+3. Improvement of daily work
+4. Psychological safety
+5. Customer focus
+
+* The second ideal of Focus, Flow and Joy
+Flow as in Csikszentmihalyi. Productive, 'in the zone'.
+
+Clojure is fun
+
+Wrote TweetScriber 3 times - ClojureScript the best
++ objective C (3k lines)
++ JS/React (1.5k)
++ ClojureScript (500)
+ 
+CLJS was shorter, better separated, easier to change/add to, experiment with. Understandable even though it's now nearly 5k LOC
+
+90% of error (entire category of error) eliminated (which ones?)
+
+* Relearning Coding - Kim stopped coding for years, took it back up recently
+Encino man: caveman frozen in ice wakes up
+
+Coding proficiency needed in every profession!
+
+Stopped coding from 98-05, again from 08-15
+
+Sadly missed the Java revolution
+
+* LISPs
+Lisp from '58
+
+Simple syntax: (verb noun noun)
+
+* FP and immutability
+In Ruby, Strings are mutable - awful!
+
+(The terror inspired by 'Java Concurrency In Practice')
+
+disallowing mutation makes things simpler to reason about
+
+* Composability
+Pure functions can be tested completely in isolation
+
+** The Modula-2 Compiler example
+   #+begin_quote
+...burying my code so that it could only be executed inside other functions violated the principle of composition—the ability to run and test it, independent and isolated from the other modules
+   #+end_quote
+
+Marking impure functions with !, pushing side effects to the edges. No mocking, no stubs
+
+* React epiphany
+An Introduction to React in 2019 (For People Who Know Just Enough jQuery To Get By)
+
+** jQuery: Lessons in how program state leads to exponential complexity. Callback hell!
++ Write a tweetbox with a tweet button
++ If tweetbox exceeds 140 chars, grey out the button (introducing state which tracks number of chars)
++ Change tweetbox so it displays chars remaining (another component needs be be updated based on state)
++ Add photo button, displays 'photo added' if a photo has already been added, and substract available characters. 
++ The jQuery style: Event Handler 'TextArea' changes the DOM 'Character Limit' and 'Tweet Button Disabled'. Event Handler: "AddPhoto" also changes both those DOM elements.
+
+** React: functional style
+React (functional) Style: Mutate state in one place, React detects state has changed and automatically calls 'render()' 
+
+(React still has this state fairly scattered through components, things like re-frame and redux make everything centralized)
+
+* Simplicity: the first ideal of locality and simplicity
+** simple made easy. Limited ability to reason about things, keep track of things
+The average juggler can do three balls. The most amazing juggler in the world can do, like, 9 balls or 12 or something like that. They can’t do 20 or 100. We’re all very limited. Compared to the complexity we can create, we’re all statistically at the same point in our ability to understand it, which is not very good. So we’re going to have to bring things towards us.
+
+** Our software must be simple. No complecting, no spaghetti code.
+*** The complexity toolkit
+ | Construct       | Complects                      |
+ |-----------------+--------------------------------|
+ | State           | Everyhing it touches           |
+ | Objects         | State, identity, value         |
+ | Methods         | Function and state, namespaces |
+ | Syntax          | Meaning, order                 |
+ | Inheritance     | types                          |
+ | switch/matching | Multiple who/what pairs        |
+ | variables       | value, time                    |
+ | loops/fold      | what/how                       |
+ | actors          | what/who                       |
+ | ORM             | OMG                            |
+ | Conditionals    | why, rest of the program       |
+*** The simplicity toolkit
+ | Construct                     | Got by                        |
+ |-------------------------------+-------------------------------|
+ | Values                        | final, persistent collections |
+ | Functions                     | stateless methods             |
+ | namespaces                    | language support              |
+ | data                          | maps, arrays, sets, xml, json |
+ | polymorphism a la carte       | protocols, type classes       |
+ | managed refs                  | clojure/haskell refs          |
+ | set functions                 | libraries                     |
+ | queues                        | libraries                     |
+ | declarative data manipulation | SQL/LINQ/Datalog              |
+ | Rules                         | Libraries, prolog             |
+ | consistency                   | Transactions/values          |
+ 
+** Completedness
+   #+begin_quote
+“‘Complect’ is an archaic word, resurrected by Sensei Rich Hickey. It is a verb that means to turn something simple into something complex."
+   #+end_quote
+
+   #+begin_quote
+"‘think of four strands of yarn that hang independently—that’s a simple system. Now take those same four strands of yarn and braid them together. Now you’ve complected them.’ ... [the former] is dramatically easier to change than the other. In the simple system, you can change one string independently without having to touch the others. Which is very good.”
+
+[with the latter] you’re forced to merely solve puzzles all day, trying to figure out how to make your small change, obstructed by your complected system ... Everything you do becomes increasingly distant from the real business problem you’re trying to solve
+   #+end_quote
+
+* Solving business problems not puzzles
+** As a newly fussy, parochial developer, Gene now hates 'infrastructure'
++ Dealing with things outside his application
++ connecting to anything (including databases)
++ SQL databases and queries
++ dependencies
++ secrets
++ bash
++ YAML
++ patching
++ kuberntes deployment files
++understanding cloud costs
+
+* REPL - the ultimate in fast feedback loops
++ hot reloading
++ debugging
++ Fun!
++ TDD and Clojure
+* Community

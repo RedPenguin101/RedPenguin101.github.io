@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-10 Sun 13:17 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A love letter to clojure, by Gene Kim</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Joe" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">A love letter to clojure, by Gene Kim</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc2b2fc5">1. The Unicorn Project and Kim's 5 Ideals</a></li>
+<li><a href="#org821cae6">2. The second ideal of Focus, Flow and Joy</a></li>
+<li><a href="#orge94b7c4">3. Relearning Coding - Kim stopped coding for years, took it back up recently</a></li>
+<li><a href="#orgce331b1">4. LISPs</a></li>
+<li><a href="#org07300f7">5. FP and immutability</a></li>
+<li><a href="#org52c1160">6. Composability</a>
+<ul>
+<li><a href="#orgd42501f">6.1. The Modula-2 Compiler example</a></li>
+</ul>
+</li>
+<li><a href="#org305245a">7. React epiphany</a>
+<ul>
+<li><a href="#org12737bd">7.1. jQuery: Lessons in how program state leads to exponential complexity. Callback hell!</a></li>
+<li><a href="#orgf5e29f3">7.2. React: functional style</a></li>
+</ul>
+</li>
+<li><a href="#org654e4f7">8. Simplicity: the first ideal of locality and simplicity</a>
+<ul>
+<li><a href="#org6735a21">8.1. simple made easy. Limited ability to reason about things, keep track of things</a></li>
+<li><a href="#orgd67b3f2">8.2. Our software must be simple. No complecting, no spaghetti code.</a>
+<ul>
+<li><a href="#org3550b6f">8.2.1. The complexity toolkit</a></li>
+<li><a href="#org26db501">8.2.2. The simplicity toolkit</a></li>
+</ul>
+</li>
+<li><a href="#org8672115">8.3. Completedness</a></li>
+</ul>
+</li>
+<li><a href="#orgaaf3ade">9. Solving business problems not puzzles</a>
+<ul>
+<li><a href="#orge080f0b">9.1. As a newly fussy, parochial developer, Gene now hates 'infrastructure'</a></li>
+</ul>
+</li>
+<li><a href="#orgeb41dfd">10. REPL - the ultimate in fast feedback loops</a></li>
+<li><a href="#org64f7021">11. Community</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://itrevolution.com/love-letter-to-clojure-part-1">https://itrevolution.com/love-letter-to-clojure-part-1</a>
+</p>
+
+<div id="outline-container-orgc2b2fc5" class="outline-2">
+<h2 id="orgc2b2fc5"><span class="section-number-2">1</span> The Unicorn Project and Kim's 5 Ideals</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+The unicorn project is about the invisible structures that enable developers to be productive
+</p>
+
+<ol class="org-ol">
+<li>Locality and Simplicity</li>
+<li>Focus, Flow and Joy</li>
+<li>Improvement of daily work</li>
+<li>Psychological safety</li>
+<li>Customer focus</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org821cae6" class="outline-2">
+<h2 id="org821cae6"><span class="section-number-2">2</span> The second ideal of Focus, Flow and Joy</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Flow as in Csikszentmihalyi. Productive, 'in the zone'.
+</p>
+
+<p>
+Clojure is fun
+</p>
+
+<p>
+Wrote TweetScriber 3 times - ClojureScript the best
+</p>
+<ul class="org-ul">
+<li>objective C (3k lines)</li>
+<li>JS/React (1.5k)</li>
+<li>ClojureScript (500)</li>
+</ul>
+
+<p>
+CLJS was shorter, better separated, easier to change/add to, experiment with. Understandable even though it's now nearly 5k LOC
+</p>
+
+<p>
+90% of error (entire category of error) eliminated (which ones?)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge94b7c4" class="outline-2">
+<h2 id="orge94b7c4"><span class="section-number-2">3</span> Relearning Coding - Kim stopped coding for years, took it back up recently</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Encino man: caveman frozen in ice wakes up
+</p>
+
+<p>
+Coding proficiency needed in every profession!
+</p>
+
+<p>
+Stopped coding from 98-05, again from 08-15
+</p>
+
+<p>
+Sadly missed the Java revolution
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgce331b1" class="outline-2">
+<h2 id="orgce331b1"><span class="section-number-2">4</span> LISPs</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Lisp from '58
+</p>
+
+<p>
+Simple syntax: (verb noun noun)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07300f7" class="outline-2">
+<h2 id="org07300f7"><span class="section-number-2">5</span> FP and immutability</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+In Ruby, Strings are mutable - awful!
+</p>
+
+<p>
+(The terror inspired by 'Java Concurrency In Practice')
+</p>
+
+<p>
+disallowing mutation makes things simpler to reason about
+</p>
+</div>
+</div>
+
+<div id="outline-container-org52c1160" class="outline-2">
+<h2 id="org52c1160"><span class="section-number-2">6</span> Composability</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Pure functions can be tested completely in isolation
+</p>
+</div>
+
+<div id="outline-container-orgd42501f" class="outline-3">
+<h3 id="orgd42501f"><span class="section-number-3">6.1</span> The Modula-2 Compiler example</h3>
+<div class="outline-text-3" id="text-6-1">
+<blockquote>
+<p>
+&#x2026;burying my code so that it could only be executed inside other functions violated the principle of composition—the ability to run and test it, independent and isolated from the other modules
+</p>
+</blockquote>
+
+<p>
+Marking impure functions with !, pushing side effects to the edges. No mocking, no stubs
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org305245a" class="outline-2">
+<h2 id="org305245a"><span class="section-number-2">7</span> React epiphany</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+An Introduction to React in 2019 (For People Who Know Just Enough jQuery To Get By)
+</p>
+</div>
+
+<div id="outline-container-org12737bd" class="outline-3">
+<h3 id="org12737bd"><span class="section-number-3">7.1</span> jQuery: Lessons in how program state leads to exponential complexity. Callback hell!</h3>
+<div class="outline-text-3" id="text-7-1">
+<ul class="org-ul">
+<li>Write a tweetbox with a tweet button</li>
+<li>If tweetbox exceeds 140 chars, grey out the button (introducing state which tracks number of chars)</li>
+<li>Change tweetbox so it displays chars remaining (another component needs be be updated based on state)</li>
+<li>Add photo button, displays 'photo added' if a photo has already been added, and substract available characters.</li>
+<li>The jQuery style: Event Handler 'TextArea' changes the DOM 'Character Limit' and 'Tweet Button Disabled'. Event Handler: "AddPhoto" also changes both those DOM elements.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf5e29f3" class="outline-3">
+<h3 id="orgf5e29f3"><span class="section-number-3">7.2</span> React: functional style</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+React (functional) Style: Mutate state in one place, React detects state has changed and automatically calls 'render()' 
+</p>
+
+<p>
+(React still has this state fairly scattered through components, things like re-frame and redux make everything centralized)
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org654e4f7" class="outline-2">
+<h2 id="org654e4f7"><span class="section-number-2">8</span> Simplicity: the first ideal of locality and simplicity</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org6735a21" class="outline-3">
+<h3 id="org6735a21"><span class="section-number-3">8.1</span> simple made easy. Limited ability to reason about things, keep track of things</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+The average juggler can do three balls. The most amazing juggler in the world can do, like, 9 balls or 12 or something like that. They can’t do 20 or 100. We’re all very limited. Compared to the complexity we can create, we’re all statistically at the same point in our ability to understand it, which is not very good. So we’re going to have to bring things towards us.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd67b3f2" class="outline-3">
+<h3 id="orgd67b3f2"><span class="section-number-3">8.2</span> Our software must be simple. No complecting, no spaghetti code.</h3>
+<div class="outline-text-3" id="text-8-2">
+</div>
+<div id="outline-container-org3550b6f" class="outline-4">
+<h4 id="org3550b6f"><span class="section-number-4">8.2.1</span> The complexity toolkit</h4>
+<div class="outline-text-4" id="text-8-2-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Construct</th>
+<th scope="col" class="org-left">Complects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">State</td>
+<td class="org-left">Everyhing it touches</td>
+</tr>
+
+<tr>
+<td class="org-left">Objects</td>
+<td class="org-left">State, identity, value</td>
+</tr>
+
+<tr>
+<td class="org-left">Methods</td>
+<td class="org-left">Function and state, namespaces</td>
+</tr>
+
+<tr>
+<td class="org-left">Syntax</td>
+<td class="org-left">Meaning, order</td>
+</tr>
+
+<tr>
+<td class="org-left">Inheritance</td>
+<td class="org-left">types</td>
+</tr>
+
+<tr>
+<td class="org-left">switch/matching</td>
+<td class="org-left">Multiple who/what pairs</td>
+</tr>
+
+<tr>
+<td class="org-left">variables</td>
+<td class="org-left">value, time</td>
+</tr>
+
+<tr>
+<td class="org-left">loops/fold</td>
+<td class="org-left">what/how</td>
+</tr>
+
+<tr>
+<td class="org-left">actors</td>
+<td class="org-left">what/who</td>
+</tr>
+
+<tr>
+<td class="org-left">ORM</td>
+<td class="org-left">OMG</td>
+</tr>
+
+<tr>
+<td class="org-left">Conditionals</td>
+<td class="org-left">why, rest of the program</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org26db501" class="outline-4">
+<h4 id="org26db501"><span class="section-number-4">8.2.2</span> The simplicity toolkit</h4>
+<div class="outline-text-4" id="text-8-2-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Construct</th>
+<th scope="col" class="org-left">Got by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Values</td>
+<td class="org-left">final, persistent collections</td>
+</tr>
+
+<tr>
+<td class="org-left">Functions</td>
+<td class="org-left">stateless methods</td>
+</tr>
+
+<tr>
+<td class="org-left">namespaces</td>
+<td class="org-left">language support</td>
+</tr>
+
+<tr>
+<td class="org-left">data</td>
+<td class="org-left">maps, arrays, sets, xml, json</td>
+</tr>
+
+<tr>
+<td class="org-left">polymorphism a la carte</td>
+<td class="org-left">protocols, type classes</td>
+</tr>
+
+<tr>
+<td class="org-left">managed refs</td>
+<td class="org-left">clojure/haskell refs</td>
+</tr>
+
+<tr>
+<td class="org-left">set functions</td>
+<td class="org-left">libraries</td>
+</tr>
+
+<tr>
+<td class="org-left">queues</td>
+<td class="org-left">libraries</td>
+</tr>
+
+<tr>
+<td class="org-left">declarative data manipulation</td>
+<td class="org-left">SQL/LINQ/Datalog</td>
+</tr>
+
+<tr>
+<td class="org-left">Rules</td>
+<td class="org-left">Libraries, prolog</td>
+</tr>
+
+<tr>
+<td class="org-left">consistency</td>
+<td class="org-left">Transactions/values</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8672115" class="outline-3">
+<h3 id="org8672115"><span class="section-number-3">8.3</span> Completedness</h3>
+<div class="outline-text-3" id="text-8-3">
+<blockquote>
+<p>
+“‘Complect’ is an archaic word, resurrected by Sensei Rich Hickey. It is a verb that means to turn something simple into something complex."
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+"‘think of four strands of yarn that hang independently—that’s a simple system. Now take those same four strands of yarn and braid them together. Now you’ve complected them.’ &#x2026; [the former] is dramatically easier to change than the other. In the simple system, you can change one string independently without having to touch the others. Which is very good.”
+</p>
+
+<p>
+[with the latter] you’re forced to merely solve puzzles all day, trying to figure out how to make your small change, obstructed by your complected system &#x2026; Everything you do becomes increasingly distant from the real business problem you’re trying to solve
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaaf3ade" class="outline-2">
+<h2 id="orgaaf3ade"><span class="section-number-2">9</span> Solving business problems not puzzles</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-orge080f0b" class="outline-3">
+<h3 id="orge080f0b"><span class="section-number-3">9.1</span> As a newly fussy, parochial developer, Gene now hates 'infrastructure'</h3>
+<div class="outline-text-3" id="text-9-1">
+<ul class="org-ul">
+<li>Dealing with things outside his application</li>
+<li>connecting to anything (including databases)</li>
+<li>SQL databases and queries</li>
+<li>dependencies</li>
+<li>secrets</li>
+<li>bash</li>
+<li>YAML</li>
+<li>patching</li>
+<li>kuberntes deployment files</li>
+</ul>
+<p>
++understanding cloud costs
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb41dfd" class="outline-2">
+<h2 id="orgeb41dfd"><span class="section-number-2">10</span> REPL - the ultimate in fast feedback loops</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li>hot reloading</li>
+<li>debugging</li>
+<li>Fun!</li>
+<li>TDD and Clojure</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org64f7021" class="outline-2">
+<h2 id="org64f7021"><span class="section-number-2">11</span> Community</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="date">Created: 2020-05-10 Sun 13:17</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
