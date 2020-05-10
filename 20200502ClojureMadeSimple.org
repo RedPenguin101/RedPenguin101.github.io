@@ -1,0 +1,153 @@
+#+TITLE: Clojure, Made Simple
+https://www.youtube.com/watch?v=VSdnJDO-xdg
+
+Rich Hickey talk 2015 talk at a Java Conf.
+
+This talk is about the data-orientation of clojure
+
+* Java is not a productive language
+
+#+begin_quote
+"A lot of the best programmers and the most productive programmers I know are writing everythin in _______ and swearing by it, and then just producing ridiculously sophisticated things in a very short time. And that programmer productivity matters"
+- Adrian Cockcroft
+#+end_quote
+
+There's something about Java that makes it not suitable for the 'productivity' blank. What?
+
+* Programming is an economic activity, it's for stakeholders, not programmers
+Programmers are so /self focused/ - no focus on cost/benefit, ROI, time to market.
+
+Stakeholders want something good, soon
+
+* Stakeholders want Something Good - meaning what?
+** Something is good if it passes tests and type checks? NO
+These are programmer centric means not ends. They don't help the program do what it was supposed to do. Tests and type checks are only good in that they help with the next things.
+
+** Something is good if it Does what it supposed to do - from the /stakeholders/ perspective
+This is *hard to establish* if program is any one (or any combo of) the following: large, stateful, elaborate
+
+** Something is good if it meets operations requirements (Clojure targets 'ease', i.e. familiarity to ops via browser / jvm)
++ Deployable (clojure on the JVM)
++ security (clojure on the JVM)
++ Performance (clojure down there on the benchmark game (it is a game)
+    
+** Something is good if it's flexible enough to accomodate (inevitable) change - loose coupling!!
+   We keep talking about decoupling, and yet we keep complecting!
+
+** Soon?
+   Sometimes you want something NOW, will definitely throw it away. Clojure is not the best thing for that.
+
+* How does Clojure help you make something good? Data orientation and simplicity 
+(Simplicity as in the opposite of complexity, intertwined-ness)
+
+What matters is what makes a language *practical* and *idiomatic* - data processing is what clojure does that for.
+
+** The benefits of data as a central concept - simplicity
+Data processing is not a dirty word - acquire, xform, store, manage, transmit. It's the heart of any programming task. Programmers have a tendency to look down on it
+
+There are cognitive benefits from thinking in data. Data/information is raw, immutable - SIMPLE. make your data structures reflect this and you have reflected the reality of data.
+
+OO ruins this! It conflates process and information constructs. OO is terrible for information constructs (not so bad for process)
+
+** Clojure embraces data - good data literals and collections, information is plain data
+It's a lisp, so code /is/ data. Homoiconicity
+
+The vast majority of functions take data, return data. The language pressures you to make everything data.
+
+There's the part of your program that isn't data - the plumbing stuff, active parts of program, the part of your program that is more like a machine than information - that's the other part. But it's small - mostly it's transforming data.
+    
+Clojure has a small number of primatives, including symbols, keywords (enum like), regex patterns.
+
+Clojure has a few data structures - lists, vecs, (hash)maps, sets. They are *nesting* and *immutable*. 
+
+Maps are very effective and efficient! In the small, you can use them as 'object'/struct like things, or in the large as 'data processing' like things
+
+*** Collections are (and always should be) immutable
+You can't change primatives (42) you can't change a list of primatives [1 2 42]. Both are values, with no implicit concept of an 'identity' that changes over time. The concepts are separate. Just make a new one. Persistent data structures, structural-sharing under the hood.
+
+This conflation of value and identity is the giant problem with objects.
+
+* The Clojure premise - get rid of OO busywork by using generic collections much much more. 
+OO has SO MUCH BUSY WORK! Just build systems out of that much much simpler stuff, those data structures and pure functions.
+
+You still need IO/state/side-effects - put them at the edges. Runtime polymorphism is nice too
+
+Clojure makes it idiomatic. Replaces ALL the things you can do in C++, Java - makes it much much easier
+
+* Objects are like marionettes - anyone can pull their strings
+Anyone who has access can pull its strings, whenever they want. You have as many 'masterminders' as things that have been given a reference to the object.
+
+It Just Doesn't Work! Class writers have to try to defend against it, and you just can't, really.
+
+You can use Value objects? Sure, but it's not idiomatic, it's hard. It can also be implicit, unguaranteed. If you have a reference to an object, you have NO guarantee that the marionette won't start dancing on you
+
+And there's the object as a contruct for distribution - remote object calls are (we all know this) awful. Never put an object on the wire. RMI/DCOM/CORBA - don't do it
+
+You have no control, your OO language gives you no control.
+
+So stuff is on the wire: Now you have to MAP/translate back to your Object. How? ORM. ORM is a nightmare. It that a problem with a relational data mode? With SQL? NO, it's problem with OBJECTS
+
+* Objects are not how SYSTEMS (in the large) work - we've all agreed systems work with data - why should our programs (in the small) be different?
+System - to cause to stand. Legs on a stool. Independent parts connected
+
+We /do/ try to build systems independently.  We don't want to care that that other program on another servers is written in another language. We don't want to have to co-ordinate everything.
+
+After trying out objects as the basis for system communication we've agreed it doesn't work, and we should just use data. We do Remote Procedure Call (RPC) using plain data, or we use queues, also with data.
+   
+Using data as the central idea for systems provides flexibility: it supports independent development. They are tolerant in what they accept. Think of the web: Chrome doesn't need to change when Twitter changes their homepage. They can accept data they're not expecting to see, won't fall over
+
+*/Do that for the inside of systems as well as the outside/* - no real change in concepts is necessary, we already have the ideas inside our languages:
++ RPC => PC (function calls)
++ queues => channels
+
+* Keep process and state boxed and separate with explicit state constructs
+  
+What about Process and state? There WILL be process and state, and they are inherently complecting - how to deal with them? Clojure has explicit state constructs.
+
+In typical OO you have types, but really nothing that helps you with this - only very raw constructs like mutexes.
+
+(Some very pure languages will force you very hard to isolate state/side effects. Clojure isn't one of them - it favours the idiom over the hard rule here)
+
+Clojure state constructs have explicit semantics for state transforms. You can also deref and get the (immutable) value. CAS (compare and swap) is a type of this that can use this construct. STM is another, bigger and more transactional
+
+** Why?
+It's explicit - calls out where it is. It's like a big warning sign. If you don't have that you have to do it yourself!
+
+core.async - queue implementation. conveyer belt vs. variable: Flow vs. Place
+   
+* Clojure leads to smaller program size: and small is better
+We have research on this! Smaller programs have fewer bugs, quicker to market, less maintainance, less brittle
+
+** Two types of small: concision and generality. Strive for generality
+There are Two types of small: concision (size in the small) and generality (size in the large). Generality, allowing your code to be used in general, is where the big gains are (>2x) are, vs 'how many LOC is your if statement'.
+
+** Classes are the opposite of general when it comes to information.
+
+Most information objects are just maps of name->value. But you have to write a class every time! And you can't even use it like a map. More code, less reuse, more coupling
+
+A class has it's own DSL that you have to relearn, and can never reuse. Sure you can get the cognitive benefit from the abstraction (if you do it well) - but the costs are huge.
+
+** Tiny benefits of class: dot completion! no typos! But everything else much worst
++ big interface, internally inconsistent, idiosyncratic
++ MUCH more code
++ can't reuse generic map libs
++ client code completely coupled
++ harder to test
+
+** The famous HttpServletRequest example
+The Java HttpServletRequest has ~50 methods. How many embedded maps? It's actually hard to tell. Maybe 4. They're all different, and all used differently
+
+*AN HTTP REQUEST WAS JUST DATA - HOW DID WE SCREW THAT UP!?!*
+
+** JUST USE A MAP
+You can just see it, see all the submaps, it's right there in front of you. And it's so general: HttpServletRequest is explicitly tied to the authors model of a request.
+
+* Dynamic Typing and code quality
+What does a (Java) type checker catch? Typos, basically. It's pretty trivial to just catch them in tests. Checking type is not enough to guarantee quality!
+
+Quality measures are all in state management, coupling, comprehension (/misconception/ is the 10x cause of problems), lack of flexibility. Type systems encourage / contributes to all of those things
+
+* Polymorphism
++ Independent - procotols are interfaces that don't require inheritance
++ can be extended to existing / closed classes
++ a la carte - reduces coupling
