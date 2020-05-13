@@ -1,0 +1,25 @@
+#+TITLE: Event Sourcing: Capturing the World in Software, by Jessica Kerr
+[[https://jessitron.com/2020/01/24/capturing-the-world-in-software/]]
+
+Event sourcing is not more scalable, faster or simpler than not using it. So why use it?
+
+* The real world
+We want to our models to be a good representation of the real world. The state of the real world often behaves as a snapshot of the cumulative effect of events (though sometimes unobservable ones). So event sourcing is a good match.
+
++ Your bookshelf is an aggregation of the books you've bought, sold and thrown away.
++ You current holdings of a bond are the aggregation of your purchases and sales.
++ Your calendar is the aggregation of the meeting invitations you've sent, received, cancelled and changed. 
+
+* The benefits of events
+The problem with representing the world as a mutable, changeable state it that you aren't able to easily turn back the clock, and see what the state was at an earlier time. That makes good decision making hard, and makes it impossible to go back and review our decisions based on /what was known at the time/ rather than what we know now.  
+
+Recording snapshots, not events, also limits your ability to go back and reinterpret those events using new logic.
+
+In short, event sourcing provides /full provenance/, /accountable software/.
+
+* Practical factors
+When you have a big system, you have a huge amount of events. More is not necessarily better. If you have a problem with one of your snapshots, and there are 500,000 events that go into that snapshot, each having a (possibly non-deterministic) effect on it, that can quickly get unmanageable.
+
+Furthermore, the world always changes, and so will your events. If your system is reliant on events being stuctured in a certain way, then it becomes hard to change, because you old events have to be conformed - but the are immutable, so you can't!
+
+Reality is never clean about when things happen. You events will end up coming in out of order, missing information, with contradictions. In a moderately sized system, this will quickly become a large problem.
