@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-17 Sun 18:39 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Domain Driven Design: The Essentials</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Joe" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Domain Driven Design: The Essentials</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org76ffd67">1. What DDD is and why we use it</a></li>
+<li><a href="#orgfacb723">2. Basics</a>
+<ul>
+<li><a href="#org38d56a4">2.1. Knowledge Crunching</a></li>
+<li><a href="#org266c7ab">2.2. Modelling</a></li>
+<li><a href="#org07082ad">2.3. A Ubiquitous Language</a></li>
+<li><a href="#orgd1fd235">2.4. The UL in Code</a></li>
+<li><a href="#org434699e">2.5. Documenting the model</a></li>
+</ul>
+</li>
+<li><a href="#org3ba051e">3. Modelling your domain in the small</a>
+<ul>
+<li><a href="#org419afcd">3.1. Encoding concepts in Classes, Modules and Layers</a>
+<ul>
+<li><a href="#org9ac48e4">3.1.1. Classes and Objects</a></li>
+<li><a href="#orgaa69287">3.1.2. Associations</a></li>
+<li><a href="#orgb81bef9">3.1.3. Modules</a></li>
+<li><a href="#org434338b">3.1.4. Layered Architecture and the Domain Layer</a></li>
+</ul>
+</li>
+<li><a href="#org6312142">3.2. Types of Object</a>
+<ul>
+<li><a href="#orgc23e830">3.2.1. Encapsulation and Identity</a></li>
+<li><a href="#orgd872b03">3.2.2. Entities, aka Reference Objects</a></li>
+<li><a href="#org6ebc408">3.2.3. Value Objects</a></li>
+<li><a href="#orgbe068b6">3.2.4. Services</a></li>
+</ul>
+</li>
+<li><a href="#orgdb752c7">3.3. Modelling your Domain in OO</a></li>
+<li><a href="#org83e5176">3.4. Intention Revealing Interface</a></li>
+<li><a href="#org2968d99">3.5. Aggregates</a></li>
+<li><a href="#orgbd3f6d9">3.6. Invariants and constraints</a></li>
+</ul>
+</li>
+<li><a href="#orge3e37cf">4. Modelling in the large: Multiple Contexts</a>
+<ul>
+<li><a href="#org5ada44a">4.1. Bounded Contexts</a></li>
+<li><a href="#orgd0ebbbc">4.2. The Context Map</a></li>
+<li><a href="#orgf033956">4.3. Relationships between Bounded Contexts</a></li>
+<li><a href="#org71d96e0">4.4. Distillation: Core and Generic subdomains</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+This article is a business-analyst focused explanation of Domain Driven Design. It does include some discussion of the concepts behind the Object Orientation, but only enough to be useful in OO modelling. Things that are too software focused (such as repositories and factories) are left out.
+</p>
+
+<div id="outline-container-org76ffd67" class="outline-2">
+<h2 id="org76ffd67"><span class="section-number-2">1</span> What DDD is and why we use it</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+The craft of building enterprise software is in taking the semi-formal processes and decision trees of a Business Domain, and turning that into an <i>formal</i>, unambiguous description of those same processes (in the form of code). Good software must be simple to change in the places where the business processes change frequently.
+</p>
+
+<p>
+The main difficulty we encounter when doing that is that these semi-formal processes are <i>monstrously complex</i>. It is a mistake to think that the 'semi-formal' nature of these human-targetted processes are a flaw, or down to laziness in the person who implements them. They are most definately a feature - one that uses the incredible ability of the human brain to absorb experiences, sometimes for decades, and apply those experiences to an almost infinite set of input data to arrive at a decision. 
+</p>
+
+<p>
+This shows two reasons why the business process cannot be fully described formally: first the number of inputs which can impact the outcome of a process are often impractically massive. Second the processes themselves are opaque, even to those who use them. The combination of these two are why you often see 'contradictions' in business processes - two sets of apparently identical input data which result in a different outcome.
+</p>
+
+<p>
+The problem is multiplied because business domains don't exist in isolation. They co-exist with other domains, which often share concepts but use them and think of them in subtly different ways. The domains need to share information without getting confused by these differences.
+</p>
+
+<p>
+How are we supposed to build the software when a one-for-one formalisation <i>literally can't be done</i>? In particular when we as the software creators lack the years of experience that creates the mental heuristics a Domain uses (let alone the other domains ours interacts with), and can't dedicate years to learning them?
+</p>
+
+<p>
+This is the problem that Domain Driven Design attempts to solve.
+</p>
+
+<p>
+It starts from the insight, self evident from the above, that encoding <i>reality</i> is impractical or impossible, and so we must build a <i>model</i>. A model is a ruthlessly minimalist <i>distilled</i> version of the reality of the business Domain, which attempts to be useful for a specific purpose. That purpose is used to guide the shape of the model, and in particular what is <i>left out of it</i>.
+</p>
+
+<p>
+How are we to know how to build this model, and know the places it is likely to need to change, when we don't have the knowledge of the business Domain? By communicating constantly and effectively with the people who do have that knowledge; the Domain Experts.
+</p>
+
+<p>
+These two core ideas drive all of the principles and techniques of DDD.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfacb723" class="outline-2">
+<h2 id="orgfacb723"><span class="section-number-2">2</span> Basics</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org38d56a4" class="outline-3">
+<h3 id="org38d56a4"><span class="section-number-3">2.1</span> Knowledge Crunching</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+You don't understand the domain. You might think you do, but unless you've spend years in it, you don't. Even if you are a domain expert, you can't just walk up to a whiteboard and write a perfect model on your first try, because the domain doesn't live neatly in your head in that form. There are subtleties, nuances, which you don't realize, and which will take a long time to tease out. 
+</p>
+
+<p>
+Your first model for a domain will be comically naive. You may look at a mature model for the first time and think that it is clearly missing a key concept ('A model for container shipping that has no concept for a ship? Surely wrong'), and only when you understand the domain will you see why that is the case.
+</p>
+
+<p>
+That suggests the method by which the model is teased out, referred to as Knowledge Crunching: by Devs talking to Domain Experts over the long term with a whiteboard, sketching models, running through scenarios, refining, distilling. Finding clever ways to visually express processes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org266c7ab" class="outline-3">
+<h3 id="org266c7ab"><span class="section-number-3">2.2</span> Modelling</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Evans' DD follows an <i>object oriented</i> modelling paradigm. There are others, though less frequently used. The OO paradigm is a huge topic and I won't go into it here. Some of the concepts in his book are general to modelling, some are exclusive to (or at least expressed in) OO.
+</p>
+
+<p>
+Though OO is still the predomoninant paradigm, that's more to do with familiarity and fashion than quality. Other techniques, such as event modelling, functional modelling, relational modelling and graph modelling, may be more appropriate for some domains.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07082ad" class="outline-3">
+<h3 id="org07082ad"><span class="section-number-3">2.3</span> A Ubiquitous Language</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Clearly, effective communication between developers and domain experts is crucial. This can be a problem because any moderately complex domain will have a lot of Terms that have a specific meaning in that domain, that the devs won't be able to guess from common English usage.
+</p>
+
+<p>
+You need to get the devs and domain experts to the point where when a term is used, both sides understand the same thing from it - literally get them speaking the same language.
+</p>
+
+<p>
+You do this by <i>explicitly building that glossary of agreed terms</i> and agreeing to use it whenever you're talking about the domain. Literally write it down somewhere. Call this the Ubiquitous Language, or UL.
+</p>
+
+<p>
+Both the domain expert and the dev have a role in building the UL: the domain expert needs to watch out for awkward terms that don't really 'fit' with their mental model of the domain. This is a good indication that you need to fiddle with it until it does fit.
+</p>
+
+<p>
+The dev needs to watch for terms that are inconsistent or ambiguious, and work to make them less hazy.
+</p>
+
+<p>
+Technology obviously has its own complex jargon, not understandable to the business users. Keep it out of the Ubiquitous Language as much as possible.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd1fd235" class="outline-3">
+<h3 id="orgd1fd235"><span class="section-number-3">2.4</span> The UL in Code</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Once you have your first iteration of a model, expressed in the Ubiquitous Language, you need to go away and code it.
+</p>
+
+<p>
+It is critical that the code is written <i>in the Ubiquitous Language</i>. All the classes, all the methods, all the variable names, should be things that exist in the UL.
+</p>
+
+<p>
+Not <i>everything</i> in the UL has a corresponding thing in the code - code is pretty low level, so larger structural UL concepts won't be (though they will still be embedded in the architecture of the software, as we'll see later)
+</p>
+
+<p>
+The reason we insist on this is that if the model isn't in the code, the Devs will stop thinking in terms of the model. The model will stop driving the development of the code, and will have lost the ability to talk to the business.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org434699e" class="outline-3">
+<h3 id="org434699e"><span class="section-number-3">2.5</span> Documenting the model</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+Having the UL embedded in code has another benefit: the code <b>is</b> your low level documentation for the model. If your model changes, so does your code. So your documentation is never out of date.
+</p>
+
+<p>
+The diagrams and UML you draw in your knowledge crunching sessions are not documentation - they are not a reference or a bible. Throw them away when you are done.
+</p>
+
+<p>
+Having some stuff written down so others can read it is a good idea. But any attempt to have an 'always up to date' representation of your model at any real size is doomed to be abandonned and introduce confusion. 
+</p>
+
+<p>
+A good way to approach documentation of a model is to be explicit that any document is a snapshot of your thinking <i>at a point in time</i>. Date stamp it, then never touch it again. Keep these documents together, then someone just needs to start at the newest document.
+</p>
+
+<p>
+Be sparing with UML. Use diagrams as inserts communicating specific things within longer-form desriptions of your models, never as a thing on its own. Keep the diagrams themselves small. Put in <i>parts</i> of your model if it's too big to fit readably on a portait piece of paper.
+</p>
+
+<p>
+Don't get hung up on creating 'legal' UML at the expense of clearly communicating your concept - less is more.
+</p>
+
+<p>
+The UML is not the model.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3ba051e" class="outline-2">
+<h2 id="org3ba051e"><span class="section-number-2">3</span> Modelling your domain in the small</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Before we talk about modelling using OO ideas, we need to talk about the building blocks we'll use to build up our model. 
+</p>
+</div>
+
+<div id="outline-container-org419afcd" class="outline-3">
+<h3 id="org419afcd"><span class="section-number-3">3.1</span> Encoding concepts in Classes, Modules and Layers</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+<div id="outline-container-org9ac48e4" class="outline-4">
+<h4 id="org9ac48e4"><span class="section-number-4">3.1.1</span> Classes and Objects</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+In an object oriented modelling paradigm, the <i>Class</i> is the key building block of your model.
+</p>
+
+<p>
+A Class can be thought of as a template, containing behaviour and what information can be associated with it, for creating Objects which are specific <i>instances</i> of that class.
+</p>
+
+<p>
+For example, a <i>Duck</i> class might be a template which has 'slots' for information about the ducks type, its color, its size etc. And It might have 'swim' behaviour, 'quack' behavior and 'fly' behaviour.
+</p>
+
+<p>
+When I <i>instantiate</i> an instance using the <i>Duck</i> class template, I might create a duck called 'jim' with type 'Crested', color 'Blue' and size '18 inches'. I can then make jim do things by <i>calling</i> his behaviours (or <i>methods</i>), by saying <code>jim.fly()</code> or <code>jim.swim()</code>
+</p>
+
+<p>
+More abstractly, I might have a <i>Payment</i> class, which I instantiate with information date, amount, currency, from, to. I then call its 'approvePayment' method, which allows to to call the 'makePayment' method, which sends the payment details to the bank.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaa69287" class="outline-4">
+<h4 id="orgaa69287"><span class="section-number-4">3.1.2</span> Associations</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+In addition to 'primative' information, like numbers, words and dates, a class can be related to other classes. For example in our Payment class, we had slots for 'to' and 'from', which conceptually could represent the to and from Entities of the Payment. These Entities could be modelled themselves as classes, with their own data and behaviour.
+</p>
+
+<p>
+When two classes are connected in this way, they are said to be <i>Associated</i>.
+</p>
+
+<p>
+Associations have direction, which in OO loosely translate to which class 'belongs' to which. For example, our PaymentX object could hold a reference to Entity A in its 'To' slot. Alternatively, Entity A could hold a reference to all payments it's involved in (including ours) in its 'Payments' slot.
+</p>
+
+<p>
+In the former case, you can get to Entity A from PaymentX by calling <code>PaymentX.to</code>. In the latter case you can get to get from Entity A to PaymentX by calling <code>EntityA.payments</code>. Moving from one object to another in this way is called <i>Traversal</i>. Which way you choose to model depends on what problem you are trying to solve - will you be starting with a payment and trying to get to the entity, or starting with an entity and trying to get to its payments?
+</p>
+
+<p>
+Note that while you <i>can</i> model bidirectional associations, these are rather clunky to implement in the OO paradigm, and more generally increase the complexity of the model considerably. You should try to eliminate them wherever possible.
+</p>
+
+<p>
+Notice in the above example that a Payment would have exactly one 'To' entity, where an entity can have many payments, making this a one-to-many association. Avoid many-to-many associations like the plague, and try to stick to one-to-one when possible.
+</p>
+
+<p>
+Generally, think hard about eliminating non-essential associations - the fewer you can get away with, the simpler your model will be.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb81bef9" class="outline-4">
+<h4 id="orgb81bef9"><span class="section-number-4">3.1.3</span> Modules</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+Classes are grouped together (in code) into Modules (in some languages called Namespaces). Take advantage of this opportunity to introduce structure, by making them a meaningful part of your model. Group related modules together, and make the module name something in the UL which is expressive of its intent.
+</p>
+
+<p>
+If your model changes in a way that your module groups things that no longer belong together <i>change your modules as soon as possible</i>. They are extremely hard to change later.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org434338b" class="outline-4">
+<h4 id="org434338b"><span class="section-number-4">3.1.4</span> Layered Architecture and the Domain Layer</h4>
+<div class="outline-text-4" id="text-3-1-4">
+<p>
+Modules are the largest concept that is usually expressed in code explicitly. But how you organize your modules, and the relationships between them, is a key aspect of keeping your program comprehensible and easy to change.
+</p>
+
+<p>
+The key pattern for doing this is variously called the Layered Architecture, the Onion Architecture, the Hexagonal Architecture or the Clean Architecture. There are minor variations between them, but essentially they say the same thing: Group your modules into 'layers' with specific reponsibilities, and make sure the dependencies between those layers are clearly defined and <b>unidirectional</b>.
+</p>
+
+<p>
+A typical examples would be the following layers:
+</p>
+<ul class="org-ul">
+<li>A UI Layer</li>
+<li>An application layer</li>
+<li>a domain layer</li>
+<li>an infrastructure layer</li>
+</ul>
+
+<p>
+The details of the Layered Architecture are beyond the scope of this article - everything we are talking about exists in the domain layer. The important takeaway is that the Domain Layer exclusively has <i>business domain logic</i> expressed in the <i>ubiquitous language</i>. All technical details (such as how to read things from a database, how the domain objects will be displayed to a user) belong in other Layers, and the Domain Layer never has to worry about them.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org6312142" class="outline-3">
+<h3 id="org6312142"><span class="section-number-3">3.2</span> Types of Object</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-orgc23e830" class="outline-4">
+<h4 id="orgc23e830"><span class="section-number-4">3.2.1</span> Encapsulation and Identity</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+Grouping together information/data and behaviour that together represent a 'thing' is a technique of abstraction technique called <i>Encapsulation</i>.
+</p>
+
+<p>
+Notice how when describing the Payment class, and the makePayment method, I didn't say <i>how</i> the payment is sent to the bank, just that it was (the 'what'). 
+</p>
+
+<p>
+This is the main power of objects; Once we have designed and named the object, we are free to think of a payment in our software system like we think of it in our heads, using our mental model for payments. We are freed up from thinking about low level implementation details, like transforming the payment to SWIFT format, and looking up the bank details of the 'To' entity. We can think at a higher level.
+</p>
+
+<p>
+Another, more subtle benefit of objects (though more controversial one) is the ability to refer to something by its <i>identity</i>. What I mean by that is that many things change their attributes over time, but they maintain a <i>sameness</i> despite that. Our duck jim might be small and yellow when he's born (and not able to fly), but over time he will grow larger and change color. Even though his attributes change he is the same thing, and we can still refer to him as jim.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd872b03" class="outline-4">
+<h4 id="orgd872b03"><span class="section-number-4">3.2.2</span> Entities, aka Reference Objects</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+We use this useful property of objects to model things that have <i>lifecycles</i> - and we refer to them as <i>Entities</i> or <i>reference objects</i>.
+</p>
+
+<p>
+One of the key difficulties with entities is storing them. You have to be able to retrieve them - but you can't just look it up in the database by it's attributes, because there might be others that have the same attributes. The answer is to provide the entity with a UID - a unique identifier. Note that this UID will also be useful in talking between domains - if another domain has the concept of a payment, but models it with different attributes, then both your system and the other system will need to be able to identify the payment (i.e. agree the are talking about the same thing).
+</p>
+
+<p>
+Entities can be dangerous things in OO, precisely because they can change their attributes. If you're not careful, some other part of the system can come in and change the attributes of an Entity without you knowing about it. We'll look at techniques for controlling for this when we talk about <i>Aggregates</i>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6ebc408" class="outline-4">
+<h4 id="org6ebc408"><span class="section-number-4">3.2.3</span> Value Objects</h4>
+<div class="outline-text-4" id="text-3-2-3">
+<p>
+Some things are <i>not</i> entities, and have no life cycle. They are defined entirely and uniquely by their attributes, and as long as two instances have the same attributes you can use them interchangebly (unlike Entities).
+</p>
+
+<p>
+Consider how you would model <i>color</i>. Color can be described in a few ways, but one of the most common is 'RGB' - the amount of red, amount of green and amount of blue. <code>Color(113, 34, 181)</code> represents a deep purple.
+</p>
+
+<p>
+Notice that you could substitute a different instance of <code>Color(113, 34, 181)</code>, and use it in place of the first one without issue. We couldn't substitute one instance of our Payment with another with the same attributes, because it represents a different payment (i.e. a different identity)
+</p>
+
+<p>
+Value objects have a lot of nice properties, and you should use them where possible. Often your Entity objects will have value objects embedded in them e.g. a 'CanOfPaint' entity might have some attributes defining its color. It's usually worth thinking about extracting them out.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe068b6" class="outline-4">
+<h4 id="orgbe068b6"><span class="section-number-4">3.2.4</span> Services</h4>
+<div class="outline-text-4" id="text-3-2-4">
+<p>
+Generally behaviour is modelled as being part of the Entity or Value Object with which it is most closely associated.
+</p>
+
+<p>
+Sometimes you will have a behaviour you want to model which is <i>not</i> closely associated with an object, or more likely, is associated with multiple objects.
+</p>
+
+<p>
+Usually the right answer is not to cram it into the closest object, but instead to define it as a <i>Service</i> - a behaviour not attached to an object.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdb752c7" class="outline-3">
+<h3 id="orgdb752c7"><span class="section-number-3">3.3</span> Modelling your Domain in OO</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+The point that all this has been leading to is that you can use all of the above ideas to model your domain. 
+</p>
+
+<p>
+Objects are a neat way to model domains because of the encapsulation property descibed above. You can talk to your domain experts in objects, and because you are able to use abstraction to talk in terms they are familiar with, they will understand what you are talking about.
+</p>
+
+<p>
+In particular, OO has an emphasis on encapulating <i>behaviour</i> as well as data - unlike a relational model which is very much data focused. So you can use the ideas of OO to model <i>what is happening</i> as well as what attributes something has, which is very expressive.
+</p>
+
+<p>
+And then at the end of it, you're left with something that your devs can implement fairly easily, because OO is directly translatable to code as long as you're using an OO language.
+</p>
+
+<p>
+So in practice, you're going to get into a room with your Domain Expert and your Devs and you're going to start putting names of concepts on a whiteboard. For us, things like 'Transaction', 'Security', 'Investor'. You're going to think, is this something with a lifecycle? It is defined by it's attributes, or is there a more abstract identity this represents? You're going to start thinking about the 'nouns', or data, that live with the object - the investor name, their location. You're going to start thinking about the 'verbs', the behaviours, associated with that investor - should I have a scheduleCall method? Does makeDistribution live here or somewhere else? What about 'inviteToConference'? And you'll start thinking about associations with other concepts - do I need a separate class for 'contact'? Should I associate Contact with Investor, or Organization? If it's with Organization then maybe scheduleCall doesn't belong with Investor after all.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org83e5176" class="outline-3">
+<h3 id="org83e5176"><span class="section-number-3">3.4</span> Intention Revealing Interface</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+The goal when do this modelling is to <i>think of really good names for things</i>, including your classes, modules, attributes and methods. Mostly you'll be using words from the UL, but you have to use them in ways that are good descriptions of what you are trying to do. This is referred to in DDD as creating an <i>Intention Revealing Interface</i>. It's useful both in talking to your domain expert, but also for your devs to be able to reason about the code.
+</p>
+
+<p>
+This is much, much harder than it sounds.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2968d99" class="outline-3">
+<h3 id="org2968d99"><span class="section-number-3">3.5</span> Aggregates</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+I mentioned above that there is a risk that another part of the system can come in and change the attributes of objects (in software terms objects are <i>mutable</i>). 
+</p>
+
+<p>
+The problem with it is that we want to have <i>invariant guarantees</i> in our objects. More on them later, but for now lets say we want our system to be in a <i>valid state</i> at all times. For example lets say we set up a payment from Entity A and Entity B, so we instantiate a Payment object, linking to Entities A and B. When we did this, we checked that Entity B had a valid bank account. It did, so we were able to create the payment and send it for approval.
+</p>
+
+<p>
+Now before the payment is made, something else comes along and <i>closes Entity B's bank account</i>. Our payment object doesn't know about it, but it has suddenly been put in an <i>invalid state</i> - trying to pay money into a bank account that doesn't exist. What we would like our payment object to do is know that this has happened, know that it has been put in an invalid state, and cancel the payment.
+</p>
+
+<p>
+Even though this mutablility feature is a useful because it allows us to model <i>identity</i> and <i>lifecycle</i>, it is one of the main criticisms of OO as a paradigm, making it hard to write simple programs.
+</p>
+
+<p>
+In DDD, <i>Aggregates</i> are used as a way to control how other parts of a system can change the attributes of objects. Basically you group a set of classes together (the Aggregate) and draw a barrier around them. Them you define an Aggregate Root: One class which acts as the gateway to all the inner classes. So anything trying to change one of the inner classes has to 'ask' the aggregrate root class before it can do it. 
+</p>
+
+<p>
+This sounds like a purely technical-driven technique, but actually it is very useful in improving your model. It forces you to think what objects change together, which objects are most closely related to eachother, and forces to remove associations which are less important, thus simplifying and distilling the model.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd3f6d9" class="outline-3">
+<h3 id="orgbd3f6d9"><span class="section-number-3">3.6</span> Invariants and constraints</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+From the above you probably realise what an invariant is: it's a 'check' you want to make before you do something, to make sure you're not putting your system in an invalid state.
+</p>
+
+<p>
+These are <i>business rules</i>, and thus are important things to explicitly capture in your model, the UL, and in the code. They should have names like <code>bankAccountExists?</code> (the predicate form of invariant), or <code>constrainedToCapacity</code> (the constraint form of invariant)
+</p>
+
+<p>
+For the latter, think of a cargo container (<code>Container</code>) which has a business rule that it must not get loaded with more than 80% of its capacity. When instantiating the Container, you would pass it a <code>constraintedToCapacity(80%)</code> object which when called would return false if the capacity would exceed 80%. 
+</p>
+
+<p>
+Then when you called <code>container.load(elephant)</code>, the load method would check against the constraintedToCapacity object: <code>content = content + constraintedToCapacity(elephant)</code>. 
+</p>
+
+<p>
+This is a preferable implementation to something like: <code>if content+elephant &lt; 80% then content =content+elephent else content</code> because the constraint is an explicit part of the model. 
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orge3e37cf" class="outline-2">
+<h2 id="orge3e37cf"><span class="section-number-2">4</span> Modelling in the large: Multiple Contexts</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org5ada44a" class="outline-3">
+<h3 id="org5ada44a"><span class="section-number-3">4.1</span> Bounded Contexts</h3>
+</div>
+<div id="outline-container-orgd0ebbbc" class="outline-3">
+<h3 id="orgd0ebbbc"><span class="section-number-3">4.2</span> The Context Map</h3>
+</div>
+<div id="outline-container-orgf033956" class="outline-3">
+<h3 id="orgf033956"><span class="section-number-3">4.3</span> Relationships between Bounded Contexts</h3>
+</div>
+<div id="outline-container-org71d96e0" class="outline-3">
+<h3 id="org71d96e0"><span class="section-number-3">4.4</span> Distillation: Core and Generic subdomains</h3>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="date">Created: 2020-05-17 Sun 18:39</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
