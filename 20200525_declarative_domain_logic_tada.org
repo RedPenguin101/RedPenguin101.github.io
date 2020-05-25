@@ -1,0 +1,285 @@
+#+TITLE: Declarative Domain Logic, Data-Driven Events, and the Tada library
+
+https://www.youtube.com/watch?v=TFQlpBEpeks
+
+* The problem of /Fat Handlers/
+A WebApp is mostly front for a database (we care about managing data).
+
+The design is some variation on this:
+
+=client <-> app.handler <-> app.db <-> db=
+
+Our handler supports routes, usually with a ~ 1:1 mapping with db operation
+
+#+begin_src clojure
+  (PUT "/events/:event-if/book-ticket"
+       [user-id event-id]
+       ;; business logic here - check the stuff we're being sent, validate
+       (db/book-ticket! user-id event-id))
+#+end_src
+
+The 'business logic' in here gets big! Messy! Lots of branching! Very error prone and complected. It's entangled with HTTP. How do you test it? You have to mock HTTP calls (or stand up a web-server).
+
+This is the /Fat Handler/ pattern, and it's not great. we want separation of concerns.
+
+We can use middleware/interceptors, which might be OK for generic things (e.g. type coercion). But we also need a lot a domain specific stuff.
+
+We can put an =app.events= layer which separates the business logic from the handler implementation, which helps. But if we want a feature we now just have to create new 'thing' in every layer. And the events (as functions) are mostly doing the same stuff: checking input validity, state validity, and id everything is fine, processing an effect. It's still big, messy, complected. Mostly we're just moving the problem
+
+The Clojure approach: make the event data.
+
+#+begin_src clojure
+  [{:id :book-ticket!
+
+    :params {:event-id uuid?
+             :user-id  uuid?}
+
+    :conditions (fn [{:keys [event-id user-id]}]
+                  (let [event (db/get-event event-id)]
+                    [[(db/user-exists? user-id)
+                      :forbidden "No user with that id"]
+                     [(db/event-exists? event-id)
+                      :incorrect "No event with that id"]
+                     [(<= (event :capacity) (event :tickets-sold))
+                      :unsupported "Event at capacity"]]))
+
+    :effect (fn [{:keys [event-id user-id]}]
+              (-> (db/book-ticket! user-id event-id)
+                  email/send-ticket-confirmation!))}]
+#+end_src
+
+Then send it to a dispatch! function which checks the conditions and performs the side effect.
+
+What do we get? Separation of concerns (conditions clearly separated from effect etc.)
+
+All you can do with a function is call it - data is much more /transparent/ and fungible.
+
+With data, you can 'remix' the pieces, as you like - e.g. /make/ a macro that creates a function from it (to get you back to where you were). Or generate Docs from it. Generate an rpc interface.
+
+Did we just create objects? Yes, honestly. But we're only using them in a specific place, and they're not mutable state. And they're just data, there's no object baggage. So /good/ objects :)
+
+* The Tada library
+Basically an implementation of the above.
+
+You =register= events, then dispatch them with =do!= (kinda like react but on the backend)
+
+More interesting things (not implemented as of 9/30/19): 
++ Derive Ring handler. 
++ Deploy it to aws Lambda
++ Check 'hypothetical' event with =can?= - would you be allowed to do this if you wanted (i.e. conditions met)
+
+* Implications of a Data-Driven approach
+We tend to end up in a 'declarative' space for any problem after a while.
+
+One potential direction is a web-app framework of declarative components (libraries) for solving particular problems, which ar configured with data.
+
+An alternative: the data is the /domain model/, the business logic. Instead, we work out how to get domain model into the libraries. =Hodor= is a lib for describing entities (types). But entities/relationships (and events) are not the whole domain model. It's missing:
++ data-views (queries, subscriptions)
++ cross-cutting constraints
++ permissions (read and write)
+
+We can get these from /different/ libraries. But they are /connected/ and often together.
+
+This is the long term vision for /Tada/
+
+* Tada annotated Library
+** Intro, deps and state
+https://github.com/rafd/tada/blob/master/src/tada/events/core.cljc
+
+This is a wonderfully small codebase of ~100 lines
+
+You can see from the deps that spec (and spec tools) are used heavily.
+
+#+begin_src clojure
+  (ns tada.events.core
+    (:require
+     [clojure.spec.alpha :as s]
+     [clojure.string :as string]
+     [clojure.core.match :as match]
+     [spec-tools.core :as st]
+     [spec-tools.data-spec :as ds]))
+#+end_src
+
+The library follows a 'registry' model, where events are registered with the =register!= function. The implementation is a simple atom.
+
+#+begin_src clojure
+  (defonce event-store (atom {}))
+#+end_src
+
+** Terms
++ *event* - something that has happened. The event has a name (id), facts about it (params) which can be valid or invalid, an implementation (effect). Events are created and *registered*.
++ *condition* - an invariant which must be checked before an event can be processed through its effect. For example before a 'ticket-booked' event can be processed, the 'has available capacity' condition must be met.
++ *effect* - the implementation of an event, how it effects the world. A 'ticket-booked' event might send an email to the booker, and will record the event in a database.
++ *anomaly*
++ *event-store* - where registered events are stored
+
+** Flow
++ User creates /events/.
++ User /registers/ the events.
++ User /dispatches/ events (with passed args). The args are parsed and checked according to the event params and the conditions, and if everything looks good the 'effect' happens
+** Specs
+*** Condition Function
+The spec for =condition-fn= is not actually used, but included for illustrative purposes. So lets check it out
+
+A /condition-function/ (a function which is used in a condition?), it pretty simple: it takes a map, and returns a collections of maps which have =:status=, =:anomaly= and =:message= 
+
+#+begin_src clojure
+  (s/def :tada/condition-fn
+    (ds/spec
+      {:name :tada/condition-fn
+       :spec (s/fspec
+               :args (s/cat :arg map?)
+               :ret (s/coll-of
+                      (s/cat
+                        :status boolean?
+                        :anomaly keyword?
+                        :message string?)))}))
+#+end_src
+
+*** Event
+An event is a map that has has =:params= and =:conditions= (condition functions), and optionally =:effect= and =:return=.
+
+#+begin_src clojure
+  (s/def :tada/event
+    (ds/spec
+      {:name :tada/event
+       :spec {:params          {keyword? (ds/or {:keyword keyword?
+                                                 :fn      fn?
+                                                 :spec    s/spec?})}
+              :conditions      fn? ;; :tada/condition-fn
+              (ds/opt :effect) fn?
+              (ds/opt :return) fn?}}))
+
+  (s/def :tada/events
+    (ds/spec
+      {:name :tada/events
+       :spec {keyword? :tada/event}}))
+
+  (defn- make-event-spec
+    [event]
+    (ds/spec {:name (keyword "ev-spec" (name (event :id)))
+              :spec (event :params)}))
+#+end_src
+
+** register
+Register is passed an event(s) (which is spec-checked), and if it's valid, registers it in the event-store.
+
+#+begin_src clojure
+  (defn register!
+    [events]
+    {:pre  [(every? (partial s/valid? :tada/event) events)]
+     :post [(s/valid? :tada/events @event-store)]}
+    (swap! event-store merge
+           (->> events
+                (map (fn [event]
+                       [(event :id)
+                        (assoc event :params-spec
+                               (make-event-spec event))]))
+                (into {}))))
+
+#+end_src
+
+On the way in, it transforms each event into a kv pair of the event-id and the event, and also adds the spec of the event as a =:params-spec=.
+
+#+begin_src clojure
+  ;; in
+  [{:id         my-event
+    :params     {:some :map}
+    :conditions cond-fn
+    :effect     fn1
+    :return     fn2}]
+
+  ;; out
+  {:my-event {:id          my-event
+              :params      {:some :map}
+              :params-spec ds-spec
+              :conditions  cond-fn
+              :effect      fn1
+              :return      fn2}}
+#+end_src
+
+** do! helpers
+A few helpers for =do!=
+*** transformer - stripping extra stuff out of an event
+Just a gloss on top of spec-tools transformer, stripping out extra stuff
+
+#+begin_src clojure
+  (def transformer
+    (st/type-transformer
+      st/string-transformer
+      st/strip-extra-keys-transformer
+      st/strip-extra-values-transformer))
+#+end_src
+
+*** sanitize-params - returns nil if spec not passed
+#+begin_src clojure
+  (defn- sanitize-params
+    "Given a params-spec and params,
+     if the params pass the spec, returns the params
+       (eliding any extra keys and values)
+     if params do not pass spec, returns nil"
+    [event params]
+    (let [coerced-params (st/coerce (event :params-spec) params transformer)]
+      (when (s/valid? (event :params-spec) coerced-params)
+        coerced-params)))
+#+end_src
+
+*** rule-errors - calls event conditions, returns true if passed
+#+begin_src clojure
+  (defn- rule-errors
+    "Returns boolean of whether the the conditions for an event are satisfied.
+     Should be called with sanitized-params."
+    [event sanitized-params]
+    (->> ((event :conditions) sanitized-params)
+         (remove (fn [[pass? _ _]] pass?))
+         (map (fn [[pass? anomaly message]]
+                {:anomaly anomaly
+                 :message message}))))
+#+end_src
+
+*** explain-params-errors - 
+#+begin_src clojure
+  (defn explain-params-errors [spec value]
+    (->> (s/explain-data spec value)
+         ::s/problems
+         (map (fn [{:keys [path pred val via in]}]
+                (match/match [pred]
+                             [([fn [_] ([contains? _ missing-key] :seq)] :seq)] {:issue    :missing-key
+                                                                                 :key-path (conj path missing-key)}
+                             [_] {:issue    :incorrect-value
+                                  :key-path path})))
+         (map (fn [{:keys [issue key-path]}]
+                (str key-path " " issue)))
+         (string/join "\n")))
+
+#+end_src
+
+** do! - main dispatch function.
++ checks params are OK (if they're not, it throws)
++ checks conditions (if not, throws)
++ runs the 'effect' of an event
++ reuns the 'return' function on a map of the params (with the return from the effect added into it)
+
+#+begin_src clojure
+  (defn do! [event-id params]
+    (if-let [event (@event-store event-id)]
+      (if-let [sanitized-params (sanitize-params event params)]
+        (let [errors (rule-errors event sanitized-params)]
+          (if (empty? errors)
+            (let [effect-return (when (event :effect)
+                                  ((event :effect) sanitized-params))]
+              (if (event :return)
+                ((event :return) (assoc sanitized-params
+                                        :tada/effect-return effect-return))
+                nil))
+            (throw (ex-info (str "Conditions for event " event-id " are not met:\n"
+                                 (string/join "\n" (map :message errors)))
+                            {:anomaly :incorrect}))))
+        (throw (ex-info (str "Params for event " event-id " do not meet spec:\n"
+                             (explain-params-errors (event :params-spec) params))
+                        {:anomaly :incorrect})))
+      (throw (ex-info (str "No event with id " event-id)
+                      {:event-id event-id
+                       :anomaly  :unsupported}))))
+#+end_src
+
