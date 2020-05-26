@@ -1,0 +1,22 @@
+#+TITLE: Idiomatic Clojure: Mixing Side Effects and Iteration, by bsless
+https://bsless.github.io/side-effects/
+ 
+* Don't use =doall= to apply side-effect to everything in a collection
+#+begin_src clojure
+  (doall (map api-call! coll))
+#+end_src
+
+We either /want/ a lazy collection (so =doall= is redundant), or we /don't/ (and using a lazy coll is wrong and inefficient).
+* Lazyness and multithreading don't mix
+Can create bottlenecks. You lose control over execution (on which thread an element will be realised)
+* Alternatives
+** Do you need to retain results? Use =mapv=
+=mapv= is easiest, straight 1:1. =reduce=, allows greater control, but lower performance (=mapv= uses transients).
+
+Don't use =map=, since it gives chunked lazyness, with no benefit here.
+
+=into= *with* transduce. (i.e. =(into [] (map api-call!) coll)=) (/don't use without a transducer/)
+** Otherwise use =run!=, =doseq=
+=run!= just returns nil. =doseq= offers more options.
+
+Disgarding the results takes around half the time of retaining.
