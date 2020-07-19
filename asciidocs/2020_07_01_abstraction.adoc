@@ -1,0 +1,25 @@
+= What is abstraction?
+
+Abstraction is a commonly used term in programming. 'Creating an abstraction' is generally used in the sense of writing a new class that represents an idea we talk about. It has been said that there is nothing very abstract about this - in fact it's quite the opposite, used in this sense it could more accurately be said to be a concretion.
+
+So let's try to build a framework where we can use the term abstraction with more precisions.
+
+First, let's forget programming and talk in general terms. The idea we're going to use as an example is a pizza. What is a pizza? Well, that thing I'm pointing at, on the table, is a pizza. This is definition by enumeration - just pointing at things and saying 'that is an x'.
+
+Next, you can think about a pizza in terms of a definite description - 'the steaming thing on my table with ham and pineapple on it'.
+
+All good, but to this point we've been talking about a pizza in the sense of a particular pizza that actually exists. What about a pizza in general? The mystical pizza in the sky? A Pizza?
+
+There: we have done abstraction. We have moved from a specific pizza to the idea of a pizza.
+
+But we can take it further. What is our abstract pizza like? What are the properties of it that make it a pizza, as opposed to a calzone? We can say that our abstract pizza has a dough base (though being abstract, not an /actual/ dough base but an abstraction of a dough base), a tomatoey sauce, cheese, and 0 or more other toppings. Aside from it's component parts, there are ways you can interact with your abstract pizza which define it as a pizza. You always must cook a pizza for it to be a pizza. The dough must be rolled, the sauce must be spread.
+
+Now we have an elaborated abstraction: we have given name to an idea, and assigned to the idea some properties which give definition to that name. If we think of a thing that doesn't have this property 'must be cooked', it's not a pizza.
+
+In a way, we're building up a language to talk about pizzas, we're agreeing on the things that make a pizza a pizza, and giving names to those things. An abstraction becomes a method of expression and communication.
+
+Now let's bring it back to programming. In the beginning of programming, I'm talking like in Turing's times, programs were written in, like, octals or something? Very low level stuff in any case. If we wanted to build some software to manage a pizza ordering and delivery system, we would have to have some way of representing a pizza as octal numbers. Like, this bit is x if the pizza has mushrooms on it.
+
+That gets very hard to reason about very quickly (unless you're Turing) - I don't want to have to do this translation between my mental model and the code every time. I want to write my code in a way that reflects my mental model. This is essentially what most programming languages allow you to do: encode an abstraction (that you /already have thought up/ by the way) so that you can manipulate things in a way that matches your mental model.
+
+I guess what it comes down to is that the /creation/ of the abstraction is a totally mental thing. The /implementation/ of an abstraction in code is a totally separate thing.
