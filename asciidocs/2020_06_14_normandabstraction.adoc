@@ -1,0 +1,50 @@
+= Abstraction
+
+Jumping off point: the Eric Normand Video at https://www.youtube.com/watch?v=z36ARq1yQWk
+
+Abstraction is word you hear frequently in programming. What do people generally mean when they say that? Is that a correct (or useful) meaning?
+
+Usually people are using it in the sense of creating a class which implements certain behaviour and has certain attributes. You put in a vector, and a hashmap, a couple of strings, and you put methods on them, and you build up your 'abstraction'. This is actually more like a /concretion/, in that you're taking an abstract idea and making it concrete. 
+(cf. some Rich Hickey talk where he says something similar)
+
+== SICP and Abstraction
+SICP, unusually for programming books of the time, really focuses on what abstraction is, starting early. It stresses that programs are for people, and abstractions are to help people to understand and reason about code.
+(Hal Abelson, on the co-recursive podcast episode 39, https://corecursive.com/039-hal-abelson-sicp/)
+
+In the SICP lectures, Abelson presents the idea of 'wishful thinking' design strategy.
+
+[quote, Hal Abelson in SICP lectures, https://www.youtube.com/watch?v=ymsbTVLbyN4[5:12]]
+____
+[talking about a rational numbers package] It's absolutely no problem at all to think about what computation you want to make in adding and multiplying these fractions. But as soon as you go to implement it you run up against a problem. You don't /have/ what a rational number /is/. The system gives us individual numbers, so we can have 5 and 3, but we don't have a way of saying theres a thing which has both a 3 and a 4 in it.
+
+We'd like to imagine there are these clouds, which have both a numerator and a denominator in it, and these clouds are what we'd like to work in terms of. We're going to solve this problem using the incredibly powerful design strategy of 'wishful thinking'...let's imagine we have these clouds...let's imagine we have these three procedures, one called `(make-rat n d)` that give us this cloud (and we don't really know what make-rat actually returns - that's its business). Suppose we have one of these clouds, we have a procedure called `(numer cloud)` which takes a cloud and returns the numerator part. And same for `(denom cloud)` ... We don't wanna know [how these clouds are implemented].
+____
+
+SICP starts its first page with a John Locke quote defining abstraction.
+
+
+[quote, John Locke 'An Essay Concerning Human Understanding (1690)']
+____
+The acts of the mind, wherein it exerts its power over simple ideas, are chiefly these three: 
+1. Combining several simple ideas into one compound one, and thus all complex ideas are made. 
+2. The second is bringing two ideas, whether simple or complex, together, and setting them by one another so as to take a view of them at once, without uniting them into one, by which it gets all its ideas of relations. 
+3. The third is separating them from all other ideas that accompany them in their real existence: this is called abstraction, and thus all its general ideas are made.
+____
+
+
+The first two acts are about means of combination. The last is the means of abstraction. Separating ideas from the context in which they sit in in the real world. 
+
+SICP's own definition of 'means of abstraction' is slightly different - it is the means by which compound elements can be named and manipulated as units (SICP p4). This is what Abelson was talking about with his 'clouds' (units) that represent rational numbers.
+
+A related concept here is /reification/ - to look at something alone. A thing is abstract in that it has no context, no concrete meaning in the real world.
+
+Reification is about making something real. You can talk about a idea as if it was a real thing, even though it's actually just an idea. That's reifying it.
+
+== Tellman, Liskov and Abstraction
+Another definition comes to use from Barbara Liskov, of the substitution principle, by way of Zach Tellman, author of the book 'Elements of Clojure.
+
+Liskov's definition of abstraction is about being able to treat two different things as if they were the same, ignoring the difference. This is a closer definition to the one implemented in Java-like languages, with abstract classes.
+
+Reification again plays a part here. Reification is about being able to talk about the interface an idea presents, without the implementation - the idea comes up in both definitions; manipulating something by name, and having a similar interface between two things.
+
+Neither of these defs is how we use the term in everyday usage. Abstraction is not about building up a class from concrete pieces. What we commonly call an abstraction is actually a /concretion/. We take a map and a vector and mash them together and call it an abstraction.
