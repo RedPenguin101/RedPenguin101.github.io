@@ -1,0 +1,87 @@
+== Gerhard Beck: Why I hate Scrum
+
+https://dzone.com/articles/why-i-hate-scrum
+
+Note: there's some stuff about names ('scrum' and 'sprint') which I've excluded since it's irrelevant to the actual practices of Scrum, though I agree they are not good names. In the same vein he talks about the problematic associations of terms like Master and Servant, which likewise are not related to the practices of Scrum, so are not touched on here, though they certainly warrant conversation.
+
+== The Article
+Scrum is neither agile (because of the time blocks, it's more like small waterfalls) nor flexible (because of zealotry).
+
+Scrum is bad because it's hard to do right.
+
+=== Definition of Done
+The definition of done depends on the task.
+
+It may also not be clear up-front what done looks like (i.e. the client might not know).
+
+'Time boxing' of work can lead to very artificial definitions of done, if you have a piece of work that can't be broken down into a sprint.
+
+=== Time box
+You should be able to ship a feature when it's done, not at some arbitrary point (the end of the sprint).
+
+=== Scrum Master
+A Scrum Master is a Project Manager stripped of power. The Servant Leader concept is trying to convey the empowerment-without-micromanagement that any good leader provides, but fails at that.
+
+=== Formal Events
+The four ceremonies are a big time sink, and don't add enough value to justify themselves.
+
+In Sprint Planning, estimation is a waste of time, since they're still guesses at the end of the day.
+
+He says standups are fine, as are reviews, though requiring everything to be done at the end of a sprint is dumb.
+
+Retros should be done when they are required
+
+=== Team
+GB believes in individual responsibility, and individual credit, and scrum is too team focused. Scrum implies well-performing team members should be covering for poorly-performing team members.
+
+It also has an emphasis on cross-functionality, as in everyone can do everything, which demeans the specialists.
+
+The idea that all opinions are equally valid is untrue: a seasoned engineer's view matters more than a junior one.
+
+Self-organization is ineffecient and leads to endless debate, especially since scrum teams are split up and reformed too often for the investment to be worth it.
+
+The leaderless concept stems from a mitigation of a lack of good leaders, but ultimately it is better to hire or train good leaders, or you will end up rudderless.
+
+=== Scrum is not a team player
+Dependencies kill time box schedules and therefore scrum.
+
+=== Working Software / Hack and Hope
+Having working (which he equates to shipped) software in small increments works well for some things, but not well for others. Most software is the latter.
+
+In particular it leads to not enough time being spent on design and documentation, and a hack-and-hope approach which ultimately leads to bad software.
+
+=== User stories
+He doesn't have an argument here, linking to those of others. Though he seems to be against the idea that _everything_ is a user story, rather than user stories themselves.
+
+=== An alternative: RAD Rapids Revised
+https://gerhardb.org/paper-2001-rad-rapids/
+
+A set of tenants / metaphors rather than methodologies (which lead to fixation and zealotry which Scrum has).
+
+A daily standup which is similiar to daily scrum, with PO in attendence. Strictly timeboxed to 15 mins, and to topics which affect more than 2 team members. If only 2, handle it point-to-point
+
+Kanban (and from contexted, a prioritised backlog), for priority
+
+Weekly show and tell. significant accomplishments during the last week, even if they're not finished.
+
+== My thoughts
+
+I agree that a lot of the scenarios he describes are bad. I disagree they have much to do with scrum itself.
+
+He thinks time-boxing means you can't ship a feature when you're done, you have to wait till the end of the increment. I agree that's an awful idea, but don't believe scrum encourages that.
+
+The SM is a PM stripped of actual authority: I think this is a misunderstanding of what a SM is supposed to be. I see the SM as someone who takes admin requirements away from the team, is the 'moderator' of discussions. They are far enough removed from the 'what' of the work that they can see the shape of how the team are working, and make the team aware of these dynamics - a perspective hard to maintain when you're in the weeds. The fact that a SM in his experience 'has to meekly explain to leadership that the next opportunity to save the ship will come in a week and a half at the next sprint review' is illustrative - that's not something an SM should be doing.
+
+Sprint planning is a waste of time: He says this, but he is indicates he's in favour of a prioritised backlog, so I assume at _some_ point his team and the PO are having discussions about what those tasks are, and what the priority of them is. That's really the purpose of spring planning. At least in the 'big block of time' approach to it he seems to be used to - I've worked in environments where that was orchestrated separately by the PO, with the result that what will actually be pulled into a sprint is a foregone conclusion. 'Sprint Planning' then is more of a design session, talking about how the tasks will be achieved.
+
+Scrum is bad because it's hard to master: Any form of working well as a team to achieve a goal is hard to master. If it wasn't we wouldn't need Scrum or any other framework to help us do it.
+
+User stories aren't suitable for everything: aside from this being as trivially true as any statement of the form 'x is not perfectly suitable for every situation', user stories are not part of scrum.
+
+The de-emphasis of the contribution of the individual is an interesting argument, though I don't see exactly what it it has to do with Scrum. Surely with any sort of team endeavor you're going to have this pull between the individual and the team. I certainly don't deny that all people want to have their contributions recognised, but it's equally true that the feeling of being part of a team, of having peoples backs while they have yours, of pulling in the same direction, is something that most people find very rewarding. Perhaps the fact that he, personally, gets more from the former is a good reason why he hates scrum (if we grant that it is in fact a consequence of scrum), but it's not a reason not to do it, especially if most people are more rewarded by the latter.
+
+The argument that the opinion of a senior developer should be more considered than that of a junior one I do agree with. Again, not sure what it has to do with Scrum though.
+
+The critique of Scrum's tendency to lead to 'no-design' software is certainly valid in my view.
+
+Despite his claim at the start to define scrum as it's laid out in the scrum guide, most of the arguments Mr Beck puts against scrum seem to be against 'how I have seen scrum implemented', and really have very little to do with what the scrum guide says. That's certainly not a reason to dismiss them - it is often the case that the way scrum is implemented is very bad, and leads to many of the problems he describes. And if it is so frequently misused, what does that say about the quality or clarity of the underlying concepts? In particular the tendency of people to get fixated on the ceremonies that scrum describe, and use them in a way that is totally antithetical to the ideas of agile and scrum is pervasive. The 'industry' around scrum I think is a big contributor to this. The awful 2 day courses to become a 'certfied' scrum master and whatnot.
