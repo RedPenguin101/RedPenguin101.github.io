@@ -1,0 +1,104 @@
+= How to take smart notes
+
+== Terms
+* Abstraction (123)
+* Active inhibition 100
+* Critical Mass (45, 75)
+* Elaboration (89, 104)
+* Expert and planner (64)
+* feature positive effect (availability bias) (117)
+* fixed mindset and Growth mindset (53)
+* Focus vs. sustained attention (60)
+* Mere exposure effect (86)
+* latticework of mental models (119)
+* Linear vs. Non-linear model of learning/writing
+* oppositions (116)
+* Reference system
+* research (36)
+* Slipbox
+** Division of labour with brain 90, 119
+** Index 109
+** Order of notes 108
+** on forgotton ideas and surprise 109
+** Cross-referencing 112
+** as a nit-picking conversation partner 115
+* Storage strength / retrieval strength (101)
+* Types of note
+** fleeting notes (23)
+** Literature notes (24, 94, 130)
+** Permanent notes (24, 44, 94, 96)
+** overview note (110)
+* Tunnel effect (150)
+* worldly wisdom (118)
+* Zeigarnik effect (70)
+
+== General
+The purpose of a slipbox is:
+* Hold facts and info, the detail. A long term memory resource free up the brain for creativity (p90)
+* Imposes workflow for elaboration and distilling (+ writing)
+* Preserves connections between ideas
+* Removes need to remember context around facts (it's on the card)
+* Provides focus point for permanent recording - does it connect?
+* Provides 'breadcrumbs' for writing, structure for unstructured work
+
+
+== 4 Principles 35
+p37: Reading without taking notes is almost as valuables as not having read at all (p77). Taking notes, reformating ideas, picking out the core from the supporting, is to the thinker what daily piano practice is to the pianist (82). If you don't write, you will fool yourself into thinking you understand: comforting but useless
+
+== 6 Steps 
+p57: creating supporting and interlocking tasks is a way to effectively get things done in an unstructured endevour (cf. Allen's GTD, which is for structured). By separating you allow yourself to focus on one thing at a time. By interlocking, you give yourself breadcrumbs to follow from one thing to the next. But you don't (actually can't) plan upfront what those tasks are. That's what the slipbox is for
+
+p58: Multitasking doesn't work. The feeling of being more productive is an illusion. Productivity decreases. Wang/Tchernev 2012, Rosen 08, Ophir/Nass/Wagner 09.
+
+p60: The slipbox acts as a mind focusing device. It provides us, with its clear, structured workflow, a focus point which frees us from distraction
+
+p65: When shown videos of experts and just trained paramedics attempting CPR, and asked to differentiate good from bad:
++ Actual paramedics got it right (90% correct)
++ beginners flipped a coing (50%)
++ paramedic /teachers/ got it *wrong* (33%)
+The mistook following the rules (that they taught) for good CPR, which is very situation dependent and circumstantial. The teachers didn't check. (Flyvbjerg 2001)
+The lesson here is that theory is no substitute for on the ground experience.
+
+p66: Expertise is when you have internalized knowledge to that it can be applied without a concious effort to remember rules. hey acti from intuition, the gut. It's gained tthrough exposure to feedback loops and experience (cf. DDD + domain experts, difficulty of modelling, internalized doesn't mean ability to express formally)
+
+p69: Short term memory can fit four things in it (Cowan '01). It's not like a disk, they wort of float around in our heads. We improve it by chunking - bunching things into bunches, and remembering the chunks. That's why it's easier to remember things we understand (cf. the octopus metaphor from that learning to learn course)
+
+p70: Zeigarnik effect. From the waiter story (waiter remembers exactly what a table ordered in detail while they're in the restaurant, but forgets their faces the minute they leave). Stuff in short term memory occupies our memory until we're 'done' with the task that requires it. Then we forget. /OR/ Until we /write them down/ - it has the same effect. Externalise them.
+
+p73: Willpower is like a muscle. You use it and it gets tired, has to take time to recover. ('Ego Depletion', Baumeister '98). 'Acts of volition' (Decisions) are what tire it. Reduce the number of decisions you have to make by standardizing your working environment and workflow.
+
+p75: Write literature notes as you read. The *only* purpose of these is to serve as a stepping stone to permanent slipbox notes. The length of the notes should be as long as appropriate given the difficulty of the work and your prior knowledge of the subject.
+
+p79: Confirmation bias is a killer in unstructured work. The linear approach (deciding your hypothesis ahead of time) exacerbates it. The slipbox method protects from and even reverses it, by not having an upfront hypothesis, and by initially recording facts with a view to connection to what's alreasy in the box. A disconfirming fact /is/ a connection.
+
+p87: Learning /should/ be hard, demanding, effortful. If you are looking for tricks, shortcuts, there are not. cf exercise. Teachers who try to make it easier by pre-sorting, categorizing etc. do their students a disservice. Like fast food- not nutritious, not delicious, only convenient.
+
+p105: A reporter was able to remember every word of every conversation he had - but as a consequence was not able to 'get the gist' of anything. This highlights the importance of forgetting, or 'active inhibition' of information (our brains storage capacity is actually massive - the stuff is still there). WHen improving memory, focus on the /retrieval mechanism/ not the storage mechanism. Build cues which trigger the information. THe cues take the form of connections to our prior knowledge. This is what the slipbox is
+
+p106: Too much order can impede learning. It is contrasts and variation that facilitate learning.
+
+p116: Oppositions are the most reliable way of generating new ideas (Rothenberg 71/96/15)
+
+p117: The slipbox, by surfacing information periodically, helps us avoid the /availability effect/, or feature positive effect, which leads us to overstate the importance of information that is easy for us to recall.
+
+p117: The problem with flashcards is that they're not elaborated - they're stripped of all context, and of any connection to other information (which is how our memory 'hooks' into it)
+
+p118: Learning from experience is fine. Learning from /other peoples/ experience is better (properly reflected on)
+
+p128: Don't try to solve the problem. Try to redefine the problem in a way such that an existing solution can be employed.
+
+p145: Willpower isn't the best way to change behaviour. Strategically build habits from small beginnings.
+
+== Permanent Notes
+=== SlipBox method
+=== Multitasking
+Multitasking doesn't work, plain and simple. The sneaky thing about it is that it gives you the /illusion/ that you are being more productive (after all you're touching so many things!) when actually you are not.
+
+=== Expertise
+=== Elaboration
+Elaboration is the process of taking an idea that we have heard or read about, and thinking about what it really means. It's like you're toying with the idea - you take it apart, put it back together again. You see how it interacts and combines with other things. You find how it connects to other ideas you know about. You put it in different scenarios and see what it does. You ask 'why is this like it is?'. Most importantly, you /write/ about the idea, try to extract its essence in your own words.
+
+The reason you would want to this, is that this method is the best way of gaining understanding of (aka learning about) an idea. The building of connections between ideas is the best way to improve your memory /retrieval strength/. The more connections the better. They act as a 'path' back to the idea. 
+=== Writing a good literary note
+=== Writing a good permanent note
+=== willpower and ego depletion
