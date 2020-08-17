@@ -1,0 +1,55 @@
+= Simple Made Easy
+
+https://www.youtube.com/watch?v=oytL881p-nQ[YouTube]
+
+This talk is about the difference between ease and simplicity. And about how to take the simple, and make it easy - close at hand.
+
+[quote Edsger W. Dijkstra]
+____
+Simplicity is prerequisite for reliability
+____
+
+== The simple vs. the easy
+=== Origins and terms
+==== Simple and Complex
+The roots of *simple* and *complex* come from _simplex_ and (obviously) _complex_ - a simplex is a single fold or braid, while complex means to braid together.
+
+This is the metaphor we'll use throughout, the idea of the braided rope, vs. the separate hanging strands.
+
+We'll work with this definition of simple being a single thing, standing alone, and not being interleaved with other things, where complex means the opposite, something that _is_ interleaved with other things.
+
+Note that when we say 'one thing' here, we really mean something that has one role, one task, one concept. We're not saying there is one _instance_ - it's just about lack of interleaving.
+
+Notice that whether something is simple is objective, it doesn't depend on your perspective.
+
+==== Easy
+We're going to use *ease* to denote some sort of _proximity_ to us. It can be close in the more literal sense - it's a tool which is installed on our hard drive, or it's easy to get, because we can `pip install` the library (which itself might be extremely complex - think of all the massive frameworks you can install with 3 words).
+
+It could be close in the sense of 'near to our understanding', i.e. familiar to us.
+
+It could be close to our _capabilities_ - this can be a tough thing to talk about, but there are limits on our capacity to comprehend something. This one in particular, there's a scaling problem: our capabilities are just not that scaleable. Consider the beginner juggler. They can juggle 3 balls. What about the best juggler in the world? They can juggle maybe 9, 10. Which is more, obviously. But not an order of magnitude more. No-one will ever juggle 500 balls.
+
+In contrast to simplicity, ease is _relative_. What's easy for you might not be easy for me.
+
+== Ease, understanding and simplicity
+Understanding is, in effect, bringing something close to you, by our definition, making it easy.
+
+What is the impact of something being simple on our ability to understand it? By definition, if two things are woven together, they must be understood together, which obviously means you have to keep more in your head.
+
+It's not a linear relationship either: the amount of potential interactions between threads grows exponentially as you add more braids.
+
+You can do a lots of things to understand something. You can read the books, download the package. All of that helps.
+
+But the capacity thing remains. You just can't get that much smarter than you already are. The only meaningful thing you can do when you come across something that is orders of magnitude bigger than your capacity to comprehend is to make is _simpler_, to unpick a single thread from the braid and understand that.
+
+Take parentheses in Lisp. Are they easy? Not if you've never programmed in Lisp before. are they simple? No! In CL/Scheme, you use parens for everything. In other words they have a lot of responsibility, which by our definition means they are not simple. This is why Clojure tries to lighten that load a bit, with vectors (square brackets) and maps (curly braces). It's to make it simpler, though it doesn't make it any easier.
+
+== What's wrong with easy?
+Choosing that which is already easy, stuff you are already familiar with, is tempting but damaging. You learn through encountering the unfamiliar.
+
+But the real problem is the _easy-yet-complex_ thing. One of the consequences of package managers is that they have brought a huge amount of incredibly complex stuff within arms reach, making it very easy to get and use, but since it's complex you'll never to be able to actually make it easy in the sense of understanding it.
+
+Choosing the easy-yet-complex makes you fast at first, but over time will slow you down, and the complex elephant in the room will dominate all your decision making.
+
+== How to make things simple
+== Simplicity is a choice
