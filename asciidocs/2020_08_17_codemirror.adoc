@@ -1,0 +1,48 @@
+= How to use CodeMirror in clojurescript reagent projects 
+_2020-08-17_
+
+I had some problems figuring this out, went down some rabbit holes, but eventually I got it working. Here's how.
+
+https://codemirror.net/[CodeMirror] is a js library that lets you embed 'pretty printed' source code into your webapp, and allow users to edit the code, with syntax highlighting and limited formatting, like auto-indendation.
+
+There are 3 potential ways I found to do this:
+
+1. use the library natively using npm install
+2. use the http://cljsjs.github.io/[cljsjs] wrapper library
+3. use a https://github.com/scniro/react-codemirror2[react wrapper] library
+
+I got the last one to work first. I'm sure the other two work fine, but the 3rd seemed like the simplest to me, and the most natural in a reagent app.
+
+Here's what I did.
+
+* Ran `npm install react-codemirror2 codemirror --save`
+* copied the css file _/node_modules/codemirror/lib/codemirror.css_ to _public_ (yes, terrible, but I don't know how else to do it)
+* added `<link rel="stylesheet" href="/codemirror.css">` to my _index.html_
+* added this to my namespace block
+
+[source,clojure]
+----
+(ns model-dsl.frontend.main
+  (:require [reagent.core :as r]
+            [reagent.dom :as rd]
+            [re-frame.core :as rf]
+            ,,,
+            ["codemirror/mode/clojure/clojure"]
+            ["react-codemirror2" :refer [UnControlled]]))
+----
+
+* built the component like this (simplified)
+
+[source,clojure]
+----
+(defn codemirror-component []
+  (fn []
+    (let [{:keys [name code]} @(rf/subscribe [:some-sub])]
+       [:> UnControlled
+        {:value     code
+         :options   {:mode "clojure"}
+         :on-change (fn [_ _ v] (rf/dispatch [:some-event
+                                              {:name name
+                                               :code v}]))}])))
+----
+
