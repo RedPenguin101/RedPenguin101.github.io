@@ -2,12 +2,15 @@
 
 == Preface
 p28: Data is to information:
+
 * what grammars are to language
 * what what formal logic is to the way we actually think
 * what the map is to the territory
+
 That is, it's an artificial formalism
 
 p29: Information is, in the limited sense, that which is stored, maintained in quantity, with a simplistic structure/format. We focus on describing the information content of a system.
+
 == Chapter1: Entities
 p35: We expect correspondence between a 'thing' in the real world and a 'representative' in our information system. Ideally 1:1 but often not. But what is a thing in the real world?
 
