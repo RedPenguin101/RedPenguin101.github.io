@@ -1,0 +1,73 @@
+= Simple vs. Easy
+
+I recently saw a https://www.youtube.com/watch?v=doZ0XAc9Wtc[Conference talk] from Phill MV in 2016 about how he tried Clojure and why he went back to Ruby, which apparently triggered some soul-searching in the Clojure community at the time about the state of the language. 
+
+The follow-ups include https://blog.appcanary.com/2017/hard-isnt-simple-ruby-clojure.html[Phill's own post], as well as commentary from https://lambdaisland.com/blog/25-05-2017-simple-and-happy-is-clojure-dying-and-what-has-ruby-got-to-do-with-it[Arne at Lambda Island], Eric Normand, and other well known people in the Clojure community on Twitter.
+
+The small piece of this I want to write about is Phill's statement in the follow-up article that 
+
+[quote]
+'Simple != Easy' Is One Of The Most Toxic Ideas Ever Introduced To Programming 
+
+referencing the Rich Hickey talk "Simple Made Easy" https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/SimpleMadeEasy.md[[Transcript\]]. Intentionally hyberbolic for effect, obviously, but let's first look the what he's referring to, and then what he means.
+
+There's a lot of ideas in Rich's talk, but the one under cursor here is essentially that programmers focus too much on what is _easy for them_, and not what good for the program (or construct) itself, especially over the long term. What is good over the long term, for both programmer and program, is simplicity.
+
+[quote, Rich Hickey]
+This whole notion of sort of programmer convenience, again, we are infatuated with it, not to our benefit...
+We have to start assessing our constructs [the things we make and use] based around the artifacts, not around the look and feel of the experience of typing it in or the cultural aspects of that.
+
+Phill's response is this:
+
+[quote]
+In practice, ‘Simple Made Easy’ is an elaborate excuse for making software that is hard to use...By separating “simplicity” from “ease of use”, and then establishing the primacy of simplicity, it gives people an ideological out to discount improving the user interface of our tools and artifacts.
+
+It may be useful context here that Phill is coming from a Ruby background, and the explicit philosophy of Ruby is 'Optimizing for Programmer Happiness'. Phill clearly subscribes to this, and takes it further, saying:footnote:[I have to mention one tweet of his: he says "I want to believe that Programming Isn't That Hard, Ya Know?". This was the only thing I saw in this debate that made me blink. I don't know how anyone can program for any length of time and think that it 'Isn't That Hard']
+
+[quote]
+All programming languages should strive to be fun and make programmers happy.
+
+According to Rich, the programming community has a tendency to see an extra bit on those sentences: 'at the expense of all else.'footnote:[It's worth pointing out that Clojure programmers think Clojure _is_ fun, and it _does_ make them happy - Rich's motivation for creating the language was that existing tools and programming paradigms were making him extremely _unhappy_, to the point where he was considering quitting the craft altogether.]
+
+We should pause at this point and firm up what simplicity and ease mean in this context. Absolutely watch the Simple Made Easy talk, but in short the meanings are:
+
+* Simple, as in not complex, where complex means something is 'braided together', intertwined, tangled, like you put three sets of earphones in your pocket.
+* Easy means close at hand, quick for us to get, or familiar to us, or within our capabilities.
+
+Phill is saying that these two things are in some sense _opposed_ to each other - that you focus on simplicity at the _expense_ of ease. I can see why he gets to that. I even think that in some sense it's correct, but it's missing some intermediate steps that need to be unpacked. The intent of Rich's idea is hinted at by the title of the talk: it's "Simple *made* Easy", not "Simple *vs.* Easy".
+
+Let's go back to the definition of easy. There were three examples given of types of ease: Something that is close at hand, easy to get; something that is familiar to you; and something that is within our capabilities.
+    
+*Q:* How do you make something that is hard to get, easy to get? 
+
+*A:* You build NPM.
+
+*Q:* How do you make something that is unfamiliar to you, familiar to you? 
+
+*A:* You buy a book, you do some tutorials, you read the code.
+
+*Q:* How do bring something that is beyond your capabilities, _within_ your capabilities? 
+
+*A:* You can get smarter. A bit. But not much.
+
+This is where the concept of complexity and simplicity intersects. It's a problem of scaling factors. When you entangle ideas together ('complect' it in Rich's words), the difficulty in comprehending it grows geometrically. Ten things tangled together are much more than twice as tough to get your head around than five things. Our capacity to rise to this challenge by improving _our ability to understand_ just can't keep up. However you measure peoples ability to comprehend, a super-smart person is not orders of magnitude smarter than someone super-dumb.
+
+The relevance to programming is that we frequently (and increasingly frequently) have systems which are incomprehensibly complex, or use complex pieces. One way to deal with this is to essentially not worry about it, and let tools and metaphors hide the complexity from us, intentionally sacrificing our comprehension for functionality. 
+
+The inner workings of Ruby on Rails, for example, would be utterly incomprehensible to a newbie. But they can still follow the tutorial and build a twitter-clone, and after a while they will understand the metaphor that sits in front of that complexity. 
+
+Objects, as implemented in C# or Java, have mind-boggling semantic implications when you get into them. But you can - and have to - program with them without fully coming to terms with those complexities, which is possible by using the well established metaphors and patterns for thinking about them that have been developed.
+
+It is totally understandable why this seems logical. The use of detail hiding interfaces has a long history in programming. As a C++ lecturer's t-shirt once said, 'I don't know, I don't wanna know'.
+
+Rich's hypothesis is that this approach a long term loser - at some point that complexity will come back to bite you.footnote:[But only over the long term. It doesn't matter for things that don't exist for long enough for that balance to shift] The alternative he proposes is that instead of hiding the complexity, you _eliminate it_. And you do that by either replacing the complex piece with some other thing or things that are simple, or by taking the complected thing and picking it apart into its constituent simple pieces.
+
+From this you can see that simplicity as defined here is not _opposed_ to ease, it is an alternative strategy to _make_ things easy. Compared to the Phill Model of complexity masking, the Rich Model is the more costly in terms of upfront investment, because you are committing to comprehending the artifacts that you use, which is extremely taxing. Contrast that to the Phill Model, where you are deciding not to comprehend it in the name of the convenience of not having to make that upfront investment.
+
+The opposed ideas the Phill has identified are not 'simple vs. easy', but rather the clash between these two models of making the complex easy.
+
+What Phill has further identified is one of the consequences that has come from this: that the *tools* that arise under the Phill Model have that same aim making the complex easy by masking the complexity, creating a facade around it that you can pick up quickly without having to do the decomplecting-then-comprehending. 
+
+The tools that arise under the Rich Model assume that what you are using, you comprehend, so there is no need to create a facade. My conjecture is that when you use these tools without that understanding, you are going to have to struggle to obtain it. Further, if your experience has led you to expect that the purpose of tools is masking of complexity, you won't know that you are *expected* to understand, and will resent the obtuse nature of them. I think it's this fundamental disconnect that is at the core of Phill's critique, and is the reason for the frequent questions from new Clojure programmers like 'why is their no equivalent to Django in Clojure', 'Why are the error messages so bad' and 'why are there so few tutorials / documentation'. 
+
+Most of the responses I saw from the Clojure side focused on the problems (in their view) of not having a Django, or fixing unreadable stack-traces - programmer experience problems. But I think that misses the point. It seems to be the case that the people who could potentially do this see it as counterproductive. Rather, they _want_ Clojure's users to move from the Phill Model to the Rich Model, seeing that as a core benefit of this opinionated language and the philosophy behind it.
