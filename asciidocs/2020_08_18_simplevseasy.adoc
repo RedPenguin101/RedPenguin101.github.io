@@ -64,7 +64,7 @@ Rich's hypothesis is that this approach a long term loser - at some point that c
 
 From this you can see that simplicity as defined here is not _opposed_ to ease, it is an alternative strategy to _make_ things easy. Compared to the Phill Model of complexity masking, the Rich Model is the more costly in terms of upfront investment, because you are committing to comprehending the artifacts that you use, which is extremely taxing. Contrast that to the Phill Model, where you are deciding not to comprehend it in the name of the convenience of not having to make that upfront investment.
 
-The opposed ideas the Phill has identified are not 'simple vs. easy', but rather the clash between these two models of making the complex easy.
+The opposed ideas that Phill has identified are not 'simple vs. easy', but rather the clash between these two models of making the complex easy.
 
 What Phill has further identified is one of the consequences that has come from this: that the *tools* that arise under the Phill Model have that same aim making the complex easy by masking the complexity, creating a facade around it that you can pick up quickly without having to do the decomplecting-then-comprehending. 
 
