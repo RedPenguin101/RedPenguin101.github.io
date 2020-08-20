@@ -430,7 +430,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The follow-ups include <a href="https://blog.appcanary.com/2017/hard-isnt-simple-ruby-clojure.html">Phill&#8217;s own post</a>, as well as commentary from <a href="https://lambdaisland.com/blog/25-05-2017-simple-and-happy-is-clojure-dying-and-what-has-ruby-got-to-do-with-it">Arne at Lambda Island</a>, Eric Normand, and other well known people in the Clojure community on Twitter.</p>
 </div>
 <div class="paragraph">
-<p>The small piece of this I want to write about is Phill&#8217;s statement in the follow-up article that</p>
+<p>The debate was broad ranging, and I&#8217;m only talking about a small piece of this: Phill&#8217;s statement in his follow-up article that</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -438,10 +438,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </blockquote>
 </div>
 <div class="paragraph">
-<p>referencing the Rich Hickey talk "Simple Made Easy" <a href="https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/SimpleMadeEasy.md">[Transcript]</a>. Intentionally hyberbolic for effect, obviously, but let&#8217;s first look the what he&#8217;s referring to, and then what he means.</p>
+<p>referencing the Rich Hickey talk <a href="https://www.youtube.com/watch?v=oytL881p-nQ">"Simple Made Easy"</a> <a href="https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/SimpleMadeEasy.md">[Transcript]</a>. Intentionally hyperbolic for effect, obviously, but let&#8217;s first look the what Phill is referring to, and then what he means.</p>
 </div>
 <div class="paragraph">
-<p>There&#8217;s a lot of ideas in Rich&#8217;s talk, but the one under cursor here is essentially that programmers focus too much on what is <em>easy for them</em>, and not what good for the program (or construct) itself, especially over the long term. What is good over the long term, for both programmer and program, is simplicity.</p>
+<p>There are a lot of ideas in Rich&#8217;s talk, but the one under cursor here is essentially that programmers focus too much on what is <em>easy for them</em>, and not what good for the program (or construct) itself, especially over the long term.</p>
+</div>
+<div class="paragraph">
+<p>What is actually good over the long term for both programmer and program, he says, is simplicity.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -461,18 +464,7 @@ In practice, ‘Simple Made Easy’ is an elaborate excuse for making software t
 </blockquote>
 </div>
 <div class="paragraph">
-<p>It may be useful context here that Phill is coming from a Ruby background, and the explicit philosophy of Ruby is 'Optimizing for Programmer Happiness'. Phill clearly subscribes to this, and takes it further, saying:<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup></p>
-</div>
-<div class="quoteblock">
-<blockquote>
-All programming languages should strive to be fun and make programmers happy.
-</blockquote>
-</div>
-<div class="paragraph">
-<p>According to Rich, the programming community has a tendency to see an extra bit on those sentences: 'at the expense of all else.'<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup></p>
-</div>
-<div class="paragraph">
-<p>We should pause at this point and firm up what simplicity and ease mean in this context. Absolutely watch the Simple Made Easy talk, but in short the meanings are:</p>
+<p>We should pause at this point and clearly define up what simplicity and ease mean in this context. Absolutely watch the Simple Made Easy talk linked above, but in short the meanings are:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -485,7 +477,18 @@ All programming languages should strive to be fun and make programmers happy.
 </ul>
 </div>
 <div class="paragraph">
-<p>Phill is saying that these two things are in some sense <em>opposed</em> to each other - that you focus on simplicity at the <em>expense</em> of ease. I can see why he gets to that. I even think that in some sense it&#8217;s correct, but it&#8217;s missing some intermediate steps that need to be unpacked. The intent of Rich&#8217;s idea is hinted at by the title of the talk: it&#8217;s "Simple <strong>made</strong> Easy", not "Simple <strong>vs.</strong> Easy".</p>
+<p>It may be useful context here that Phill is coming from a Ruby background, and the explicit philosophy of Ruby is 'Optimizing for Programmer Happiness'. Phill clearly subscribes to this, and takes it further, saying:<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+All programming languages should strive to be fun and make programmers happy.
+</blockquote>
+</div>
+<div class="paragraph">
+<p>According to Rich, the programming community has a tendency to see an extra bit on those sentences: 'at the expense of all else.'<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>. I think it&#8217;s fair to say that Rich disagrees with these statements, at least when interpreted like this.</p>
+</div>
+<div class="paragraph">
+<p>Phill is saying that these two things, ease and simplicity, are <em>opposed</em> to each other - that you focus on simplicity at the <em>expense</em> of ease. I can see why he gets to that. I even think that in some sense it&#8217;s correct. But it&#8217;s missing some intermediate steps that need to be unpacked before we can loop back to address it. The intent of Rich&#8217;s idea is hinted at by the title of the talk: it&#8217;s "Simple <strong>made</strong> Easy", not "Simple <strong>vs.</strong> Easy".</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s go back to the definition of easy. There were three examples given of types of ease: Something that is close at hand, easy to get; something that is familiar to you; and something that is within our capabilities.</p>
@@ -494,52 +497,61 @@ All programming languages should strive to be fun and make programmers happy.
 <p><strong>Q:</strong> How do you make something that is hard to get, easy to get?</p>
 </div>
 <div class="paragraph">
-<p><strong>A:</strong> You build NPM.</p>
+<p><strong>A:</strong> You build NPM. This is totally feasible.</p>
 </div>
 <div class="paragraph">
 <p><strong>Q:</strong> How do you make something that is unfamiliar to you, familiar to you?</p>
 </div>
 <div class="paragraph">
-<p><strong>A:</strong> You buy a book, you do some tutorials, you read the code.</p>
+<p><strong>A:</strong> You buy a book, you do some tutorials, you read the code. In other works, you learn how to do it. Again, totally feasible.</p>
 </div>
 <div class="paragraph">
-<p><strong>Q:</strong> How do bring something that is beyond your capabilities, <em>within</em> your capabilities?</p>
+<p><strong>Q:</strong> How would you bring something that is beyond your capability to comprehend, <em>within</em> your capabilities?</p>
 </div>
 <div class="paragraph">
-<p><strong>A:</strong> You can get smarter. A bit. But not much.</p>
+<p><strong>A:</strong> You would have to get smarter, as in dramatically raise your ability to comprehend. Unfortunately this isn&#8217;t possible.</p>
 </div>
 <div class="paragraph">
-<p>This is where the concept of complexity and simplicity intersects. It&#8217;s a problem of scaling factors. When you entangle ideas together ('complect' it in Rich&#8217;s words), the difficulty in comprehending it grows geometrically. Ten things tangled together are much more than twice as tough to get your head around than five things. Our capacity to rise to this challenge by improving <em>our ability to understand</em> just can&#8217;t keep up. However you measure peoples ability to comprehend, a super-smart person is not orders of magnitude smarter than someone super-dumb.</p>
+<p>This is where the concept of complexity/simplicity intersects with the concept of easy/hard. It&#8217;s a problem of scaling factors. When you entangle ideas together ('complect' it in Rich&#8217;s words), the difficulty in comprehending it grows geometrically. Ten things tangled together are much more than twice as tough to get your head around than five things. Our capacity to rise to this challenge by improving <em>our ability to understand</em> just can&#8217;t keep up. However you measure peoples ability to comprehend, a super-smart person is not orders of magnitude smarter than someone super-dumb. We need a different way to make things that are beyond our capability to comprehend easy.</p>
 </div>
 <div class="paragraph">
-<p>The relevance to programming is that we frequently (and increasingly frequently) have systems which are incomprehensibly complex, or use complex pieces. One way to deal with this is to essentially not worry about it, and let tools and metaphors hide the complexity from us, intentionally sacrificing our comprehension for functionality.</p>
+<p>A couple of times, Phill mentions that from the responses he got to his Clojure troubles from the community, he inferred they were saying he wasn&#8217;t smart enough to 'get' it. I want to emphasize that&#8217;s not what <em>I&#8217;m</em> saying. It&#8217;s not the individual smartness of Phill that is the problem. It&#8217;s that when things start to increase in complexity, they eventually can&#8217;t be comprehended by <em>anyone</em>, because of the way complexity scales in comparison to our ability to get smarter.</p>
 </div>
 <div class="paragraph">
-<p>The inner workings of Ruby on Rails, for example, would be utterly incomprehensible to a newbie. But they can still follow the tutorial and build a twitter-clone, and after a while they will understand the metaphor that sits in front of that complexity.</p>
+<p>The relevance of all this to programming is that we frequently (and increasingly frequently) have systems which are incomprehensibly complex, or use complex pieces, and we need a way to make them easy.</p>
+</div>
+<div class="paragraph">
+<p>One way to deal with this is to follow a useful programming pattern: create a detail-hiding facade, let tools and metaphors hide the complexity from us, intentionally sacrificing our comprehension of the thing behind it in the name of getting stuff done.</p>
+</div>
+<div class="paragraph">
+<p>The inner workings of Ruby on Rails, for example, would be utterly incomprehensible to a newbie. But they can still follow the tutorial and build a twitter-clone, and after a while they will understand the metaphor that sits in front of that complexity. After a fairly minimal time you can be extremely productive.</p>
 </div>
 <div class="paragraph">
 <p>Objects, as implemented in C# or Java, have mind-boggling semantic implications when you get into them. But you can - and have to - program with them without fully coming to terms with those complexities, which is possible by using the well established metaphors and patterns for thinking about them that have been developed.</p>
 </div>
 <div class="paragraph">
-<p>It is totally understandable why this seems logical. The use of detail hiding interfaces has a long history in programming. As a C++ lecturer&#8217;s t-shirt once said, 'I don&#8217;t know, I don&#8217;t wanna know'.</p>
+<p>It is totally understandable why the use of a detail-hiding interface seems reasonable here. In several contexts it&#8217;s a fantastically useful tool for decoupling. As a C++ lecturer&#8217;s t-shirt once said, 'I don&#8217;t know, I don&#8217;t wanna know'.</p>
 </div>
 <div class="paragraph">
-<p>Rich&#8217;s hypothesis is that this approach a long term loser - at some point that complexity will come back to bite you.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup> The alternative he proposes is that instead of hiding the complexity, you <em>eliminate it</em>. And you do that by either replacing the complex piece with some other thing or things that are simple, or by taking the complected thing and picking it apart into its constituent simple pieces.</p>
+<p>Rich&#8217;s hypothesis, though, is that using this approach for hiding <em>complexity</em> is a long term loser. At some point that complexity will come back to bite you.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup> The alternative he proposes is that instead of hiding the complexity, you <em>eliminate it</em>, turning it into things that you <em>can</em> comprehend. And you do that by either replacing the complex piece with some other thing or things that are simple, or by taking the complected thing and picking it apart into its constituent simple pieces.</p>
 </div>
 <div class="paragraph">
-<p>From this you can see that simplicity as defined here is not <em>opposed</em> to ease, it is an alternative strategy to <em>make</em> things easy. Compared to the Phill Model of complexity masking, the Rich Model is the more costly in terms of upfront investment, because you are committing to comprehending the artifacts that you use, which is extremely taxing. Contrast that to the Phill Model, where you are deciding not to comprehend it in the name of the convenience of not having to make that upfront investment.</p>
+<p>From this you can see that simplicity as defined here is not <em>opposed</em> to ease, it is an alternative strategy to <em>make</em> things easy. Compared to the Phill Model of complexity masking, the Rich Model is certainly the more costly in terms of upfront investment, because you are committing to comprehending the artifacts that you use, which is extremely taxing.</p>
 </div>
 <div class="paragraph">
-<p>The opposed ideas that Phill has identified are not 'simple vs. easy', but rather the clash between these two models of making the complex easy.</p>
+<p>The opposed ideas that Phill has identified are not 'simple vs. easy', but rather the clash between these two models of making the complex, easy.</p>
 </div>
 <div class="paragraph">
-<p>What Phill has further identified is one of the consequences that has come from this: that the <strong>tools</strong> that arise under the Phill Model have that same aim making the complex easy by masking the complexity, creating a facade around it that you can pick up quickly without having to do the decomplecting-then-comprehending.</p>
+<p>Phill has further identified one of the consequences that has come from this: that the <strong>tools</strong> that arise under the Phill Model have that same aim of making the complex easy by masking  complexity, creating a facade around it that you can pick up quickly and be productive without having to do the decomplecting-then-comprehending exercise.</p>
 </div>
 <div class="paragraph">
-<p>The tools that arise under the Rich Model assume that what you are using, you comprehend, so there is no need to create a facade. My conjecture is that when you use these tools without that understanding, you are going to have to struggle to obtain it. Further, if your experience has led you to expect that the purpose of tools is masking of complexity, you won&#8217;t know that you are <strong>expected</strong> to understand, and will resent the obtuse nature of them. I think it&#8217;s this fundamental disconnect that is at the core of Phill&#8217;s critique, and is the reason for the frequent questions from new Clojure programmers like 'why is their no equivalent to Django in Clojure', 'Why are the error messages so bad' and 'why are there so few tutorials / documentation'.</p>
+<p>The tools that arise under the Rich Model presume that the artifacts you are using are simple, and you can comprehend them, so there is no need to create a facade. If you use these tools without that understanding, you are going to have a bad time until you put in the legwork. Further, if your experience has led you to expect that the purpose of tools is masking of complexity (and the the thing behind the facade is too complex to ever understand anyway), you won&#8217;t know that you are <strong>expected</strong> to understand, and will resent the obtuse and unhelpful nature of the tools. I believe is what Phill means when he says that focusing on simplicity leads to tools that are hard to use.</p>
 </div>
 <div class="paragraph">
-<p>Most of the responses I saw from the Clojure side focused on the problems (in their view) of not having a Django, or fixing unreadable stack-traces - programmer experience problems. But I think that misses the point. It seems to be the case that the people who could potentially do this see it as counterproductive. Rather, they <em>want</em> Clojure&#8217;s users to move from the Phill Model to the Rich Model, seeing that as a core benefit of this opinionated language and the philosophy behind it.</p>
+<p>I think it&#8217;s this fundamental disconnect that is at the core of Phill&#8217;s critique of Clojure, and is also the reason for the frequent questions from new Clojure programmers like 'why is their no equivalent to Rails or Django in Clojure', 'Why are the error messages so bad' and 'why are there so few tutorials / documentation'.</p>
+</div>
+<div class="paragraph">
+<p>Most of the responses I saw from the Clojure side focused on the problems (in their view) of not having a Django, or unreadable stack-traces - programmer experience problems - and recommendations to make the tools easier to use, using a more Phill Model approach. And of course this <em>could</em> be done. But I think it misses the point. It seems to be the case that the people who could potentially create these tools see it not only as not valuable, but actually counterproductive. Rather, they want to push Clojure&#8217;s users to move from the Phill Model to the Rich Model, seeing that as a core benefit of this opinionated language and the philosophy behind it.</p>
 </div>
 </div>
 <div id="footnotes">
@@ -556,7 +568,7 @@ All programming languages should strive to be fun and make programmers happy.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-18 21:45:33 BST
+Last updated 2020-08-20 14:52:04 BST
 </div>
 </div>
 </body>
