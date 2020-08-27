@@ -1,0 +1,263 @@
+= Domain Driven Design: The Essentials
+
+This article is a business-analyst focused explanation of Domain Driven Design. It does include some discussion of the concepts behind the Object Orientation, but only enough to be useful in OO modelling. Things that are too software focused (such as repositories and factories) are left out.
+
+It it primarily based on Eric Evans' 'Domain Driven Design: Tackling Complexity in the Heart of Software', (DDD) which is the foundational text for this topic.
+
+== What DDD is and why we use it
+The craft of building enterprise software is in taking the semi-formal processes of a Business Domain, and turning that into an _formal_, unambiguous description in code. Good software is easy to change when the business processes change.
+
+This is hard because the semi-formal processes are _complex_ and _ambiguous_. It is wrong to think that the 'semi-formal' nature of these processes are a flaw, or down to laziness. It is a feature. It uses the ability of the human brain to absorb experiences over long periods and apply them to large set of input data to arrive at a decision. 
+
+This shows two reasons why the business process cannot be fully described formally: 
+
+* the number of inputs which can impact the outcome are often impractically massive. 
+* the processes themselves are opaque, even to those who use them. 
+
+This is why you see contradictions in business processes - two sets of apparently identical input data which result in a different outcome.
+
+The problem is multiplied because business domains don't exist in isolation. They co-exist with other domains, which share concepts but use them and think of them in subtly different ways. The domains need to share information without getting confused by these differences.
+
+How are we supposed to build the software when a one-for-one formalization _literally can't be done_? And when we as the software creators lack the experience that creates the mental heuristics a Domain uses?
+
+This is the problem that Domain Driven Design attempts to solve.
+
+It starts from the insight, evident from the above, that encoding _reality_ is impossible, and so we must build a _model_. A model is a minimalist _distilled_ version of the reality, which attempts to be useful for a specific purpose, not in general. That purpose is used to guide the shape of the model, and in particular what is _left out of it_.
+
+How are we to know how to build this model, and know the places it is likely to need to change, when we don't have the knowledge of the business Domain? By communicating constantly and effectively with the people who do have that knowledge; the Domain Experts.
+
+These two core ideas, a distilled, targeted model and closely working with domain experts, drive all of the principles and techniques of DDD.
+
+== A map of DDD 
+DDD is about working with Domain Experts to build a model which solves a problem, then encoding that model in software. The ideas in DDD can be dividied into three parts:
+
+* *Modelling basics*. A model is a selective description of the information and behaviour of a domain. How do we actually start to build one? Here, we use the language and patterns of the _object paradigm_ to describe our domain. We also introduce the most critical idea in DDD, the _Ubiquitous Language_, a dictionary of terms with strict and agreed definitions within the domain.
+* *Tactical design*, or modelling in the small. This is about working with a single model and providing techniques to turn it into good OO code.
+* *Strategic design*, or modelling in the large. This is about what you do when you have to work with /multiple/ domains, systems and teams - how you can effectively manage the translation from one model to another, and flow information between them without creating confusion
+
+== Modelling and the Ubiquitous Language
+Some initial terms:
+
+* A *Domain* is an subject area in which business problems are solved
+* A *Model* is a rigorously organized, selective abstraction of a domain
+* A *Domain Expert* is someone who lives in the domain, and solves the business problems in it on a daily basis.
+
+=== Working with Domain Experts: Knowledge Crunching
+You might think you understand the Domain, but unless you've spend years in it, you don't. Even if you are a domain expert, you can't just walk up to a whiteboard and write a perfect model on your first try, because the domain doesn't live neatly in your head like that. There are subtleties and nuances which are not obvious, and which will take a long time and lots of talking to tease out. 
+
+Your first model for a domain will be naive. You may look at a mature model for the first time and think that it is clearly missing a key concept ('A model for container shipping that has no concept for a ship? Surely wrong'), and only when you understand the domain will you see why that is the case.
+
+That suggests the method by which we tease out the model, referred to as _Knowledge Crunching_: by Tech talking to Domain Experts over the long term with a whiteboard, sketching models, running through scenarios, refining, distilling. Finding clever ways to visually express processes.
+
+=== Modelling and Object Orientation
+Evans' DDD follows an _object oriented_ modelling paradigm. Some of the concepts in his book are general to modelling, some are exclusive to (or at least expressed in) OO.
+
+OO is a paradigm for writing code, and many languages (including C#, which is what we primarily use at Varde) are 'Object Oriented Languages'.
+
+More abstractly, the object paradigm provides a language for describing the way we think about business processes. We have _objects_ (say, a Fund), which consists of _information_ (the Fund Name, its Launch Date), and _behaviors_ or processes which that object engages in (Close Fund, Issue Capital Call, Make Distribution).
+
+One of the main benefits of the Object Paradigm is that, if written well, it can be understood by both the Domain Experts who know the processes, and by the developers that will implement the processes in code.
+
+We'll get into the specifics of how you express your model using object in the next section, modelling in the small.
+
+=== A Ubiquitous Language
+Effective communication between developers and domain experts is crucial. A core principle of DDD is that developers and business experts must come up with the model _together_. This can be a problem because there will be a lot of words that have a specific meaning in that domain, that the devs won't be able to guess from common English usage.
+
+You need to get the developers and domain experts to the point where when a term is used, both sides understand the same thing from it. Literally we need to get them speaking the same language.
+
+You do this by _explicitly building that dictionary of agreed terms_ and agreeing to use it whenever you're talking about the domain. Literally write it down somewhere. We call this the Ubiquitous Language, or UL.
+
+You will then express the model in the Ubiquitous Language.
+
+Both the domain expert and tech have a role in building the UL: the domain expert needs to watch out for awkward terms that don't really 'fit' with their mental model of the domain. This is a good indication that you need to fiddle with it until it does fit.
+
+Tech needs to watch for terms that are inconsistent or ambiguous, and work to make them less hazy.
+
+Technology obviously has its own complex jargon, not understandable to the business users. Keep it out of the Ubiquitous Language as much as possible.
+
+=== The UL in Code
+Once you have your first iteration of a model, expressed in objects, and in the Ubiquitous Language, you need to go away and code it.
+
+It is critical that the code is written _in the Ubiquitous Language_. All the classes, all the methods, all the variable names, should be things that exist in the UL.
+
+Not _everything_ in the UL has a corresponding thing in the code - code is pretty low level, so larger structural UL concepts won't be (though they will still be embedded in the architecture of the software, as we'll see later)
+
+The reason we insist on this is that if the language of the model doesn't match the code, the Devs will stop thinking in terms of the model. The model will stop driving the development of the code, and will have lost the ability to talk to the business.
+
+=== Documenting the model
+Having the UL embedded in code has another benefit: the code *is* your low level documentation for the model. If your model changes, so does your code. So your documentation is never out of date.
+
+The diagrams and UML you draw in your knowledge crunching sessions are not documentation - they are not a reference or a bible. Throw them away when you are done. Having things written down so others can read it is a good idea. But any attempt to have an 'always up to date' representation of your model at any real size is doomed to be abandoned and rot, introducing confusion and noise.
+
+A good way to approach documentation of a model is to be explicit that any document is a snapshot of your thinking _at a point in time_. Date stamp it, then never touch it again. Keep these documents together, then someone just needs to start at the newest document.
+
+Be sparing with UML. Use diagrams as inserts communicating specific things within longer-form descriptions of your models, never as a thing on its own. Keep the diagrams themselves small. Put in _parts_ of your model if it's too big to fit readably on a portrait piece of paper.
+
+Don't get hung up on creating 'legal' UML at the expense of clearly communicating your concept - less is more.
+
+Remember: The UML is not the model.
+
+== Modelling your domain in the small
+Before we talk about modelling using OO ideas, we need to talk about the building blocks we'll use to build up our model. 
+
+=== Encoding concepts in Classes, Modules and Layers
+==== Classes and Objects
+An object is a conceptual container of information and behavior we mentally group together. We might have a mental concept of a specific 'Fund', say Fund 12, which has information associated with it, such as its name, its close dates, which investors are invested in it. A fund also 'does things' which change its information and change the world around it. For example Fund 12 might hold a close, which will change the investors that are invested in it.
+
+A _Class_ can be thought of as a template for creating objects, defining the information and behavior that can be associated with it. From a class template, you can create _objects_ which are specific _instances_ of that class. A _Fund_ Class would let you create the _fund 12_ object.
+
+A _Duck_ class might be a template which has 'slots' for information about the ducks type, its color, its size etc. And It might have 'swim' behavior, 'quack' behavior and 'fly' behavior.
+
+When I _instantiate_ an object using the _Duck_ class template, I might create a duck called 'Jim' with type 'Crested', color 'Blue' and size '18 inches'. I can then make jim do things by _calling_ his behaviors (or _methods_), by saying `jim.fly()` or `jim.swim()`.
+
+More abstractly, I might have a _Payment_ class, which I instantiate with information date, amount, currency, from, to. I then call its `approvePayment()` method, which allows to to call the `makePayment` method, which sends the payment details to the bank.
+
+==== Associations
+In addition to 'primitive' information, like numbers, words and dates, a class can be related to other classes. For example in our Payment class, we had slots for 'to' and 'from', which conceptually could represent the to and from Legal Entities of the Payment. These Entities could be modelled themselves as classes, with their own data and behavior.
+
+When two classes are connected in this way, they are said to be _Associated_.
+
+Associations have direction, which in OO loosely translates to which class 'belongs' to which. For example, our PaymentX object could hold a reference to Entity A in its 'To' slot. Alternatively, Entity A could hold a reference to all payments it's involved in (including ours) in its 'Payments' slot.
+
+In the former case, you can get to Entity A from PaymentX by calling `PaymentX.to`. In the latter case you can get from Entity A to PaymentX by calling `EntityA.payments`. Moving from one object to another in this way is called _Traversal_. Which way you choose to model depends on what problem you are trying to solve - will you be starting with a payment and trying to get to the entity, or starting with an entity and trying to get to its payments?
+
+Note that while you _can_ model bidirectional associations, these are rather clunky to implement in the OO paradigm, and more generally increase the complexity of the model considerably. You should try to eliminate them wherever possible, by deciding on the direction which best meets your models purpose.
+
+Notice in the above example that a Payment would have exactly one 'To' entity, where an entity can have many payments, making this a one-to-many association. Avoid _many-to-many_ associations like the plague, and try to stick to one-to-one when possible.
+
+Generally, think hard about eliminating non-essential associations - the fewer you can get away with, the simpler your model will be.
+
+==== Modules
+Classes are grouped together (in code) into Modules (in some languages called Namespaces). Take advantage of this opportunity to introduce structure, by making them a meaningful part of your model. Group related modules together, and make the module name something in the UL which is expressive of its intent.
+
+If your model changes in a way that means your module contains classes that no longer belong together _change your modules as soon as possible_. They are extremely hard to change later.
+
+==== Layered Architecture and the Domain Layer
+Modules are the largest concept that is usually expressed in code explicitly. But how you organize your modules, and the relationships between them, is a key aspect of keeping your program comprehensible and easy to change.
+
+The key pattern for doing this is variously called the Layered Architecture, the Onion Architecture, the Hexagonal Architecture or the Clean Architecture. There are minor variations between them, but essentially they say the same thing: Group your modules into 'layers' with specific responsibilities, and make sure the dependencies between those layers are clearly defined and *unidirectional*.
+
+A typical examples would be the following layers:
+
+* A UI Layer
+* An Application layer
+* a Domain layer
+* an Infrastructure layer 
+
+The details of the Layered Architecture are beyond the scope of this article - everything we are talking about exists in the domain layer. The important takeaway is that the Domain Layer exclusively has _business domain logic_ expressed in the _ubiquitous language_. All technical details (such as how to read things from a database, how the domain objects will be displayed to a user) belong in other Layers, and the Domain Layer never has to worry about them.
+
+=== Types of Object
+==== Encapsulation and Identity
+Grouping together information/data and behavior that together represent a 'thing' is an abstraction technique called _Encapsulation_.
+
+Notice how when describing the Payment class, and the `makePayment` method, I didn't say _how_ the payment is sent to the bank, just that it was (the 'what'). 
+
+This is the main power of objects; Once we have designed and named the object, we are free to think of a payment in our software system like we think of it in our heads, using our mental model for payments. We are freed up from thinking about low level implementation details, like transforming the payment to SWIFT format, and looking up the bank details of the 'To' entity. We can think at a higher level.
+
+Another, more subtle benefit of objects (though more controversial one) is the ability to refer to something by its _identity_. What I mean by that is that many things change their attributes over time, but they maintain a _sameness_ despite that. Our duck jim might be small and yellow when he's born (and not able to fly), but over time he will grow larger and change color. Even though his attributes change he is the same thing, and we can still refer to him as jim.
+
+==== Entities, aka Reference Objects
+We use this useful _identity_ property of objects to model things that have _life cycles_ - and we refer to them as _Entities_ or _reference objects_.
+
+One of the key difficulties with entities is storing them. You have to be able to retrieve them - but you can't just look it up in the database by it's attributes, because there might be others that have the same attributes. The answer is to provide the entity with a UID - a unique identifier. Note that this UID will also be useful in talking between domains - if another domain has the concept of a payment, but models it with different attributes, then both your system and the other system will need to be able to identify the payment (i.e. agree the are talking about the same thing).
+
+Entities can be dangerous things in OO, precisely because they can change their attributes. If you're not careful, some other part of the system can come in and change the attributes of an Entity without you knowing about it. We'll look at techniques for controlling for this when we talk about _Aggregates_.
+
+==== Value Objects
+Some things are _not_ entities, and have no life cycle. They are defined entirely and uniquely by their attributes, and as long as two objects have the same attributes you can use them interchangeably (unlike Entities).
+
+Consider how you would model _color_. Color can be described in a few ways, but one of the most common is 'RGB' - the amount of red, amount of green and amount of blue. `Color(113, 34, 181)` represents a deep purple.
+
+Notice that you could substitute a different instance of `Color(113, 34, 181)`, and use it in place of the first one without issue. We couldn't substitute one instance of our Payment with another with the same attributes, because it represents a different payment (i.e. it has a different identity)
+
+Value objects have a lot of nice properties, and you should use them where possible. Often your Entity objects will have value objects embedded in them e.g. a 'CanOfPaint' entity might have some attributes defining its color. It's usually worth thinking about extracting them out.
+
+==== Services
+Generally behavior is modelled as being part of the Entity or Value Object with which it is most closely associated.
+
+Sometimes you will have a behavior you want to model which is /not/ closely associated with an object, or more likely, is associated with multiple objects.
+
+Usually the right answer is *not* to cram it into the closest object, but instead to define it as a _Service_ - a behavior not attached to an object.
+
+=== Modelling your Domain in OO
+The point that all this has been leading to is that you can use all of the above ideas to model your domain. 
+
+Objects are a neat way to model domains because of the encapsulation property described above. You can talk to your domain experts in objects, and because you are able to use abstraction to talk in terms they are familiar with, they will understand what you are talking about.
+
+In particular, OO has an emphasis on encapsulating _behavior_ as well as data - unlike a relational model which is very much data focused. So you can use the ideas of OO to model /what is happening/ as well as what attributes something has, which is very expressive.
+
+And then at the end of it, you're left with something that your devs can implement fairly easily, because OO is directly translatable to code as long as you're using an OO language.
+
+So in practice, you're going to get into a room with your Domain Expert and your Devs and you're going to start putting names of concepts on a whiteboard. For us, things like 'Transaction', 'Security', 'Investor'. You're going to think, is this something with a lifecycle? It is defined by it's attributes, or is there a more abstract identity this represents? You're going to start thinking about the 'nouns', or data, that live with the object - the investor name, their location. You're going to start thinking about the 'verbs', the behaviors, associated with that investor - should I have a scheduleCall method? Does makeDistribution live here or somewhere else? What about 'inviteToConference'? And you'll start thinking about associations with other concepts - do I need a separate class for 'contact'? Should I associate Contact with Investor, or Organization? If it's with Organization then maybe scheduleCall doesn't belong with Investor after all.
+
+=== Intention Revealing Interface
+The goal when do this modelling is to _think of really good names for things_, including your classes, modules, attributes and methods. Mostly you'll be using words from the UL, but you have to use them in ways that are good descriptions of what you are trying to do. This is referred to in DDD as creating an _Intention Revealing Interface_. It's useful both in talking to your domain expert, but also for your devs to be able to reason about the code.
+
+This is much, _much_ harder than it sounds.
+
+=== Aggregates
+I mentioned above that there is a risk that another part of the system can come in and change the attributes of objects (in software terms objects are _mutable_). 
+
+The problem with it is that we want to have _invariant guarantees_ in our objects. More on them later, but for now lets say we want our system to be in a _valid state_ at all times. For example lets say we set up a payment from Entity A and Entity B, so we instantiate a Payment object, linking to Entities A and B. When we did this, we checked that Entity B had a valid bank account. It did, so we were able to create the payment and send it for approval.
+
+Now before the payment is made, something else comes along and _closes Entity B's bank account_. Our payment object doesn't know about it, but it has suddenly been put in an _invalid state_ - trying to pay money into a bank account that doesn't exist. What we would like our payment object to do is know that this has happened, know that it has been put in an invalid state, and cancel the payment.
+
+Even though this mutability feature is a useful because it allows us to model _identity_ and _lifecycle_, it is one of the main criticisms of OO as a paradigm, making it hard to write programs.
+
+In DDD, _Aggregates_ are used as a way to control how other parts of a system can change the attributes of objects. Basically you group a set of classes together (the Aggregate) and draw a barrier around them. Them you define an Aggregate Root: One class which acts as the gateway to all the inner classes. So anything trying to change one of the inner classes has to 'ask' the aggregate root class before it can do it. 
+
+This sounds like a purely technical-driven technique, but actually it is very useful in improving your model. It forces you to think what objects change together, which objects are most closely related to each other, and forces to remove associations which are less important, thus simplifying and distilling the model.
+
+=== Invariants and constraints
+From the above you probably realise what an invariant is: it's a 'check' you want to make before you do something, to make sure you're not putting your system in an invalid state.
+
+These are _business rules_, and thus are important things to explicitly capture in your model, the UL, and in the code. They should have names like `bankAccountExists?` (the predicate form of invariant), or `constrainedToCapacity` (the constraint form of invariant)
+
+For the latter, think of a cargo container (`Container`) which has a business rule that it must not get loaded with more than 80% of its capacity. When instantiating the Container, you would pass it a `constraintedToCapacity(80%)` rule.
+
+Then when you called `container.load(elephant)`, the load method would check against the `constraintedToCapacity` object: `content = content + constraintedToCapacity(elephant)`. 
+
+This is a preferable implementation to something like: `if content+elephant < 80% then content+elephant else content` because the constraint is an explicit part of the model. 
+
+== Modelling in the large: Multiple Contexts
+To this point we have talked about creating a single model, which by definition will use a single, consistent Ubiquitous Language.
+
+As you expand your scope, you will need to bring in different areas of your business. You will find that they use a different Language, using the same words to refer to slightly different things. Even though the words are the same, the data and behavior of the concept and the associations with other objects are different. The two teams have different needs from the object. In other words, they are following a different model.
+
+The temptation of the business analyst is to try to create a single, giant model which is consistent across the entire business, to try and make a model each object so that it meets the needs of all users.
+
+This is a very bad idea. 
+
+First, your giant model will not be comprehensible, because it is so large and because the purpose of the objects in it will lack clarity. This type of model is referred to as a 'Big Ball of Mud' (BBOM) in DDD.
+
+Second you will lose clarity of ownership of elements of your model. Impacts of changes you make to your model in software will become unpredictable in terms of who they affect. You will struggle to make any changes at all.
+
+Thirdly, the objects themselves will become less effective, because in order to meet the conflicting needs of multiple groups, you will have to make compromises that diminish their effectiveness for one group or another, and ultimately both.
+
+Finally, you lose clarity of purpose of the model as a whole. Good models are aimed at being useful for solving a specific problem. When you aim to create a model that is usable generically by several teams, by definition looking to solve different problems, your model will cease to become useful.
+
+The solution to these problems is very simple: separate things.
+
+=== Bounded Contexts
+We've talked about the Ubiquitous Language; how it contains terms that have specific meaning for a single model, within a single domain, used by a single team. You can say those terms have specific meaning within a given _context_.
+
+When you step outside that context, the terms will have different meaning.
+
+You can say the context is _bounded_. Within your Bounded Context, the rules of your UL (and therefore your model and code written in that UL) apply. Outside of it, when you are talking to a different business team, or about a different piece of software, they don't. In fact at that point you are in a _different_ Bounded Context, with different terms and different meanings.
+
+These contexts always exist implicitly - you can tell when you've crossed one because you start to run into confusion about the definitions of terms in conversation.
+
+When we are creating models or writing software, we should be _explicit_ about the bounded context we are in. Give the Bounded Context a name ("Banking Context"), so you can talk about it, and draw it on your diagrams. The name of the bounded context itself goes into the UL.
+
+=== The Context Map
+Once we have separated our model into bounded contexts, we will need them to talk to each other. Information will have to flow from one system to another, crossing context boundaries. More conceptually you will have objects that represent the same idea (A security, a Fund, an Investment) but within different models in different BCs.
+
+A Context Map is a diagram of all your bounded contexts, with these connections between models marked on it.
+
+One of the benefits of doing this is that you minimize, and carefully define, the connections between bounded contexts, explicitly marking how things relate to each other, rather than the free-for-all of associations you get in a BBOM model.
+
+You will want to _rigorously_ test the things that cross boundaries.
+
+=== Relationships between Bounded Contexts
+
+=== Distillation: Core and Generic subdomains
