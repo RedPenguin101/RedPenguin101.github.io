@@ -1,0 +1,46 @@
+= Notes on a Spec essay
+
+https://www.pixelated-noise.com/blog/2020/09/10/what-spec-is/
+
+== What is it?
+An alternative (plus) to static typing for (dynamic) Clojure.
+
+A declarative language that describes data.
+
+All features available at runtime.
+
+A spec is just a named predicate which is stored, and checked on demand.
+
+Use to validate whether your data conforms to the spec. `s/valid?`
+
+Maps are just aggregations of named values. They are open. Following the idea of data entities being 'accretions' of facts over time.
+
+Use of qualified keywords is encouraged (required?).
+
+Can explain why your data doesn't conform to a spec `s/explain`.
+
+Sequence specs: Regular expressions for data. Like you can do `[a-z]+\d+[A-Z]*` to represent some lower case characters, some digits then maybe some uppercase characters, you can use similar syntax on sequences. 
+
+....
+(s/cat :defn #{'defn}
+       :name symbol?
+       :doc (s/? string?)
+       :args vector?
+       :body (s/+ list?))
+....
+
+This is the spec for a function definition in Clojure,
+
+....
+(defn hello 
+  "this is the docstring, it's optional" 
+  [the args] 
+  (the body))
+....
+
+You can generate data from a spec. 
+
+You can spec a function, saying what it should take as inputs and return as outputs.
+
+== What can you do with it?
+== Conclusion

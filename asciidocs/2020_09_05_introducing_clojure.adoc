@@ -1,0 +1,102 @@
+= Introducing Clojure
+
+Let's say I have a colleague who I want to introduce to Clojure. They are a professional programmer, familiar with the usual OO paradigm, prefer types and type checking, and have on a vague idea of what a lisp is, and what functional programming is.
+
+What is the best way to show them the benefits that lisps, FP and Clojure give you?
+
+Well first, what are the key points I would want to hit?
+
+First, the workflow considerations, the very tight feedback loop you get with pure functions and the REPL. The mindset shift from 'change your program, run your program to see if the change worked' to 'keep your program running, change your program and immediately test whether it works'
+
+Second the 
+
+x, spec
+
+I would obviously have to do an intro to FP and Lisp in there.
+
+So that leaves us with the following skeleton:
+
+. An intro to FP: pure functions over immutable data structures
+. An intro to Lisp
+. Clojure 101
+. REPL driven development
+. The data philosophy 
+. spec
+. interop
+
+== The presentation
+
+=== Intro to FP
+
+FP is in the briefest summary, a style of programming where immutable data structures are passed into functions, which then return new immutable data structures. A program is built by composing these functions together, and sequentially passing these data structures through them. Saying the same thing a different way, the functions in FP are (mostly) _pure_. That is, the outcome of a function is entirely determined by the input arguments to it.
+
+If there is one other element that defines FP, even if these days it's available in most languages, it is that functions can take other functions as arguments, and return functions as their outputs. So you can pass a function A to a function B, which would then return another function C. Function B in this example is a 'higher order function'. This is also described as having 'first class functions'.
+
+FP is _not_ object oriented, in the sense of objects being wrappers around data and functions that modify that data. Since data is immutable in FP, that wouldn't make sense.
+
+FP is _not_ imperative. In imperative program it's common to see something like this:
+
+[source,rust]
+----
+let mut x = Vec::new();
+x.push(6);
+x.push(7);
+let y = MyThing::new();
+y.doSomethingWith(x);
+----
+
+Notice that actions are performed sequentially, line by line, again, mutating variables as you go.
+
+In an FP style, it would look more like this
+
+[source,clojure]
+----
+(doSomethingWith (my-thing) (conj 7 (conj 6 [])))
+----
+
+The example is contrived, but the relative concision carries over to more realistic programs, and is one of nice properties of FP.
+
+The main benefit of FP, though, is that it leads to the creation of programs that are simpler to reason about, mostly due to the elimination of mutable state, and the corrolary of that, pure functions. When you want to understand what a pure function does, the only thing you need to think about is the inputs to it, and the processes within it. You never need to think about what the state of the rest of your program is in.
+
+=== Intro to Lisp
+Lisp mean _list processing_. It's a family of languages (including Clojure) which has been around since the 50's. It's most notable feature is it's extremely sparse syntax, which can essentially be summarized as the application of functions (operators) to arguments (operands):
+
+[source,clojure]
+----
+(defn my-function [x y] (into '() x y))
+(def argument1 "hello")
+(def argument2 :world)
+
+(my-function argument1 argument2)
+;;=> ("hello" :world)
+----
+
+That's really most of it.
+
+You'll notice the parens _enclose_ the function, where in a more C-style language they would come after it. THe consequence of this is that every expression in a lisp is an array (or list) of symbols. Literally the language is written in it's own data structures. This is called homoiconicity, which has a lot of interesting applications for metaprogramming, which are way beyond the scope of this, but are essentially why lisps are described as the most _powerful_ programming languages around.
+
+=== Clojure 101
+
+You have simple types: normal number stuff (plus rationals). Strings. Also keywords, which are prefixed with a colon, like `:hello`. These are mostly used as the keys in maps.
+
+You have compound types:
+
+[source,clojure]
+----
+;;lists
+'(1 2 3 4)
+
+;;vectors
+[1 2 3 4]
+
+;;hashmaps
+{:hello "world" :foo "bar"}
+
+;;hashsets
+#{:hello :world 1 2 3 4}
+----
+
+There are a few more, but that's 99% of what you'll use. There are no named structs, classes, enums etc. If you have information you want to group together, you just put it in one of those compound structures. We'll talk more about the philosophy behind this later.
+
+=== REPL driven development
+But this is really the big draw 

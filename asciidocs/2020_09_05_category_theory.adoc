@@ -1,0 +1,187 @@
+= Category Theory
+Notes on Eric Normand's course https://purelyfunctional.tv/courses/category-theory/['Category Theory from the Universe Up']
+
+== Intro and Monoids
+Why is it so hard to understand, when it's so fundamental?
+
+A new math. So let's go from the ground up.
+
+Piles of rocks. You can group them into a single pile. You can do this with anything. This operation preserves the number of rocks in them. Also doesn't matter what the things are. You can abstract the concept of count and addition (`+`) across all 'things'. Let's dig into the additional operation.
+
+The most basic form of this is binary - you have two arguments, you get one answer.
+
+Another property is that if you take the 'empty' pile of rocks, (where the count is is 0) and add it (apply the `+` operation) to any other pile, and the answer is just the same 'other pile'. This is the *identity*: for a given operation (here `+`), the thing that when you use it as one of the arguments, the answer is the second argument. The identity for `+` is zero. `(+ a 0) = a`
+
+Another property of the `+` operation is *associativity*. An operation is associativity when `(+ a (+ b c)) = (+ (+ a b) c)`. The order in which you _apply the operation_ doesn't matter, you get the same result.
+
+The final property we'll look at is *commutativity*. An operation is commutative when the order of the _operands_ in the operation doesn't matter - you'll get the same answer. That is, `(+ a b) = (+ b a)`
+
+Let's move away from rocks and talk about the cars in a toy train. Let's say you have 6 cars, and they are divided into 3 sets of 2 cars each. There is an operation (`++`) that combines 2 sets of cars into one larger set of cars. This operation is called appending or concatination. You can also apply this operation to any _sequence_ of things.
+
+This can also be considered a binary operation. Let's look through our properties and see what applies.
+
+Does it have an _identity_? Yes, the empty train, or empty sequence, `[]`. `(++ [a b] []) = [a b]`
+
+Is it _associative_? Yes, because 
+....
+(++ [a b] (++ [c d] [e f]) = (++ [a b] [c d e f]) 
+= [a b c d e f]
+= (++ [a b c d] [e f]) = (++ (++ [a b] [c d]) [e f])
+....
+
+Is it _commutative_? *no*, because `(++ [a b] [c d]) = [a b c d] != [c d a b] = (++ [c d] [a b])`
+
+Last one: The `merge` operation. For example on pairs of hashmaps, like `{a 1 b 2}` and `{a 3 c 4}`, where `merge` of these is `{a 3 b 2 c 4}`
+
+_Identity_? Yes, the empty map. `(merge {a 1 b 2} {}) = {a 1 b 2}`
+
+_Associative_? Yes.
+
+_Commutative_? No, because of overwriting.
+
+Operations which are
+
+* binary
+* have an identity
+* are associative
+* are not necessarily commutative
+
+have a special name: *monoid*. This is a second order abstraction. The first order of abstraction is the operations themselves, addition, appending, merging, which are abstract over any concrete types. The second order is the *category* of these operations which meets a certain criteria. These second order abstractions crop up a lot in category theory, but not so much in day to day programming, which is why they're less familiar to us. 
+
+Monoids are interesting and useful because they have the property that you can break up a problem in an arbitrary way, apply the operation any way you want, and get the same answer every time. This has obvious implication for things like concurrent programming.
+
+== Functors
+Say you have a stack of blank cards, and an operation you want to apply to each card: you want to write your name on each of them. In programming, these can be represented as an _ordered list_, and the thing we are doing is a *map*, where you take a sequence of things, and apply an operation to each of them, with the order of the list _preserved_. `(map operation my-list)`.
+
+Say you have an ice cube tray, 2x6, and some beads. The task to put a bead in each section of the tray. This is like a _hashmap_, where the 1st row of the tray is the space for keys, and the second for values. The beads are the keys and values. The operation is `map-keys`. `(map-keys operation hashmap)`. The keys are _preserved_.
+
+Lastly, you have two boxes, one of which is empty, the other has some stuff in it. The operation is that you open the box, you write your name on everything that is in the box, and you close the box. The operation is `maybe` - as in if there's something in the box, you write your name on it. `(maybe operation Option)`. The 'emptyness' of the box (or not) is _preserved_.
+
+Those are our 1st order abstractions: `map` `map-keys` `maybe`. These things, which we'll generally call *fmaps*, all have the properties: they each take an _operation_, they each take a _structure_, and they _preserve_ the structure.
+
+We can define the category of fmaps which have these properties a *functor*.
+
+You could also say that there is an *identity operation* `id`. That is, an operation where the structure is _totally unchanged_ when it comes out the other end of the fmap.
+
+So `(fmap id x) = x`
+
+Finally, the operations must be composable. That is, doing an fmap using operation f on a structure, _then_ doing and fmap using operation g on the result of that, must be the same as doing an fmap where the operation is 'do operation f then operation g on every element.'
+
+....
+(fmap g (fmap f x)) = (fmap (g.f) x)
+....
+
+Put in real terms, think of a factory producing cars. You might have two operations: add the front wheels, and add the back wheels, each done by a different person on the assembly line. You _could_ set it up so that the person A puts the front wheel on every car (i.e. does an fmap over the cars) and then person B puts the back wheels on every car. OR you could _compose_ the operations, so person A puts the front wheel _and_ the back wheel on every car - so there's a single fmap, but two combined operations.
+
+So those are the 5 properties of Functors:
+
+* operation
+* structure
+* _preserves_ structure
+* has an identity operation
+* operations are composable
+
+== Applicative Functor
+
+A special type of Functor.
+
+Imagine a doctors office. The doctor has 3 vaccines (in a list). She has 7 patients (in a list). Her job is to give each of the patients the 3 vaccines. We want to make an operation that does this - sort of a double loop:
+
+....
+for each patient in patients:
+  for each vaccine in vaccines:
+    patient.inject(vaccine)
+....
+
+We'll call this operation `fapply`.
+
+What does the type signature look like? `vaccine patient => vaccination`. Notice everything is singular. We need a way of doing this on a list. `fapply vaccines patients`
+
+....
+fapply [] _ = []
+fapply _ [] = []
+fapply vs ps = append (fmap (v => fmap v ps) vs)
+....
+
+[source,javascript]
+----
+function lfapply(fs, vs){
+    if (fs.length == 0) {
+        return []
+    }
+    if (vs.length == 0) {
+        return []
+    }
+    const r = [];
+    vs.forEach(function (i,v) {
+        fs.forEach(function(j, f) {
+            r.push(f(v))
+        })
+    })
+    return r
+}
+----
+
+For every vaccine in the vaccines list, apply the vaccine to every patient in the patients list, then concatenate all the resulting lists.
+
+THis is the list applicative functor.
+
+`fapply` take a single thing and turns in into plural thing.
+
+There's also the Option Applicative Functor: `Option x = Just x | Nothing`
+
+....
+fapply Nothing _ = Nothing
+fapply _ Nothing = Nothing
+fapply (Just f) (Just v) = Just (f v)
+....
+
+In JS
+
+[source,javascript]
+----
+function ofapply(f, v) {
+    if (!f) {
+        return null;
+    }
+    if (!v) {
+        return null;
+    }
+    return f(v);
+}
+----
+
+When do we use applicative functors? Notice the guarding against nulls, or empty lists. That's super common. 
+
+== Monads
+
+All monads are functors, so the same properties apply:
+
+* they have an operation and a structure
+* the operation _preserves_ the structure
+* has an identity operation
+* operations are composable
+
+A bag of bags of candy. We want to operate on each of the inner bags with fmap. fmap over all the inner bags. Our operation is that we're opening all the inner bags, and pouring all the individual candies in the big bag. So now we have a bag of candies. We got rid of a level of bags. Call this `unbagging`.
+
+`unbag(bag-of-bags) => bag`
+
+Another example. You have a todo list, consisting of pages each containing a sub-list, each with items on them. You could combine these sub-lists into a single todo list.
+
+`rewrite(list-of-lists) => list`
+
+The 2nd order abstraction here is the Monad.
+
+* A Monad has `fmap`, because it's a functor.
+* has `return` operation, which is what is actually done - in the above examples, 'pour the candies in the bag', and 'write an item on the list'. It makes one thing.
+* has `join` operation, which is the operation that converts the 'thing of things' into a 'thing'. You join the inner things together
+
+Laws:
+
+. `join(fmap join x) = join(join x)` where x is a list of list of list of things
+. `join(fmap return x) = join(return x)=id` where x is a list of things
+. `join(fmap (y => fmap f(y)) x) = fmap f (join x)` where x is a list of lists
+
+== Why is CT so foreign?
+== Maybe Monad
+== List Monad

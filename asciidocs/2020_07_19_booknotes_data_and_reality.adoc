@@ -46,7 +46,7 @@ p58: Categories are useful because you can specify rules and constraints that ap
 
 p59: An integrated database is sort of like the system's analogy of the real world: an ongoing, persistent thing that an application can query in general, for use in its own specific context. But efforts to model the whole organization in general, with the aim of meeting all potential contexts, are doomed to failure.
 
-p64: A thing in the real world has a representtive in the system. As we saw, such a representative could actually be spreda across multiple records, with different views or perspectives. We could sometimes integrate these records into a single "pool" that can be used more generally. But recognize that a record could include facts relevant to more than one pool - you can't cleanly separate.
+p64: A thing in the real world has a representative in the system. As we saw, such a representative could actually be spread across multiple records, with different views or perspectives. We could sometimes integrate these records into a single "pool" that can be used more generally. But recognize that a record could include facts relevant to more than one pool - you can't cleanly separate.
 
 p66: the properties of a representative:
 . 1:1 correspondence with a thing in the real world (even if spread across >1 records)
@@ -58,13 +58,13 @@ p66: the properties of a representative:
 p76: Qualification of a name is the addition of terms which narrow the scope of possible reference, to resolve potential ambiguities in the name itself. Thus "Harry" can be qualified as "Harry from the office". This particular form, qualification by relationship, is common.
 
 == Chapter4: Relationships
-p88: A kind of relationship can be thought of as a named tuple, where the name is the statement, reason, or verb. For each cell there can be a role name, specifying the role in the realtionship, and the element itself will be category, or categories, comprising a domain. The 'degree' of the relationship is the number of cells in the tuple. An instance of the relationship type puts instances in place of the domains.
+p88: A kind of relationship can be thought of as a named tuple, where the name is the statement, reason, or verb. For each cell there can be a role name, specifying the role in the relationship, and the element itself will be category, or categories, comprising a domain. The 'degree' of the relationship is the number of cells in the tuple. An instance of the relationship type puts instances in place of the domains.
 
 `WorksFor(Employee, Department)`
 `WorksFor(bob, accounting)`
 
 == Chapter5: Attributes
-p99: There is no fundemental, objective distinction between and attibuted, a realtionship, and a category. Anything can be modelled as any one. How we would model it would be dependent on context, and ultimately based on intuition.
+p99: There is no fundamental, objective distinction between and attribute, a relationship, and a category. Anything can be modelled as any one. How we would model it would be dependent on context, and ultimately based on intuition.
 
 == Chapter6: Grouping, types, categories, sets
 p109: Two ideas of grouping are often combined: Grouping things by "what they are", and expressing about a thing its attributes, relationships and names.

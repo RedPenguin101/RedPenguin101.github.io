@@ -1,0 +1,71 @@
+= Future of Programming
+
+https://www.youtube.com/watch?v=8pTEmbeENF4&feature=emb_title
+
+Future of programming from 1973.
+
+== Nature of adopting ideas
+
+Tech changes quickly, people change slowly.
+
+Moores Law computers will get faster if we wait. What won't happen if we wait: people changing
+
+Binary -> SOAP (Symobic optimizing assembly program). Binary peeps weren't interested! Resitance to new ideas
+
+Von Neumann: Why would you need anything buy machine code?
+
+Same story with FORTRAN - 'high level' language. Loops. Assembly peeps didn't get it
+
+== From Coding to direct manipulation of data
+
+Sketchpad 1962. Drawing pictures directly on a screen. Iterate solver for lines - eg mutually perpendicular lines. Constaints are dynamically maintained. Not writing code.
+
+== From Procedures to Goals and constraints
+
+Saw some of that with Sketchpad. Applied a set of constraints.
+
+Planner, 1969. Can reason foward and backward. Allows expression of goals, and expression of strategies.
+
+Prolog 72 - kept only the backwards part.
+
+Programs are 'what do you want to do', high level goals - let the computer figure it out.
+
+Pattern matching - SNOBOL 1962, Regular Expressions 1967.
+
+The reason it will be so important: the internet. You get the 'communicating with aliens' problem. Languages intercommunicating, have to talk to eachother. How do they do that? They have to figure it out themselves. Negotiate with eachother, find the common language. Goal directed stuff gets to that. Procedures won't work.
+
+An 'API' will be a disaster. You will have to know what the endpoint is, it's tightly coupled, brittle. You have a human doing low level implementation details.
+
+== From Text dump to Spatial representation
+
+Programs are files of lines of text. Makes sense for punch cards, teletype.
+
+But we have video displays now. A very dynamic sheet of paper.
+
+NLS, 1968. Displaying information over a screen. Using a mouse. Point to something on the screen and it shows you more information about it. Flipping from lists to diagrams
+
+Grail, 1968: Programming using flowcharts. 
+
+Smalltalk browser: SourceCode is text, but not a long text file, browser based.
+
+So writing code in text files is a thing of the past.
+
+Also, interactive programming, immediate feedback.
+
+== From Sequntial to concurrent
+
+Sequential model is due to the hardware - the Von Neumann bottleneck. CPU is always active, but memory is usually mostly idle. But the microprocessor means this will change (4004 Intel, 1971). Memory will also be transistors on circuits. So you can put the idle memory transistors to work, by creating lots of processors, and chain them all together. 
+
+So how do we program on this? Sequential threads and locks. Not going to work, can't reason about it, doesn't scale. Dead end.
+
+Carl Howiit's actor model (1973). Things have their own state, their own process. Send messages to each other. This fits the hardware.
+
+== Conclusion
+
+It would be bad if in 40 years (2013) we are still  coding in producers in text files in a sequential manner
+
+Even worse if these ideas were forgotton.
+
+The real tragedy is if you forget you can have new ideas about programming models. THe next generation of programmers are only ever shown one model of programming, and on to the next generation. Dogma.
+
+

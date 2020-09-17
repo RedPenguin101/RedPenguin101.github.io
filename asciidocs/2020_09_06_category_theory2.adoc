@@ -1,0 +1,353 @@
+= Category theory
+
+== A first level of abstraction
+
+When we work in the real world, we are dealing with real, concrete things. We deal with collections of those things, and we perform operations on those things. We can count piles of rocks, we can connect cars on a train together, we can make a bag of mini-bags of candy into a bag of candies by emptying the smaller bags into the larger bag.
+
+After we've worked with concrete things for a while, we can elevate our thinking by noticing that these things have similar properties. An apple is not the same thing as a rock, but counting a pile of apples is the same as counting a pile of rocks. We can _count_ anything that is a _collection_ of discrete things. We are now dealing with abstract properties, not concrete things. This is the first level of abstraction.
+
+Let's look at a few examples.
+
+=== Level One Abstraction: Addition over Countable Collections
+The binary operation `addition` or `+` can be applied to any collection of countable things. You can think of this either in terms of operating on two numbers to produce a larger number, or operating on two  piles of things to get to one bigger pile of things.
+
+....
+[x x x] + [x x x x] = [x x x x x x x]
+3 + 4 = 7
+....
+
+The addition operation over countable collections has a few interesting properties.
+
+First, there is an *identity* (denoted `id`). An identity is the argument to the operation such that, when the operation is applied to `id` and a second argument `x`, the outcome is still `x`.
+
+....
+id + x = x
+....
+
+For addition, the `id` is of course 0 (or the empty collection), because anything plus 0 is itself.
+
+....
+3 + 0 = 3
+[x x x] + [] = [x x x]
+....
+
+Second, addition is *associative*. This means that, when you have more than two inputs that you want to apply the operation, it doesn't matter what order you apply the operation, you'll still end up with the same result.
+
+....
+1 + 2 + 3 = 6
+1 + (2 + 3) = 1 + 5 = 6
+(1 + 2) + 3 = 3 + 3 = 6
+
+a + (b + c) = (a + b) + c
+....
+
+=== Another Level One Abstraction: Concatenation over Sequences
+A sequence is a collection of things which have an explicit order, i.e. there is a first and last element. A sequence of carriages in a train is a concrete example, where the carriages are the elements, and the train is the sequence. If you change the orders of the elements (the carriages) you have changed the sequence (the train). 
+
+Another concretion is Strings, which are sequences of characters.
+
+The operation `concatenate` or `++` is a binary operation that can operate on two sequences, joining them together 'nose to tail'. Think of taking two trains, and joining them together in one long train.
+
+....
+[a b] ++ [c d] = [a b c d]
+....
+
+Is there an *identity* here too? Yes, there is the 'empty sequence' `[]`.
+
+....
+[a b] ++ [] = [a b]
+....
+
+Is this operation *associative*? Also yes
+
+....
+[a b] ++ ([c d] ++ [e f]) = [a b] ++ [c d e f] = [a b c d e f]
+([a b] ++ [c d]) ++ [e f] = [a b c d] ++ [e f] = [a b c d e f]
+....
+
+=== One Last Level One Abstraction: Merging of Associative Collections
+An associative collection is a collection of named values, called 'key-value pairs'. A dictionary (in the computer science or literal sense) is an example.
+
+The operation `merge` or `<-` is a binary operation that can operate on two associative collections, resulting in a single associative collection containing the keys of both input collections. However, if the same key exists in both the input collections, the value associated with that key in the output will be that of the _second_ collection.
+
+....
+{a 1, b 2} <- {a 3, c 4} = {a 3, b 2, c 4}
+....
+
+Is there an *identity* here? Yes, there is the 'empty collection' `{}`.
+
+....
+{a 1, b 2} <- {} = {a 1, b 2}
+....
+
+Is this operation *associative*? Also yes
+
+....
+{a 1, b 2} <- ({a 3, c 4} <- {a 5, d 6}) = {a 1, b 2} <- {a 5, c 4, d 6} = {a 5, b 2, c 4, d 6}
+({a 1, b 2} <- {a 3, c 4}) <- {a 5, d 6} = {a 3, b 2, c 4} <- {a 5, d 6} = {a 5, b 2, c 4, d 6} 
+....
+
+== Second Level Abstraction: Monoid
+
+When we were thinking about concrete things like a pile or rocks or a tray of apples, we were noticing that there were patterns where concrete examples shared similar properties, and we used that to create abstractions of information structures such as sequences or associative collections, and operations over those structures.
+
+You will have noticed that similar patterns are emerging in the abstractions themselves - these *Operation over Structure* things have similar properties, namely that the pairs of Operation and Structure have an *identity*, and are *associative*.
+
+So, just as before, we can create an abstraction, a grouping, which includes any Operation/Structure pair which has these properties.
+
+A *Monoid* is a Operation/Structure pair where
+
+. The operation (call it `f`) is binary
+. The operation has an identity element
+. The operation is associative.
+
+Addition over collections, Concatenation over sequences, and Merge over Associative Collections are all monoids.
+
+== A pause for a terminology rethink 
+Let's take a second to firm up on terms and notation.
+
+We already saw that the operation in an operation/structure pair will be denoted as `f`.
+
+A collection is a 'wrapper' around other things. Its structure, how the collection works, are separate from _the things or kind of things that are in the collection_.
+
+An individual collection will be denoted as a contained lower case letter, `[a]`. The containment is to remind us that we are dealing in all cases with collections of things. The `a` denotes that there is something in the collection, though we don't care what it is or how many of them there are.
+
+The set of all collections which meet the criteria of the structure will be denoted with a capital letter, like `C`. So every individual collection `[s]` which is a sequence of elements where order matters is a member of `S`.
+
+Note that the upper case `C` represents the _properties of the collection_, and says nothing about what is actually _in_ the collection.
+
+Sometimes we might want to specify what is in the collection, in which case we will use the notation `C[A]`, which means a collection of type C which contains things of type A. But usually we won't bother with this.
+
+The special element `id` is the collection that is the identity for a specific operation/structure pair.
+
+=== Type signatures
+We've seen individual examples so far of things like
+
+....
+[1 2] ++ [3 4] = [1 2 3 4]
+....
+
+Meaning that applying the operation 'concatenate' to sequence a and sequence b produces sequence c. We can generalise this idea to any operation and collection with
+....
+f([a], [b]) = [c]
+
+where [a], [b] and [c] are all collections with the structure C
+....
+
+We can further generalise to a type signature:
+
+....
+f(C C) -> C
+....
+
+Meaning that the operation `f`, when applied to any two collections with structure `C` will produce something that is also a collection with structure `C`
+
+== Another Second Level Abstraction: Functors
+
+=== Higher order operations: Map
+
+So far we have looked at operations that operate on two information structures. We can say the operation takes two operands as arguments.
+
+There is also a class of operations which take _other operations_ as their arguments. These are called higher order functions, HOF, and we will denote them with capital letters.
+
+An example of a HOF is map. Map takes as its arguments 
+
+* a unary operation 
+* a collection, 
+
+and applies the unary operation to every element in the collection, producing a modified collection:
+
+....
+MAP f [a] = [b]
+....
+
+As a concrete example, consider the operation `add1 I -> I`, a unary operation over Integers, which increments its integer argument.
+
+....
+MAP add1 [1 2 3 4 5]
+= [add1(1) add1(2) add1(3) add1(4) add1(5)]
+= [2 3 4 5 6]
+....
+
+Notice the distinct parts of this. You have one binary HOF, `MAP`, one unary operation `add1`, and one information structure, `C[I]` (a sequence which contains integers).
+
+What does an *identity* look like here? It would be
+
+....
+MAP f [a] = [a]
+....
+
+The output is the same as the input, with all the same elements.
+
+What we essentially want is a unary operation that returns its argument:
+
+....
+id(a) = a
+....
+
+So yes, this has an identity.
+
+....
+MAP id [1 2 3 4 5]
+= [id(1) id(2) id(3) id(4) id(5)]
+= [1 2 3 4 5]
+....
+
+Another property of map is that it preserves the structure of its input - here, the output collection is still a sequence, even if the elements, or even the type of elements, within it might have changed.
+
+....
+MAP f C[A] -> C[B]
+....
+
+The final important property here is the operations are composable.
+
+....
+MAP f (MAP g [a]) = MAP (f*g) [a]
+....
+
+`f*g` here donates an operation that is the composition of the individual operations `f` and `g`, more explicitly `f(g(x))` - the result of applying `g` to `x`, then applying `f` to the result of that.
+
+What the above is saying is that mapping over your input collection twice with two different operations is the same as mapping over it once, with those same two operations composed together.
+
+To give an example, consider the operations `add1` and `inverse`.
+
+....
+MAP add1 [1 2 3 4 5] = [2 3 4 5 6]
+MAP inverse [2 3 4 5 6] 
+= [1/2 1/3 1/4 1/5 1/6]
+
+MAP (inverse*add1) [1 2 3 4 5]
+= [(inverse*add1)(1) (inverse*add1)(2) (inverse*add1)(3) (inverse*add1)(4)] (inverse*add1)(5)]
+= [inverse(add1(1)) inverse(add1(2)) inverse(add1(3)) inverse(add1(4)) inverse(add1(5))]
+= [inverse(2) inverse(3) inverse(4) inverse(5) inverse(6)]
+= [1/2 1/3 1/4 1/5 1/6]
+....
+
+Let's recap: The HOF Map has the following properties:
+
+. The parts are the HOF, the operations `f` and a collection of structure `C`.
+. It returns a collection of structure `C` (i.e. preserves structure)
+. There is an identity operation
+. Operations are composable
+
+The HOF that meet this criteria are called *functors*.
+
+Let's look at another HOF.
+
+=== Maybe Functor
+
+Consider a structure `B`. A member of the structure `B` is a collection containing 0 or 1 things. We'll call one of these a 'box' because it's a convenient metaphor - it's like a box which is either empty or has one thing in it.
+
+Our HOF here is `MAYBE-APPLY`, which takes a function `f` and a box with structure `B`. If there is something in the box, the function `f` is applied to the thing in the box. If there's nothing in the box, it does nothing. In both cases the box is returned.
+
+....
+MAYBE-APPLY f B -> B
+
+MAYBE-APPLY f [] = []        // the empty box
+MAYBE-APPLY f [a] = [f(a)]   // the non-empty box
+....
+
+Let's see if this is a functor.
+
+Obviously it has the functor structure: there is a HOF, a set of operations, and a collection type.
+
+The structure of the input collection is always maintained. A box which is either empty, or has something in it is passed in, and out the other end, there's still a box which is either empty or has something in it.
+
+The identity is still there:
+
+....
+id a = a
+
+MAYBE-APPLY id [] = []
+MAYBE-APPLY id [a] = [a]
+....
+
+Lastly, the operations are composable:
+
+....
+MAYBE-APPLY f (MAYBE-APPLY g []) = MAYBE-APPLY f [] = []
+MAYBE-APPLY (f*g) [] = []
+
+MAYBE-APPLY f (MAYBE-APPLY g [a]) = MAYBE-APPLY f [g(a)] = [f(g(a))]
+MAYBE-APPLY (f*g) [a] = [(f*g)(a)] = [f(g(a))]
+....
+
+So yes, `MAYBE-APPLY` over the `B` structure is a functor.
+
+=== Functors, generalized
+
+Before we move on, lets generalize the rules of a functor `F`
+
+. *Structure Preservation:* `F f C -> C` is the type signature
+. *Identity* `F id [a] = [a]` for some operation `id`
+. *Composition* `F (f*g) [a] = F f (F g [a])`
+
+== A final second level abstraction: Monads
+
+First, every monad is a functor. There's a HOF (`M`), a set of operations, and an input collection. There's an identity, it is structure preserving, and operations are composable.
+
+So what distinguishes a monad from a functor?
+
+When dealing with monads, we are usually talking about not just a collection of things `[a]`, but a a _collection_ of collection of things `\[[a]]: [C]`. The collections must be the same. For example, it must be a list of lists of integers, or a bag of bags of candies, or a train of trains of carriages.
+
+There are two special operations for a monad. The first operation is called the 'join', and it 'unwraps' collections of collections, so they are just collections. That is, if you have a list of list of things, applying join to them will result in just a list of things. It unwraps one 'layer' of collection.
+
+The second is the 'return'. Return basically goes the other way - it takes the inner thing, and wraps it in the collection.
+
+....
+join C[C] => C
+join [[a]] = [a]
+
+return A => C[A]
+return a = [a]
+....
+
+The Monad/Functor/HOF comes in when you have further levels of wrapping/unwrapping to do.
+
+....
+M return [a]        // apply return to every element of [a]
+= [return a]
+= [[a]]
+
+M join [[[a]]]
+= [join [[a]]]
+= [[a]]
+....
+
+You might have notices that we seem to be changing the type signature here, which is against the rules of a functor - going from a `C` (collection) to a `C[C]` (collection of collections), and a `C[C[C]]` (collection of collection of collections) to a `C[C]`. But if you think about it, a collection of collections is also just a collection.
+
+The identity operation is `(join*return)`
+
+....
+M (join*return) [a]
+= [(join*return) a]
+= [join (return a)]
+= [join [a]]
+= [a]
+....
+
+=== Extending our Maybe functor to be a Maybe Monad
+
+Recall that we had a functor `MAYBE-APPLY` that operated on `B` Box structures. 
+
+....
+MAYBE-APPLY f [] = []
+MAYBE-APPLY f [a] = [f(a)]
+....
+
+Can we extend this functor to be a monad?
+
+A `return` operation will 'wrap' an object in a `B`.
+
+A join operation will _unwrap_ a nested `B[B]`
+
+....
+return a = [a]
+MAYBE-APPLY return [a] = [return a] = [[a]]
+MAYBE-APPLY return [] = []  
+
+join [[a]] = [a]
+join [[]] = [[]]
+MAYBE-APPLY join [[[a]]] = [join [[a]]] = [[a]]
+MAYBE-APPLY join [[[]]] = [[[]]]
+....
