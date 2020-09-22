@@ -5,37 +5,38 @@ http://www.melconway.com/Home/pdf/committees.pdf[The original paper]
 
 == The title
 
-The paper is called 'How Do Committees Invent?'. Curiously, the word 'Committee' is only used once in the entire document, and the work 'Invent' not at all. These terms in the title seem to broadly be synonyms for 'Design Organizations' and 'Design'. So matching the terminology of the paper, the paper might be more properly be titled 'How do Organizations Design?'. 
+The paper is called 'How Do Committees Invent?' but curiously, the word 'Committee' is only used once in the entire document, and the work 'Invent' not at all. These terms in the title seem to broadly be synonyms for 'Design Organizations' and 'Design'. So matching the terminology of the paper, the paper might be better titled 'How do Organizations Design?'. 
 
 == Summary
 
 The thesis of the paper is: "Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations". This came to be known as 'Conway's Law'.
 
-The paper presents a 'proof' of this, and goes on to explore the consequences of it for designing systems.
+The paper presents a 'proof' of this, and goes on to explore the key problem the law poses for designing systems.
 
-The consequential thread of logic presented goes something like this: By Conway's law, system design must follow the communication structures of the designing organization. The problem is that this 'feedback loop' between organization and system creates a circular logic, like this:
+The thread of logic goes like this: By Conway's law, system design must follow the communication (i.e. team) structures of the designing organization. This 'feedback loop' between organization and system creates a circular logic:
 
 1. We need to design a system
-2. By Conway's law, Our system design will match the team structure and communication channels of our organization
-3. Therefore to get a passable design, we must structure our teams in line with the desired design of the system
+2. By Conway's law, our system design will match the team structure of our organization
+3. To get a good design, we should structure our teams in line with the desired design.
 4. To do that, we need to know what the design of the system is. Goto 1.
 
-There is only one way to break this cycle: Before you organize your teams prior to commencing the design activities, you have to take a punt, an initial guess, at what the system design is. If this decision - taken at the moment of least knowledge - is wrong, you can screw up the whole thing, especially if you aren't able to change it later.
+There is only one way to break this cycle: Before you set up your teams prior to commencing the design activities, you have to take an initial guess at what the system design is. If this decision - taken at the moment of least knowledge - is wrong, you can screw up the whole thing, especially if you aren't able to change it later.
 
-The ultimate conclusion is that, since this initial guess is unavoidable, designers should focus on keeping their organization lean and flexible, so that if this initial design is wrong, the organization can change the system design (and necessarily the design organization) without breaking everything.
+The conclusion is that, since this initial guess is unavoidable, design organizations should focus on staying lean and flexible so that if this initial design is wrong the organization can change the team organization (and so the system design) without breaking everything.
+
+The second major consequence of Conway's law relates to the design of large, complex systems. Since it is large, you will have to break it down into very many pieces, and have a large number of teams tasked with designing those pieces. Since it is complex, there will be a very large number of interactions between those pieces, and so also a lot of co-ordination required between the teams. This will very quickly get to the point where the teams and their co-ordination become impossible to manage, so you end up with a broken organization. And, by Conway's Law, a broken organization means a broken system.
 
 == Terms used
 
-* *the system*: the intellectual activity which creates a useful whole from its diverse parts. _For example, the creation of a specification for a major weapon system, the formation of a recommendation to meet a social challenge, the creation of a computer program, and investigation into an air crash_.
-* *the system design*: The documentable, coherently structured body of information describing the system. _For example, a proposed legislation, a document resulting from the investigation into an air crash, an industrial product plan_.
-* *the design organization*: the group of people responsible for producing the system design (not necessarily its construction or implementation).
-* *design teams*: sub-groups within the organization.
-* *design activity*: any activity which is in service of producing the system design.
-* *sponsor*: The organization commissioning and setting the scope of the creation of the system design.
+* *The System*: the intellectual activity which creates a useful whole from its diverse parts. _For example, the creation of a specification for a major weapon system, the formation of a recommendation to meet a social challenge, the creation of a computer program, and investigation into an air crash_.
+* *The System Design*: The documentable, coherently structured body of information describing the system. _For example, a proposed legislation, a document resulting from the investigation into an air crash, an industrial product plan_.
+* *The Design Organization*: the group of people responsible for producing the system design (though not necessarily its construction or implementation).
+* *Design Teams*: sub-groups within the organization.
+* *Design Activity*: any activity which is in service of producing the system design.
 
 === A System
 
-Before starting on this paper, it's important to understand what Conway means by a system. He uses it in a very broad sense. In the introduction he defines it as 'an intellectual activity', which is rather hard to reify.
+Before starting on this paper, it's important to understand what Conway means by a system. He uses it in a very broad sense. In the introduction he defines it as 'an intellectual activity', which is rather hard to grasp.
 
 The best way to comprehend his meaning I found is to look at his description of a system design and work backwards through the examples he gives. 
 
@@ -43,6 +44,13 @@ The best way to comprehend his meaning I found is to look at his description of 
 ____
 A description of a system, if it is to describe what goes on inside that system, must describe the system's connections to the outside world, and it must delineate each of the subsystems and how they are interconnected. Dropping down one level, we can say the same for each of the subsystems, viewing it as a system. This reduction in scope can continue until we are down to a  system which is simple enough to be understood without further subdivision.
 ____
+
+So a system is something that
+
+* Has connections to the outside world - it receives objects or information and outputs them.
+* Does something with the things it receives from the outside world, transforms them in some way.
+* Has a boundary, so that there is a clear line between the system and the outside world.
+* Is itself made up of subsystems, each of which also have the above properties.
 
 Defining a system as anything that can be so described, we can give the following examples at different levels of abstraction:
 
@@ -56,13 +64,17 @@ ____
 
 === The Design Organization
 
-This is the second entity which this paper examines. It's a simpler definition to get your head around - essentially it's a group of people tasked with designing a system. These people can be divided (and are usually already divided) into teams, each of which can be assigned work. In particular they are delegated the task of coming up with designs for parts of the system.
+This is the second entity which this paper examines. It's a simpler definition to get your head around - essentially it's a group of people tasked with designing a system. These people are usually divided into teams, each of which can be assigned work. In particular they are delegated the task of coming up with designs for parts of the system.
 
 Based on the expansive definition of 'System', the definition of what constitutes a 'Design Organization' must be similarly broad.
 
-In large part, the paper is about the interaction between these two entities, the System and the Organization which designs it, and the constraints they impose on each other through the design process.
+In large part, the paper is about the interaction between these two entities: the System and the Organization which designs it, and the constraints they impose on each other through the design process.
 
-== Stages of design
+== The Paper
+
+=== Stages of design
+
+The stages of design are:
 
 1. Drawing of boundaries / scoping.
 2. Choice of preliminary system concept.
@@ -70,13 +82,13 @@ In large part, the paper is about the interaction between these two entities, th
 4. Coordination between teams (via a coordinator).
 5. Consolidation of sub-designs into a single design.
 
-Points 1-3 relate to the structure the design activity itself. This requires understanding the scope and boundaries of both the design activity and the system design, as determined by the sponsor and by reality. Then as a precondition to  design work taking place, a preliminary organization of the system has to be arrived at to allow meaningful division of labor and assignment of tasks.
+Points 1-3 relate to the structure of the design activity itself. This requires an understanding of the scope and boundaries of both the design activity and the system design, as determined by the sponsor of the effort and by reality. Then as a precondition to design work taking place, a preliminary organization of the system has to be arrived at to allow meaningful division of labor and assignment of tasks.
 
 Notice by point 2, design decisions have already been made. The act of division and delegation guides and constrains future design decisions, since the scope of those delegated tasks is the product of the design.
 
-This is not to say the preliminary design can't be abandoned in favor of a better one, but the pain of doing this, general inertia, and the desire of the design organization not to look like they don't know what they're doing are all strong incentives to not do this.
+This is not to say the preliminary design can't be abandoned in favor of a better one, but the pain of doing this, general inertia, and the desire of the design organization not to look like they don't know what they're doing are all strong disincentives to doing this.
 
-== The description of system and design organization
+=== The Linear Graph as the description of system and design organization
 
 Systems are composed of connected subsystems. A system design must describe the inputs and outputs to the system, as well has the arrangement and connection of subsystems within it. This is also recursive, since subsystems can themselves contain sub-subsystems.
 
@@ -86,32 +98,34 @@ image::2020_09_14_committees_invent/lineargraph.gif[]
 
 Notice that the linear graph can equally well describe the _design organization_, with the graph being the organization, the nodes being the teams, and the branches being channels of communications between teams. As with systems, organizations can have nested nodes: subteams within teams - think of the federal government.
 
-== Systems correspond to their designing organizations: Conway's thesis and proof
+=== Systems correspond to their designing organizations: Conway's thesis and proof
 
-The primary thesis of this paper is that not only can the system and the organization which designed it be thought of using the same linear graph abstraction, but in practice the graph of the system _must_ closely follow the graph of the organization, so you could put them on transparencies and lay them on top of each other and they would look the same.
+The primary thesis of this paper is that not only can the system and the organization which designed it be thought of using the same linear graph abstraction, but in practice the graph of the system design _must_ closely follow the graph of the organization, so you could put them on transparencies and lay them on top of each other and they would look the same.
 
 Here is the proof of this that Conway presents:
 
 Pick a system and the organization that designed it. Draw a linear graph of the system, and pick an arbitrary subsystem _x_ represented by a node on the linear graph. That subsystem must have been designed by a given team (or sub-team) _y_. That team can then also be placed as a node in the linear graph of the organization. By the recursive nature of both system and organization, this logic can be extended in both directions: subsystems of _x_ must have been designed by sub-teams of _y_, and the (sub)system that _x_ belongs to must have been designed by a team to which _y_ belongs. Therefore the linear graphs of the system and the organization can be drawn in such a way that they exactly, or nearly exactly, correspond.
 
-The logic can be extended to the branches which connect nodes: if a subsystem _x1_ (designed by team _y1_) interacts with a subsystem _x2_ (designed by team _y2_), then team _y1_ must have had a communication channel with team _y2_ so that they could agree the contract of information exchange. Both the interactions of subsystems and the communication channels of teams are represented as branches on the linear graph. Conversely, if there is no interaction between _x1_ and _x2_, there is no need for _y1_ and _y2_ to communicate, and therefore no need to have a communication channel between the two teams.
+The logic can also be extended to the branches which connect nodes: if a subsystem _x1_ (designed by team _y1_) interacts with a subsystem _x2_ (designed by team _y2_), then team _y1_ must have had a communication channel with team _y2_ so that they could agree the contract of exchange between the subsystems. Both the interactions of subsystems and the communication channels of teams are represented as branches on the linear graph. Conversely, if there is no interaction between _x1_ and _x2_, there is no need for _y1_ and _y2_ to communicate, no need to have a communication channel between the two teams, and there will no branch between the node on the linear graph of the organization.
 
-It is a truism among those with experience with system design that there is no _single correct_ design, in the sense that a design will be perfect, particularly if the system requirements evolve over time. At any point a design which is better than the existing one can be discovered.
+It is a truism among those with experience with system design that there is no _single correct_ design, in the sense that a design will never be perfect, particularly if the system requirements evolve over time. At any point a design which is better than the existing one can be discovered.
 
 Stated another way, whenever we are tasked which choosing a design to meet a requirement, we are choosing one from a set of designs (possibly infinite) within a design family.
 
 The consequence of Conway's Law is that the structure of our design organization effectively filters that set of designs to those which correspond to the possible structures our organization can take.
 
-== System Management and the disintegration of large system structures
+=== System Management and the disintegration of large system structures
 
-Large system designs tend to disintegrate, that is lose structure, during the development process. This, according to Conway, results from the following logical chain:
+Large system designs tend to disintegrate - lose structure - during the development process. This, according to Conway, results from the following logical chain:
 
 1. Since the system is expected to be large, the design effort is allocated resources beyond the organizations ability to effectively coordinate those resources.
 2. The impact of this is that communications channels between design teams break down.
-3. Since Conway's law says that the system design mirrors the organization design, a broken organization results in a broken system.
+3. Since Conway's law says that the system design mirrors the organization design, a broken organization results in a broken design.
 
-The 'original sin' here is the over-resourcing. But this is understandable in practice. If a manager has failed to meet a schedule, and had free resources he could have assigned to the project, he will be yelled at. It's safer for him to over staff, in which case any failure can reasonably be blamed on lack of resources available to the manager.
+You have to break the project down into pieces small enough to be comprehended, therefore you must have enough resources to make a roughly 1:1 correspondence between resource and comprehensible piece. If the number of comprehensible pieces exceeds the number of resources that can be effectively be coordinated, you have a catch-22: either you assign teams parts of the system so large as to not be comprehensible, or you have to break down into so many teams that you can't co-ordinate them.
 
-In addition, you have to break the project down into pieces small enough to be comprehended, therefore you must have enough resources to make a 1:1 correspondence between resource and comprehensible piece. If the number of comprehensible pieces exceeds the number of resources that can be effectively be coordinated, you have a catch-22.
+The 'original sin' here is the over-resourcing. But the psychology is understandable in practice. Firstly, if a manager has failed to meet a schedule, and had free resources he could have assigned to the project, he will be yelled at. It's safer for him to over-staff.
 
-Notice that the above above two paragraphs assume a simplistic, and incorrect, view about the relationship between resources and productivity - that there's an essentially linear between them.
+Secondly, managers tend to want to expand the number of resources they have so as to increase their power, so will always argue for more.
+
+Notice the tendency to over-resource is based on the simplistic, but very common fallacy about the relationship between resources and productivity - that there's an essentially linear relationship between them. What Conway calls the 'conventional accounting theory', also known as the 'Mythical Man Month'.
