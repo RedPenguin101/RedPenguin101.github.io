@@ -1,0 +1,77 @@
+= Diary
+
+== 24th October 2020
+
+=== A Rust Codewars Kata
+
+I did https://www.codewars.com/kata/5467e4d82edf8bbf40000155[this] kata a few days ago in Rust.
+
+My solution was predictably bad:
+
+[source,rust]
+----
+fn descending_order(x: u64) -> u64 {
+    let mut y: Vec<u32> = x
+        .to_string()
+        .chars() 
+        .into_iter()
+        .map(|x| x.to_digit(10).unwrap())
+        .collect();
+    
+    y.sort();
+    y.reverse();
+    
+    let s: String = y.into_iter().map(|i| i.to_string()).collect();
+    s.parse::<u64>().unwrap()
+}
+----
+
+With the process effectively being:
+
+. Turn the number into a string
+. split it into chars
+. put into an iterator
+. map over each char, turning it into an integer
+. collect into a vector
+. sort
+. reverse
+. turn _back_ into a string
+. parse the string.
+
+The best solution I saw was this, by bratushka:
+
+[source,rust]
+----
+use std::iter::FromIterator;
+fn descending_order(x: u64) -> u64 {
+    let mut result = x.to_string().chars().collect::<Vec<char>>();
+    result.sort_by(|a, b| b.cmp(a));
+    String::from_iter(result).parse::<u64>().unwrap()
+}
+----
+
+The shape is basically the same, with a couple of differences:
+
+. you don't need to turn the chars into digits to sort them (duh)
+. `sort_by` can replace `sort` and `reverse`
+. use the much nicer `String::from_iter(result).parse::<u64>().unwrap()` in place of `y.into_iter().map(|i| i.to_string()).collect();`
+
+So it goes
+
+. turn number to string
+. turn to chars
+. sort the result in reverse order
+. turn the resulting iterator into a string (`String::from_iter(result)`) and parse.
+
+=== Learned
+
+. Collect will force you to type annotate sometimes - I couldn't get it to work well
+. the `::<>` is called the 'turbofish'!
+
+==== methods
+
+  . `to_string()` - method of the `ToString` trait, `&self` -> `String`
+  . `chars()` - returns an iterator over `char` of a string slice, `&self` -> `Chars<'_'>` 
+  . `collect()` takes anything iterable, and returns a collection of the iterator itmes.
+  . `parse()` - takes a string slice and parses to another type: `&self` -> `Result`. Usually you'll want to type annotate with the turbofish
+  . `String::from_iter(x)
