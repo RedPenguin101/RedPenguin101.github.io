@@ -1,0 +1,391 @@
+= Thoughtram articles
+
+Notes on the excellent introductory articles by ThoughtRam 
+
+== Memory and ownership
+
+https://blog.thoughtram.io/ownership-in-rust/
+
+There are two types of memory that can be used by your program to store values: The stack, and the heap.
+
+The stack stores values in the order they come in. Values can be added and removed from the stack very quickly. To use the stack, you need to know at compile time the size of each value that will be stored on it.
+
+Numbers, pointers, and a few other types are stored on the stack.
+
+A pointer is a value in memory which points to another memory location.
+
+The heap is slower, but more flexible in terms of what and how you can store things. Sizes don't need to be known at compile time. So it's used for dynamic values: vectors, strings - things that grow and shrink dynamically.
+
+When you create something that is heap allocated, you'll actually get it in two bits: a chunk of heap memory (a 'buffer'), and the value itself, which includes a pointer to the relevant place on the heap.
+
+Say you declare a variable `s` that represents a `String`. A pointer will be created on the stack (as well as some other stuff, 3 'words' in total) that points to a heap buffer chosen by the computer.
+
+----
+                     pointer to buffer
+                   /   capacity
+                 /   /    length
+               /   /    /
+            +–––+––––+––––+
+stack frame │ • │ 16 │ 15 │ <– s
+            +–│–+––––+––––+
+              │
+            [–│––––––––––––––––––––––––– capacity ––––––––––––––––––––––––––]
+              │
+            +–V–+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+
+       heap │ H │ a │ v │ e │   │ a │   │ n │ i │ c │ e │   │ d │ a │ y │   │
+            +–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+
+
+            [––––––––––––––––––––––––– length ––––––––––––––––––––––––––]
+----
+
+The computer then knows that this heap buffer is in-use, so it won't try to allocate anything else to that heap memory location. The variable `s` owns its buffer in principle - and in Rust, more literally, as we'll see.
+
+When you destroy the String, the buffer will be 'freed' or 'dropped', and made available for the computer to use for new allocations.
+
+You can create _another_ pointer to the same buffer - e.g. a string slice with
+
+`let ss = &s[7..]`
+
+The problem is the string slice could continue to point to the heap location even after the String value has been destroyed and the memory re-used. This is a _dangling pointer_.
+
+In other non-GC languages, you have to carefully manage the freeing of memory to prevent these errors. Rust gets around this with _ownership_ and _borrowing_.
+
+In Rust, when you create the variable `s` and assign a string to it, `s` becomes the one and only _owner_ of its value.
+
+When the variable `s` goes 'out of scope' - at the end of the block of code where it was created - the heap buffer will be automatically dropped (freed). 
+
+Looking at a more complicated example - a Vector is a dynamic structure, and so has heap allocation
+
+`let names = vec!["Pascal".to_string(), "Christoph".to_string()];`
+
+----
+            [–– names ––]
+            +–––+–––+–––+
+stack frame │ • │ 3 │ 2 │
+            +–│–+–––+–––+
+              │
+            [–│–– 0 –––] [–––– 1 ––––]
+            +–V–+–––+–––+–––+––––+–––+–––+–––+
+       heap │ • │ 8 │ 6 │ • │ 12 │ 9 │       │
+            +–│–+–––+–––+–│–+––––+–––+–––+–––+
+              │\   \   \  │
+              │ \   \    length
+              │  \    capacity
+              │    buffer │
+              │           │
+            +–V–+–––+–––+–––+–––+–––+–––+–––+
+            │ P │ a │ s │ c │ a │ l │   │   │
+            +–––+–––+–––+–––+–––+–––+–––+–––+
+                          │
+                          │
+                        +–V–+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+
+                        │ C │ h │ r │ i │ s │ t │ o │ p │ h │   │   │   │
+                        +–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+
+----
+
+the variable `names` refers to the vector value, which is stored on the stack.
+
+the vector points to a heap buffer, which contains two string  values, each of which point to their own heap buffer.
+
+when `names` goes out of scope, all these these things will be dropped.
+
+Obviously that's not super helpful, because if `names` is the only thing that can touch or look at the value, then we can't do much with it.
+
+In rust you can _pass ownership_ by assignment:
+
+[source,rust]
+----
+let name = "Pascal".to_string();
+let a = name;
+----
+
+Here, when we do `a = name`, the ownership of the value is passed from the variable `name` to `a`, and `name` can no longer be used because it doesn't own any value. We have _moved_ the ownership from `name` to `a`
+
+----
+            [–– name ––] [––– a –––]
+            +–––+–––+–––+–––+–––+–––+
+stack frame │   │   │   │ • │ 8 │ 6 │ 
+            +–––+–––+–––+–│–+–––+–––+
+                          │
+              +–––––––––––+
+              │
+            +–V–+–––+–––+–––+–––+–––+–––+–––+
+       heap │ P │ a │ s │ c │ a │ l │   │   │
+            +–––+–––+–––+–––+–––+–––+–––+–––+
+----
+
+But what if we want to do something like
+
+[source,rust]
+----
+let name = "Pascal".to_string();
+let a = name;
+let b = name;
+----
+
+This will fail at compile time, because after you do `a = name`, you can no longer use `name`.
+
+We can get round this by just cloning the value:
+
+[source,rust]
+----
+let name = "Pascal".to_string();
+let a = name;
+let b = a.clone();
+----
+
+----
+            [–– name ––] [––– a –––][–––– b ––––]
+            +–––+–––+–––+–––+–––+–––+–––+–––+–––+
+stack frame │   │   │   │ • │ 8 │ 6 │ • │ 8 │ 6 │
+            +–––+–––+–––+–│–+–––+–––+–│–+–––+–––+
+                          │           │
+              +–––––––––––+           +–––––––+
+              │                               │
+            +–V–+–––+–––+–––+–––+–––+–––+–––+–V–+–––+–––+–––+–––+–––+–––+–––+
+       heap │ P │ a │ s │ c │ a │ l │   │   │ P │ a │ s │ c │ a │ l │   │   │
+            +–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+
+----
+
+But this can be quite expensive.
+
+Instead we might just want `b` to _reference_ the buffer
+
+[source,rust]
+----
+let name = "Pascal".to_string();
+let a = name;
+let b = &a;
+----
+
+now `a` owns the value, but `b` has _borrowed_ it, and can use it.
+
+However
+* `b` can't _change_ the value, since `a` still owns it
+* if the ownership of the value changes from `a`, and we try to use `b` we'll get a compile error.
+
+[source,rust]
+----
+    let name = "Pascal".to_string();
+    let a = name;
+    let b = &a;
+    let c = a;
+    println!("{}", b)
+----
+
+
+----
+error[E0505]: cannot move out of `a` because it is borrowed
+ --> src/main.rs:5:13
+  |
+4 |     let b = &a;
+  |             -- borrow of `a` occurs here
+5 |     let c = a;
+  |             ^ move out of `a` occurs here
+6 |     println!("{}", b)
+  |                    - borrow later used here
+
+error: aborting due to previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0505`.
+error: could not compile `ownership`.
+
+To learn more, run the command again with --verbose.
+----
+
+== String and &str
+
+https://blog.thoughtram.io/string-vs-str-in-rust/
+
+Rust has several string types:
+
+* `String`
+* `str`
+* `&str`
+
+`String` is 3-word object stored on the stack, with the first word being a reference to a heap-allocated buffer. You can resize it.
+
+A string slice, or `&str`, references a range of UTF-8 text owned by something else. It is stack stored with a pointer and length. 
+
+String literals are also of type `&str`, but instead of referring to a range of text on the heap, they reference a range of text stored in pre-allocated memory.
+
+If you don't need to own or mutate, use a `&str`.
+
+A `&String` will be automatically be coerced to a `&str`. So basically with a `&str` you can accept `&str` or `&String`.
+
+== References in Rust
+
+https://blog.thoughtram.io/references-in-rust/
+
+A reference is stack allocated non-owning pointer type that references another value in memory - either on the stack frame or heap.
+
+For exmaple `let r = &x;`, where `x` is a `u32` and `r` is `&u32`
+
+----
+                   +–––––––+
+                   │       │
+            +–––+––V–+–––+–│–+–––+
+stack frame │   │ 10 │   │ • │   │ 
+            +–––+––––+–––+–––+–––+
+                [––––]   [–––]
+                  x        r
+----
+
+or for `let last_name = &my_name[7..];`, where `my_name` is a `String` and `last_name` is a `&str` (pointing to a `str`, or string slice)
+
+----
+                my_name       last_name
+            [––––––––––––]    [–––––––]
+            +–––+––––+––––+–––+–––+–––+
+stack frame │ • │ 16 │ 13 │   │ • │ 6 │ 
+            +–│–+––––+––––+–––+–│–+–––+
+              │                 │
+              │                 +–––––––––+
+              │                           │
+              │                           │
+              │                         [–│––––––– str –––––––––]
+            +–V–+–––+–––+–––+–––+–––+–––+–V–+–––+–––+–––+–––+–––+–––+–––+–––+
+       heap │ P │ a │ s │ c │ a │ l │   │ P │ r │ e │ c │ h │ t │   │   │   │
+            +–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+–––+
+----
+
+References can be immutable (with `&x`) or mutable (with `&mut x`). But you can only ever have one mutable reference to an object at a time for memory safety.
+
+But you can have as many immutable references as you want.
+
+References are dereferenced (getting you back to the thing you referenced) with `*`. In practice, you can end up with 'chains' of references - a `&&&&&p`. For some operators, like `=`, using the `*` operator will automatically go up the chain until it finds a type which isn't a reference. 
+
+[source,rust]
+----
+fn main() {
+  let x = 10;
+  let r = &x;
+  let rr = &r; // `rr` is a `&&x`
+
+  if is_ten(rr) {
+    println!("Same!");
+  }
+}
+
+fn is_ten(val: &i32) -> bool {
+  *val == 10 // will double deref when given a &&i32 
+}
+----
+
+The dot operator (for attributes and method calls) automatically deref.
+
+So if you have a `p: Person` struct, and `r = &p` calling `r.first_name` will automatically dereference the `&Person` into a `Person` - sugar for `(*r).first_name`
+
+It also works backwards - an arrays sort method takes a `&mut self`, but you can call `numbers.sort()` just fine, with that being desugared to `(&mut numbers).sort()`
+
+ == Lifetimes
+
+https://blog.thoughtram.io/lifetimes-in-rust/
+
+Lifetimes start to come up when you have structs which hold references to other structs.
+
+Say you have an `App` struct and a `Config` struct. You want your `App` to have a reference to `&Config`. To get this working, you would need to clarify that App and Config have the same lifetimes:
+
+[source,rust]
+----
+struct App<'a> {
+    config: &'a Config
+}   
+----
+
+This is a way of making sure you have no dangling pointers. App can't be allowed to 'live' any longer than config, because if it did, you'd end up with a dangling pointer. The syntax is a way of telling the compiler to check for us if we're using these things in a way that will make it memory unsafe, and it will bonk us if we try to do that.
+
+Functions have lifetimes too - sometimes implicit
+
+[source,rust]
+----
+fn some_function(val: &i32) {
+    ...
+}
+
+// expands to
+
+fn some_function<'a>(val: &'a i32) {
+    ...
+}
+----
+
+The meaning here is that we're declaring that `some_function` takes an `val: &i32` with some lifetime, and that the function won't try to save `val` anywhere that will outlive it's lifetime.
+
+If you have a function that returns a reference to a structure, the return value will implicitly have the same lifetime as the argument.
+
+[source,rust]
+----
+fn smallest_number(n: &[i32]) -> &i32 {
+    ...
+}
+
+// expands to
+
+fn smallest_number<'a>(n: &'a [i32]) -> &'a i32 {
+    ...
+}
+----
+
+When you have a struct with multiple references, things can start to get messy:
+
+[source,rust]
+----
+struct Point<'a> {
+    x: &'a i32,
+    y: &'a i32
+}
+
+fn main() {
+    let x = 3;
+    let r;
+    {
+        let y = 4; // this causes a problem because x and y don't have the 
+                   // same lifetime
+        let point = Point { x: &x, y: &y };
+        r = point.x
+    }
+    println!("{}", r);
+}
+----
+
+You would have to specify multiple lifetimes
+
+[source,rust]
+----
+struct Point<'a, 'b> {
+    x: &'a i32,
+    y: &'b i32
+}
+----
+
+== Iterators
+
+https://blog.thoughtram.io/iterators-in-rust/
+
+Iterators are objects that provide sequences of values, and therefore can be iterated/looped over.
+
+Rust provides the `Iterator` and `IntoIterator` traits for dealing with them.
+
+`for` loops can work with anything that implements `Iterator`.
+
+[source,rust]
+----
+trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+    ...
+}
+----
+
+In other words you need to implement a `next` method, which returns an option to `Self::Item`. The `None` Option indicates there is no next and you've reached the end of the iterator.
+
+Notices that Iterators are stateful.
+
+You can't actually call `next` on a Vec though - because Vec _doesn't_ implement `Iterator`. So why can we iterate over it? It's because it implements `IntoIterator`.
+
+Types that implement `IntoIterator` have a `into_iter()` method, which returns something that implements `Iterator`.
+
+`for` implicitly calls `into_iter()` on things that that implement `IntoIterator`
+
+You can create iterators explicitly with `iter()` and `iter_mut()`, and call next on them yourself. This allows you to be more flexible when using them, and the characteristics of the items being returned.
