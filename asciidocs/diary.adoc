@@ -75,3 +75,26 @@ So it goes
   . `collect()` takes anything iterable, and returns a collection of the iterator itmes.
   . `parse()` - takes a string slice and parses to another type: `&self` -> `Result`. Usually you'll want to type annotate with the turbofish
   . `String::from_iter(x)
+
+== 26th October 2020
+
+A simple 6kyu kata in Clojure: https://www.codewars.com/kata/5592e3bd57b64d00f3000047[pile of cubes].
+
+Basically sum of cubes.
+
+Found some interesting maths stuff - but most of the problem was tedious computer number crap - trying to figure out if something is a whole number or not when dealing with very large numbers.
+
+So sum of first _n_ cubes (*SoQ*) is _(n(n+1)/2)^2_. Which I (eventually) noticed is the sum of the first _n_ natural numbers (*SoNN*), squared. The SoNN are also the _triangle_ numbers. So _SoQ(n) = Tri(n)^2_.
+
+I ended up doing the pretty dull:
+
+[source,clojure]
+----
+(defn find-nb [m]
+  (let [root (/ (- (Math/sqrt (+ 1 (* 8 (Math/sqrt m)))) 1) 2)]
+    (cond (not (square? m)) -1
+          (= root (float (int root))) (int root)
+          :else -1)))
+----
+
+Kind of does the this implicitly, but essentially: if sqrt m is a tri then m is a SoQ.

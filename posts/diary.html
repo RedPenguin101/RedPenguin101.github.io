@@ -572,10 +572,42 @@ fn descending_order(x: u64) -&gt; u64 {
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_26th_october_2020">26th October 2020</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A simple 6kyu kata in Clojure: <a href="https://www.codewars.com/kata/5592e3bd57b64d00f3000047">pile of cubes</a>.</p>
+</div>
+<div class="paragraph">
+<p>Basically sum of cubes.</p>
+</div>
+<div class="paragraph">
+<p>Found some interesting maths stuff - but most of the problem was tedious computer number crap - trying to figure out if something is a whole number or not when dealing with very large numbers.</p>
+</div>
+<div class="paragraph">
+<p>So sum of first <em>n</em> cubes (<strong>SoQ</strong>) is <em>(n(n+1)/2)^2</em>. Which I (eventually) noticed is the sum of the first <em>n</em> natural numbers (<strong>SoNN</strong>), squared. The SoNN are also the <em>triangle</em> numbers. So <em>SoQ(n) = Tri(n)^2</em>.</p>
+</div>
+<div class="paragraph">
+<p>I ended up doing the pretty dull:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn find-nb [m]
+  (let [root (/ (- (Math/sqrt (+ 1 (* 8 (Math/sqrt m)))) 1) 2)]
+    (cond (not (square? m)) -1
+          (= root (float (int root))) (int root)
+          :else -1)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Kind of does the this implicitly, but essentially: if sqrt m is a tri then m is a SoQ.</p>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-24 12:26:40 BST
+Last updated 2020-10-26 13:06:45 GMT
 </div>
 </div>
 </body>
