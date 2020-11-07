@@ -1,0 +1,66 @@
+= Clojure Power Tools
+by Kari Marttila at Metosin
+
+* https://www.karimarttila.fi/clojure/2020/10/26/clojure-power-tools-part-1.html[Part 1]
+* https://www.karimarttila.fi/clojure/2020/10/29/clojure-power-tools-part-2.html[Part 2]
+
+== Use a REPL Scratch File
+
+Put
+
+[source,clojure]
+{:aliases {:kari {:extra-paths ["scratch"]
+                  ,,,}}}}
+
+In your `~/.clojure/deps.edn` file. Then in your project create a _scratch/scratch.clj_ file.
+
+== Use the hashp library for printing data structures for debug
+
+https://github.com/weavejester/hashp
+
+Then put #p in front on the form you want to print
+
+== Use portal library (or Clojure inspector) to examine complex data structures 
+
+https://github.com/djblue/portal
+
+== A poor mans debug repl
+
+Set up a ns like this
+
+[source,clojure]
+----
+(ns recorder)
+
+(def value (atom {}))
+(def counter (atom 0))
+(def flag (atom false))
+
+(defn next-id []
+  (swap! counter inc))
+
+(defn assoc-value-with-id! [k v]
+  (let [id (next-id)
+        new-k (keyword (str (name k) "-" id))]
+    (swap! value assoc new-k v)))
+
+(defn add-value-if-recording! [k v]
+  (when @flag
+    (assoc-value-with-id! k v)))
+
+(defn start! []
+  (reset! value {})
+  (reset! counter 0)
+  (reset! flag true))
+
+(defn stop! []
+  (reset! flag false))
+----
+
+== Use debug repl
+
+https://github.com/gfredericks/debug-repl
+
+`clj -M:dev:test:common:backend:kari -m nrepl.cmdline -m com.gfredericks.debug-repl/wrap-debug-repl -i -C`
+
+Use `break!` to stop execution and see what the values are at that point in time.

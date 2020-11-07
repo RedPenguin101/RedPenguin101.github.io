@@ -29,9 +29,9 @@ How are we to know how to build this model, and know the places it is likely to 
 These two core ideas, a distilled, targeted model and closely working with domain experts, drive all of the principles and techniques of DDD.
 
 == A map of DDD 
-DDD is about working with Domain Experts to build a model which solves a problem, then encoding that model in software. The ideas in DDD can be dividied into three parts:
+DDD is about working with Domain Experts to build a model which solves a problem, then encoding that model in software. The ideas in DDD can be divided into three parts:
 
-* *Modelling basics*. A model is a selective description of the information and behaviour of a domain. How do we actually start to build one? Here, we use the language and patterns of the _object paradigm_ to describe our domain. We also introduce the most critical idea in DDD, the _Ubiquitous Language_, a dictionary of terms with strict and agreed definitions within the domain.
+* *Modelling basics*. A model is a selective description of the information and behavior of a domain. How do we actually start to build one? Here, we use the language and patterns of the _object paradigm_ to describe our domain. We also introduce the most critical idea in DDD, the _Ubiquitous Language_, a dictionary of terms with strict and agreed definitions within the domain.
 * *Tactical design*, or modelling in the small. This is about working with a single model and providing techniques to turn it into good OO code.
 * *Strategic design*, or modelling in the large. This is about what you do when you have to work with /multiple/ domains, systems and teams - how you can effectively manage the translation from one model to another, and flow information between them without creating confusion
 
@@ -52,7 +52,7 @@ That suggests the method by which we tease out the model, referred to as _Knowle
 === Modelling and Object Orientation
 Evans' DDD follows an _object oriented_ modelling paradigm. Some of the concepts in his book are general to modelling, some are exclusive to (or at least expressed in) OO.
 
-OO is a paradigm for writing code, and many languages (including C#, which is what we primarily use at Varde) are 'Object Oriented Languages'.
+OO is a paradigm for writing code, and many languages (including C#, which is what we primarily use) are 'Object Oriented Languages'.
 
 More abstractly, the object paradigm provides a language for describing the way we think about business processes. We have _objects_ (say, a Fund), which consists of _information_ (the Fund Name, its Launch Date), and _behaviors_ or processes which that object engages in (Close Fund, Issue Capital Call, Make Distribution).
 
@@ -213,9 +213,9 @@ From the above you probably realise what an invariant is: it's a 'check' you wan
 
 These are _business rules_, and thus are important things to explicitly capture in your model, the UL, and in the code. They should have names like `bankAccountExists?` (the predicate form of invariant), or `constrainedToCapacity` (the constraint form of invariant)
 
-For the latter, think of a cargo container (`Container`) which has a business rule that it must not get loaded with more than 80% of its capacity. When instantiating the Container, you would pass it a `constraintedToCapacity(80%)` rule.
+For the latter, think of a cargo container (`Container`) which has a business rule that it must not get loaded with more than 80% of its capacity. When instantiating the Container, you would pass it a `constrainedToCapacity(80%)` rule.
 
-Then when you called `container.load(elephant)`, the load method would check against the `constraintedToCapacity` object: `content = content + constraintedToCapacity(elephant)`. 
+Then when you called `container.load(elephant)`, the load method would check against the `constrainedToCapacity` object: `content = content + constrainedToCapacity(elephant)`. 
 
 This is a preferable implementation to something like: `if content+elephant < 80% then content+elephant else content` because the constraint is an explicit part of the model. 
 
