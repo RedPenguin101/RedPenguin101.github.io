@@ -1,0 +1,77 @@
+= Notes on I am a Strange Loop
+By Douglas Hofstadter
+
+== Terms
+Symbol
+Signal
+Perception vs. Reception
+Episodic Memory
+Loop
+Locked-in Loop
+Abstraction
+Strange Loop
+Isomorphic
+Meaning
+Analogy
+Incompleteness
+Essential incompleteness
+Upside-down causality
+Representational System
+Thinking
+Locus of causality
+Vanilla Loop
+Categories / categorization
+
+== Cards
+
+P37: Abstraction is about empirically or deductively identifying rules or logic (possibly simplified) of a system comprised of interactions of atomic particles where the rules  not refer to those atomic particles, and then writing a set set of instructions that allow us to apply those rules and logic. Think of the 'falling dominoes' computer that determines prime numbers, and an abstraction that lets us determine primes without dominoes.
+
+P46: The reductionist view of the universe - that is, reducing all things to interactions of atomic particles, is dumb. We do and should feel comfortable dealing with things at a higher level of abstraction.
+
+P50: What is the brain? The I? Can it be reduced to the level of interacting neurons? Is there a 'grandmother neuron' that fires when you see your Grandma?Is there value to thinking at this level, or are we missing the forest for the trees? we should treat at the higher level, ignoring the atomic.
+
+P61: Bertrand Russel was working on the theory of sets, trying to find the bottom of mathematics, when he came across the paradoxical 'set of all sets that don't contain themselves'. (The Barber problem). To eliminate the paradox, he invented the theory of types, which prevents any self referential behavior (a set definition can never include reference to itself), with a hierarchical structure.
+
+P72: "I"-ness is self perception. We have a level of soul that allows us to have 'symbols' - things which trigger some group of synapses to fire (e.g. the Eiffel Tower symbol). This is perception. Mosquitos probably don't have symbols, dogs probably do. The symbol "I" refers to ourselves - the flipping og the perceiving camera to ourselves. It is the looping of perception.
+
+P98: What is 'real'? First we must have a symbol for it. But we can have symbols for things that aren't real - fictional characters for example. "The Cup" is extremely real to me, because I can touch it. "Antarctica" is quite real to me even though I've never seen it. It's an argument from authority. "The 20-mile wall" is fairly real to me, again from authority. But what is realest to us is 'ourselves'. Why is that, when it's neither a physical thing nor an argument from authority? What is this "I"? It is an epiphenomenon, and abstraction. A locked in loop located in the cranium.
+
+P101: A Strange Loop: A paradoxical abstract circuit, which shifts from one level to the 'meta' above it, and upward movement, but which is also a close loop, in that eventually you find yourself back 'down' at the starting point through a purely upward progression. (P160) The strangeness is in the hierarchy-violating twisting-back that occurs when using 'this' or any other self reference (usually implicit)
+
+P120: The mathematicians (false) credo: X is true because there is a proof of X. X is true _and so_ there is a proof of X. Therefore, if there is a pattern there is maybe a truth, therefore there must be a proof. Where there's a pattern there's a reason.
+
+P158: Meaning is arrived at through analogy - isomorphism.A mapping between the symbology and the meaning.
+
+P164: KG says that "KG is unprovable in PM" (1). (We assert that PM can't prove something that is false).If (1) can be proved in PM, then PM has proved a falsity. If (1) cannot be proved in PM, then (1) is true, and PM is _incomplete_. PM can alternatively be expressed in numbers, which can be fed back into PM It can be forced to talk about itself.
+
+P176: We process effectively only at the macro level, even though ironically the concepts at this level are much less clearly definable than at the particle level.
+
+P182: I is a feedback loop which has a 'strange' quality. It grows as our symbology snowballs, building more and more complex category systems. From things like 'my leg', 'my foodgiver', to more nuanced ideas like 'mother', 'guilt',- endlessly, with never-ending extensibility, our self symbol is thereby enriched.
+
+P204: The strange loop has two ingredients: 1) the ability to think, in the sense of having a large number of triggerable symbols, and to 'grow' new ones. 2) the _inability_ to connect he symbols we have to the micro-machinery we must e using to make them - our neurons - that would allow us to directly see causality rather than epiphenomenon. This pair causes us to attribute a reality to the epiphenomenon.
+
+P213: An 'I' can contain many strange loops. Think of a pair of cameras pointed at their respective screens, but each camera also capturing the seconds screen. So our symbology also captures other people, themselves strange loops. Though these other loops are not as high fidelity, they do affect each other - our own perceptions are extremely rich, whereas out internalization of other 'I's is through the intermediate and lesser form of language and action.
+
+P225: Is one soul always associated with one body? Is an individual the unit of humanity? There are cases where the line blurs - marriage, children, twins, a school of fish, a colony of ants.
+
+== Analogies, metaphors, examples
+
+P45: Simballs and Careenium. An analogy for abstraction, the atomic particles vs. the macro observation.
+
+P95: The Epi (imaginary marble in the envelope). An analogy for the epiphenomenon, the thing that thanks to our ability to abstract we see as existing, but in fact there is no concrete thing 'there' - it's a side effect of lower level machinery.
+
+P137/P171: Goru the genie and prim numbers. An analogy for Godel's incompleteness theorem 
+
+P155: La Femme du Boulanger: An analogy about analogy
+
+P157 Prince Hyppia: An analogy about self reference and paradox
+
+P169: The unclimbable peak: Top-down vs. bottom up causality, Godel vs Russell.
+
+P170: Perfect numbers and IMP: Things that are both true and unprovable
+
+P197: Kludgerot: More Godel vs. Russell, on dealing with top-down abstraction vs. bottom up atomism.
+
+P200: Soaps in Sanskrit: Using the example of creating words for new concepts in languages to illustrate the importance of stratified abstractions for thinking effectively.
+
+P214: Twinwirld: Using an imagined world where 99% of births are of identical twins to blur the concept that the unit of soul, of humanity, is in the individual.
