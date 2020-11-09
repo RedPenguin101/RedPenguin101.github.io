@@ -1,0 +1,36 @@
+= What's on
+
+A list of things I'm reading or working on, and what I have in the backlog
+
+== Working on
+
+. Book: I am a strange loop
+. Project: Qniform
+. Book: Grokking simplicity (as it comes out)
+
+== Backlog
+
+. Book: Thinking in Systems 
+. Book: Data and reality (a second read)
+. Book: Algebra-driven development
+. Project: Allocation of trades between funds
+. Project: History generator
+. Project: A DSL/Frontend for modelling time-series
+. Writing: Representing Reality
+. Book: Statistical rethinking
+. Book: Domain Driven Design (a second read)
+. Book: Event Storming
+. Book: Naming and Necessity
+. Book: SICP
+. Book: The Toyota Production System (a second read)
+. Book: The Republic
+. Book: Accelerate
+. Book: The DevOps handbook
+. Book: The managers path
+. Book: DataWarehousing
+. Book: The little lisper
+. Book: High Output Management
+. Book: The Six Sigma Way
+
+== Finished
+
