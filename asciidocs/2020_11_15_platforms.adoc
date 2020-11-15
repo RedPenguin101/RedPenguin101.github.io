@@ -1,0 +1,150 @@
+= What I Talk About When I Talk About Platforms
+by Evan Bottcher
+
+https://martinfowler.com/articles/talk-about-platforms.html[link]
+
+== Summary
+
+* A platform enables application teams to autonomously create and manage their own infrastructure for the applications they build, providing compelling defaults without restricting them
+* The goal is to greatly speed up delivery of features by eliminating 'backlog dependencies' between separate application and infrastructure teams 
+* Though autonomy is the goal, a full 'wild-west' approach can lead to drag of its own. Hence 'compelling default' options
+* The Platform is a product in it's own right. It's customers are the application teams. 
+* The division of responsibility between the application and platform teams should be clearly defined. The application teams still have a 'you build it, you run it' mentality. The Platform team shouldn't know or care what apps are running on the Platform
+* The Platform product is not just the capability. It must have internal support and consultancy for application teams, good documentation and quick start guides. 
+
+== What is a Platform anyway?
+
+> A digital platform is a foundation of self-service APIs, tools, services, knowledge and support which are arranged as a compelling internal product. Autonomous delivery teams can make use of the platform to deliver product features at a higher pace, with reduced co-ordination.
+
+See the article for https://www.thoughtworks.com/digital-platform-strategy[five key pillars of platform capability]
+
+. delivery infrastructure
+. APIs and architectural remediation
+. self-service data
+. experimental infrastructure
+. customer touchpoint technologies
+
+This article focuses on Delivery Infrastructure - cloud hosting and devops tools.
+
+== First, an un-platform
+
+BigCo - an Australian financial services organization
+
+A traditional arrangement of teams in Infra/Ops. Division along technical competencies. All change involve a number of these teams. A change to the application server config touches
+
+. middleware team, who own the application server config
+. midrange team, who own the underlying operating system config
+. DBA team who own the database config.
+. Networking team
+. A managed services provider will handle Load-balancing
+. Another provider own Firewall changes
+. Automation team, handle any changes to orchestration
+
+Then also enterprise modelling, security, change management teams
+
+Each teams were separately managed and targeting local efficiencies. But there was no focus on end-to-end delivery of features to customers.
+
+Changes were correspondingly very slow, and there was a resultant focus on minimizing changes. In turn this leads to a decline in application quality.
+
+== The impact of 'Backlog Coupling'
+
+The low hanging fruit of agile is in small autonomous product-focused teams. But faster and more responsive product teams amplifies the external constraints imposed by other parts of the organization.
+
+This manifests in 'Backlog Coupling', where delivery of Team A's backlog item is dependent on Team B finishing a corresponding item in their backlog. This compounds very quickly as you add teams, and becomes the primary blocker in delivery. The article quotes a 10-12x slowdown in delivery.
+
+Traditional 'Agile Scaling' methodologies try to solve this by increasing cross-team planning. This increases the alignment at the expense of autonomy. It's a bad idea. Seek to reduce backlog coupling, and thus increase autonomy, instead.
+
+Do this by 'self-service':
+
+. self-service provisioning
+. self-service configuration
+. self-service management and operation
+
+== The superficial private cloud
+
+For BigCo there was already centralized automation tooling, so the goal was to allow teams to self-provision.
+
+The delivery teams were given an API that could requisition compute instances according to a very fixed template. VMs were very locked down so that the midrange and other teams could retain control. The delivery team still needed to raise tickets for package install, networking, storage etc. So this 'Self-service' was just an encapsulation of the previous process, without fundamentally changing it.
+
+This is a 'Superficial Private Cloud' - a re-labelling of what was already there.
+
+Delivery teams were allowed to use the AWS API instead, which with it's 'you build it, you run it' approach, removed all these restrictions. They stampeded towards it.
+
+== Autonomy speeds time to market, increases innovation
+
+'Build for reuse' is a common default setting. The causes are risk-aversion and cost-reduction.
+
+image::./2020_11_15_platforms/autonomy-vs-centralised.png[]
+
+At another engagement (WebBiz), the author worked on an initiative to shift to the left-hand-side of this spectrum. Build, Run and (most) Infra were the responsibility of product teams. They called it 'Team Managed Infrastructure'. Some defaults and guidelines were centrally established, but there was a lot of autonomy.
+
+Doing this from total greenfield isn't so hard. But transitioning when you have a lot of legacy is much tougher.
+
+It worked well:
+
+* greater staff engagement
+* engineers get more experience
+* engineers able to drive innovation
+* engineers become more responsible
+* eliminates backlog-dependency
+* attracted good engineers
+
+== Technology diversification increases drag
+
+There is a cost. Each team has to own their own architecture/infrastructure decisions. There is a _huge_ number of available options, even if you limit yourself to the most established providers. A fully autonomous team will have to spend a lot of time evaluating, choosing, learning these tools.
+
+If different delivery teams are using different stacks, it creates a friction between different teams, reducing transferability and learning.
+
+Somewhere away from the 'wild west' far left of the spectrum is desirable: centrally establishing a compelling set of defaults that teams can use will reduce that drag and increase productivity without stifling autonomy.
+
+== Platform as an internal product
+
+The balance then is between autonomy and mandated consolidation. It's tough to establish it upfront, because the emerging needs are not predictable - they only come up during the course of development. There needs to be _some_ active competition between alternatives to arrive at the best solution.
+
+Here are some guidelines for coming up with a compelling platform:
+
+* Self-service for the large majority of cases
+* Composable
+* Doesn't force an inflexible way of working
+* Quick and cheap to start using (good Quick starts, docs, code samples)
+* A rich internal user community for knowledge sharing
+* Secure and compliant by default
+* Up to date
+
+> A platform should also be more than just software and APIs - it is documentation, and consulting, and support and evangelism, and templates and guidelines.
+
+== Wait a minute, isn't this a 'DevOps' team?
+
+Done badly, it might be.
+
+[quote,Phil Calçado]
+We totally lost the whole "DevOps" isn't a role/team/tools" battle didn't we? We keep losing these battles. Maybe a new strategy next time?
+
+(NOTE: if you have a team called 'DevOps, you're doing it wrong).
+
+Creating a good internal platform will give you (in fact is the same as) the DevOps benefits.
+
+Concentrate on the self-service delivery infrastructure platform, not on being 'DevOps'. That'll put you on the right path.
+
+Build a team that is responsible for the platform itself (the platform team), whose customers are the 'application teams'.
+
+If you go down this route, be very clear about the responsibilities of the platform team vs. the application teams.
+
+> Application teams build, deploy, monitor, and are on call for the application components and application infrastructure that they provision and deploy on the platform. Platform teams build, deploy, monitor, and are on call for the platform components and underlying platform infrastructure.
+
+The platform team shouldn't know or care what apps are running on the platform. 'You build it, you run it' still applies.
+
+== Where do I start?
+
+Prerequisites:
+
+* Move away from a project mindset, towards a product mindset.
+* Consider Platform as a product in its own right - it needs a long-lived, stable team, with end-to-end responsibility for the product
+* A willingness to shift responsibility from centralized ops and support
+* A willingness to trade-off strict consistency of infra-implementation for freedom and local responsibility.
+
+Gotchas to watch out for
+
+* The platform itself isn't enough. Your application teams need training in _how_ to make the choices they can now make.
+* You don't know what platform capabilities you need upfront. Start small based on proven needs. Harvest ideas from the app teams based on what they have already built
+* Draw a hard distinction between the Platform and any limited/constrained 'superficial private cloud' tooling you already have
