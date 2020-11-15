@@ -1,0 +1,136 @@
+= ORMS are the Vietnam of computer science
+
+http://blogs.tedneward.com/post/the-vietnam-of-computer-science/
+
+The US began the Vietnam war with unclear and conflicting goals, and disaster resulted. This article is about the parallels between that and ORM.
+
+ORM starts well, gets complicated, then gets monstrous. Early success yields a commitment to use it in places where success becomes more elusive.
+
+Know when to cut and run - ignore sunk costs.
+
+== Impedance mismatch
+
+This is about the differences between the Object vs. Relationship modelling paradigms. They are subtle but profound.
+
+With OO, you encapsulate a (usually implicit) identity, state, and behavior.
+
+With relational modelling, you have storage of facts and predicate based retrieval logic.
+
+An 'Unordered Relation' consists of an attribute, a tuple (row), a relation value (combination of a set of tuples and something that matches that relation - i.e. a table.), and a relation variable.
+
+You then have set operators: join, union, intersection etc. that allow for 'derived relation values'. e.g. the number of people living in individual cities from the people relation.
+
+If you're using an OO language and have relational storage, you always need to translate between the two.
+
+== Object-Relational Mapping
+
+Options:
+
+* Automated tools, like hibernate.
+* Hand rolled
+* Just accept the relational schema as your OO model - slave the OO objects. Active Record is a variant of this.
+
+Slaving is the usual answer. Solve the problem by ignoring half of it.
+
+The logical conclusion is to go all in and just use an object database. (The other all-in option, to got totally relational, is usually impractical).
+
+There aren't actually a lot of good options here. Hence we have to do ORM.
+
+== The Object to table problem
+
+So what's the problem? Just say that OO classes are tables, Fields are columns, objects are rows. Easy
+
+Problems start with _inheritance_. The relational model doesn't support an 'is-a' relationship or polymorphism. Our options here are:
+
+=== A table-per-class. Simple but expensive
+
+Each class gets it's own table. Derived types are stitched together through joins.
+
+e.g. A Person Class with a Student sub-class which itself has a GraduateStudent sub-class. You'd have a table for each, and you'd join across all 3 tables to get all the fields of the full object.
+
+BUT you need to join on the identity, which isn't in the object itself. Where would you get it?
+
+If you don't want to manually specify the inheritance tree with each call, you'll also have to have something in the database which does that - i.e. table pointers.
+
+It's also inefficient - three joins to bring one object into memory!
+
+It gets worse the more subclasses you add. A 'get all people' call gets crazy expensive.
+
+=== A table per concrete class
+
+More complex, a fair amount of duplication, but more efficient.
+
+It's effectively de-normalizing.
+
+=== A (sparse) table per class family (e.g. Student)
+
+Also de-normalizing. You'll need to have a column for 'subclass'.
+
+It introduces a lot of nulls, which is harmful to the integrity constraints that are one of the main benefits of an RMDBS.
+
+== One-to-many, Many-to-many relationships 
+
+1:N and M:N cardinalities are handled differently by OO and RDB. In the opposite way.
+
+OO has unidirectional object traversal. An car object 'has' 4 type objects, and you would get to the tyre objects from the car object. It's a 'parent to child' traversal.
+
+RDB also has unidirectional traversal through FKs. But it's in the opposite direction! A tyre would have an FK for the car it belongs to, but the Car table will have no reference to it's tyres. For M:N relationships you need to have a 3rd 'relationship' table.
+
+In both cases, you'll need to do a broad (and thus inefficient) join to 'discover' relationships.
+
+== Schema-Ownership conflict - can you change both?
+
+ORM is predicated on the developer owning design of both schemas. Quite often this is not the case. Even if it is at first, over time devs will lose the ability to change the DB schema (schema freeze as it gets used downstream and implicitly coupled).
+
+Generally OO schemas are easier to change the RDB ones (migrations...) 
+
+This all results in pressure to not have changes in the OO schema impact the DB schema. Which breaks the premise of ORM
+
+The solution is often to create a separate, private database, resulting in complexity and silos.
+
+== Identity
+
+Objects have an identity (_this_) which is independent of its attributes. Usually implicit. They represent an _entity_, something which has an identity which is consistent even as its values change.
+
+Relational models are best at storing _values_, not entities. i.e. if you have two rows in a table with identical field values, that's usually considered a data corruption. (it _can_ handle entities with say autoincrementing PKs, but its a bit inelegant)
+
+You run into transactional issues if entities are being accessed both via ORM and via SQL. This only increases with caching, which many ORM systems have built in.
+
+== Data retrieval concerns
+
+OO systems will use constructors to reconstruct objects. But these generally operate one at a time, so if you want to do a bunch of objects you need to do several round trips to the DB.
+
+The solution to this is one of 3 approaches:
+
+=== Query by example
+
+[source,python]
+----
+p = Person()
+p.LastName = "Smith"
+people = QueryExecutor.execute(p)
+----
+
+This isn't nearly expressive enough for anything complicated. There's no ability to say 'find all people named Smith or Cromwell' without complicating the API a lot.
+
+Domain objects _must_ support nullable fields, which could violate model invariants.
+
+=== Query by API
+
+[source,python]
+q = Query()
+q.from("PERSON").Where(EqualsCriteria("PERSON.LAST_NAME", "SMITH")people = QueryExecutor.execute(q)
+
+More verbose and complicated that the actual SQL equivalent of the same query!
+
+Behind the scenes, the join logic is hard.
+
+Because you're hardcoding the query params in strings, it's easy to make mistakes. You can avoid this with unit tests, but it's very easy to miss things.
+
+It's very tightly coupled with the db schema. The dev has to know a lot about it, which nullifies one of the supposed benefits of ORM.
+
+== Query by Language
+
+There are several languages which are meant to encode SQL logic in an Object call style: OQL, HQL.
+
+If you're doing this, you no longer have an ORM. You're just writing SQL with a different dialect - a dialect you have to learn!

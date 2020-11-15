@@ -1,0 +1,77 @@
+#+TITLE: ORMS are the Vietnam of computer science
+
+http://blogs.tedneward.com/post/the-vietnam-of-computer-science/
+
+* The US began a war with unclear and conflicting goals
+* ORM starts well, gets complicated, then gets monstrous
+early success yields a commitment to use it in places where success becomes more elusive
+
+Know when to cut and run - ignore sunk costs
+* Impedence mismatch
+** Object vs. Relational: subtly yet profoundly different
+** OO: identity (usually implicit), state behaviour, encapsulation
+** Rel: knowledge storage and retrieval based on predicate logic.
+*** relation (unordered), attribute, tuple (row), relation value (combo of set of tuples and a relation that match the relation, i.e. a table), relation variable
+*** Set operators: join, union, intersect etc. allow for 'derived relation values' (number of people living in individual cities, from the people relation)
+** If using a OO language with rel storage, always will have to be translation
+* OR Mapping
+** types
+*** automated tools (e.g. hibernate)
+*** hand-rolled
+*** just accept the relational schema as the model for your OO, slave the OO objects. Active Record is a variant of this
+** slaving one to the other is the usual answer. Solve the problem by ignoring half of it
+** The logical conclusion is to go all in: use an object style database. (the opposite, a totally relational system, is impractical)
+** But in reality we have to go halfway. hence ORM
+* The Object to table Problem
+** So whats the problem? OO Classes are tables, fields are columns.
+** The problems start with *inheritence*. Relational model doesn't support 'is-a' relationships or polymorphism. So you can do one of the following
+*** table-per-class - simple to understand, but expensive
+**** each class gets its own relational table
+**** derived types are stitched together through joins
+**** So a Person class with Student subclass, which has it's own subclass GraduateState, would have a table for each, and you would join across them to build up the full object.
+**** But you would need to have an identifier which allows you to join, which is not in the object.
+**** You'd also have to have a table describing the inheritence, i.e. table pointers
+**** 3 Joins to bring one object into memory!
+**** And it gets worse the more subclasses you have. Picture a Person class with 10 subclasses (Professor, Staff, Undergrad etc.). A 'get all people' call would be crazy expensive?
+*** table-per-concrete-class - more complex but more efficient
+**** effectively denormalising
+*** table-per-class-family
+**** Also denormalising, but with one sparse table (including a column for what the subtype is). NULLabillity is harmful to integrity constraints offered by RDBMS
+** *1:n* and *m:n* cardinality associations are handled totally differently (and kind of oppositely) in OO and RDB.
+*** For OO: Unidirectional (i.e. object traversal). the 'associated object' doesn't know the parent it's associated with.
+*** for RDB: Also unidirection, but through FKs. The associated object knows its parent, but its parent doesn't know it! For m:n this means you need a third (relationship) table. Even for 1:n, at some point you will have to a 'broad join' to 'discover' realtionships
+** Schema-Ownership conflict - can you change both?
+*** ORM is predicated on the developer owning design of both schemas. Quite often this is not the case. Even if it is at first, over time devs will lose the ability to change the DB schema (schema freeze as it gets used downstream and implicitly coupled) even as they CAN change the object schema.
+*** Generally OO schemas are easier to change the RDB ones (migrations...) 
+*** This all results in pressure to not have changes in the OO schema impact the DB schema. Which breaks the premise of ORM
+*** The solution is often to create a separate, private database, resulting in complexity and silos.
+** Entity Identity issues
+*** Objects have an identity (/this/) which is independent of its attributes. Usually implicit. They represent an /entity/, something which has an identity which is consistent even as its values change.
+*** Relational models are best at storing /values/ not entities. i.e. if you have two rows in a table with identical field values, that's usually considered a data corruption. (it /can/ handle entities with say autoincrementing PKs, but its a bit inelegant)
+*** You run into transactional issues if entities are being accessed both via ORM and via SQL. This only increases with cacheing, which many ORM systems have built in.
+** Data retrieval concerns
+*** OO systems will use constructors to reconstruct objects. But these generally operate one at a time, so if you want to do a bunch of objects you need to do several round trips to the DB.
+*** The solution to this is one of 3 approaches:
+**** Query by Example (QBE)
+#+begin_src python
+  p = Person()
+  p.LastName = "Smith"
+  people = QueryExecutor.execute(p)
+#+end_src
+***** Not nearly expressive enough for anything complicated
+***** No ability to say 'find all people named Smith or Cromwell' (or at least not without complicating the API a lot)
+***** Domain objects /must/ support nullable fields, which could violate model invariants.
+**** Query by API (QBA)
+#+begin_src python
+  q = Query()
+  q.from("PERSON").Where(EqualsCriteria("PERSON.LAST_NAME", "SMITH"))
+  people = QueryExecutor.execute(q)
+#+end_src
+***** Much more verbose than SQL!
+***** Stuff with joins is hard
+***** Hardcoded, uncheckable strings! Easy to avoid (unit testing), but easy to miss too.
+***** The dev must know the DB schema, is tightly coupled to it
+**** Query by Language (QBL)
+***** Another language, eg OQL, HQL. Similar to but 'better than' SQL
+***** Not ORM anymore, you're just writing SQL with a different accent!
+      
