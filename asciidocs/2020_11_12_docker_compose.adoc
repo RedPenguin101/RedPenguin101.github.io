@@ -1,0 +1,155 @@
+= Docker Compose
+
+== Overview
+
+Compose is a tool for defining and running multi-container Docker applications.
+
+With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+3 Steps
+
+. define app env with Dockerfile
+. define services with _docker-compose.yaml_
+. run `docker-compose up`
+
+You can manage app lifecycles:
+
+* start, stop, rebuild services
+* view status of services
+* stream log outputs
+* run commands on services
+
+Sample docker-compose file:
+
+[source, yaml]
+----
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+      - logvolume01:/var/log
+    links:
+      - redis
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}
+----
+
+== Install
+
+Install docker-compose https://docs.docker.com/compose/install/[here]
+
+== Example app
+
+set up a folder `composetest`
+
+set up a `requirement.txt` with flask and redis
+
+set up a file `app.py`
+
+[source,python]
+----
+import time
+
+import redis
+from flask import Flask
+
+app = Flask(__name__)
+cache = redis.Redis(host='redis', port=6379)
+
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
+
+@app.route('/')
+def hello():
+    count = get_hit_count()
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+----
+
+create a dockerfile
+
+[source,Dockerfile]
+----
+FROM python:3.7-alpine
+WORKDIR /code
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+RUN apk add --no-cache gcc musl-dev linux-headers
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+EXPOSE 5000
+COPY . .
+CMD ["flask", "run"]
+----
+
+define services in `docker-compose.yaml`
+
+[source,yaml]
+----
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+  redis:
+    image: "redis:alpine"
+----
+
+`docker-compose up`
+
+Go to http://localhost:5000/
+
+In another terminal, do `docker image ls`
+
+Inspect with `docker inspect <tag or id>`
+
+Teardown with `docker-compose down`, or ctrl+c in running process
+
+== Putting in ENV var and dynamic code loading (bind mounts)
+
+[source,yaml]
+----
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes: 
+      - .:/code
+    # mounts current directory to /code inside the container, so you can 
+    # change code on the fly
+    environment:
+      FLASK_ENV: development
+    # tells Flask to run in dev mode and reload on change
+  redis:
+    image: "redis:alpine"
+----
+
+`docker-compose up`
+
+Now you have the mount you can change the source file and it'll be rebuilt
+
+== Other commands
+
+`docker-compose ps` to see current running processes
+
+`docker-compose run web env` to see env vars for web service
+
+`docker-compose stop` shuts down and removes containers
+
+`docker-compose down --volumes` does the same but also removes the redis data volume
