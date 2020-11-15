@@ -129,7 +129,7 @@ Because you're hardcoding the query params in strings, it's easy to make mistake
 
 It's very tightly coupled with the db schema. The dev has to know a lot about it, which nullifies one of the supposed benefits of ORM.
 
-== Query by Language
+=== Query by Language
 
 There are several languages which are meant to encode SQL logic in an Object call style: OQL, HQL.
 
