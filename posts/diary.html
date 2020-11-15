@@ -421,6 +421,38 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article">
 <div id="header">
 <h1>Diary</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_24th_october_2020">24th October 2020</a>
+<ul class="sectlevel2">
+<li><a href="#_a_rust_codewars_kata">A Rust Codewars Kata</a></li>
+<li><a href="#_learned">Learned</a></li>
+</ul>
+</li>
+<li><a href="#_26th_october_2020">26th October 2020</a></li>
+<li><a href="#_9th_november_2020">9th November 2020</a>
+<ul class="sectlevel2">
+<li><a href="#_i_am_a_strange_loop">I am a strange loop</a></li>
+</ul>
+</li>
+<li><a href="#_11_november_2020">11 November 2020</a>
+<ul class="sectlevel2">
+<li><a href="#_allocations_and_spec">Allocations and Spec</a></li>
+</ul>
+</li>
+<li><a href="#_12_november_2020">12 November 2020</a>
+<ul class="sectlevel2">
+<li><a href="#_coding">Coding</a></li>
+</ul>
+</li>
+<li><a href="#_15th_november_2020">15th November 2020</a>
+<ul class="sectlevel2">
+<li><a href="#_writing_to_a_writable_object_in_memory">Writing to a writable object in memory</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -604,10 +636,84 @@ fn descending_order(x: u64) -&gt; u64 {
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_9th_november_2020">9th November 2020</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_i_am_a_strange_loop">I am a strange loop</h3>
+<div class="paragraph">
+<p>Finished chapter 15 (Entwinement) and read chapter 16 (Grappling with the Deepest Mystery).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_11_november_2020">11 November 2020</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_allocations_and_spec">Allocations and Spec</h3>
+<div class="paragraph">
+<p>Spent some time on this thought-model. Used spec a bit and learned (or was reminded of) the following</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>to generate a data structure from a spec you need a separate library: <code>clojure.spec.gen.alpha</code>. Then you <code>(gen/generate (s/gen ::my-spec))</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_12_november_2020">12 November 2020</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_coding">Coding</h3>
+<div class="paragraph">
+<p>Json read string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(json/read-str "{\"a\":1,\"b\":2}"
+               :key-fn #(keyword "com.example" %))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use fixtures in <code>clojure.test</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn app-fixture [f]
+  (c/-main)
+  (Thread/sleep 100)
+  (f)
+  (c/halt))
+
+(use-fixtures :once app-fixture)
+;; will wrap ALL tests in fixture, not per-deftest setup/teardown</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_15th_november_2020">15th November 2020</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_writing_to_a_writable_object_in_memory">Writing to a writable object in memory</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(io/input-stream (.getBytes "text"))</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-26 13:06:45 GMT
+Last updated 2020-11-15 11:00:08 GMT
 </div>
 </div>
 </body>

@@ -7,6 +7,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: I am a strange loop
 . Project: Qniform
 . Book: Grokking simplicity (as it comes out)
+. Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/507643-recipes/1469711-18-retrieve-recipe[Jacek Schae's Learn Reitit]
 
 == Backlog
 

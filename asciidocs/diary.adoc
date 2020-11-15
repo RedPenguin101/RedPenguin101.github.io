@@ -1,4 +1,5 @@
 = Diary
+:toc:
 
 == 24th October 2020
 
@@ -98,3 +99,53 @@ I ended up doing the pretty dull:
 ----
 
 Kind of does the this implicitly, but essentially: if sqrt m is a tri then m is a SoQ.
+
+== 9th November 2020
+
+=== I am a strange loop
+
+Finished chapter 15 (Entwinement) and read chapter 16 (Grappling with the Deepest Mystery).
+
+== 11 November 2020
+
+=== Allocations and Spec
+
+Spent some time on this thought-model. Used spec a bit and learned (or was reminded of) the following
+
+* to generate a data structure from a spec you need a separate library: `clojure.spec.gen.alpha`. Then you `(gen/generate (s/gen ::my-spec))`
+
+== 12 November 2020
+
+=== Coding
+
+Json read string:
+
+[source,clojure]
+----
+(json/read-str "{\"a\":1,\"b\":2}"
+               :key-fn #(keyword "com.example" %))
+----
+
+Use fixtures in `clojure.test`
+
+[source,clojure]
+----
+(defn app-fixture [f]
+  (c/-main)
+  (Thread/sleep 100)
+  (f)
+  (c/halt))
+
+(use-fixtures :once app-fixture) 
+;; will wrap ALL tests in fixture, not per-deftest setup/teardown
+----
+
+== 15th November 2020
+
+=== Writing to a writable object in memory
+
+[source,clojure]
+----
+(io/input-stream (.getBytes "text"))
+----
+
