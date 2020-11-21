@@ -7,11 +7,21 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: I am a strange loop
 . Project: Qniform
 . Book: Grokking simplicity (as it comes out)
-. Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/507643-recipes/1469711-18-retrieve-recipe[Jacek Schae's Learn Reitit]
+. Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit]
 
 == Backlog
 
-. Book: Thinking in Systems 
+. Project: A 'code challenge' thing with a fund theme
+. Book: Thinking in Systems
+. AWS - next qualification
+. Book: Design Unbound
+. Writing: Why REPL is a superpower
+  * https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html[1]
+  * https://clojure.org/guides/repl/introduction[2]
+  * https://www.youtube.com/watch?v=Ngt29DyNDRM[3]
+  * https://www.youtube.com/watch?v=tpcl5pjkRTQ[4]
+  * https://www.youtube.com/watch?v=oLvwbDUXGsc[5]
+  * https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/[6]
 . Book: Data and reality (a second read)
 . Book: Algebra-driven development
 . Project: Allocation of trades between funds
@@ -32,6 +42,8 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: The little lisper
 . Book: High Output Management
 . Book: The Six Sigma Way
+. Book: Information: A history, a theory, a flood
+. Book: Agile Conversations
 
 == Finished
 
