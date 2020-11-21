@@ -1,0 +1,298 @@
+= Property Based Testing in Clojure
+Based on Eric Normand's courses at purelyfunctional.tv/
+
+== Introducing PBT
+
+https://purelyfunctional.tv/courses/property-based-testing-with-test-check/[Course Link]
+
+PBT works like this:
+
+. You Define Generators (something which generates random values)
+. Define Property (something where true indicates pass, false fail)
+. Tell the computer to generate x number test cases from the generators, and test them with the property
+
+Why this over 'example based testing' (EBT)? It's good at finding corner cases that you wouldn't have thought of.
+
+=== Shrinkage
+
+This is an additional element in PBT.
+
+If the test finds that a value x causes the test to fail, it will try to _shrink_ the value so that it can find the simplest possible value that causes the test to fail. This way it can present you with something that is probably more clear on _why_ it failed.
+
+Drops a char from a string, drops an element from a list etc.
+
+=== What is PBT?
+
+You have a function `abs n` - finds the absolute value.
+
+What's the _ideal_ test? You test every number in the universe. Obviously not possible.
+
+What can we do? We can test a small number of hand-selected numbers - EBT
+
+Or we can test a large number of randomly selected numbers - PBT
+
+PBT removes the human bias - the 'writing your tests after the code' problem. No bias if you're randomly selecting.
+
+Also, more is better.
+
+Properties for abs n:
+
+* for all n, abs n is >= 0
+* for all n, abs n = n, or abs n = -n
+
+=== Test.check
+
+* The Clojure PBT lib
+* Based on Haskell's Quickcheck
+* Has spec integration (used for creating generators) - but you'll have to create your own
+* integrates with clojure.test
+
+=== When to use PBT
+
+* Before you implement
+* After you implement (cf. EBT, when you _shouldn't_ do this.)
+* When you find a bug
+* To verify a design - before you even _think_ about implementing 
+
+=== How does PBT work?
+
+. Generate random input
+. send to system
+. test output
+. Pass? then loop and try another one until you've tested the specified number of cases
+. Fail? then shrink the input until it passes, then return the last failing case
+
+=== An introductory example
+
+We're testing the `clojure.string/upper-case` function.
+
+Sounds easy, but The Unicode stuff gets complicated!
+
+You need to require:
+
+* `clojure.test`
+* `clojure.test.check.clojure-test :refer [defspec]`
+* `clojure.test.check.properties :as prop`
+* `clojure.test.check.generators :as gen`
+
+A `defspec` (a test) looks like this
+
+[source,clojure]
+----
+(defspec length-doesnt-change
+  100
+  (prop/for-all
+   [s gen/string-ascii]
+   (= (count s) (count (str/upper-case s)))))
+----
+
+It consists of a name, a number of tests, and a property.
+
+The property (here for-all) consists of bindings and a body.
+
+The bindings will usually include a generator. You can see how it works with `(gen/sample gen/string)`
+
+=== Built in generators
+
+* `boolean`
+
+==== Numbers
+
+* `nat` - non negative integers
+* `small-integer` - pos and neg
+* `large-integer` - still longs (64bit) rather than BigInt
+* `large-integer*` - more options `(gen/large-integer* {:min 10 :max 100000})`
+* `(gen/choose 0 10000)` - bypasses the 'size' property - even things early in the sample will have a large range of possible options
+* `ratio`
+* `big-ratio`
+* `double` / `double*`
+* `size-bounded-bigint`
+
+==== Char/String/String-like
+
+* `char` between 0 and 255 (including unprintable)
+* `char-ascii`
+* `char-alphanumric`
+* `char-alpha` - just letters
+* `string`
+* `string-ascii`
+* `string-alphanumeric`
+* `keyword` (non-name-spaced)
+* `keyword-ns`
+* `symbol`
+* `symbol-ns`
+* `uuid`
+
+==== Collections
+
+* `(gen/vector gen/nat 2 10)` the last 2 args are the size of the collection
+* `vector-distinct` - no repeated elements
+* `list`
+* `list-distinct`
+* `set`
+* `sorted-set`
+* `(gen/map gen/keyword gen/string-ascii)`
+* `(gen/tuple gen/nat gen/string-alphanumeric gen/boolean)` - can use for generating multiple values at once, and then destructure 
+* `(gen/hash-map :first-name gen/string-alphanumeric :last-name gen/string-alphanumeric :age gen/nat)` - use fore modelling entities
+* `(gen/not-empty (gen/vector gen/boolean))` wrap in `not-empty` to filter out empty collections. Can use it on strings too 
+* you can nest: `(gen/vector (gen/vector gen/boolean))`
+* you can do recursive generation: `(gen/recursive-gen gen/vector gen/boolean)`
+
+==== Random selections
+
+* `(gen/elements [1 2 3])`
+* `(gen/return 1)` will just return 1
+* `(gen/shuffle [1 2 3 4 5])` will return a shuffled version of the passed collection
+* `(gen/one-of [gen/string-alphanumeric gen/nat (gen/return nil) (gen/vector gen/nat)])`
+* `(gen/frequency [[10 gen/nat] [1 (gen/return nil)])` Like one-of but you can specify the likelihood of each type being selected
+
+=== Simple Generators
+
+==== Such-that
+
+Just a filter on a sequence of generated values
+
+`(gen/sample (gen/such-that even? gen/nat))`
+
+==== fmap
+
+Just like map
+
+`(gen/sample (gen/fmap #(* 2 %) gen/nat)`
+
+You can chain them together
+
+`(gen/sample (->> gen/nat (gen/fmap inc) (gen/fmap -))`
+
+You can do a lot of the same things you can do with filter with fmap. *Prefer fmap to filter*, because there's less wasted work.
+
+Sort of like a regex spoof for `#[abcd+]`. You couldn't do this with an actual regex on such-that.
+
+`(gen/sample (gen/fmap #(apply str %) (gen/not-empty (gen/elements [\a \b \c \d]))))`
+
+==== bind
+
+Think of it like, you generate a value and use that to create a new generator
+
+`(gen/sample (gen/bind gen/nat #(gen/vector gen/nat %)))`
+
+What's happening here is:
+
+* the first `gen/nat` is generating a natural number value
+* that value is being passed to the fn `(gen/vector gen/nat %)` as the `%` (in the context of gen/vector this is the size of the generated vector). 
+* gen/bind returns a generator that generated random-length vectors of nats.   
+
+You can build up pretty sophisticated stuff using this. We can do matrix generation:
+
+[source,clojure]
+----
+(gen/sample (gen/bind (gen/tuple (gen/fmap inc gen/nat)
+                                 (gen/fmap inc gen/nat))
+                      (fn [[m n]] (gen/vector 
+                                   (gen/vector gen/nat m)
+                                   n))))
+----
+
+==== Let
+
+Sugar on top of bind, so you can do multiple binds without it getting messy
+
+[source,clojure]
+----
+(gen/sample
+ (gen/let
+  [[m n] (gen/tuple
+          (gen/fmap inc gen/nat)
+          (gen/fmap inc gen/nat))]
+   (gen/vector
+    (gen/vector gen/nat m)
+    n)))
+----
+
+*Avoid bind and let if you can* - it doesn't work well for shrinkage.
+
+=== Strategies for creating properties
+
+Working on EN's mergesort function.
+
+==== Functionality
+
+Testing functionality is ensuring it does what it's supposed to do. Functionality properties _describe what the function is meant to do_.
+
+Caveat: You can't reimplement.
+
+We can use _another_ sort. This is called 'comparing with a model'. The model can be much more permissive in terms of performance than the production function. 
+
+[source,clojure]
+----
+(defspec sort-with-model 100
+  (prop/for-all
+   [numbers (gen/vector gen/large-integer))]
+   (= (sort numbers) (mergesort numbers))))
+----
+
+But you want to make sure your model is much simpler than the thing you're testing! Otherwise your model will be as buggy as your function.
+
+[source,clojure]
+----
+(defspec distinct-number-of-items
+  (prop/for-all
+   [xs (gen/vector (gen/choose 0 4))]
+   (= (count (distinct xs)) (count (set xs)))))
+----
+
+What if you can't make a simple model? You need to think deeper about the _truths_ of the function. So what can you say about sort that is universally true?
+
+* the first element is the smallest element
+* the length of the input is the same as the output
+* the elements are in order (`apply <= s`)
+
+But notice that these are by no means complete - a function that returns `[1]` for every call will pass these test.
+
+==== Invariants
+
+The answer to question: What doesn't change? What properties of the output will be true for every call?
+
+* always returns a list
+* length of input is always equal to the length of the output
+* the output contains the same elements as the output (use `frequencies` or something.)
+
+==== Algebraic
+
+When you can find them, they are very good!
+
+* simple formulas
+* can make them conditional on certain thing 
+* sometimes part of the functionality
+
+Here's a good default list of things to think about whether you function has these algebraic properties
+
+* inverse (unary) - is there a function where, if you apply it to `(f x)`, you get `x`? `(= (f' (f x)) x)`, `(= (dec (inc x)) x)`, `(= (read-string (pr-str x)) x)`. You're looking for function pairs. Special case: self-inversion - `(f (f x)) = x`. E.g. reverse, 
+* idempotence (unary) - is `(f (f x)) = (f x)`?
+* commutative (binary)- order of arguments doesn't matter. Is `(f x y) = (f y x)`, `x * y = y * x`
+* associate (binary) - order of _operations_ doesn't matter. `(f x (f y z)) = (f (f x y) z)`.`x * (y * z) = (x * y) * z`
+* identity (binary) - is there an i value ST `(f i x) = x`
+* zero (binary) - is there a value n ST `(f n x) = n`
+
+Conditionality:
+
+[source,clojure]
+----
+(defspec merge-commutative
+  (prop/for-all
+   [n1 (gen/map gen/keyword (gen/choose 0 9))
+    n2 (gen/map gen/ke yword (gen/choose 0 9))]
+   (if (empty? (clojure.set/intersection (set (keys n1))
+                                         (set (keys n2))))
+     (= (merge n1 n2)
+        (merge n1 n2))
+     true)))
+----
+
+=== Pure functions
+
+Easiest thing to check!
+
+Goal and challenge: cover the entire desired behavior 
+
+The technique: adversarial
