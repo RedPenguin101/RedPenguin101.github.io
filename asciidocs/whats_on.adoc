@@ -15,13 +15,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Thinking in Systems
 . AWS - next qualification
 . Book: Design Unbound
-. Writing: Why REPL is a superpower
-  * https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html[1]
-  * https://clojure.org/guides/repl/introduction[2]
-  * https://www.youtube.com/watch?v=Ngt29DyNDRM[3]
-  * https://www.youtube.com/watch?v=tpcl5pjkRTQ[4]
-  * https://www.youtube.com/watch?v=oLvwbDUXGsc[5]
-  * https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/[6]
+. Writing: Why REPL is a superpower https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html[1] https://clojure.org/guides/repl/introduction[2] https://www.youtube.com/watch?v=Ngt29DyNDRM[3] https://www.youtube.com/watch?v=tpcl5pjkRTQ[4] https://www.youtube.com/watch?v=oLvwbDUXGsc[5] https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/[6]
 . Book: Data and reality (a second read)
 . Book: Algebra-driven development
 . Project: Allocation of trades between funds
