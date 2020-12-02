@@ -1,0 +1,92 @@
+= Advent of Code 2020: Day 2
+
+https://adventofcode.com/2020/day/2[link]
+
+== Problem summary
+
+You are given a series of strings representing a password policy and a password, and are tasked with determining whether the passwords are valid according to the policy. For example
+
+ 4-6 w: fgwwwwwcbkw
+
+the `4-6 w` is the policy and the `fgwwwwwcbkw` is the password. 
+
+The policy can be broken into a integer tuple and a char: `[4-6] \w`. How the policy is interpreted changes over part 1 and 2:
+
+* Part 1: the integer tuple is the acceptable range of the number of times the char can appear in the password.
+* Part 2: the integer tuple has the 2 (1-indexed) positions in the password at which the char must appear exactly once. 
+
+== Solution notes
+
+I tried to get a bit too elaborate with the data structure the input was parsed into. Something like
+
+----
+{:policy {:lower-freq 1
+          :upper-freq 4
+          :char \z}
+ :password "abdkjhf"}
+----
+
+This was unwieldy to destruct (because of unnecessary nesting). Lower-freq and upper-freq would be better given as a tuple.
+
+The lower-freq and upper-freq, being named, the names turned out to be too specific to the context of part one, and were no longer appropriate for part 2. 
+
+I ended up with a data structure like this.
+
+----
+{:range [1 3]
+ :char \a
+ :password "abcde"}
+----
+
+Flatter, less tied to how it is used, since the calling function can interpret 'range' however it wants.
+
+Other than that, nothing especially interesting in the solution. Another illustration, if one were needed, of how nice the comparator functions (`<=` etc.) can be. A use of `comp` to compose the decrementing of the range and the fetching of that index in password.
+
+I think all functions except `password-check2` scan pretty well.
+
+`password-check` can be read off as 'is the frequency of char in password between the first and second elements of the range'. Maybe that range stuff could be a bit clearer.
+
+`password-check2` is a bit tougher. Row by row we are 
+
+. decrement both elements of range and find the char at those indices of the password
+. Find the frequencies of those two (this is especially ugly I think)
+. get the number of frequencies of the target char
+. is that number 1?
+
+You know you have exactly two elements, so finding the 'frequency' sounds weird. A better description of what you're doing is an exclusive or: is the first element equal to the char, xor is the second.
+ 
+== Code
+
+[source,clojure]
+----
+(defn parse-input-row [s]
+  (let [[range c pwd] (str/split s #" ")]
+    {:range (map #(Integer/parseInt %) (str/split range #"-"))
+     :char (first c)
+     :password pwd}))
+
+(defn password-check [{:keys [range char password]}]
+  (<= (first range)
+      (get (frequencies password) char 0)
+      (second range)))
+
+(->> "resources/day2input"
+     slurp
+     str/split-lines
+     (map parse-input-row)
+     (filter password-check)
+     count)
+
+(defn password-check2 [{:keys [range char password]}]
+  (-> (map (comp (partial get password) dec) range)
+      (frequencies)
+      (get char)
+      (= 1)))
+
+(->> "resources/day2input"
+     slurp
+     str/split-lines
+     (map parse-input-row)
+     (filter password-check2)
+     count)
+----
