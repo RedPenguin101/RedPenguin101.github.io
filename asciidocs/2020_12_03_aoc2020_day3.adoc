@@ -130,7 +130,11 @@ Part 2 is a simple list comprehension of the same pieces
 
 == Thoughts, lessons learned
 
-Not many, got this one right straight off the bat. The name of the 'next-row' function is not very good. 'Next-spot' or something would've been better, or 'next-coordinate' would have tapped into a more generic Cartesian abstraction.
+I like the very list processing approach here: You have co-ordinates. Are there trees there? Count the trees.
+
+I don't think the use of transducers will give enough benefit to offset the nicer readability of the threading version.
+
+Not many lessons learned, got this one right straight off the bat. The name of the 'next-row' function is not very good. 'Next-spot' or something would've been better, or 'next-coordinate' would have tapped into a more generic Cartesian abstraction.
 
 I made the `next-row` function higher order right off the bat on the assumption that we would need to try other jumps. That turned out to be right, but still maybe not a good idea to try and guess future requirements. I'm split on this. I think it's a natural assumption to make based on the way the problem was described.
 
@@ -164,4 +168,103 @@ I made the `next-row` function higher order right off the bat on the assumption 
   (apply * (for [jumps [[1 1] [1 3] [1 5] [1 7] [2 1]]]
              (apply count-trees input jumps))))
 
+----
+
+== Other solutions
+
+* https://gist.github.com/KennyMonster/2cdb391d0f45105b8ab38dab58923063#file-day_3-clj-L11[KennyMonster]
+* https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day3.clj[transducer]
+* https://github.com/green-coder/advent-of-code-2020/blob/master/src/aoc/day_3.clj[green-coder]
+* https://github.com/nbardiuk/adventofcode/blob/master/2020/src/day03.clj[nbardiuk]
+* https://github.com/genmeblog/advent-of-code-2020/blob/master/src/advent_of_code_2020/day03.clj[genmeblog]
+* https://github.com/benfle/advent-of-code-2020/blob/main/day3.clj[benfle]
+* https://github.com/lambdaisland/aoc_2020/blob/main/src/lambdaisland/aoc_2020/puzzle03.clj[lambdaisland] (https://www.youtube.com/watch?v=wXVDfzxeZ-o[video])
+
+=== Lambda Island
+
+Initially a similar process to mine:
+
+`input->map` turns input into a 2d array of truthy and falsey values (here, true and false)
+
+A `tree?` function which uses `get-in` and `mod`. No default value though, so it will be nil if you go oob.
+
+Where it diverges is:
+
+A `sled` function which takes the jump sizes, the hill map, the current x and y vals, and a counter of the trees. Obviously it's meant to be run iteratively. It conditionally returns `(reduced trees)` if you went off the end of the hill map, or the input with x and y updated and trees incremented if there was a tree there.
+
+A `sled-down` function which takes a slope (tuple of jump size, e.g. `[3 1]`) and the hill map. Iterates over `sled`, then drops the output while it's not reduced.
+
+This is a common pattern: the 'hill + position + trees met' is the state, and this state is successively updated by a function until a termination condition is met.
+
+It seems a little unnecessary to me when you can handle it with list processing `coords->tree?->count` - though it might be more efficient than mine, I've no idea.
+
+The use of `reduced` and `(complement reduced?)` is fun.
+
+The use of `false` and `nil` so close to each other makes me a bit uneasy - but I think in this case it's fine, since the difference in meaning is clearly delineated.
+
+`sled` returns either a modified version of it's input, or a reduced integer. That feels a bit odd, since it breaks closure. The two paths for whether or not there is a tree seems unnecessary.
+
+=== benfle
+
+Has a nice trajectory function:
+
+[source,clojure]
+----
+(defn trajectory
+  "The seq of coordinates when following this slope.
+  Stop before reaching the bottom."
+  [[dx dy]]
+  (map vector
+       (map #(* dx %) (range))
+       (map #(* dy %) (range (count tree-map)))))
+
+(defn check-slope
+  "The number of trees for this slope."
+  [slope]
+  (->> (trajectory slope)
+       (filter #(tree? (cell-at %)))
+       count))
+----
+
+Returns a _non_ infinite sequence, bounded by the height of the tree map. That means no checking further down where the termination point is.
+
+The only thing I don't like about this is that `tree-map` is an implicit input (it's defined as state further up), and isn't being passed in explicitly.
+
+=== genmeblog
+
+Very concise:
+
+[source,clojure]
+----
+(defn tree-count
+  [data [right down]]
+  (let [len (count (first data))]
+    (->> data
+         (take-nth down)
+         (map-indexed (fn [idx line]
+                        (nth line (mod (* right idx) len))))
+         (filter #{\#})
+         (count))))
+----
+
+The pipeline of transformations is very clear too, though I think some of the names are quite generic and obscure the intent:
+
+. start with the 2d array representing the hill
+. use https://clojuredocs.org/clojure.core/take-nth[`take-nth`] to look only at the horizontal slices you're landing on
+. use `map-indexed` with `(* right idx)` to calculate your horizontal position on the hill, and find the nth value.
+. remove anything that's not a tree
+. count
+
+I've rewritten with what I think are clearer names to help conveyance.
+
+[source,clojure]
+----
+(defn tree-count
+  [hill [right-jump down-jump]]
+  (let [hill-width (count (first hill))]
+    (->> hill
+         (take-nth down-jump)
+         (map-indexed (fn [downward-jumps hill-slice] (nth hill-slice (mod (* right-jump downward-jumps) hill-width))))
+         (filter #{\#})
+         (count))))
 ----

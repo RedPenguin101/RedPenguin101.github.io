@@ -619,7 +619,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_thoughts_lessons_learned">Thoughts, lessons learned</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Not many, got this one right straight off the bat. The name of the 'next-row' function is not very good. 'Next-spot' or something would&#8217;ve been better, or 'next-coordinate' would have tapped into a more generic Cartesian abstraction.</p>
+<p>I like the very list processing approach here: You have co-ordinates. Are there trees there? Count the trees.</p>
+</div>
+<div class="paragraph">
+<p>I don&#8217;t think the use of transducers will give enough benefit to offset the nicer readability of the threading version.</p>
+</div>
+<div class="paragraph">
+<p>Not many lessons learned, got this one right straight off the bat. The name of the 'next-row' function is not very good. 'Next-spot' or something would&#8217;ve been better, or 'next-coordinate' would have tapped into a more generic Cartesian abstraction.</p>
 </div>
 <div class="paragraph">
 <p>I made the <code>next-row</code> function higher order right off the bat on the assumption that we would need to try other jumps. That turned out to be right, but still maybe not a good idea to try and guess future requirements. I&#8217;m split on this. I think it&#8217;s a natural assumption to make based on the way the problem was described.</p>
@@ -660,10 +666,162 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_other_solutions">Other solutions</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://gist.github.com/KennyMonster/2cdb391d0f45105b8ab38dab58923063#file-day_3-clj-L11">KennyMonster</a></p>
+</li>
+<li>
+<p><a href="https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day3.clj">transducer</a></p>
+</li>
+<li>
+<p><a href="https://github.com/green-coder/advent-of-code-2020/blob/master/src/aoc/day_3.clj">green-coder</a></p>
+</li>
+<li>
+<p><a href="https://github.com/nbardiuk/adventofcode/blob/master/2020/src/day03.clj">nbardiuk</a></p>
+</li>
+<li>
+<p><a href="https://github.com/genmeblog/advent-of-code-2020/blob/master/src/advent_of_code_2020/day03.clj">genmeblog</a></p>
+</li>
+<li>
+<p><a href="https://github.com/benfle/advent-of-code-2020/blob/main/day3.clj">benfle</a></p>
+</li>
+<li>
+<p><a href="https://github.com/lambdaisland/aoc_2020/blob/main/src/lambdaisland/aoc_2020/puzzle03.clj">lambdaisland</a> (<a href="https://www.youtube.com/watch?v=wXVDfzxeZ-o">video</a>)</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_lambda_island">Lambda Island</h3>
+<div class="paragraph">
+<p>Initially a similar process to mine:</p>
+</div>
+<div class="paragraph">
+<p><code>input&#8594;map</code> turns input into a 2d array of truthy and falsey values (here, true and false)</p>
+</div>
+<div class="paragraph">
+<p>A <code>tree?</code> function which uses <code>get-in</code> and <code>mod</code>. No default value though, so it will be nil if you go oob.</p>
+</div>
+<div class="paragraph">
+<p>Where it diverges is:</p>
+</div>
+<div class="paragraph">
+<p>A <code>sled</code> function which takes the jump sizes, the hill map, the current x and y vals, and a counter of the trees. Obviously it&#8217;s meant to be run iteratively. It conditionally returns <code>(reduced trees)</code> if you went off the end of the hill map, or the input with x and y updated and trees incremented if there was a tree there.</p>
+</div>
+<div class="paragraph">
+<p>A <code>sled-down</code> function which takes a slope (tuple of jump size, e.g. <code>[3 1]</code>) and the hill map. Iterates over <code>sled</code>, then drops the output while it&#8217;s not reduced.</p>
+</div>
+<div class="paragraph">
+<p>This is a common pattern: the 'hill + position + trees met' is the state, and this state is successively updated by a function until a termination condition is met.</p>
+</div>
+<div class="paragraph">
+<p>It seems a little unnecessary to me when you can handle it with list processing <code>coords&#8594;tree?&#8594;count</code> - though it might be more efficient than mine, I&#8217;ve no idea.</p>
+</div>
+<div class="paragraph">
+<p>The use of <code>reduced</code> and <code>(complement reduced?)</code> is fun.</p>
+</div>
+<div class="paragraph">
+<p>The use of <code>false</code> and <code>nil</code> so close to each other makes me a bit uneasy - but I think in this case it&#8217;s fine, since the difference in meaning is clearly delineated.</p>
+</div>
+<div class="paragraph">
+<p><code>sled</code> returns either a modified version of it&#8217;s input, or a reduced integer. That feels a bit odd, since it breaks closure. The two paths for whether or not there is a tree seems unnecessary.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_benfle">benfle</h3>
+<div class="paragraph">
+<p>Has a nice trajectory function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn trajectory
+  "The seq of coordinates when following this slope.
+  Stop before reaching the bottom."
+  [[dx dy]]
+  (map vector
+       (map #(* dx %) (range))
+       (map #(* dy %) (range (count tree-map)))))
+
+(defn check-slope
+  "The number of trees for this slope."
+  [slope]
+  (-&gt;&gt; (trajectory slope)
+       (filter #(tree? (cell-at %)))
+       count))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns a <em>non</em> infinite sequence, bounded by the height of the tree map. That means no checking further down where the termination point is.</p>
+</div>
+<div class="paragraph">
+<p>The only thing I don&#8217;t like about this is that <code>tree-map</code> is an implicit input (it&#8217;s defined as state further up), and isn&#8217;t being passed in explicitly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_genmeblog">genmeblog</h3>
+<div class="paragraph">
+<p>Very concise:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn tree-count
+  [data [right down]]
+  (let [len (count (first data))]
+    (-&gt;&gt; data
+         (take-nth down)
+         (map-indexed (fn [idx line]
+                        (nth line (mod (* right idx) len))))
+         (filter #{\#})
+         (count))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The pipeline of transformations is very clear too, though I think some of the names are quite generic and obscure the intent:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>start with the 2d array representing the hill</p>
+</li>
+<li>
+<p>use <a href="https://clojuredocs.org/clojure.core/take-nth"><code>take-nth</code></a> to look only at the horizontal slices you&#8217;re landing on</p>
+</li>
+<li>
+<p>use <code>map-indexed</code> with <code>(* right idx)</code> to calculate your horizontal position on the hill, and find the nth value.</p>
+</li>
+<li>
+<p>remove anything that&#8217;s not a tree</p>
+</li>
+<li>
+<p>count</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>I&#8217;ve rewritten with what I think are clearer names to help conveyance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn tree-count
+  [hill [right-jump down-jump]]
+  (let [hill-width (count (first hill))]
+    (-&gt;&gt; hill
+         (take-nth down-jump)
+         (map-indexed (fn [downward-jumps hill-slice] (nth hill-slice (mod (* right-jump downward-jumps) hill-width))))
+         (filter #{\#})
+         (count))))</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-03 14:14:57 GMT
+Last updated 2020-12-03 15:17:10 GMT
 </div>
 </div>
 </body>
