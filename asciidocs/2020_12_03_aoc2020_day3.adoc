@@ -1,0 +1,167 @@
+= Advent of Code 2020: Day 2
+
+https://adventofcode.com/2020/day/3[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day3.clj[Solution in github]
+
+== Problem summary
+
+You have a toboggan and need to use it to get down a hill, with trees on it. This is represented by a 2d grid or coordinates, where `#` represents a tree:
+
+----
+..##.......
+#...#...#..
+.#....#..#.
+..#.#...#.#
+.#...##..#.
+..#.##.....
+.#.#.#....#
+.#........#
+#.##...#...
+#...##....#
+.#..#...#.#
+----
+
+(the actual input is much bigger than this.)
+
+Starting at the top left (0,0) and going down 1 and right 3 spots each jump, how many trees will you have to avoid? The hill 'loops' on the horizontal axis.
+
+Part two asks you to calculate for several different 'jump sizes' in addition to 1d-3r
+
+== Problem decomposition
+
+Our basic data structure will be a 2d array, with a truthy value in each place where there is a tree, otherwise nil
+
+----
+[[nil nil :tree :tree nil nil nil nil nil nil nil]
+ [:tree nil nil nil :tree nil nil nil :tree nil nil]
+ [nil :tree nil nil nil nil :tree nil nil :tree nil]
+ [nil nil :tree nil :tree nil nil nil :tree nil :tree]
+ [nil :tree nil nil nil :tree :tree nil nil :tree nil]
+ [nil nil :tree nil :tree :tree nil nil nil nil nil]
+ [nil :tree nil :tree nil :tree nil nil nil nil :tree]
+ [nil :tree nil nil nil nil nil nil nil nil :tree]
+ [:tree nil :tree :tree nil nil nil :tree nil nil nil]
+ [:tree nil nil nil :tree :tree nil nil nil nil :tree]
+ [nil :tree nil nil :tree nil nil nil :tree nil :tree]]
+----
+
+So problem 1 is to parse the input into this.
+
+From here we will follow the process:
+
+. calculate the next 'jump' - the next co-ordinates we will check, based on the current position
+. determine whether or not there is a tree at that position (factoring the 'looping' of the horizontal axis)
+. If we reach the bottom, stop counting
+. count the number of trees we encountered.
+
+This is a 'loopy' way of saying it. A more 'list processing' or functional way would be:
+
+. generate an infinite list of co-ordinates to check, based on the jump sizes
+. map that over a function which checks if that co-ordinate has a tree (or if it's off the edge of the vertical axis, return :oob)
+. take the results of the map while they are not oob
+. remove any nils
+. count the trees
+
+== The solution
+
+Parsing the input is easy enough, though it has a rather ugly nested map in it.
+
+[source,clojure]
+----
+(defn parse-input [string]
+  (mapv (fn [row] (mapv #(when (= \# %) :tree) row)) (str/split-lines string)))
+----
+
+Next we want to generate the list of co-ordinates to check.
+
+`next-row` is a HOF. Given a down-jump size and right-jump size, it returns a function which calculates `coord i` from `coord i-1`.
+
+This means you can just iterate over this function to get your infinite list.
+
+[source,clojure]
+----
+(defn next-row [down-jump right-jump]
+  (fn [[x y]] [(+ down-jump x) (+ right-jump y)]))
+
+(iterate (next-row down-jump right-jump) [0 0])
+----
+
+The function that checks whether there's a tree or not uses a simple get-in. The only wrinkle being the `mod`, which simulates the looping behavior. `:out-of-bounds` is returned when you get to the bottom of the input. 
+
+[source,clojure]
+----
+(defn has-tree? [input [x y]]
+  (get-in input [x (mod y (count (first input)))] :out-of-bounds))
+----
+
+Now we have all the pieces necessary to solve the problem:
+
+[source,clojure]
+----
+(->> [0 0]
+     (iterate (next-row 1 3))
+     (map (partial has-tree? test-input))
+     (take-while #(not= % :out-of-bounds))
+     (remove nil?)
+     count)
+----
+
+While putting this in a function we can make a few improvements.
+
+* Changing the `map` to a `keep` will automatically remove any nils for us.
+* Putting the keep and take-while into a transducer will be beneficial for large inputs 
+
+[source,clojure]
+----
+(defn count-trees [input down-jump right-jump]
+  (count (into [] (comp (keep (partial has-tree? input))
+                        (take-while #(not= % :out-of-bounds)))
+               (iterate (next-row down-jump right-jump) [0 0]))))
+----
+
+Part 2 is a simple list comprehension of the same pieces
+
+[source,clojure]
+----
+(apply * (for [jumps [[1 1] [1 3] [1 5] [1 7] [2 1]]]
+           (apply count-trees2 input jumps)))
+----
+
+== Thoughts, lessons learned
+
+Not many, got this one right straight off the bat. The name of the 'next-row' function is not very good. 'Next-spot' or something would've been better, or 'next-coordinate' would have tapped into a more generic Cartesian abstraction.
+
+I made the `next-row` function higher order right off the bat on the assumption that we would need to try other jumps. That turned out to be right, but still maybe not a good idea to try and guess future requirements. I'm split on this. I think it's a natural assumption to make based on the way the problem was described.
+
+== Full Solution
+
+[source,clojure]
+----
+(defn next-row [a b]
+  (fn [[x y]] [(+ a x) (+ b y)]))
+
+(defn parse-input [string]
+  (mapv (fn [row] (mapv #(when (= \# %) :tree) row)) (str/split-lines string)))
+
+(def input
+  (parse-input (slurp "resources/day3input")))
+
+(defn has-tree? [input [x y]]
+  (get-in input [x (mod y (count (first input)))] :out-of-bounds))
+
+(defn count-trees [input down-jump right-jump]
+  (count (into [] (comp (keep (partial has-tree? input))
+                        (take-while #(not= % :out-of-bounds)))
+               (iterate (next-row down-jump right-jump) [0 0]))))
+
+(comment 
+  
+  "Part 1"
+  (count-trees input 1 3)
+
+  "Part 2"
+  (apply * (for [jumps [[1 1] [1 3] [1 5] [1 7] [2 1]]]
+             (apply count-trees input jumps))))
+
+----

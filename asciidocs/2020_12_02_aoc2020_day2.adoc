@@ -1,6 +1,8 @@
 = Advent of Code 2020: Day 2
 
-https://adventofcode.com/2020/day/2[link]
+https://adventofcode.com/2020/day/2[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day2.clj[Solution in github]
 
 == Problem summary
 
