@@ -1,0 +1,153 @@
+= Advent of Code 2020: Day 2
+
+https://adventofcode.com/2020/day/4[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day4.clj[Solution in github]
+
+== Problem summary
+
+We are given a series of 'passports': key-value pairs.
+
+----
+ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm
+
+iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d byr:1929
+
+hcl:#ae17e1 iyr:2013
+eyr:2024
+ecl:brn pid:760753108 byr:1931
+hgt:179cm
+
+hcl:#cfa07d eyr:2025 pid:166559648
+iyr:2011 ecl:brn hgt:59in
+----
+
+In Part 1 we need to say whether the passport contains all the required fields.
+
+In Part 2 we need to say whether the contents of those fields conforms to a given spec.
+
+== Problem decomposition
+
+This is tailor made for Clojure Spec!
+
+First, obviously we need to parse. Pretty simple: each passport object is separated by a double-newline. Each kv-pair in a passport is separated by a space or single-newline. Each Key is separated from the value by a colon. So three levels of split.
+
+Next, for each passport we need to determine whether it had the required keys.
+
+Last, for each passport, we need to determine whether the values conform to the specs provided. 
+
+== The solution
+
+The parse target is going to be a map, since a passport is a collection of named attributes. We'll also keywordize the keys for convenience.
+
+[source,clojure]
+----
+(defn input-parse [input]
+  (map #(str/split % #"[ \n]") (str/split input #"\n\n")))
+
+(defn mapify-passport [strs]
+  (->> strs
+       (map #(str/split % #":"))
+       (into {})
+       (keywordize-keys)))
+
+;; returns something like
+{:ecl "gry", :pid "860033327", :eyr "2020", :hcl "#fffffd", :byr "1937", :iyr "2017", :cid "147", :hgt "183cm"}
+----
+
+There's probably a smarter regex way to do this, but this seems good enough to me.
+
+The spec for part 1 ('does the passport have the required fields') is simply
+
+[source,clojure]
+----
+(s/def ::passport (s/keys :req-un [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
+                          :opt-un [::cid]))
+----
+
+The spec for part 2 is a bit more involved, though not much
+
+[source,clojure]
+----
+(defn parsed-between? [a b x]
+  (<= a (try (Integer/parseInt x) (catch NumberFormatException e 0)) b))
+
+(s/def ::byr #(parsed-between? 1920 2002 %))
+(s/def ::iyr #(parsed-between? 2010 2020 %))
+(s/def ::eyr #(parsed-between? 2020 2030 %))
+
+(defn valid-height? [s]
+  (let [[num type] (map #(apply str %) (split-at (- (count s) 2) s))]
+    (cond (= type "cm") (parsed-between? 150 193 num)
+          (= type "in") (parsed-between? 59 76 num)
+          :else false)))
+
+(s/def ::hgt valid-height?)
+(s/def ::hcl #(re-matches #"#\w{6}" %))
+(s/def ::ecl #{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"})
+(s/def ::pid #(re-matches #"\d{9}" %))
+----
+
+That's it! The client call is then just:
+
+[source,clojure]
+----
+(->> (slurp "resources/day4input")
+       (input-parse)
+       (map mapify-passport)
+       (map (partial s/valid? ::passport))
+       (remove false?)
+       count)
+----
+
+== Thoughts, lessons learned
+
+Spec made this almost trivially simple. In reality there are some who would object to using Spec in this way, putting it in production code rather than as dev-time or compile-time checks. So probably wouldn't do this in production code.
+
+`parsed-between?` is a bit hacky, mixing 'is this a valid integer' with 'is the integer between a and b', with that trey-catch nonsense. Better to separate these two things into an and predicate, where the 'is parsable integer' check is done before the is-between check.
+
+Other than that, I don't have much to add! Spec is great!
+
+== Full Solution
+
+[source,clojure]
+----
+(defn input-parse [input]
+  (map #(str/split % #"[ \n]") (str/split input #"\n\n")))
+
+(defn mapify-passport [strs]
+  (->> strs
+       (map #(str/split % #":"))
+       (into {})
+       (keywordize-keys)))
+
+
+(s/def ::byr #(parsed-between? 1920 2002 %))
+(s/def ::iyr #(parsed-between? 2010 2020 %))
+(s/def ::eyr #(parsed-between? 2020 2030 %))
+
+(defn valid-height? [s]
+  (let [[num type] (map #(apply str %) (split-at (- (count s) 2) s))]
+    (cond (= type "cm") (parsed-between? 150 193 num)
+          (= type "in") (parsed-between? 59 76 num)
+          :else false)))
+
+(s/def ::hgt valid-height?)
+(s/def ::hcl #(re-matches #"#\w{6}" %))
+(s/def ::ecl #{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"})
+(s/def ::pid #(re-matches #"\d{9}" %))
+
+(s/def ::passport (s/keys :req-un [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
+                          :opt-un [::cid]))
+
+(->> (slurp "resources/day4input")
+     (input-parse)
+     (map mapify-passport)
+     (map (partial s/valid? ::passport))
+     (remove false?)
+     count)
+----
+
+== Other solutions
