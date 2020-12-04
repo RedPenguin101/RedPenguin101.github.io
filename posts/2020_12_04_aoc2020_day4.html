@@ -581,7 +581,6 @@ iyr:2011 ecl:brn hgt:59in</pre>
        (into {})
        (keywordize-keys)))
 
-
 (s/def ::byr #(parsed-between? 1920 2002 %))
 (s/def ::iyr #(parsed-between? 2010 2020 %))
 (s/def ::eyr #(parsed-between? 2020 2030 %))
@@ -613,13 +612,121 @@ iyr:2011 ecl:brn hgt:59in</pre>
 <div class="sect1">
 <h2 id="_other_solutions">Other solutions</h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/lambdaisland/aoc_2020/blob/main/src/lambdaisland/aoc_2020/puzzle04.clj">lambdaisland</a></p>
+</li>
+<li>
+<p><a href="https://github.com/nbardiuk/adventofcode/blob/22219651baab8485652b456770e4134a2dee6ba0/2020/src/day04.clj">nbardiuk</a></p>
+</li>
+<li>
+<p><a href="https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day4.clj">transducer</a></p>
+</li>
+<li>
+<p><a href="https://github.com/zelark/AoC-2020/blob/72968c3e2baa8fcb2a2a5a0ff84d9a6fb689f644/src/zelark/aoc_2020/day_04.clj">zelark</a></p>
+</li>
+<li>
+<p><a href="https://github.com/genmeblog/advent-of-code-2020/blob/master/src/advent_of_code_2020/day04.clj">genmeblog</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>No one else seems to use spec! Not sure why, seems like a slam dunk to me, and most non-spec solutions seem to be less elegant to me.</p>
+</div>
+<div class="sect2">
+<h3 id="_genmeblog">genmeblog</h3>
+<div class="paragraph">
+<p>Had a nice 'hand-rolled' spec validation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def validators {:byr (partial between? 1920 2002)
+                 :iyr (partial between? 2010 2020)
+                 :eyr (partial between? 2020 2030)
+                 :hgt height
+                 :hcl #(and (re-find #"^#[0-9a-f]{6}$" %) (-&gt;number %))
+                 :ecl #{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"}
+                 :pid #(and (re-find #"^\d{9}$" %) (-&gt;number %))
+                 :cid (constantly true)})
 
+(defn fields-valid? [passport] (reduce-kv (fn [p k v] (and p ((validators k) v))) true passport))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Spec syntax I think is neater, but they are essentially equivalent.</p>
+</div>
+<div class="paragraph">
+<p>Not sure I get the use of <a href="https://clojuredocs.org/clojure.core/constantly">constantly</a> here.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lambda_island">Lambda Island</h3>
+<div class="paragraph">
+<p><code>(defn valid2? [{:strs [byr iyr eyr hgt hcl ecl pid cid]}]</code></p>
+</div>
+<div class="paragraph">
+<p>Replacing <code>:keys</code> with <code>:strs</code> to destructure maps with string keys. I didn&#8217;t know you could do this! Very cool.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn parse-entry [entry]
+  (into {} (map (comp vec next)) (re-seq #"(\w{3}):(\S+)" entry)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Definitely a better way to parse out the entries when you have a string of a single passport. This would replace my <code>input-parse</code> and <code>mapify-passport</code> functions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(let [[_ num unit] (re-find #"(\d+)(in|cm)" hgt)]
+  (case unit
+    "cm" (&lt;= 150 (parse-long num) 193)
+    "in" (&lt;= 59 (parse-long num) 76)
+    false))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Better than mine! <code>case</code> is cleaner than <code>cond</code> here, and that <code>re-find</code> is better than my destructure. I sort of knew that there would be a regex way to do this, but was too lazy to think about it.</p>
+</div>
+<div class="paragraph">
+<p>Also, realizing that <code>map, remove</code> is just <code>filter</code> Duh. So</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(-&gt;&gt; (slurp "resources/day4input")
+     (input-parse)
+     (map mapify-passport)
+     (map (partial s/valid? ::passport))
+     (remove false?)
+     count)
+
+;; should be
+
+(-&gt;&gt; (slurp "resources/day4input")
+     (input-parse)
+     (map mapify-passport)
+     (filter (partial s/valid? ::passport))
+     count)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>(str/split real-input #"\R\R")</code>: Apparently</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>[\R] matches "\r" "\n" "\r\n" or a number of unicode newline characters. It does not backtrack between "\r\n", so #"\R\R" will match "\r\r" but not "\r\n" (it will match "\r\n\r\n"). Basically it matches everything that conceptually is a newline</p>
+</div>
+</blockquote>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-04 11:48:46 GMT
+Last updated 2020-12-04 12:28:50 GMT
 </div>
 </div>
 </body>
