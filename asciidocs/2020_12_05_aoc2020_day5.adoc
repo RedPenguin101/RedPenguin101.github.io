@@ -1,0 +1,121 @@
+= Advent of Code 2020: Day 2
+
+https://adventofcode.com/2020/day/5[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day5.clj[Solution in github]
+
+== Problem summary
+
+Given a boarding pass in the form `FBFBBFFRLR`, calculate what row and column of the plane this represents, then calculate the seat id (8*row + col).
+
+Part 1, find the highest seat id. Part 2, find your seat (it's the only one that's empty). 
+
+== Problem decomposition
+
+The boarding pass has 2 sections: the first 7 characters give you the row, and the last 3 give you the column, using _binary space partitioning_.
+
+That is, if there are 7 columns, numbered from left to right, 0-7, a string of "RLR" will represent
+
+. R: the seat is in one of columns 4, 5, 6, 7.
+. L: the seat is in one of columns 4, 5.
+. R: the seat is in column 5.
+
+Another way to think of this is that each position in the input represents a number of 2^n. For rows:
+
+* 1st: 64
+* 2nd: 32
+* 3rd: 16
+* 4th: 8
+* 5th: 4
+* 6th: 2
+* 7th: 1
+
+If the letter in that position is a "B", then take the number. Otherwise take 0. Then add all the numbers together.
+
+So "FBFBBFF": [0 32 0 8 4 0 0] = 44.
+
+This gives us all we need to solve the problem.
+
+For part 2, we want to find the 'missing' value from a sequence. In other words, we want the difference between our sequence and the complete set of numbers between x and y. We can use set logic for that. 
+
+== The solution
+
+The form of a function getting from the (sub)string to a row or column number is:
+
+. associate each character with it's position value
+. filter on any B or R character (so ignoring all the zero values)
+. add up all the remaining values.
+
+Since row and column have the same format, we can use a single template HOF for both.
+
+[source,clojure]
+----
+(letfn [(f [v char]
+          (fn [string] (->> string
+                            (map vector v)
+                            (filter (comp #{char} second))
+                            (map first)
+                            (apply +))))]
+  (def row (f [64 32 16 8 4 2 1] \B))
+  (def col (f [4 2 1] \R)))
+----
+
+The seat ID calculation and solution to part 1 is trivial
+
+[source,clojure]
+----
+(defn seat-id [string]
+  (+ (* 8 (row (subs string 0 7)))
+     (col (subs string 7))))
+
+(apply max (for [boarding-pass (clojure.string/split-lines (slurp "resources/day5input"))]
+             (seat-id boarding-pass)))
+----
+
+As mentioned, for part 2 we use some simple set logic to find the difference between the seat ids of our boarding passes and the complete set of numbers between the smallest and largest boarding passes we can see.
+
+[source,clojure]
+----
+ (let [taken-seats (sort (map seat-id (split-lines (slurp "resources/day5input"))))]
+    (difference (set (range (first taken-seats) (last taken-seats)))
+                (set taken-seats)))
+----
+
+== Thoughts, lessons learned
+
+None, other than Clojure is a very beautiful language for solving this problem, simple though it was. It feels like I just told the computer exactly what I wanted to do and it did it.
+
+I used a `letfn` with indented `def` to define the row and col functions. Nested defs are generally discouraged, though I think it's OK in this case.
+
+== Full Solution
+
+[source,clojure]
+----
+(letfn [(f [v char]
+          (fn [string] (->> string
+                            (map vector v)
+                            (filter (comp #{char} second))
+                            (map first)
+                            (apply +))))]
+  (def row (f [64 32 16 8 4 2 1] \B))
+  (def col (f [4 2 1] \R)))
+
+(defn seat-id [string]
+  (+ (* 8 (row (subs string 0 7)))
+     (col (subs string 7))))
+
+(comment
+  "Part 1"
+  (apply max (for [boarding-pass (clojure.string/split-lines (slurp "resources/day5input"))]
+               (seat-id boarding-pass)))
+  ;; => 885
+
+  "Part 2"
+  (let [taken-seats (sort (map seat-id (split-lines (slurp "resources/day5input"))))]
+    (difference (set (range (first taken-seats) (last taken-seats)))
+                (set taken-seats)))
+  ;; => #{623}
+  )
+----
+
+== Other solutions
