@@ -615,13 +615,211 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_other_solutions">Other solutions</h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/tschady/advent-of-code/blob/master/src/aoc/2020/d05.clj">tschady</a></p>
+</li>
+<li>
+<p><a href="https://github.com/jreighley/aoc2020/blob/master/src/day5.clj">jreighley</a></p>
+</li>
+<li>
+<p><a href="https://github.com/lambdaisland/aoc_2020/blob/main/src/lambdaisland/aoc_2020/puzzle05.clj">lambdaisland</a></p>
+</li>
+<li>
+<p><a href="https://github.com/ocisly/advent2020/blob/94b52d8bb63865a8ace75f34226f6acb390c69ef/day-5.clj">ocisly</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rjray/advent-2020-clojure/blob/master/src/advent_of_code/day05bis.clj">rjray</a></p>
+</li>
+<li>
+<p><a href="https://github.com/zelark/AoC-2020/blob/3cc64ff25278f82d262c4c32c2eec4268c0997a5/src/zelark/aoc_2020/day_05.clj">zelark</a></p>
+</li>
+<li>
+<p><a href="https://github.com/green-coder/advent-of-code-2020/blob/master/src/aoc/day_5.clj">green-coder</a></p>
+</li>
+<li>
+<p><a href="https://github.com/nbardiuk/adventofcode/blob/master/2020/src/day05.clj">nbardiuk</a></p>
+</li>
+<li>
+<p><a href="https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day5.clj">transducer</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There were a few tricks here around binary parsing that I didn&#8217;t know.</p>
+</div>
+<div class="paragraph">
+<p>For example from <code>tschady</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn seat-id [seat-map]
+  (let [binary-str (apply str (map {\B 1, \F 0, \R 1, \L 0} seat-map))]
+    (Integer/parseInt binary-str 2)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You use <code>parseInt</code> to parse a string like "10101010", with the optional 3rd arg <code>2</code> (binary), and it will return 170 (the decimal representation of 10101010).</p>
+</div>
+<div class="paragraph">
+<p>Because the seat-id formula is <code>8*r + c</code>, you can skip the step of calculating rows and columns independently, and apply this to the 'full' input string. Instead of using the mapping of <code>[64 32 16 ,,,]</code> for row and <code>[4 2 1]</code> for col, you can just use <code>[512 256 128 64 ,,, 4 2 1]</code>. Very neat!</p>
+</div>
+<div class="paragraph">
+<p><code>lambdaisland</code> used some bit-shifting, which frankly I don&#8217;t get, but I <em>think</em> does the same thing. I don&#8217;t use Clojure for shifting bits around manually!</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn bits-&gt;num [bits]
+  (reduce (fn [num bit]
+            (-&gt; num
+                (bit-shift-left 1)
+                (bit-or bit)))
+          0
+          (map chars bits)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>ocisly</code> and a couple of others had an interesting approach for finding the position</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn find-pos [low high [x &amp; xs]]
+  (if (= low high) high
+    (let [mid (+ low (/ (- high low) 2))]
+      (cond
+        (#{\L \F} x) (recur low (int (Math/floor mid)) xs)
+        (#{\R \B} x) (recur (int (Math/ceil mid)) high xs)))))
 
+(def find-row (partial find-pos 0 127))
+(def find-col (partial find-pos 0 7))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The algorithm here is:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Provide a low-high range and a sequence of characters</p>
+</li>
+<li>
+<p>if low=high, return high (termination condition)</p>
+</li>
+<li>
+<p>otherwise, calculate the midpoint of high and low</p>
+</li>
+<li>
+<p>then if first value of the sequence is L or F, recur with low-(floor mid), and the tail of the sequence</p>
+</li>
+<li>
+<p>if the first value is R or B, recur with (ceil mid)-high and the tail of the sequence</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>So for "FBFBBFF":</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>low-high is 0-127</p>
+</li>
+<li>
+<p>first loop: midpoint is 63.5, char is F, so recur with 0-63</p>
+</li>
+<li>
+<p>second loop: midpoint is 31.5, char is B, so recur with 32-63</p>
+</li>
+<li>
+<p>third loop: midpoint is 47.5, char is F, so recur with 32-47</p>
+</li>
+<li>
+<p>forth loop: midpoint is 39.5, char is B, so recur with 40-47</p>
+</li>
+<li>
+<p>fifth loop: midpoint is 43.5, char is B, so recur with 44-47</p>
+</li>
+<li>
+<p>sixth loop: midpoint is 45.5, char is F, so recur with 44-45</p>
+</li>
+<li>
+<p>seventh loop: midpoint is 44.5, char is F, so recur with 44-44</p>
+</li>
+<li>
+<p>low=high, so return 44</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This is a very literal description of the process described in the problem statement, but I feel like it&#8217;s rather more low level than it needs to be.</p>
+</div>
+<div class="paragraph">
+<p><code>green-coder</code> used <code>edn/read-string</code> to do the binary conversion.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(-&gt;&gt; seating
+     (drop 7)
+     (take 3)
+     (map {\L \0 \R \1})
+     (apply str "2r")
+     (edn/read-string))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>(&#8594;&gt; "FBFBBFFRLR" (drop 7) (take 3) (map {\L \0 \R \1}) (apply str "2r"))</code> returns <code>2r101</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>(edn/read-string "2r101")</code> returns 5.</p>
+</div>
+<div class="paragraph">
+<p>I <em>think</em> that "2r101" is interpreted by edn as 'a two radix (i.e. binary) representation of an integer'.</p>
+</div>
+<div class="paragraph">
+<p>For part 2, <code>lamdaisland</code> also used the other way people used to find the missing seat. Rather than <code>difference</code>, he partitioned the sorted seats with a sliding 2-length window, and tested whether the right value was 2 greater than the left value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(some (fn [[l h]]
+        (when (= h (+ 2 l))
+          (inc l)))
+      (partition-all 2 1 (sort seat-ids)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The other way I saw of doing this was <code>nbardiuk</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(let  [ids (-&gt;&gt; input ids set)]
+    (-&gt;&gt; (iterate inc (apply min ids))
+         (drop-while ids)
+         first))</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>start with a set of the seat-ids you have</p>
+</li>
+<li>
+<p>create an infinite sequence of integers from the minimum id.</p>
+</li>
+<li>
+<p>from that infinite sequence, drop all of those values while you recognise the id</p>
+</li>
+<li>
+<p>return the first id in that sequence (i.e. the first one you don&#8217;t recognise)</p>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-05 12:09:30 GMT
+Last updated 2020-12-05 13:09:28 GMT
 </div>
 </div>
 </body>

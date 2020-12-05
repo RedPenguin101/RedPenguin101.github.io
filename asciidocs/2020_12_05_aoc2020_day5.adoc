@@ -119,3 +119,121 @@ I used a `letfn` with indented `def` to define the row and col functions. Nested
 ----
 
 == Other solutions
+
+* https://github.com/tschady/advent-of-code/blob/master/src/aoc/2020/d05.clj[tschady]
+* https://github.com/jreighley/aoc2020/blob/master/src/day5.clj[jreighley]
+* https://github.com/lambdaisland/aoc_2020/blob/main/src/lambdaisland/aoc_2020/puzzle05.clj[lambdaisland]
+* https://github.com/ocisly/advent2020/blob/94b52d8bb63865a8ace75f34226f6acb390c69ef/day-5.clj[ocisly]
+* https://github.com/rjray/advent-2020-clojure/blob/master/src/advent_of_code/day05bis.clj[rjray]
+* https://github.com/zelark/AoC-2020/blob/3cc64ff25278f82d262c4c32c2eec4268c0997a5/src/zelark/aoc_2020/day_05.clj[zelark]
+* https://github.com/green-coder/advent-of-code-2020/blob/master/src/aoc/day_5.clj[green-coder]
+* https://github.com/nbardiuk/adventofcode/blob/master/2020/src/day05.clj[nbardiuk]
+* https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day5.clj[transducer]
+
+There were a few tricks here around binary parsing that I didn't know.
+
+For example from `tschady`:
+
+[source,clojure]
+----
+(defn seat-id [seat-map]
+  (let [binary-str (apply str (map {\B 1, \F 0, \R 1, \L 0} seat-map))]
+    (Integer/parseInt binary-str 2)))
+----
+
+You use `parseInt` to parse a string like "10101010", with the optional 3rd arg `2` (binary), and it will return 170 (the decimal representation of 10101010).
+
+Because the seat-id formula is `8*r + c`, you can skip the step of calculating rows and columns independently, and apply this to the 'full' input string. Instead of using the mapping of `[64 32 16 ,,,]` for row and `[4 2 1]` for col, you can just use `[512 256 128 64 ,,, 4 2 1]`. Very neat!
+
+`lambdaisland` used some bit-shifting, which frankly I don't get, but I _think_ does the same thing. I don't use Clojure for shifting bits around manually! 
+
+[source,clojure]
+----
+(defn bits->num [bits]
+  (reduce (fn [num bit]
+            (-> num
+                (bit-shift-left 1)
+                (bit-or bit)))
+          0
+          (map chars bits)))
+----
+
+`ocisly` and a couple of others had an interesting approach for finding the position
+
+[source,clojure]
+----
+(defn find-pos [low high [x & xs]]
+  (if (= low high) high
+    (let [mid (+ low (/ (- high low) 2))]
+      (cond
+        (#{\L \F} x) (recur low (int (Math/floor mid)) xs)
+        (#{\R \B} x) (recur (int (Math/ceil mid)) high xs)))))
+
+(def find-row (partial find-pos 0 127))
+(def find-col (partial find-pos 0 7))
+----
+
+The algorithm here is:
+
+. Provide a low-high range and a sequence of characters
+. if low=high, return high (termination condition)
+. otherwise, calculate the midpoint of high and low
+. then if first value of the sequence is L or F, recur with low-(floor mid), and the tail of the sequence
+. if the first value is R or B, recur with (ceil mid)-high and the tail of the sequence
+
+So for "FBFBBFF":
+
+. low-high is 0-127
+. first loop: midpoint is 63.5, char is F, so recur with 0-63
+. second loop: midpoint is 31.5, char is B, so recur with 32-63
+. third loop: midpoint is 47.5, char is F, so recur with 32-47
+. forth loop: midpoint is 39.5, char is B, so recur with 40-47
+. fifth loop: midpoint is 43.5, char is B, so recur with 44-47
+. sixth loop: midpoint is 45.5, char is F, so recur with 44-45
+. seventh loop: midpoint is 44.5, char is F, so recur with 44-44
+. low=high, so return 44
+
+This is a very literal description of the process described in the problem statement, but I feel like it's rather more low level than it needs to be.
+
+`green-coder` used `edn/read-string` to do the binary conversion.
+
+[source,clojure]
+----
+(->> seating
+     (drop 7)
+     (take 3)
+     (map {\L \0 \R \1})
+     (apply str "2r")
+     (edn/read-string))
+----
+
+`(->> "FBFBBFFRLR" (drop 7) (take 3) (map {\L \0 \R \1}) (apply str "2r"))` returns `2r101`.
+
+`(edn/read-string "2r101")` returns 5.
+
+I _think_ that "2r101" is interpreted by edn as 'a two radix (i.e. binary) representation of an integer'.
+
+For part 2, `lamdaisland` also used the other way people used to find the missing seat. Rather than `difference`, he partitioned the sorted seats with a sliding 2-length window, and tested whether the right value was 2 greater than the left value.
+
+[source,clojure]
+----
+(some (fn [[l h]]
+        (when (= h (+ 2 l))
+          (inc l)))
+      (partition-all 2 1 (sort seat-ids)))
+----
+
+The other way I saw of doing this was `nbardiuk`:
+
+[source,clojure]
+----
+(let  [ids (->> input ids set)]
+    (->> (iterate inc (apply min ids))
+         (drop-while ids)
+         first))
+----
+
+. start with a set of the seat-ids you have
+. create an infinite sequence of integers from the minimum id.
+. from that infinite sequence, drop all of those values while you recognise the id
+. return the first id in that sequence (i.e. the first one you don't recognise)
