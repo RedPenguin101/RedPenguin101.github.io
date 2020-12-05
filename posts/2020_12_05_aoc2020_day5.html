@@ -654,9 +654,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn seat-id [seat-map]
-  (let [binary-str (apply str (map {\B 1, \F 0, \R 1, \L 0} seat-map))]
-    (Integer/parseInt binary-str 2)))</code></pre>
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn seat-id [seat-code]
+  (-&gt; seat-code
+      (str/escape {\B 1, \F 0, \R 1, \L 0})
+      (Integer/parseInt 2)))</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -664,6 +665,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="paragraph">
 <p>Because the seat-id formula is <code>8*r + c</code>, you can skip the step of calculating rows and columns independently, and apply this to the 'full' input string. Instead of using the mapping of <code>[64 32 16 ,,,]</code> for row and <code>[4 2 1]</code> for col, you can just use <code>[512 256 128 64 ,,, 4 2 1]</code>. Very neat!</p>
+</div>
+<div class="paragraph">
+<p>Also interesting in the above is the use of <a href="https://clojuredocs.org/clojure.string/escape"><code>escape</code></a>. I&#8217;ve not seen this before, but it looks like it&#8217;s basically a 'replace'. You pass in a string, and a map of char&#8594;string (or char&#8594;something), with all the instances of the chars being replaced.</p>
 </div>
 <div class="paragraph">
 <p><code>lambdaisland</code> used some bit-shifting, which frankly I don&#8217;t get, but I <em>think</em> does the same thing. I don&#8217;t use Clojure for shifting bits around manually!</p>
@@ -819,7 +823,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-05 13:11:16 GMT
+Last updated 2020-12-05 15:52:46 GMT
 </div>
 </div>
 </body>

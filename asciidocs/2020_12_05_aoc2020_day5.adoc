@@ -136,16 +136,19 @@ For example from `tschady`:
 
 [source,clojure]
 ----
-(defn seat-id [seat-map]
-  (let [binary-str (apply str (map {\B 1, \F 0, \R 1, \L 0} seat-map))]
-    (Integer/parseInt binary-str 2)))
+(defn seat-id [seat-code]
+  (-> seat-code
+      (str/escape {\B 1, \F 0, \R 1, \L 0})
+      (Integer/parseInt 2)))
 ----
 
 You use `parseInt` to parse a string like "10101010", with the optional 3rd arg `2` (binary), and it will return 170 (the decimal representation of 10101010).
 
 Because the seat-id formula is `8*r + c`, you can skip the step of calculating rows and columns independently, and apply this to the 'full' input string. Instead of using the mapping of `[64 32 16 ,,,]` for row and `[4 2 1]` for col, you can just use `[512 256 128 64 ,,, 4 2 1]`. Very neat!
 
-`lambdaisland` used some bit-shifting, which frankly I don't get, but I _think_ does the same thing. I don't use Clojure for shifting bits around manually! 
+Also interesting in the above is the use of https://clojuredocs.org/clojure.string/escape[`escape`]. I've not seen this before, but it looks like it's basically a 'replace'. You pass in a string, and a map of char->string (or char->something), with all the instances of the chars being replaced.
+
+`lambdaisland` used some bit-shifting, which frankly I don't get, but I _think_ does the same thing. I don't use Clojure for shifting bits around manually!
 
 [source,clojure]
 ----
