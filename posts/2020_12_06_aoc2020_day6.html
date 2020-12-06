@@ -552,19 +552,88 @@ b</pre>
 <div class="sect1">
 <h2 id="_other_solutions">Other solutions</h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/tschady/advent-of-code/blob/master/src/aoc/2020/d06.clj">tschady</a></p>
+</li>
+<li>
+<p><a href="https://github.com/listba/advent-of-code-2020/blob/master/clojure/src/aoc_2020/days/06.clj">listba</a></p>
+</li>
+<li>
+<p><a href="https://gist.github.com/KennyMonster/ef878c0a789cebe2df3e572a11803f01">KennyMonster</a></p>
+</li>
+<li>
+<p><a href="https://github.com/nbardiuk/adventofcode/blob/c30b10fc2320c8f29fb9e84dd9afeaad3b04363b/2020/src/day06.clj">nbardiuk</a></p>
+</li>
+<li>
+<p><a href="https://github.com/zelark/AoC-2020/blob/master/src/zelark/aoc_2020/day_06.clj">zelark</a></p>
+</li>
+<li>
+<p><a href="https://github.com/green-coder/advent-of-code-2020/blob/master/src/aoc/day_6.clj">green-coder</a></p>
+</li>
+<li>
+<p><a href="https://github.com/jreighley/aoc2020/blob/master/src/day6.clj">jreighley</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rjray/advent-2020-clojure/blob/master/src/advent_of_code/day06.clj">rjray</a></p>
+</li>
+<li>
+<p><a href="https://github.com/ocisly/advent2020/blob/1a4b5d46c17a67b86b274e12a37a13cd5d035b92/day-6.clj">ocisly</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The 'trick' here was recognizing that parts 1 and 2 are the same problem, with the only difference being that part 1 is looking for <em>union</em> and part 2 for <em>intersection</em>. It seems obvious when you lay out the 2 parts side by side - though I didn&#8217;t get it until I started writing this post, which was after I&#8217;d solved the problem.</p>
+</div>
+<div class="paragraph">
+<p>So solutions are divided into those who used <em>union</em> and <em>intersection</em> and those who didn&#8217;t. I don&#8217;t think the responses that didn&#8217;t are less good, but there&#8217;s definitely an aesthetic appeal to the answers that did.</p>
+</div>
+<div class="paragraph">
+<p><code>KennyMonster</code> was one who used the set approach for both parts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn yes-count [s set-op]
+  (count (apply set-op (map set (str/split-lines s)))))
 
+(comment
+  (reduce + (map #(yes-count % union) data))
+  (reduce + (map #(yes-count % intersection) data)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Put each individual response into a set, determine the <em>union</em> (part 1) or <em>intersection</em> (part 2) of all sets, and count them. Stunning!</p>
+</div>
+<div class="paragraph">
+<p>You could argue that this 'mathematical' approach is a little less descriptive than the other approach. <code>tschadys</code> part one for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn part-1 [input]
+  (reduce + (map (comp count distinct (partial apply str)) input)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>"Count the distinct elements of the string, then add them up." The code reads as a literal description of the process, which makes it very comprehensible. The set approach lacks this readability a little I think. You have to drop out of 'pipeline' mindset into 'math' mindset.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_thoughts_lessons_learned">Thoughts, lessons learned</h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>First: Sets and set operations are a great alternative to the 'sequential pipline' thinking that I generally default to. Keep an eye out for opportunities to use it!</p>
+</div>
+<div class="paragraph">
+<p>Second: The two parts of the AOC problem, when considered and contrasted together, might reveal the pattern that will allow you to improve part 1 and make part 2 easier. Before barrelling ahead with part 2, look at how the two parts relate together and see if it changes your solution to part 1 in a way that you can extend it to part 2.</p>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-06 12:50:32 GMT
+Last updated 2020-12-06 13:25:01 GMT
 </div>
 </div>
 </body>

@@ -82,4 +82,46 @@ This is pretty much written exactly as specified above, using very standard libr
 
 == Other solutions
 
+* https://github.com/tschady/advent-of-code/blob/master/src/aoc/2020/d06.clj[tschady]
+* https://github.com/listba/advent-of-code-2020/blob/master/clojure/src/aoc_2020/days/06.clj[listba]
+* https://gist.github.com/KennyMonster/ef878c0a789cebe2df3e572a11803f01[KennyMonster]
+* https://github.com/nbardiuk/adventofcode/blob/c30b10fc2320c8f29fb9e84dd9afeaad3b04363b/2020/src/day06.clj[nbardiuk]
+* https://github.com/zelark/AoC-2020/blob/master/src/zelark/aoc_2020/day_06.clj[zelark]
+* https://github.com/green-coder/advent-of-code-2020/blob/master/src/aoc/day_6.clj[green-coder]
+* https://github.com/jreighley/aoc2020/blob/master/src/day6.clj[jreighley]
+* https://github.com/rjray/advent-2020-clojure/blob/master/src/advent_of_code/day06.clj[rjray]
+* https://github.com/ocisly/advent2020/blob/1a4b5d46c17a67b86b274e12a37a13cd5d035b92/day-6.clj[ocisly]
+
+The 'trick' here was recognizing that parts 1 and 2 are the same problem, with the only difference being that part 1 is looking for _union_ and part 2 for _intersection_. It seems obvious when you lay out the 2 parts side by side - though I didn't get it until I started writing this post, which was after I'd solved the problem.
+
+So solutions are divided into those who used _union_ and _intersection_ and those who didn't. I don't think the responses that didn't are less good, but there's definitely an aesthetic appeal to the answers that did.  
+
+`KennyMonster` was one who used the set approach for both parts:
+
+[source,clojure]
+----
+(defn yes-count [s set-op]
+  (count (apply set-op (map set (str/split-lines s)))))
+
+(comment
+  (reduce + (map #(yes-count % union) data))
+  (reduce + (map #(yes-count % intersection) data)))
+----
+
+Put each individual response into a set, determine the _union_ (part 1) or _intersection_ (part 2) of all sets, and count them. Stunning!
+
+You could argue that this 'mathematical' approach is a little less descriptive than the other approach. `tschadys` part one for example:
+
+[source,clojure]
+----
+(defn part-1 [input]
+  (reduce + (map (comp count distinct (partial apply str)) input)))
+----
+
+"Count the distinct elements of the string, then add them up." The code reads as a literal description of the process, which makes it very comprehensible. The set approach lacks this readability a little I think. You have to drop out of 'pipeline' mindset into 'math' mindset.
+
 == Thoughts, lessons learned
+
+First: Sets and set operations are a great alternative to the 'sequential pipline' thinking that I generally default to. Keep an eye out for opportunities to use it!
+
+Second: The two parts of the AOC problem, when considered and contrasted together, might reveal the pattern that will allow you to improve part 1 and make part 2 easier. Before barrelling ahead with part 2, look at how the two parts relate together and see if it changes your solution to part 1 in a way that you can extend it to part 2.
