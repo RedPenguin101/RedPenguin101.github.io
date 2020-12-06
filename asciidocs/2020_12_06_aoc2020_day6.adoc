@@ -1,0 +1,85 @@
+= Advent of Code 2020: Day 6
+
+https://adventofcode.com/2020/day/6[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day6.clj[Solution in github]
+
+== Problem summary
+
+Each passenger is filling out a questionnaire of 26 yes/no questions. Their questionnaire response is represented as a string of lower case letters. For example a string "abctgh" indicates they answered yes to 6 questions.
+
+Each passenger group with more than one person in it will have their responses on consecutive lines. So
+
+----
+abc
+
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b
+----
+
+Represents 5 passenger groups, with 1, 3, 2, 4 and 1 people in them respectively.
+
+Part 1: For each passenger group, count each question that _any_ person answered yes to.
+
+Part 2: For each passenger group, count each question that _every_ person answered yes to.
+
+== Problem decomposition
+
+Part 1 can be thought of as undergoing the following sequence for each passenger group:
+
+. consider the yes answers of the entire passenger group as a single string
+. count each unique letter. (put it in a set and count)
+. sum the result
+
+Part 2 is a little more involved:
+
+. Consider each passenger group as a sequence of responses (e.g. `["ab" "ac"]`)
+. For each individual response, count the frequency of each letter
+. merge all the individual responses with +
+. find and count all instances where the frequency of the letter is the same as the length of the passenger group.
+. do that for all passenger groups.
+
+== The solution
+
+This is pretty much written exactly as specified above, using very standard library functions that have been used in previous days, so I'm just going to write it without commentary.
+
+[source,clojure]
+----
+(defn count-answers [input]
+  (->> (str/split input #"\R\R")
+       (map (comp count set #(str/replace % #"\n" "")))
+       (apply +)))
+
+(count-answers (slurp "resources/day6input"))
+
+(defn number-of-all-yes [response]
+  (->> response
+       (map frequencies)
+       (apply merge-with +)
+       (filter (fn [[_ v]] (= v (count response))))
+       (map first)
+       count))
+
+(defn count-all-yes-answers [input]
+  (->> (str/split input #"\R\R")
+       (map #(str/split % #"\n"))
+       (map number-of-all-yes)
+       (apply +)))
+
+(count-all-yes-answers (slurp "resources/day6input"))
+----
+
+== Other solutions
+
+== Thoughts, lessons learned
