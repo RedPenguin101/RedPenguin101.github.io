@@ -1,0 +1,91 @@
+= Advent of Code 2020: Day 7
+
+https://adventofcode.com/2020/day/7[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day7.clj[Solution in github]
+
+== Problem summary
+
+Oh boy, here we go, starting to get a bit crunchy.
+
+So we are given a set of rules in the form: "muted yellow bags contain 2 shiny gold bags, 9 faded blue bags." etc.
+
+We have a shiny gold bag.
+
+In Part 1, we need to know how many colors of bag can eventually contain our shiny gold bag. 
+
+In Part 2, assuming that each bag _must_ contain every bag it can, how many bags in total will our shiny gold bag contain?
+
+== Problem decomposition
+
+I grokked this as a directed acyclic graph data structure. Each bag is a node, with a weighted, directed edge to zero or more other nodes indicating the bags it contains.
+
+Part 1 is then traversing the graph 'upwards', counting every node that is upstream from the 'shiny gold' node.
+
+Part 2 can be thought of as a recursive tree walk. Say bag X contains 2 of bag Y and 3 of bag Z. A function which counts the total bags would be:
+
+`f(x) = 2(1 + f(y)) + 3(1 + f(z))`
+
+So part 2 can be decomposed into:
+
+. Find the child nodes of x and their weights
+. apply the formula above
+
+== The solution
+
+My solution (not counting the client code) was _35_ LOC. Very long. Nearly half of it (4 of 7 functions) is just to build the graph! This is the first time working with a graph library (https://github.com/Engelberg/ubergraph[`ubergraph`]) so I was trying to feel it out as I went, I'm sure that lead to some inefficient ways of doing things, both in terms of prolixity and run time. Will have to see how some of the others solved it.
+
+[source,clojure]
+----
+(defn inner-parse [i]
+  (let [[qty clr] (rest (re-matches #"(\d) (\w* \w*) bags?\.?" i))]
+    [clr (Integer/parseInt qty)]))
+
+(defn parse-rule [i]
+  (let [[key val] (str/split i #" bags contain ")]
+    (when (not= val "no other bags.")
+      [key (into {} (map (comp inner-parse str/trim) (str/split val #",")))])))
+
+(defn parse-input [filename]
+  (into {} (map parse-rule (str/split-lines filename))))
+
+(defn build-graph [bag-map]
+  (apply uber/digraph
+         (for [[start ends] bag-map
+               [color quantity] ends]
+           [start color quantity])))
+
+(defn find-all-parents [graph colors]
+  (let [immediate-parents (set (concat colors (mapcat #(map :src (uber/find-edges graph {:dest %})) colors)))]
+    (if (= immediate-parents colors)
+      immediate-parents
+      (recur graph immediate-parents))))
+
+(defn child-bags [graph bag-type]
+  (let [children (map :dest (uber/find-edges graph {:src bag-type}))]
+    (->> children
+         (map #(:weight (last (uber/edge-with-attrs graph [bag-type %]))))
+         (mapv vector children))))
+
+(defn total-bags [graph bag-type]
+  (->> bag-type 
+       (child-bags graph)
+       (map (fn [[child-bag-type n]] (* n (+ 1 (total-bags graph child-bag-type)))))
+       (reduce +)))
+
+"Part 1 solution"
+
+(dec (count (find-all-parents
+               (build-graph (parse-input (slurp "resources/day7input")))
+               #{"shiny gold"})))
+
+"Part 2 solution"
+  
+(total-bags
+  (build-graph (into {} (map parse-rule (str/split-lines (slurp "resources/day7input")))))
+  "shiny gold")
+----
+
+== Other solutions, lessons learned
+
+== Improvements
