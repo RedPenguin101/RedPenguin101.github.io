@@ -545,19 +545,137 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_other_solutions_lessons_learned">Other solutions, lessons learned</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Starting with <code>tschady</code> because he also used a graph library, <a href="https://github.com/aysylu/loom"><code>loom</code></a>. Loom and Ubergraph are apparently fairly compatible.</p>
+</div>
+<div class="paragraph">
+<p>Lesson 1: <code>transpose</code> (in both loom and ubergraph) just inverts the graph, so instead of dealing separately with parents and children you can just deal with the one for both. From context it seems like dealing with children is easier.</p>
+</div>
+<div class="paragraph">
+<p>Lesson 2: <code>successors</code> (again in both) will get you the children of a directed graph. There are also <code>predecessors</code> and <code>neighbors</code>.</p>
+</div>
+<div class="paragraph">
+<p>Lesson 3: there&#8217;s a <em>much</em> better way of creating a digraph than my</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn build-graph [bag-map]
+  (apply uber/digraph
+         (for [[start ends] bag-map
+               [color quantity] ends]
+           [start color quantity])))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s just&#8230;&#8203; <code>(uber/digraph bag-map)</code>!!! Just give it the map! Duh.</p>
+</div>
+<div class="paragraph">
+<p>Loom appears to have a <code>subgraph-reachable-from</code> that I can&#8217;t see any equivalent for in ubergraph. Pretty easy to improve on my implementation of <code>find-all-parents</code> to do the same thing&#8230;&#8203;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;;from
+(defn find-all-parents [graph colors]
+  (let [immediate-parents (set (concat colors (mapcat #(map :src (uber/find-edges graph {:dest %})) colors)))]
+    (if (= immediate-parents colors)
+      immediate-parents
+      (recur graph immediate-parents))))
 
+;;to
+(defn find-all-parents [graph node-name]
+  (when node-name
+    (set (conj (mapcat #(find-all-parents graph %) (uber/predecessors graph node-name))
+               node-name))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I expect there&#8217;s even a better way to do it.</p>
+</div>
+<div class="paragraph">
+<p>For the 2nd part, <code>successors</code> effectively eliminates my <code>child-bags</code> implementation.</p>
+</div>
+<div class="paragraph">
+<p><code>total-bags</code> can be re-written (nearly letter for letter from <code>tschady</code>) as</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;;from
+(defn total-bags [graph bag-type]
+  (-&gt;&gt; bag-type
+       (child-bags graph)
+       (map (fn [[child-bag-type n]] (* n (+ 1 (total-bags graph child-bag-type)))))
+       (reduce +)))
+
+;;to
+(defn total-bags [graph bag-type]
+  (reduce + (for [node (uber/successors graph bag-type)]
+              (* (uber/weight graph bag-type node) (+ 1 (total-bags graph node))))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s doing essentially the same thing as it was before, except now just using the <code>weight</code> function, which is apparently a thing.</p>
+</div>
+<div class="paragraph">
+<p>I also like the for syntax a little better here for its description.</p>
+</div>
+<div class="paragraph">
+<p>I don&#8217;t have time to go through the others, but here are some which are impressively terse and don&#8217;t even use a graph library.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/zelark/AoC-2020/blob/master/src/zelark/aoc_2020/day_07.clj">zelark</a></p>
+</li>
+<li>
+<p><a href="https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day7.clj">transducer</a> uses an interesting data structure and <code>tree-seq</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>I also spent more time on the parsing functions, which frankly I was just being lazy when I wrote.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_improvements">Improvements</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>After all of that, the LOC went down from 35 &#8594; 14, more than a 50% reduction.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn parse-rule [i]
+  (let [[parent children] (str/split i #"bags contain")]
+    [(str/trim parent) (into {} (map (fn [[_ num node]] [node (Integer/parseInt num)]) (re-seq #"(\d) (\w+ \w+) bag" children)))]))
 
+(defn parse-input [string]
+  (into {} (map parse-rule (remove #(re-find #"no other bags" %) (str/split-lines string)))))
+
+(defn find-all-parents [graph node-name]
+  (when node-name
+    (set (conj (mapcat #(find-all-parents graph %) (uber/predecessors graph node-name)) node-name))))
+
+(defn total-bags [graph bag-type]
+  (reduce + (for [child (uber/successors graph bag-type)]
+              (* (uber/weight graph bag-type child) (+ 1 (total-bags graph child))))))
+
+"Part 1 solution"
+(dec (count (find-all-parents
+               (uber/digraph (parse-input (slurp "resources/day7input")))
+               "shiny gold")))
+
+"Part 2 solution"
+(total-bags
+ (uber/digraph (parse-input (slurp "resources/day7input")))
+ "shiny gold")</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-07 20:50:47 GMT
+Last updated 2020-12-07 23:50:08 GMT
 </div>
 </div>
 </body>

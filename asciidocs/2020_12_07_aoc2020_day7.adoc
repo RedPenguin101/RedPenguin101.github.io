@@ -88,4 +88,104 @@ My solution (not counting the client code) was _35_ LOC. Very long. Nearly half 
 
 == Other solutions, lessons learned
 
+Starting with `tschady` because he also used a graph library, https://github.com/aysylu/loom[`loom`]. Loom and Ubergraph are apparently fairly compatible.
+
+Lesson 1: `transpose` (in both loom and ubergraph) just inverts the graph, so instead of dealing separately with parents and children you can just deal with the one for both. From context it seems like dealing with children is easier.
+
+Lesson 2: `successors` (again in both) will get you the children of a directed graph. There are also `predecessors` and `neighbors`.
+
+Lesson 3: there's a _much_ better way of creating a digraph than my
+
+[source,clojure]
+----
+(defn build-graph [bag-map]
+  (apply uber/digraph
+         (for [[start ends] bag-map
+               [color quantity] ends]
+           [start color quantity])))
+----
+
+It's just... `(uber/digraph bag-map)`!!! Just give it the map! Duh.
+
+Loom appears to have a `subgraph-reachable-from` that I can't see any equivalent for in ubergraph. Pretty easy to improve on my implementation of `find-all-parents` to do the same thing...
+
+
+[source,clojure]
+----
+;;from
+(defn find-all-parents [graph colors]
+  (let [immediate-parents (set (concat colors (mapcat #(map :src (uber/find-edges graph {:dest %})) colors)))]
+    (if (= immediate-parents colors)
+      immediate-parents
+      (recur graph immediate-parents))))
+
+;;to
+(defn find-all-parents [graph node-name]
+  (when node-name
+    (set (conj (mapcat #(find-all-parents graph %) (uber/predecessors graph node-name)) 
+               node-name))))
+----
+
+I expect there's even a better way to do it.
+
+For the 2nd part, `successors` effectively eliminates my `child-bags` implementation.
+
+`total-bags` can be re-written (nearly letter for letter from `tschady`) as
+
+[source,clojure]
+----
+;;from
+(defn total-bags [graph bag-type]
+  (->> bag-type 
+       (child-bags graph)
+       (map (fn [[child-bag-type n]] (* n (+ 1 (total-bags graph child-bag-type)))))
+       (reduce +)))
+
+;;to
+(defn total-bags [graph bag-type]
+  (reduce + (for [node (uber/successors graph bag-type)]
+              (* (uber/weight graph bag-type node) (+ 1 (total-bags graph node))))))
+----
+
+It's doing essentially the same thing as it was before, except now just using the `weight` function, which is apparently a thing.
+
+I also like the for syntax a little better here for its description.
+
+I don't have time to go through the others, but here are some which are impressively terse and don't even use a graph library.
+
+* https://github.com/zelark/AoC-2020/blob/master/src/zelark/aoc_2020/day_07.clj[zelark]
+* https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day7.clj[transducer] uses an interesting data structure and `tree-seq`.
+
+I also spent more time on the parsing functions, which frankly I was just being lazy when I wrote.
+
 == Improvements
+
+After all of that, the LOC went down from 35 -> 14, more than a 50% reduction. 
+
+[source,clojure]
+----
+(defn parse-rule [i]
+  (let [[parent children] (str/split i #"bags contain")]
+    [(str/trim parent) (into {} (map (fn [[_ num node]] [node (Integer/parseInt num)]) (re-seq #"(\d) (\w+ \w+) bag" children)))]))
+
+(defn parse-input [string]
+  (into {} (map parse-rule (remove #(re-find #"no other bags" %) (str/split-lines string)))))
+
+(defn find-all-parents [graph node-name]
+  (when node-name
+    (set (conj (mapcat #(find-all-parents graph %) (uber/predecessors graph node-name)) node-name))))
+
+(defn total-bags [graph bag-type]
+  (reduce + (for [child (uber/successors graph bag-type)] 
+              (* (uber/weight graph bag-type child) (+ 1 (total-bags graph child))))))
+
+"Part 1 solution"
+(dec (count (find-all-parents
+               (uber/digraph (parse-input (slurp "resources/day7input")))
+               "shiny gold")))
+
+"Part 2 solution"
+(total-bags
+ (uber/digraph (parse-input (slurp "resources/day7input")))
+ "shiny gold")
+----
