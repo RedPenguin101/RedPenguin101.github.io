@@ -1,0 +1,133 @@
+= Advent of Code 2020: Day 8
+
+:source-highlighter: coderay
+
+https://adventofcode.com/2020/day/8[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day8.clj[Solution in github]
+
+== Problem summary
+
+Flashbacks of IntCode...
+
+We are given a set of instructions, with operations `acc` (increment a global accumulator) `jmp` (jump) and `nop`.
+
+----
+0 nop +0
+1 acc +1
+2 jmp +4
+3 acc +3
+4 jmp -3
+5 acc -99
+6 acc +1
+7 jmp -4
+8 acc +6
+----
+
+Following these, you will notice that this has an infinite loop in it: `...1->2->6->7->3->4->1...`. The main puzzle input has the same problem.
+
+Part 1: what is the value of the accumulator immediately before the loop occurs?
+
+Part 2: The loop can be fixed (i.e. made to terminate) by changing exactly one `nop` to `jmp`, or one `jmp` to `nop`. Find the change which fixes the program and return the accumulator value at termination.
+
+== Problem decomposition
+
+We're obviously going to have to iterate through the instruction set, and maintain the state of the machine (the pointer value and the accumulator value) after each instruction is executed. We also want to track whether a loop has occurred - in other words we also want to maintain the history of pointer addresses.
+
+Part 1 will then be a case of, after each execution, asking 'have I visited this poniter before?'.
+
+Part 2 is a little tricker. We need a way to take the initial instruction set, and from that, generate a sequence of every _new_ instruction set, where exactly one `nop` or `jmp` has been flipped.
+
+We'll then run these new instruction sets through our VM until they either loop (in which case we'll ignore them) or they terminate (in which case we'll grab and return the accumulator)
+
+== The solution
+
+The data structure we'll be using to track the state is like this
+
+[source,clojure]
+----
+{:instructions [[:nop 0] [:acc 1] [:jmp 4] [:acc 3] [:jmp -3] [:acc -99] [:acc 1] [:jmp -4] [:acc 6]]
+ :accumulator 3,
+ :pointer 2,
+ :execution-history [0 1 2 ,,,]
+ :terminated true
+ :looped true}
+----
+
+I like this solution. The functions are well contained, with the heart being 'execute instruction', which is a nice closure over the machine state.
+
+`execute-instruction` itself is a bit ugly, with it's anonymous `if` expressions. A conditional approach based on the op might have been better. I tried a few other ways of doing it, with `condp` and `cond->`, but I couldn't get anything that was significantly better.
+
+I also like the semantics (maybe not so much the implementation) of `(instruction-variants swap-nop-jmp instructions)`, where you pass in the function that creates the variants.
+
+[source,clojure]
+----
+(defn parse-instruction [line]
+  (let [[op num] (str/split line #" ")]
+    [(keyword op) (Integer/parseInt num)]))
+
+(def instructions (mapv parse-instruction (str/split-lines (slurp "resources/day8input"))))
+
+(defn create-state [instructions]
+  {:instructions instructions
+   :accumulator 0
+   :pointer 0
+   :execution-history []})
+
+(defn execute-instruction [{:keys [pointer instructions] :as state}]
+  (if-let [instr (nth instructions pointer nil)]
+    (-> state
+        (update :accumulator #(if (= (first instr) :acc) (+ % (second instr)) %))
+        (update :pointer #(if (= (first instr) :jmp) (+ % (second instr)) (inc %)))
+        (update :execution-history conj pointer))
+    (assoc state :terminated true)))
+
+(defn no-loop? [state]
+  (not ((set (:execution-history state)) (:pointer state))))
+
+(comment
+  (->> instructions
+       create-state
+       (iterate execute-instruction)
+       (take-while no-loop?)
+       last
+       :accumulator))
+
+(defn run-to-loop-or-termination [state]
+  (cond (:terminated state) state
+        (no-loop? state) (recur (execute-instruction state))
+        :else (assoc state :looped true)))
+
+(defn accumulator-at-termination [instructions]
+  (let [result (run-to-loop-or-termination (create-state instructions))]
+    (when (:terminated result) (:accumulator result))))
+
+(defn swap-jpm-nop [[idx instr]]
+  (when (#{:jmp :nop} (first (nth instr idx)))
+    (update instr idx (fn [[op arg]] [(op {:jmp :nop :nop :jmp}) arg]))))
+
+(defn instruction-variants [f instructions]
+  (keep f (map #(vector % instructions) (range (count instructions)))))
+
+(comment 
+  (->> instructions
+       (instruction-variants swap-jpm-nop)
+       (some accumulator-at-termination)))
+----
+
+== Other solutions, lessons learned
+
+I saw a few people model a `run` function something like (pseudocode)
+
+[source,clojure]
+----
+(defn run [instructions]
+  (loop [seen #{} pointer 0 accumulator 0]
+    (cond is-seen accumulator
+          is-terminated accumulator
+          :else (recur after-applying-operation))))
+----
+
+I think I prefer my approach of having a function which advances the machine state step by step - gives you more flexibility down the line, makes the state nice and explicit, and allows you to deal with sequences of state (doing things like take-while no-loop).
+
+For the other operations, I didn't see much variation.

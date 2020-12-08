@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<title>Advent of Code 2020: Day 7</title>
+<title>Advent of Code 2020: Day 8</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -420,16 +420,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Advent of Code 2020: Day 7</h1>
+<h1>Advent of Code 2020: Day 8</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://adventofcode.com/2020/day/7">Problem link</a></p>
+<p><a href="https://adventofcode.com/2020/day/8">Problem link</a></p>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/RedPenguin101/aoc2020/blob/main/day7.clj">Solution in github</a></p>
+<p><a href="https://github.com/RedPenguin101/aoc2020/blob/main/day8.clj">Solution in github</a></p>
 </div>
 </div>
 </div>
@@ -437,19 +437,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_problem_summary">Problem summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Oh boy, here we go, starting to get a bit crunchy.</p>
+<p>Flashbacks of IntCode&#8230;&#8203;</p>
 </div>
 <div class="paragraph">
-<p>So we are given a set of rules in the form: "muted yellow bags contain 2 shiny gold bags, 9 faded blue bags." etc.</p>
+<p>We are given a set of instructions, with operations <code>acc</code> (increment a global accumulator) <code>jmp</code> (jump) and <code>nop</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 nop +0
+1 acc +1
+2 jmp +4
+3 acc +3
+4 jmp -3
+5 acc -99
+6 acc +1
+7 jmp -4
+8 acc +6</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>We have a shiny gold bag.</p>
+<p>Following these, you will notice that this has an infinite loop in it: <code>&#8230;&#8203;1&#8594;2&#8594;6&#8594;7&#8594;3&#8594;4&#8594;1&#8230;&#8203;</code>. The main puzzle input has the same problem.</p>
 </div>
 <div class="paragraph">
-<p>In Part 1, we need to know how many colors of bag can eventually contain our shiny gold bag.</p>
+<p>Part 1: what is the value of the accumulator immediately before the loop occurs?</p>
 </div>
 <div class="paragraph">
-<p>In Part 2, assuming that each bag <em>must</em> contain every bag it can, how many bags in total will our shiny gold bag contain?</p>
+<p>Part 2: The loop can be fixed (i.e. made to terminate) by changing exactly one <code>nop</code> to <code>jmp</code>, or one <code>jmp</code> to <code>nop</code>. Find the change which fixes the program and return the accumulator value at termination.</p>
 </div>
 </div>
 </div>
@@ -457,29 +470,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_problem_decomposition">Problem decomposition</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>I grokked this as a directed acyclic graph data structure. Each bag is a node, with a weighted, directed edge to zero or more other nodes indicating the bags it contains.</p>
+<p>We&#8217;re obviously going to have to iterate through the instruction set, and maintain the state of the machine (the pointer value and the accumulator value) after each instruction is executed. We also want to track whether a loop has occurred - in other words we also want to maintain the history of pointer addresses.</p>
 </div>
 <div class="paragraph">
-<p>Part 1 is then traversing the graph 'upwards', counting every node that is upstream from the 'shiny gold' node.</p>
+<p>Part 1 will then be a case of, after each execution, asking 'have I visited this poniter before?'.</p>
 </div>
 <div class="paragraph">
-<p>Part 2 can be thought of as a recursive tree walk. Say bag X contains 2 of bag Y and 3 of bag Z. A function which counts the total bags would be:</p>
+<p>Part 2 is a little tricker. We need a way to take the initial instruction set, and from that, generate a sequence of every <em>new</em> instruction set, where exactly one <code>nop</code> or <code>jmp</code> has been flipped.</p>
 </div>
 <div class="paragraph">
-<p><code>f(x) = 2(1 + f(y)) + 3(1 + f(z))</code></p>
-</div>
-<div class="paragraph">
-<p>So part 2 can be decomposed into:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Find the child nodes of x and their weights</p>
-</li>
-<li>
-<p>apply the formula above</p>
-</li>
-</ol>
+<p>We&#8217;ll then run these new instruction sets through our VM until they either loop (in which case we&#8217;ll ignore them) or they terminate (in which case we&#8217;ll grab and return the accumulator)</p>
 </div>
 </div>
 </div>
@@ -487,57 +487,80 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_the_solution">The solution</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>My solution (not counting the client code) was <em>35</em> LOC. Very long. Nearly half of it (4 of 7 functions) is just to build the graph! This is the first time working with a graph library (<a href="https://github.com/Engelberg/ubergraph"><code>ubergraph</code></a>) so I was trying to feel it out as I went, I&#8217;m sure that lead to some inefficient ways of doing things, both in terms of prolixity and run time. Will have to see how some of the others solved it.</p>
+<p>The data structure we&#8217;ll be using to track the state is like this</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">inner-parse</span> [i]
-  (<span class="keyword">let</span> [[qty clr] (<span class="keyword">rest</span> (<span class="keyword">re-matches</span> <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">(</span><span class="content">\d</span><span class="content">) (</span><span class="content">\w</span><span class="content">* </span><span class="content">\w</span><span class="content">*) bags?</span><span class="content">\.</span><span class="content">?</span><span class="delimiter">&quot;</span></span> i))]
-    [clr (Integer/parseInt qty)]))
+<pre class="CodeRay highlight"><code data-lang="clojure">{<span class="symbol">:instructions</span> [[<span class="symbol">:nop</span> <span class="integer">0</span>] [<span class="symbol">:acc</span> <span class="integer">1</span>] [<span class="symbol">:jmp</span> <span class="integer">4</span>] [<span class="symbol">:acc</span> <span class="integer">3</span>] [<span class="symbol">:jmp</span> <span class="integer">-3</span>] [<span class="symbol">:acc</span> <span class="integer">-99</span>] [<span class="symbol">:acc</span> <span class="integer">1</span>] [<span class="symbol">:jmp</span> <span class="integer">-4</span>] [<span class="symbol">:acc</span> <span class="integer">6</span>]]
+ <span class="symbol">:accumulator</span> <span class="integer">3</span>,
+ <span class="symbol">:pointer</span> <span class="integer">2</span>,
+ <span class="symbol">:execution-history</span> [<span class="integer">0</span> <span class="integer">1</span> <span class="integer">2</span> ,,,]
+ <span class="symbol">:terminated</span> <span class="predefined-constant">true</span>
+ <span class="symbol">:looped</span> <span class="predefined-constant">true</span>}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I like this solution. The functions are well contained, with the heart being 'execute instruction', which is a nice closure over the machine state.</p>
+</div>
+<div class="paragraph">
+<p><code>execute-instruction</code> itself is a bit ugly, with it&#8217;s anonymous <code>if</code> expressions. A conditional approach based on the op might have been better. I tried a few other ways of doing it, with <code>condp</code> and <code>cond&#8594;</code>, but I couldn&#8217;t get anything that was significantly better.</p>
+</div>
+<div class="paragraph">
+<p>I also like the semantics (maybe not so much the implementation) of <code>(instruction-variants swap-nop-jmp instructions)</code>, where you pass in the function that creates the variants.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">parse-instruction</span> [line]
+  (<span class="keyword">let</span> [[op <span class="keyword">num</span>] (str/split line <span class="regexp"><span class="delimiter">#&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>)]
+    [(<span class="keyword">keyword</span> op) (Integer/parseInt <span class="keyword">num</span>)]))
 
-(<span class="keyword">defn</span> <span class="function">parse-rule</span> [i]
-  (<span class="keyword">let</span> [[<span class="keyword">key</span> <span class="keyword">val</span>] (str/split i <span class="regexp"><span class="delimiter">#&quot;</span><span class="content"> bags contain </span><span class="delimiter">&quot;</span></span>)]
-    (<span class="keyword">when</span> (<span class="keyword">not</span><span class="keyword">=</span> <span class="keyword">val</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">no other bags.</span><span class="delimiter">&quot;</span></span>)
-      [<span class="keyword">key</span> (<span class="keyword">into</span> {} (<span class="keyword">map</span> (<span class="keyword">comp</span> inner-parse str/trim) (str/split <span class="keyword">val</span> <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">,</span><span class="delimiter">&quot;</span></span>)))])))
+(<span class="keyword">def</span> <span class="function">instructions</span> (mapv parse-instruction (str/split-lines (<span class="keyword">slurp</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">resources/day8input</span><span class="delimiter">&quot;</span></span>))))
 
-(<span class="keyword">defn</span> <span class="function">parse-input</span> [filename]
-  (<span class="keyword">into</span> {} (<span class="keyword">map</span> parse-rule (str/split-lines filename))))
+(<span class="keyword">defn</span> <span class="function">create-state</span> [instructions]
+  {<span class="symbol">:instructions</span> instructions
+   <span class="symbol">:accumulator</span> <span class="integer">0</span>
+   <span class="symbol">:pointer</span> <span class="integer">0</span>
+   <span class="symbol">:execution-history</span> []})
 
-(<span class="keyword">defn</span> <span class="function">build-graph</span> [bag-map]
-  (<span class="keyword">apply</span> uber/digraph
-         (<span class="keyword">for</span> [[start ends] bag-map
-               [color quantity] ends]
-           [start color quantity])))
+(<span class="keyword">defn</span> <span class="function">execute-instruction</span> [{<span class="symbol">:keys</span> [pointer instructions] <span class="symbol">:as</span> state}]
+  (<span class="keyword">if-let</span> [instr (<span class="keyword">nth</span> instructions pointer <span class="predefined-constant">nil</span>)]
+    (<span class="keyword">-&gt;</span> state
+        (update <span class="symbol">:accumulator</span> #(<span class="keyword">if</span> (<span class="keyword">=</span> (<span class="keyword">first</span> instr) <span class="symbol">:acc</span>) (<span class="keyword">+</span> % (<span class="keyword">second</span> instr)) %))
+        (update <span class="symbol">:pointer</span> #(<span class="keyword">if</span> (<span class="keyword">=</span> (<span class="keyword">first</span> instr) <span class="symbol">:jmp</span>) (<span class="keyword">+</span> % (<span class="keyword">second</span> instr)) (<span class="keyword">inc</span> %)))
+        (update <span class="symbol">:execution-history</span> <span class="keyword">conj</span> pointer))
+    (<span class="keyword">assoc</span> state <span class="symbol">:terminated</span> <span class="predefined-constant">true</span>)))
 
-(<span class="keyword">defn</span> <span class="function">find-all-parents</span> [graph colors]
-  (<span class="keyword">let</span> [immediate-parents (<span class="keyword">set</span> (<span class="keyword">concat</span> colors (<span class="keyword">mapcat</span> #(<span class="keyword">map</span> <span class="symbol">:src</span> (uber/find-edges graph {<span class="symbol">:dest</span> %})) colors)))]
-    (<span class="keyword">if</span> (<span class="keyword">=</span> immediate-parents colors)
-      immediate-parents
-      (<span class="keyword">recur</span> graph immediate-parents))))
+(<span class="keyword">defn</span> <span class="function">no-loop?</span> [state]
+  (<span class="keyword">not</span> ((<span class="keyword">set</span> (<span class="symbol">:execution-history</span> state)) (<span class="symbol">:pointer</span> state))))
 
-(<span class="keyword">defn</span> <span class="function">child-bags</span> [graph bag-type]
-  (<span class="keyword">let</span> [children (<span class="keyword">map</span> <span class="symbol">:dest</span> (uber/find-edges graph {<span class="symbol">:src</span> bag-type}))]
-    (<span class="keyword">-&gt;&gt;</span> children
-         (<span class="keyword">map</span> #(<span class="symbol">:weight</span> (<span class="keyword">last</span> (uber/edge-with-attrs graph [bag-type %]))))
-         (mapv <span class="keyword">vector</span> children))))
+(<span class="keyword">comment</span>
+  (<span class="keyword">-&gt;&gt;</span> instructions
+       create-state
+       (<span class="keyword">iterate</span> execute-instruction)
+       (<span class="keyword">take-while</span> no-loop?)
+       <span class="keyword">last</span>
+       <span class="symbol">:accumulator</span>))
 
-(<span class="keyword">defn</span> <span class="function">total-bags</span> [graph bag-type]
-  (<span class="keyword">-&gt;&gt;</span> bag-type
-       (child-bags graph)
-       (<span class="keyword">map</span> (<span class="keyword">fn</span> [[child-bag-type n]] (<span class="keyword">*</span> n (<span class="keyword">+</span> <span class="integer">1</span> (total-bags graph child-bag-type)))))
-       (<span class="keyword">reduce</span> <span class="keyword">+</span>)))
+(<span class="keyword">defn</span> <span class="function">run-to-loop-or-termination</span> [state]
+  (<span class="keyword">cond</span> (<span class="symbol">:terminated</span> state) state
+        (no-loop? state) (<span class="keyword">recur</span> (execute-instruction state))
+        <span class="symbol">:else</span> (<span class="keyword">assoc</span> state <span class="symbol">:looped</span> <span class="predefined-constant">true</span>)))
 
-<span class="string"><span class="delimiter">&quot;</span><span class="content">Part 1 solution</span><span class="delimiter">&quot;</span></span>
+(<span class="keyword">defn</span> <span class="function">accumulator-at-termination</span> [instructions]
+  (<span class="keyword">let</span> [result (run-to-loop-or-termination (create-state instructions))]
+    (<span class="keyword">when</span> (<span class="symbol">:terminated</span> result) (<span class="symbol">:accumulator</span> result))))
 
-(<span class="keyword">dec</span> (<span class="keyword">count</span> (find-all-parents
-               (build-graph (parse-input (<span class="keyword">slurp</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">resources/day7input</span><span class="delimiter">&quot;</span></span>)))
-               #{<span class="string"><span class="delimiter">&quot;</span><span class="content">shiny gold</span><span class="delimiter">&quot;</span></span>})))
+(<span class="keyword">defn</span> <span class="function">swap-jpm-nop</span> [[idx instr]]
+  (<span class="keyword">when</span> (#{<span class="symbol">:jmp</span> <span class="symbol">:nop</span>} (<span class="keyword">first</span> (<span class="keyword">nth</span> instr idx)))
+    (update instr idx (<span class="keyword">fn</span> [[op arg]] [(op {<span class="symbol">:jmp</span> <span class="symbol">:nop</span> <span class="symbol">:nop</span> <span class="symbol">:jmp</span>}) arg]))))
 
-<span class="string"><span class="delimiter">&quot;</span><span class="content">Part 2 solution</span><span class="delimiter">&quot;</span></span>
+(<span class="keyword">defn</span> <span class="function">instruction-variants</span> [f instructions]
+  (keep f (<span class="keyword">map</span> #(<span class="keyword">vector</span> % instructions) (<span class="keyword">range</span> (<span class="keyword">count</span> instructions)))))
 
-(total-bags
-  (build-graph (<span class="keyword">into</span> {} (<span class="keyword">map</span> parse-rule (str/split-lines (<span class="keyword">slurp</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">resources/day7input</span><span class="delimiter">&quot;</span></span>)))))
-  <span class="string"><span class="delimiter">&quot;</span><span class="content">shiny gold</span><span class="delimiter">&quot;</span></span>)</code></pre>
+(<span class="keyword">comment</span>
+  (<span class="keyword">-&gt;&gt;</span> instructions
+       (instruction-variants swap-jpm-nop)
+       (<span class="keyword">some</span> accumulator-at-termination)))</code></pre>
 </div>
 </div>
 </div>
@@ -546,136 +569,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_other_solutions_lessons_learned">Other solutions, lessons learned</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Starting with <code>tschady</code> because he also used a graph library, <a href="https://github.com/aysylu/loom"><code>loom</code></a>. Loom and Ubergraph are apparently fairly compatible.</p>
-</div>
-<div class="paragraph">
-<p>Lesson 1: <code>transpose</code> (in both loom and ubergraph) just inverts the graph, so instead of dealing separately with parents and children you can just deal with the one for both. From context it seems like dealing with children is easier.</p>
-</div>
-<div class="paragraph">
-<p>Lesson 2: <code>successors</code> (again in both) will get you the children of a directed graph. There are also <code>predecessors</code> and <code>neighbors</code>.</p>
-</div>
-<div class="paragraph">
-<p>Lesson 3: there&#8217;s a <em>much</em> better way of creating a digraph than my</p>
+<p>I saw a few people model a <code>run</code> function something like (pseudocode)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">build-graph</span> [bag-map]
-  (<span class="keyword">apply</span> uber/digraph
-         (<span class="keyword">for</span> [[start ends] bag-map
-               [color quantity] ends]
-           [start color quantity])))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">run</span> [instructions]
+  (<span class="keyword">loop</span> [seen #{} pointer <span class="integer">0</span> accumulator <span class="integer">0</span>]
+    (<span class="keyword">cond</span> is-seen accumulator
+          is-terminated accumulator
+          <span class="symbol">:else</span> (<span class="keyword">recur</span> after-applying-operation))))</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It&#8217;s just&#8230;&#8203; <code>(uber/digraph bag-map)</code>!!! Just give it the map! Duh.</p>
+<p>I think I prefer my approach of having a function which advances the machine state step by step - gives you more flexibility down the line, makes the state nice and explicit, and allows you to deal with sequences of state (doing things like take-while no-loop).</p>
 </div>
 <div class="paragraph">
-<p>Loom appears to have a <code>subgraph-reachable-from</code> that I can&#8217;t see any equivalent for in ubergraph. Pretty easy to improve on my implementation of <code>find-all-parents</code> to do the same thing&#8230;&#8203;</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;;from</span>
-(<span class="keyword">defn</span> <span class="function">find-all-parents</span> [graph colors]
-  (<span class="keyword">let</span> [immediate-parents (<span class="keyword">set</span> (<span class="keyword">concat</span> colors (<span class="keyword">mapcat</span> #(<span class="keyword">map</span> <span class="symbol">:src</span> (uber/find-edges graph {<span class="symbol">:dest</span> %})) colors)))]
-    (<span class="keyword">if</span> (<span class="keyword">=</span> immediate-parents colors)
-      immediate-parents
-      (<span class="keyword">recur</span> graph immediate-parents))))
-
-<span class="comment">;;to</span>
-(<span class="keyword">defn</span> <span class="function">find-all-parents</span> [graph node-name]
-  (<span class="keyword">when</span> node-name
-    (<span class="keyword">set</span> (<span class="keyword">conj</span> (<span class="keyword">mapcat</span> #(find-all-parents graph %) (uber/predecessors graph node-name))
-               node-name))))</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>I expect there&#8217;s even a better way to do it.</p>
-</div>
-<div class="paragraph">
-<p>For the 2nd part, <code>successors</code> effectively eliminates my <code>child-bags</code> implementation.</p>
-</div>
-<div class="paragraph">
-<p><code>total-bags</code> can be re-written (nearly letter for letter from <code>tschady</code>) as</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;;from</span>
-(<span class="keyword">defn</span> <span class="function">total-bags</span> [graph bag-type]
-  (<span class="keyword">-&gt;&gt;</span> bag-type
-       (child-bags graph)
-       (<span class="keyword">map</span> (<span class="keyword">fn</span> [[child-bag-type n]] (<span class="keyword">*</span> n (<span class="keyword">+</span> <span class="integer">1</span> (total-bags graph child-bag-type)))))
-       (<span class="keyword">reduce</span> <span class="keyword">+</span>)))
-
-<span class="comment">;;to</span>
-(<span class="keyword">defn</span> <span class="function">total-bags</span> [graph bag-type]
-  (<span class="keyword">reduce</span> <span class="keyword">+</span> (<span class="keyword">for</span> [node (uber/successors graph bag-type)]
-              (<span class="keyword">*</span> (uber/weight graph bag-type node) (<span class="keyword">+</span> <span class="integer">1</span> (total-bags graph node))))))</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It&#8217;s doing essentially the same thing as it was before, except now just using the <code>weight</code> function, which is apparently a thing.</p>
-</div>
-<div class="paragraph">
-<p>I also like the for syntax a little better here for its description.</p>
-</div>
-<div class="paragraph">
-<p>I don&#8217;t have time to go through the others, but here are some which are impressively terse and don&#8217;t even use a graph library.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/zelark/AoC-2020/blob/master/src/zelark/aoc_2020/day_07.clj">zelark</a></p>
-</li>
-<li>
-<p><a href="https://github.com/transducer/adventofcode/blob/master/src/adventofcode/2020/day7.clj">transducer</a> uses an interesting data structure and <code>tree-seq</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>I also spent more time on the parsing functions, which frankly I was just being lazy when I wrote.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_improvements">Improvements</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>After all of that, the LOC went down from 35 &#8594; 14, more than a 50% reduction.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">parse-rule</span> [i]
-  (<span class="keyword">let</span> [[parent children] (str/split i <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">bags contain</span><span class="delimiter">&quot;</span></span>)]
-    [(str/trim parent) (<span class="keyword">into</span> {} (<span class="keyword">map</span> (<span class="keyword">fn</span> [[_ <span class="keyword">num</span> node]] [node (Integer/parseInt <span class="keyword">num</span>)]) (<span class="keyword">re-seq</span> <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">(</span><span class="content">\d</span><span class="content">) (</span><span class="content">\w</span><span class="content">+ </span><span class="content">\w</span><span class="content">+) bag</span><span class="delimiter">&quot;</span></span> children)))]))
-
-(<span class="keyword">defn</span> <span class="function">parse-input</span> [string]
-  (<span class="keyword">into</span> {} (<span class="keyword">map</span> parse-rule (<span class="keyword">remove</span> #(<span class="keyword">re-find</span> <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">no other bags</span><span class="delimiter">&quot;</span></span> %) (str/split-lines string)))))
-
-(<span class="keyword">defn</span> <span class="function">find-all-parents</span> [graph node-name]
-  (<span class="keyword">when</span> node-name
-    (<span class="keyword">set</span> (<span class="keyword">conj</span> (<span class="keyword">mapcat</span> #(find-all-parents graph %) (uber/predecessors graph node-name)) node-name))))
-
-(<span class="keyword">defn</span> <span class="function">total-bags</span> [graph bag-type]
-  (<span class="keyword">reduce</span> <span class="keyword">+</span> (<span class="keyword">for</span> [child (uber/successors graph bag-type)]
-              (<span class="keyword">*</span> (uber/weight graph bag-type child) (<span class="keyword">+</span> <span class="integer">1</span> (total-bags graph child))))))
-
-<span class="string"><span class="delimiter">&quot;</span><span class="content">Part 1 solution</span><span class="delimiter">&quot;</span></span>
-(<span class="keyword">dec</span> (<span class="keyword">count</span> (find-all-parents
-               (uber/digraph (parse-input (<span class="keyword">slurp</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">resources/day7input</span><span class="delimiter">&quot;</span></span>)))
-               <span class="string"><span class="delimiter">&quot;</span><span class="content">shiny gold</span><span class="delimiter">&quot;</span></span>)))
-
-<span class="string"><span class="delimiter">&quot;</span><span class="content">Part 2 solution</span><span class="delimiter">&quot;</span></span>
-(total-bags
- (uber/digraph (parse-input (<span class="keyword">slurp</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">resources/day7input</span><span class="delimiter">&quot;</span></span>)))
- <span class="string"><span class="delimiter">&quot;</span><span class="content">shiny gold</span><span class="delimiter">&quot;</span></span>)</code></pre>
-</div>
+<p>For the other operations, I didn&#8217;t see much variation.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-08 13:10:18 GMT
+Last updated 2020-12-08 18:43:50 GMT
 </div>
 </div>
 </body>

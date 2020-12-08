@@ -1,5 +1,7 @@
 = Advent of Code 2020: Day 7
 
+:source-highlighter: coderay
+
 https://adventofcode.com/2020/day/7[Problem link]
 
 https://github.com/RedPenguin101/aoc2020/blob/main/day7.clj[Solution in github]
