@@ -1,4 +1,4 @@
-= Advent of Code 2020: Day 8
+= Advent of Code 2020: Day 10
 
 :source-highlighter: coderay
 
