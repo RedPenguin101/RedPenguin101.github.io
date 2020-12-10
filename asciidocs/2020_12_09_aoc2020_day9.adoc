@@ -1,0 +1,95 @@
+= Advent of Code 2020: Day 9
+
+:source-highlighter: coderay
+
+https://adventofcode.com/2020/day/9[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day9.clj[Solution in github]
+
+== Problem summary
+
+Given a sequence of numbers, with a specified window size `n`:
+
+Part 1: find the first number in the sequence which is not the sum of two of the numbers in the `n` elements preceding it.
+
+Part 2: For the number that is the output of part 1, find the contiguous block of elements in the sequence that sums to that number.
+
+== Problem decomposition
+
+Part 1:
+
+. divide the sequence into overlapping 'blocks' of `n+1`
+. for each block, find the sum of all the 2-length combinations of the the first n elements
+. if none of these equal the last element of block, return the last element of the block
+
+Part 2:
+
+. Starting with the subvec of the sequence that is [0 1], sum all numbers in the subvec
+. if it's equal to the target, return the subvec
+. if it's less than the target, expand the subvec forward and try again
+. if it's greater than the target, shrink the subvec from the back and try again
+
+
+(it's a sort of 'caterpillar' movement through the sequence: inching the front forward and pulling the back forward in alternation)
+
+== The solution
+
+Not much to say about this - thought it was pretty simple. I don't use `not-any?` much, so nice to get that in.
+
+I used the combinatorics library - but a simple `for` would have done equally as well here.
+
+Some of the naming is a bit sloppy here. A few `xs`, `x` etc. could've been made clearer.
+
+[source,clojure]
+----
+(def input (->> "resources/day9input"
+                slurp
+                str/split-lines
+                (map #(Long/parseLong %))))
+
+(def example [35 20 15 25 47 40 62 55 65 95 102 117 150 182 127 219 299 277 309 576])
+
+(defn not-sum-of-predecessors [xs]
+  (when (not-any? #(#{(last xs)} (apply + %)) (combo/combinations (butlast xs) 2))
+    (last xs)))
+
+(comment
+  (some not-sum-of-predecessors (partition (inc 5) 1 example))
+  ;; => 127
+
+  (some not-sum-of-predecessors (partition (inc 25) 1 input))
+  ;; => 70639851
+  )
+
+(defn contiguous-block-summing-to
+  ([target xs] (contiguous-block-summing-to target xs 0 1))
+  ([target xs  start end]
+   (let [x (apply + (subvec xs start end))]
+     (cond (= x target) (subvec xs start end)
+           (> x target) (recur target xs (inc start) end)
+           (< x target) (recur target xs start (inc end))))))
+
+(comment
+  (contiguous-block-summing-to 127 example)
+  ;; => [15 25 47 40]
+
+  (let [r (sort (contiguous-block-summing-to 70639851 (vec input)))]
+    (+ (first r) (last r)))
+  ;; => 8249240
+  )
+----
+
+== Other solutions, lessons learned
+
+One thing I keep doing: some of the numbers were larger than `int`, and I wrote something that caught NumberExceptions and fell back to BigInt. Just use Long!
+
+I didn't see any other solutions I really liked, but there were some interesting functions that were used: 
+
+`as->`: Binds name to expr, evaluates the first form in the lexical context
+of that binding, then binds name to that result, repeating for each
+successive form, returning the result of the last form.
+
+You can use it like a normal thread, but you have more flexibility in where you put the arguments.
+
+`reductions`: Returns a lazy seq of the intermediate values of the reduction (as
+per reduce) of coll by f, starting with init.

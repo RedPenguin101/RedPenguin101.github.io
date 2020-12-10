@@ -1,0 +1,127 @@
+= Advent of Code 2020: Day 8
+
+:source-highlighter: coderay
+
+https://adventofcode.com/2020/day/10[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day10.clj[Solution in github]
+
+== Problem summary
+
+You have:
+
+* a plug socket with voltage 0
+* 100 power adapters. Each has an output voltage, and can can accept inputs up to 3 volts below it's output voltage
+* a smartphone that only charges from your highest output adapter.
+
+The output voltages of the power adapters are represented as an array of integers.
+
+Part 1: Connect together all of your adapters. What are the frequencies of the voltage jump sizes?
+
+Part 2: How many possible ways can your adapters be connected together and still charge your phone?
+
+== Problem decomposition
+
+Part 1 is fairly simple: You want the get the 'jumps' size between each element of the ordered array, and see how often each jump size occurs.
+
+. add in 0 and the device input to the array to complete it.
+. sort it ascending, since this will represent the order in which you must connect the adapters together
+. partition it with a 2-size sliding window, and find the difference between the values in each window (the jump sizes)
+. find the frequencies the jump sizes.
+
+Part 2 is much more crunchy.
+
+The way I thought of this is: how many ways are there to get from the 'phone' element from the 'socket' element? The answer is: the sum of the number of ways you can get to each predecessor of the phone element. So if you have an adapters that have output of 12, 11, and 10 (but not 9), and you can get to 11 4 ways and 10 4 ways, then you must be able to get to 12 8 ways. (this was actually where I spent the most time on this problem, trying to reason this out. Sounds trivially obvious now.)
+
+Then you could just reason this logic backwards recursively to get to the answer:
+
+`paths(i)=paths(i-1)+paths(i-2)...`
+
+I think this might overflow, or at least take a very long time, since it's a tree recursion.
+
+Anyway, I didn't do this. Instead I calculated forward.
+
+Let's say you have a collection of tuples, where first is the output adapter is, and second is a collection of each of the other adapters you can reach it from, like this. 
+
+[source,clojure]
+----
+[[1 (0)]
+ [4 (1)]
+ [5 (4)]
+ [6 (4,5)]
+ [7 (4,5,6)]
+ ,,,]
+----
+
+Provided this is ordered, you can follow the algorithm: for each adapter in the second element, look up in the accumulator how many ways you can get to it, and replace that element in the collection with that number. Then sum up the number to get then ways to get to that adapter, and put that value in the accumulator (The initial accumulator value is `{0 1}`). 
+
+In the above case:
+
+. for `[1 (0)]`, look up 0 in the acc (1), and associate the adapter (1) with the number of ways to get to it (1) 
+. for `[4 (1)]`, look up 1 in the acc (1), and associate the adapter (4) with the number of ways to get to it (1) 
+. for `[5 (4)]`, look up 4 in the acc (1), and associate the adapter (5) with the number of ways to get to it (1) 
+. for `[6 (4,5)]`, look up 4 and 5 in the acc (1 and 1), and associate the adapter (5) with the number of ways to get to it (2) 
+. for `[7 (4,5,6)]`, look up 4, 5, 6 in the acc (1, 1, 2), and associate the adapter (7) with the number of ways to get to it (1+1+2=4) 
+
+etc.
+
+Then when you get to the end of the collection, you'll look up the number of jumps to get to the final element, the phone.
+
+== The solution
+
+Part one is essentially as I described
+
+[source,clojure]
+----
+(defn complete-input [input]
+  (sort (conj (conj input 0) (+ 3 (apply max input)))))
+
+(defn joltage-differences [input]
+  (frequencies (map #(- (apply - %)) (partition 2 1 (complete-input input)))))
+
+(->> input
+     joltage-differences
+     vals
+     (apply *))
+;; => 2170
+----
+
+For part 2, what I need to do fist is to get from the input `[0 3 5 6 ,,]` to the data structure I mentioned above.
+
+I did this by doing `(reverse (partition-all 4 1 (reverse input)))` - essentially you end up with (up to)4-tuples where the first element is the adapter you're interested in, and the next 3 are the candidates for predecessors (there can be a max 3 of them).
+
+The double 'reverse' here is because this approach only works properly if the array is descending-sorted. I want the output to look like `[(0) (1 0) (4 1 0) (5 4 1 0) (6 5 4 1),,, (22 19 16 15)]`, i.e. the 'tail-off' to be at the beginning. There's probably a more elegant way of doing this.
+
+Next I map 'find-predecessors' over these 4 tuples. This just returns the desired data structure element of `[adapter (sources)]`, filtering out any adapters that are more than 3 away.
+
+Next there's the actual reducing function:
+
+`(fn [A [x ys]] (assoc A x (apply + (map #(get A %) ys))))`
+
+This does exactly what I described above.
+
+Then all that's left to do is find the maximum value of the resulting map.
+
+[source,clojure]
+----
+
+(defn find-predecessors [[fst & rst]]
+  [fst (filter #(> % (- fst 4)) rst)])
+
+(defn distinct-paths [input]
+  (->> input
+       complete-input
+       reverse
+       (partition-all 4 1)
+       reverse
+       (map find-predecessors)
+       (drop 1)
+       (reduce (fn [A [x ys]] (assoc A x (apply + (map #(get A %) ys)))) {0 1})))
+
+(time (apply max (vals (distinct-paths input))))
+;; => 24803586664192
+----
+
+Not pretty, but it works, and it's even fast!
+
+== Other solutions, lessons learned
