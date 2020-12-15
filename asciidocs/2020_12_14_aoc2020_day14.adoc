@@ -1,0 +1,465 @@
+= Advent of Code 2020: Day 14
+
+:source-highlighter: coderay
+
+
+https://adventofcode.com/2020/day/14[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day14.clj[Solution in github]
+
+== Problem summary
+
+You are given an input that is comprised of:
+
+* bitmasks in the form of a string containing 0's, 1's and X's
+* instructions to store values at a virtual memory location (i.e. tuple of `memloc` `value`)
+
+Part 1: apply the bitmask to the `value`, and store the result in the `memloc`
+
+Part 2: apply the bitmask to the `memloc`, where X in the bitmask indicates a variable - it can be 1 or zero. For every possible number the result of the application can take, store `value` in that memory location. 
+
+== Problem decomposition
+
+Frickin' bits and binary again. Boo.
+
+Some general functionality we need first: 
+
+* we need to be able to get a binary representation of a number.
+* we need to parse the mask from the mask lines of the input
+* we need to parse the `[memloc value]` tuple from the instruction lines of the input.
+
+We will need, for both parts, an *application function* to be able to 'apply' the bitmask to the value (part 1) or memloc (part 2). The methods will be slightly different. 
+
+Part 1 is easier: If the bitmask at a particular bit is a number, use that. If not, use the value from the input.
+
+The application for part 2 is also easy: if the bitmask value is 1, use 1. If zero, use the input bit. if X, use X (or some other indication that this is a variable that can take 0 or 1)
+
+Processing the input is a simple reduction. We will have our state have a mask key and a memory key. The mask will store the mask, the memory will store the memory as an associative collection of memloc->value. 
+
+We'll make an *update memory* function which reduces this state and sequentially over the lines of input will update the mask if it's a mask line, or update the memory if it's an instruction line after the mask from the accumulator.
+
+For part 1 this process is simple - just use your part 1 application function in _update-memory_ to get the value, and associate the result into `[:memory mem-loc]`
+
+For part 2 it is, in theory, not too much more complicated.
+
+The result will be something like `000000000000000000000000000000X1101X`, where the X's can be 0 or 1. Therefore the memory locations are
+
+  000000000000000000000000000000011010  (decimal 26)
+  000000000000000000000000000000011011  (decimal 27)
+  000000000000000000000000000000111010  (decimal 58)
+  000000000000000000000000000000111011  (decimal 59)
+
+So we'll need a function, *memory-addresses*, which given a result in the form `000000000000000000000000000000X1101X` will return a collection of memory locs in the form `(26 27 58 59)`
+
+Then your update memory function for part 2 will simply associate the `value` with each of these memory locations.
+
+== The solution
+
+In contrast to yesterday, where the difficulty was all in the math and the code implementation was easy, here the actual solution is easy to describe, but it's quite tough to code up - at least part 2 is. That `memory-addresses` function was a real pain, and I didn't find a good way to do it. I'll have to look for others for inspiration.
+
+To get the simple stuff out of the way, we have:
+
+A function for turning an integer into a specified length array of binary digits (I imagine someone will have a better way of doing this)
+
+[source,clojure]
+----
+(defn- binary-array
+  ([n] (map #(Character/digit % 10) (Integer/toBinaryString n)))
+  ([n length] (let [ns (binary-array n)]
+                (concat (repeat (- length (count ns)) 0) ns))))
+----
+
+Parsers for the instruction and mask, returning a tuple `[mem-loc value]`, and a 36 length array with 1's, 0's and nils (for X's)
+
+[source,clojure]
+----
+(defn- parse-instruction [string]
+  (map #(Integer/parseInt %) (drop 1 (re-matches #"mem\[(\d+)\] = (\d+)" string))))
+
+(defn- parse-mask [string]
+  (->> string
+       (re-matches #"mask = (\w+)")
+       second
+       (map #(Character/digit % 10))
+       (map #(when (not= -1 %) %))))
+----
+
+Apply mask and update memory for part 1 are simple
+
+[source,clojure]
+----
+(defn- apply-mask [mask array]
+  (Long/parseLong (apply str (map #(or %1 %2) mask array)) 2))
+
+(defn- update-memory [state line]
+  (if (= "mem" (subs line 0 3))
+    (let [[mem-loc number] (parse-instruction line)]
+      (assoc-in state [:memory mem-loc] (apply-mask (:mask state) (binary-array number 36))))
+    (assoc state :mask (parse-mask line))))
+----
+
+Apply mask is mapping over mask and array, returning the mask value if there is one and the input value if not. Then it parses the result to a long with a radix of 2.
+
+Update memory is a simple reduction fn, branching on instruction lines and mask lines. The instruction line branch applies the mask to the value and puts it in the mem-loc.
+
+Application is just
+
+[source,clojure]
+----
+(->> "resources/day14input"
+     slurp
+     str/split-lines
+     (reduce update-memory {})
+     :memory
+     vals
+     (apply +))
+----
+
+OK, part 2. I definitely don't want to claim this is the best, or even a good solution.
+
+My basic idea was that you have the result of applying the mask, being an array of 0's, 1's, and some indication that it's a variable. For any result you'll have x number variables.
+
+Getting an array of arrays of the possible values of those variables should be easy. For 2 variables, it's `(0 0) (0 1) (1 0) (1 1)` etc. so now for each of those combinations, you just need to replace each of the variables in your result with those, and you have a full set of results, which you can just parse into longs.
+
+Easier said than done. First, I couldn't think of a way to just give a function a result and a combination and just fill in the 'blanks'. I ended up changing my apply-mask-v2 to parse X as, instead of `nil`, a tuple of `:r` (for replace) and a incrementing number.
+
+[source,clojure]
+----
+(defn- apply-mask-v2 [mask bin-array]
+  (let [i (volatile! -1)]
+    (map #(case %1
+            0 %2
+            1 1
+            nil (do
+                  (vswap! i inc)
+                  (vector :r @i)))
+         mask bin-array)))
+----
+
+The idea is that when you have this and the replacements, you replace [:r 0] with the 0th value of the replacement array, [:r 1] with the first value, etc.
+
+I had to use some mutable state in there, which you hate to see. I think if I'd though about this for a while I could've come up with a better way, maybe one of the other solutions will have something.
+
+The next issue I ran into was that I couldn't find a smart way to generate the different permutations of 1 and 0. It's a pretty simple ask, I just want every combination of 1 and 0 for an n length away. I'm sure there's a one liner for it. I ended up doing this.
+
+[source,clojure]
+----
+(combo/permuted-combinations (apply concat [(repeat n 0) (repeat n 1)]) n)
+----
+
+i.e. you run `permuted-combinations` on (0 0 0 1 1 1) to get ever combination of 0 and 1 for a 3 length array. Yuck.
+
+Bring these together and you get
+
+[source,clojure]
+----
+(defn- memory-addresses [result]
+  (let [replacements (filter coll? result)
+        n (count replacements)]
+    (map (comp #(Long/parseLong % 2) #(apply str %))
+         (map #(replace % result)
+              (map #(zipmap replacements %) (combo/permuted-combinations (apply concat [(repeat n 0) (repeat n 1)]) n))))))
+----
+
+A big pile of suck.
+
+Finally, I would be in the position where I had the mem-locs, the values, and needed to merge them into the main memory. For some reason, instead of actually doing a merge, I did a (I think) more expensive reduce.
+
+[source,clojure]
+----
+(defn- mem-push [mem locs val]
+  (reduce (fn [m loc]
+            (assoc m loc val))
+          mem
+          locs))
+----
+
+The final `update-memory-v2` looks like this
+
+[source,clojure]
+----
+(defn- update-memory-v2 [{:keys [mask memory] :as state} line]
+  (if (= "mem" (subs line 0 3))
+    (let [[mem-loc number] (parse-instruction line)]
+      (assoc state :memory (mem-push memory
+                                     (memory-addresses (apply-mask-v2 mask (binary-array mem-loc 36)))
+                                     number)))
+    (assoc state :mask (parse-mask line))))
+----
+
+Everything about this solution to part 2 I like in _theory_, but the implementation is pretty shabby. A quick-bench put this at 1.3 seconds 
+
+Real quick, let's replace that redundant mem-push with a merge. This doesn't speed it up, but it does remove some redundancy.
+
+[source,clojure]
+----
+(defn- update-memory-v2 [state line]
+  (if (= "mem" (subs line 0 3))
+    (let [[mem-loc number] (parse-instruction line)]
+      (update state :memory merge (zipmap (memory-addresses (apply-mask-v2 (:mask state) (binary-array mem-loc 36)))
+                                          (repeat number))))
+    (assoc state :mask (parse-mask line))))
+----
+
+== Other solutions, lessons learned
+
+Oh, there was some real clever stuff going on here, proper bit-wizardry. I feel like a caveman with my solution.
+
+=== Zelark
+
+https://github.com/zelark/AoC-2020/blob/master/src/zelark/aoc_2020/day_14.clj[link]
+
+[source,clojure]
+----
+(defn parse-mask [mask]
+  {:and      (Long/parseLong (str/escape mask {\1 \0, \X \1}) 2)
+   :or       (Long/parseLong (str/escape mask {\X 0}) 2)
+   :floating (keep-indexed #(when (= %2 \X) (- 35 %1)) mask)}) ; always 36 bits
+
+(parse-mask "01X11X10X10110110X111X11010X1X101010")
+;; => {:and 9798172992, :or 24254854314, :floating (33 30 27 18 14 8 6)}
+----
+
+So a parsed mask is:
+
+* and: a number where every X position is 1 (everything else is zero)
+* or:  a number where every X position is 0 (everything else is per the original mask)
+* floating: an index of every bit of the number which has an X
+
+In binary, the above example breaks down like this:
+
+  and      001001001000000001000100000101000000
+  original 01X11X10X10110110X111X11010X1X101010
+  or       010110100101101100111011010010101010
+
+The input parsing:
+
+[source,clojure]
+----
+(defn parse-input [input]
+  (->> (str/split-lines input)
+       (map #(re-matches #"(mask|mem)(?:\[(\d+)\])? = ([X01]+|\d+)" %))
+       (map (fn [[_ cmd a b]]
+              (case cmd
+                "mask" [:mask (parse-mask b)]
+                "mem"  [:mem (Long/parseLong a) (Long/parseLong b)])))))
+
+(parse-input input)
+;; => ([:mask {:and 9798172992, :or 24254854314, :floating (33 30 27 18 14 8 6)}]
+;;     [:mem 19409 3025]
+;;     [:mem 40104 798480382]
+;;     [:mem 25359 905]
+;;     [:mask {:and 1086492672, :or 24632183808, :floating (30 23 22 17 15 12)}]
+;;     [:mem 55479 930785]
+;;     [:mem 25548 130263864]
+;;     ...)
+----
+
+This bit is pretty simple at least. The structure to iterate over is a 2 or 3 tuple, with the first element being the type.
+
+[source,clojure]
+----
+(defn run-program [re-mem code]
+  (loop [commands code mask {} mem {}]
+    (if-let [[cmd a b] (first commands)]
+      (case cmd
+        :mask (recur (next commands) a mem)
+        :mem  (recur (next commands) mask (re-mem mem mask a b)))
+      (apply + (vals mem)))))
+----
+
+Again, pretty simple recursive run.
+
+If the command is `:mask`, recur with the new mask in place of the old one.
+
+If the command is `:mem`, recur with a updated mem generated by applying `(remem mem mask mem-loc val)`
+
+If you run out of commands, sum up the values in memory.
+
+So the magic is in those re-mem functions.
+
+One thing here, I thought trying to destructure a 2-tuple with `[a b c]` would throw, but it doesn't, it just gives nil for the 3rd value - very handy.
+
+[source,clojure]
+----
+(let [[cmd a b] [:mask {:and 9798172992, :or 24254854314, :floating '(33 30 27 18 14 8 6)}]]
+  [cmd a b])
+;; => [:mask {:and 9798172992, :or 24254854314, :floating (33 30 27 18 14 8 6)} nil]
+----
+
+Anyway, part 1 has an `apply-mask-v1` and a `mem-v1` (a re-mem function).
+
+Recall the logic here is that
+
+. if the mask is 0 or 1, the corresponding bit in the number is overwritten with that value
+. if the mask is X, the corresponding bit in the number is unchanged  
+
+[source,clojure]
+----
+;; part 1
+(defn apply-mask-v1 [mask number]
+  (bit-or (bit-and number (mask :and))
+          (mask :or)))
+
+(defn mem-v1 [mem mask address value]
+  (assoc mem address (apply-mask-v1 mask value)))
+
+(run-program mem-v1 (parse-input input)) ; 13476250121721
+----
+
+So I don't know what any of that bit-stuff does. Let's investigate.
+
+From https://en.wikipedia.org/wiki/Bitwise_operation[Wiki]
+
+  A bitwise OR is a binary operation that takes two bit patterns of equal length and performs the logical inclusive OR operation on each pair of corresponding bits. The result in each position is 0 if both bits are 0, while otherwise the result is 1. For example: 
+
+     0101 (decimal 5)
+  OR 0011 (decimal 3)
+   = 0111 (decimal 7)
+
+Bitwise and is similarly:
+
+      0101 (decimal 5)
+  AND 0011 (decimal 3)
+    = 0001 (decimal 1)
+
+Recall from the above that our mask data structure looks like
+
+  and      001001001000000001000100000101000000 (a 1 in every X position)
+  original 01X11X10X10110110X111X11010X1X101010
+  or       010110100101101100111011010010101010 (a 0 in every X position)
+
+So `(bit-and number (mask :and))` is 
+
+  num      000000000000000000000000000000001100 (12 in decimal)
+  and      001001001000000001000100000101000000
+  =        000000000000000000000000000000000000 (0)
+
+Then `bit-or` on the result will be 
+
+  num      000000000000000000000000000000000000
+  or       010110100101101100111011010010101010
+  =        010110100101101100111011010010101010
+
+Considering it bitwise: `(bit-or (mask :or) (bit-and num (mask :and)))`:
+
+. If the mask bit is X (therefore 1 in the :and and 0 in the :or) the output bit from the `bit-and` will 0 if the num bit is 0, and 1 is the num bit is 1. `((Y and 1) or 0) = Y` where Y is the num bit
+. If the mask bit is 0 or 1 (therefore 0 in :and and 0 or 1 in :or): `((Y and 0 = 0) or 1/0)` - the output will just be whatever the mask bit is.
+
+Just like the requirements say.
+
+OK, part 2, big-brain time.
+
+The masking rules here are
+
+* If the bitmask bit is 0, the corresponding memory address bit is unchanged.
+* If the bitmask bit is 1, the corresponding memory address bit is overwritten with 1.
+* If the bitmask bit is X, the corresponding memory address bit is floating.
+
+[source,clojure]
+----
+;; part 2
+(defn apply-floating [floating fmask number]
+  (reduce (fn [num [i1 i2]]
+            (if (bit-test fmask i1) (bit-set num i2) (bit-clear num i2)))
+          number
+          (map-indexed vector floating)))
+
+(defn apply-mask-v2 [{:keys [floating] :as mask} number]
+  (->> (bit-or number (mask :or))
+       (repeat)
+       (map (partial apply-floating floating)
+            (range (bit-shift-left 1 (count floating))))))
+
+(defn mem-v2 [mem mask address value]
+  (reduce #(assoc %1 %2 value) mem (apply-mask-v2 mask address)))
+
+(run-program mem-v2 (parse-input input)) ; 4463708436768
+----
+
+New bit operations:
+
+* `(bit-test x n)` Test bit at index n (returns true if 1, false if 0)
+* `(bit-set x n)` Set bit at (right)index n to 1
+* `(bit-clear x n)` Set bit at (right)index n to 0
+* `(bit-shift-left x n)` Bitwise shift left
+
+[source,clojure]
+----
+(Integer/toBinaryString (bit-set 2r1011 0))
+"1011"
+(Integer/toBinaryString (bit-set 2r1011 1))
+"1011"
+(Integer/toBinaryString (bit-set 2r1011 2))
+"1111"
+(Integer/toBinaryString (bit-set 2r1011 3))
+"1011"
+
+(Integer/toBinaryString (bit-clear 2r1011 0))
+"1010"
+(Integer/toBinaryString (bit-clear 2r1011 1))
+"1001"
+(Integer/toBinaryString (bit-clear 2r1011 2))
+"1011"
+(Integer/toBinaryString (bit-clear 2r1011 3))
+"11"
+
+(Integer/toBinaryString (bit-shift-left 1 0))
+"1" (1)
+(Integer/toBinaryString (bit-shift-left 1 1))
+"10" (2)
+(Integer/toBinaryString (bit-shift-left 1 2))
+"100" (4)
+(Integer/toBinaryString (bit-shift-left 1 3))
+"1000" (8)
+----
+
+Look at `apply-floating` first.
+
+[source,clojure]
+----
+(defn apply-floating [floating fmask number]
+  (reduce (fn [num [i1 i2]]
+            (if (bit-test fmask i1) (bit-set num i2) (bit-clear num i2)))
+          number
+          (map-indexed vector floating)))
+----
+
+floating here is the sequence of right-indexed bits where the mask has an X.
+
+fmask is a number representing a bit position, i.e. 2^n: 1, 100, 1000, 10000, 100000
+
+Number is the input number, put through a bit-or with (mask :or) - i.e.
+
+* 1 where the mask value was 1
+* number value where the mask value was 0
+* number value where the mask value was X
+
+`apply-floating` first takes a map-index of floating i.e. turns it into `[[0 23] [1 18] ,,,]`
+
+So essentially when you have a mask of `01X11X10X10110110X111X11010X1X101010` and a number of 15 (2r1111).
+
+. the number, like `10110100101101100111011010010101111`
+. the fmask, like  `00000000000000000000100000000000000` (here using the 14th bit, which is an X)
+. the floats, like `([0 33] [1 30] [2 27] [3 18] [4 14] [5 8] [6 6])`
+
+The reduction then maps over each of the indexed floats `[i1 i2]`, following this conditional
+
+* if the value of fmask at bit i1 is 1, set bit i2 in number to 1
+* else set bit i2 in number to 1
+
+So for the first tuple, `[0 33]`:
+
+* `(bit-test 2r100000000000000 0) => false`
+* so `(bit-clear 2r10110100101101100111011010010101111 33)`
+* number is now `10110100101101100111011010010101111`
+
+The number will always be unchanged, since our number already has every X bit set to 0.
+
+When we get to `[4 14]`:
+
+* `(bit-test 2r100000000000000 0) => false`
+* so `(bit-clear 2r10110100101101100111011010010101111 33)`
+* number is now `10110100101101100111011010010101111`
+
+OK, no idea what's going on then...
