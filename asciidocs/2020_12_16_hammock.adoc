@@ -1,0 +1,164 @@
+= Rich Hickey: Hammock Driven Development
+
+An experience report, not science.
+
+When was the last time you thought hard about something for
+
+* an hour?
+* a day?
+* a month?
+* a year?
+
+This is very valuable time if you can do it!
+
+When was the last time you felt confident implementing something for the first time? How do you _start_ doing that without feeling at risk?
+
+When is the best time to fix bugs?
+
+* not in prod
+* not in QA
+* NOT in dev
+
+The best time to fix bugs is during *design*.
+
+Most of the biggest problems in software are problems of _misconception_, not implementation. Testing and type systems are of limited use here.
+
+== Analysis and design
+
+Got dinged after the 90's! But it's not _about_ UML, all-encompassing requirements or perfect to-the-day master plan. Those are obviously bad ideas. But that doesn't mean that the step before 'go do it' isn't an important one.
+
+We suffer a lot due to a lack of attention here (whether it's our choice or not).
+
+Simple defn: A&D is about understanding the problem we are trying to solve, and assessing our solution and seeing if it solves that problem.
+
+== Solve problems, don't build features!
+
+Features are results, not objectives. Features are like the chrome hubcaps on the car, they aren't what make it go.
+
+Programming is not about completing lists of features.
+
+Don't let users specify answers - they are often really not good ideas. You have to dig underneath it to the problem.
+
+Avoiding problems is not solving them. Don't avoid problems (if you can help it).
+
+Solving problems requires that you understand, recognize, state them.
+
+== Problem solving as a skill
+
+Solving problems is a _skill_. You get better as it as you do it. You can _practice_ problem solving. You will get good at it. Humans can't help but get good at what they practice.
+
+What other skill gives you more leverage than the _general_ skill of solving problems? Not much.
+
+== First, state the problem
+
+Say it out loud, or god forbid write it down.
+
+== Next, understand the problem
+
+> We have this problem, I think we need a NoSQL database
+
+We haven't said what are the characteristics of this problem that's lead us to this conclusion?
+
+What do you know?
+
+* facts
+* context
+* constraints
+
+What *don't* you know? There is always stuff you know you don't know. Think about them now
+
+Are there related problems? Someone has had your problem before. Find out how they solved it. Then it's easy to work ahead of them. Look around.
+
+If you're going to do all of this stuff, you should _write it down._
+
+== Be Discerning
+
+Not everything is awesome.
+
+As you're finding possible solutions, find the problems in your solutions. Look critically at them.
+
+Try to solve those too, upfront.
+
+> NoSQL databases are great, they have these 10 awesome attributes
+
+*There are always tradeoffs*. Find them, enumerate them.
+
+Do you have no questions? You should have questions, look for them harder.
+
+Write these down too!
+
+== More input, better output
+
+You can't connect things you don't know about
+
+Read _widely_ in and around your space. You have to collect inputs, so your brain can wander around between them and explore connections between them.
+
+Look _extremely_ critically at other peoples solutions. The *best way* to get the next good idea is to absolutely tear apart the last guys idea (at least in your own head).
+
+== Tradeoffs
+
+Everyone says design is about tradeoffs. But when people talk about tradeoffs, they generally talk about the parts of their software that suck. That's not what a tradeoff is!
+
+You have to look at *at least two solutions*, AND you have to think about whats good and bad about those solutions, before you can claim that you've made a trade off.
+
+When you've done that, you _might want to write that down_.
+
+== Focus
+
+Maintaining focus. Design work requires some of the most extreme focus.
+
+On the hammock, no one knows you're not sleeping
+
+Computers are *bad, bad* sources of distraction, you desperately need to get away from it.
+
+== Waking mind and background mind
+
+Waking mind is the analytical part, the critical thinking, tactics. Looking at the immediately present information and making a quick decision.
+
+However, it's prone to finding local maxima. If you think you're going to sit down, absorb all the information, and make a really good decision in 10 minutes, you're not, it doesn't work like that.
+
+The waking mind is good at pushing uphill. "Here I have a choice of left and right, right gets me higher, I'm going to go right." It's not so good at getting off the track you're on, recognizing that there's another hill over there that will take you higher. That's what your background mind is good at.
+
+Use your waking mind time to feed work to your background mind, assign tasks to it, and to analyze the product you get back from it.
+
+To assign tasks to your background mind, you have to think hard about it for a long time. That's the point of the hammock, to do that thinking.
+
+The background mind can take a few forms, sleeping being the main one. Getting there while you're awake is tricky.
+
+It's good at making connections! Synthesizing different components. Strategy, abstracting, analogizing.
+
+Abstraction, here, in the very programmy sense! It should be your background mind coming up with the important ideas for your abstractions, not your waking mind.
+
+You background mind is where you solve most non-trivial problems. Unfortunately you can only suggest, not direct.
+
+Sleeping is your great 'sorter-outer'. It processes what we learned during the day, it drops things that aren't important and retains (strengthens the memory of) the things that are.
+
+Our sleeping brain finds hidden relations between memories and solves problems we were working on while awake - as long as you think about it _hard_ when you are awake. You need to make it an agenda item for your background mind.
+
+== Loading it up
+
+We have this 7+/-2 problem (at max, believe the consensus has even come down from that). But many designs have more things than that going on. So what to do?
+
+Write down the proposed solution, with pictures probably (but not a UML tool). This, with all the writing it down you did before, allows you to survey it. You're only looking at 7 pieces at a time, but you're shifting in and out different bits of it. Go over it and over it, looking at things in different orders.
+
+Then _step away from the computer_. Go get in the hammock. Close your eyes (don't go to sleep), but the idea is you're not taking more input. You're looking at things now with your minds eye. Using recall. This part is what puts things on the agenda for your background mind.
+
+Now wait. At least overnight. But sometimes it takes much longer. Months.
+
+So, work on more than 1 thing. Not interleaved within a day, you should be focusing on one thing at once. But over the course of time, weave things in and out. If you're stuck on one thing, move onto something else.
+
+== Try it
+
+Write code
+
+But not much. Type sparingly (if you have an answer and it is _small_ that's a positive sign that it's good) and with confidence.
+
+The feedback loops _is_ important, but don't lean on it. You shouldn't just plop out your first thought into the IDE and use that as the basis for iteration.
+
+Test Driven Dentistry is not an idea that will catch on.
+
+== You will be wrong
+
+That's part of it. You will think of better ideas.
+
+Also, the facts change - either you missed something, or requirements change. Don't dig in, do the work again! If the answer is different, change your mind.
