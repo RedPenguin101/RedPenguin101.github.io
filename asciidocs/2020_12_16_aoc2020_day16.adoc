@@ -1,0 +1,120 @@
+= Advent of Code 2020: Day 16
+
+:source-highlighter: coderay
+
+https://adventofcode.com/2020/day/16[Problem link]
+
+https://github.com/RedPenguin101/aoc2020/blob/main/day16.clj[Solution in github]
+
+== Problem summary
+
+Oh boy, this is more like it - no modular arithmetic or bit-twiddling in sight. Great puzzle.
+
+You are give a 'ticket' of numbers. The position in the sequence of each number corresponds to a label (e.g. departure time), but you don't know what those labels are.
+
+You also have a series of constraints on which fields can have which values in the form
+
+  seat: 13-40 or 45-50
+
+Lastly you have a bunch of sample data - other peoples tickets.
+
+Part 1: Some of the tickets in your sample are just invalid - i.e. they contain numbers which don't match _any_ of the rules. Find a way to determine whether a number (and therefore a ticket) is valid.
+
+Part 2: Use the constraints to figure out which labels go in which positions (and so complete your ticket)
+
+== Problem decomposition
+
+So for part 1 you just need a function that takes a number an a set of rules, then checks each rule to see if the number 'passes' that rule. If the number doesn't pass any of the rules, it is not a valid number.
+
+Part 2:
+
+First extend part 1 a bit so you can filter out any tickets in the sample that are invalid.
+
+Now, you have a ticket that is an array of numbers, where the index of the array is position of the field. So you for each position in the ticket, you want to get a list of possible labels - all the rules that this number passes.
+
+If you do this for every ticket, you can just find the intersection of possible labels at every position
+
+For example if if you have three tickets and the possible labels for the first position are
+
+  ticket1: #{a b c}
+  ticket2: #{a d e}
+  ticket3: #{a b e}
+
+Then the intersection of these three is `#{a}` - the only possible label that meets all three criteria is a.
+
+Now you'll have a single array of possibilities at each position, like
+
+  '(#{"row"} #{"class" "row"} #{"class" "row" "seat"})
+
+And you have to narrow these down so you only have 1 possible solution.
+
+We can do the following: find a position that's 'settled' - i.e. you have only one possible position - and remove that from all the other entries
+
+  '(#{"row"} #{"class"} #{"class" "seat"})
+
+Now repeat
+
+  '(#{"row"} #{"class"} #{seat"})
+
+And you have the only possible solution!
+
+== The solution
+
+[source,clojure]
+----
+(defn- parse-rule [string]
+  (let [matches (rest (re-matches #"(.+): (\d+)-(\d+) or (\d+)-(\d+)" string))]
+    [(first matches) (partition 2 (map #(Integer/parseInt %) (rest matches)))]))
+
+(defn- invalid-number?
+  "Given rules and a number, will return the number if it's invalid, or nil if it is"
+  [rules number]
+  (when (not (some #(<= (first %) number (second %)) (apply concat (vals rules))))
+    number))
+
+(defn- valid-ticket? 
+  "Given a ticket and rules, will return the ticket if it is valid, or nil if it's invalid"
+  [rules ticket]
+  (when (not-any? (partial invalid-number? rules) ticket)
+    ticket))
+
+(defn- parse-ticket [ticket-string]
+  (mapv #(Integer/parseInt %) (str/split ticket-string #",")))
+
+(defn- parse-input 
+  "Returns a map of rules, valid-tickets and your-ticket"
+  [input]
+  (let [[rules your-ticket other-tickets] (str/split input #"\n\n")
+        rules (into {} (map parse-rule (str/split-lines rules)))]
+    {:rules rules
+     :valid-tickets (filter (partial valid-ticket? rules) (map parse-ticket (rest (str/split-lines other-tickets))))
+     :your-ticket (parse-ticket (second (str/split-lines your-ticket)))}))
+
+(defn- options 
+  "Given a map of rules and a number, will return a set of potentially valid labels names"
+  [rules number]
+  (set (filter seq (for [[label [[a b] [c d]]] rules]
+                     (when (or (<= a number b) (<= c number d))
+                       label)))))
+
+(defn- narrow-down
+  "Given a sequence of sets of possible label names, will successively narrow down the 
+   possibilties until only a single possible solution remains, and return that solution."
+  ([xs] (narrow-down xs 0))
+  ([xs it]
+   (let [settled (apply union (filter #(= 1 (count %)) xs))]
+     (cond (> it 100) :break
+           (= (count settled) (count xs)) (map first xs)
+           :else (recur (map #(if (= 1 (count %)) % (difference % settled)) xs)
+                        (inc it))))))
+
+(defn- find-labels
+  "Given a map of rules, your ticket and other tickets, will find the labels for each position and
+   return you ticket complete with labels"
+  [{:keys [rules valid-tickets your-ticket]}]
+  (zipmap (narrow-down (apply map intersection (map #(mapv (partial options rules) %) valid-tickets)))
+          your-ticket))
+----
+
+== Other solutions, lessons learned
+
