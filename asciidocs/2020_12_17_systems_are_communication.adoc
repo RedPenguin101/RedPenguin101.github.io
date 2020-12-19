@@ -1,0 +1,166 @@
+= Systems are communication structures
+Diana Montalion - DDD Europe 2020
+
+https://www.youtube.com/watch?v=U_0B-aY_L0c[The talk]
+
+== Summary
+
+Not thinking in systems leads to bad, ill-conceived designs. Especially, it results in monoliths.
+
+How do we think in systems?
+
+Firstly, recognize that a system is not a technology thing - a system crosses tech boundaries. Move away from having a 'Drupal team'
+
+There are lots of tools for systems thinking, but this talk is about creating systems that have 'emergence' properties. That is, the processes in the system come together to be more than the sum of their parts. Specifically, this talk is about the skills we need to have to build systems that have these properties.
+
+Since, by Conway's Law, the systems we build will mirror our communication structures, we also need to think about how to structure ourselves to encourage this.
+
+The qualities we are cultivating:
+
+. Low level rules create higher level sophistication. Patterns proliferate.
+. Interact without central (executive) control
+. Emergence Depends on systems that learn
+
+Practice argumentation: the art of informal logic.
+
+== Notes while watching
+
+Lots of content delivery channels - end up with monoliths (The Economist - print web, then lots of others).
+
+The problem: We don't think in systems.
+
+Move whole organization to think in systems rather than how the content systems taught us to think.
+
+Tools of a systems thinker:
+
+* Disconnection -> Interconnectedness
+* Linear -> Circular
+* Silos -> Emergence
+* Parts -> Wholes
+* Analysis -> Synthesis
+* Isolation -> Relationships
+
+Moving from 'Drupal teams'
+
+Emergence: think and design processes that are more than the sum of their parts.
+
+We look at the skill set we practice so we can engage well in those processes. We are the main component in the systems we occupy.
+
+Practicing emergence. Like mindfulness, doesn't happen overnight.
+
+3 main qualities we are cultivating:
+
+=== Low level rules create higher level sophistication
+
+Systems take the lowest level pattern and scale it up.
+
+[quote,Design Unbound]
+Simple interactions among individual parts or agents form complex behaviors and patterns at the systems level.
+
+(Chaos theory)
+
+Whenever you have a bad pattern in a system, because at one point you had a bad pattern which proliferated.
+
+Uncertainty is always a factor - we always try for top down to try and control the uncertainty, but it doesn't work.
+ 
+Shift goal from controlling outcome to seeking best possible solution under the circumstances when conditions are uncertain
+
+=== Interact without central (executive) control
+
+[quote,Design Unbound]
+Component mechanisms (in an emergent system) interact without central control. They act in relationship to each other not by directives from a central authority.
+
+Hierarchy (though it has its place and its benefits) will never deliver emergence.
+
+[quote,Fred Brooks in the Mythical Man Month p42]
+Conceptual Integrity is the most important consideration in systems design.
+
+Hard to define conceptual integrity - but consider it an activity.
+
+=== Depends on learning
+
+Emergence depends on systems that learns. Proactively bringing new things to a system processes
+
+To cultivate these three:
+
+=== Practice argumentation
+
+Argumentation, the art of ambiguity. aka the science of informal logic
+
+The architecture thing is still a very logical process - not exclusively - but it's not 'soft'.
+
+NOT arguing.
+
+The claim. that's your lowest level transactional thing.
+
+You have your claim, you have to have reasons. 
+
+For example:
+
+Claim: We should focus on encapsulation rather than expansion of the core software.
+
+Reasons:
+
+* This will enable us to build modern software patterns without rewriting all the legacy code.
+* We can deploy the highest priority business goals quicker by integrating sources of content and establishing communication between them.
+* Other similar systems [examples here] have adopted these patterns and have succeeded in accomplishing similar goals.
+
+(Give examples, very powerful)
+
+Sounds simple, but it's *very hard*.
+
+Every time you end up in bad situation, you made a mistake at this stage. So get good at this, and also make sure you're getting input from many people.
+
+=== Argument terminology
+
+Argument can be deductive or inductive. Best you can do with inductive is 'probably'. Inductively strong: Does it hang together? This is Conceptual Integrity. Cogent ~ convincing.
+
+Deductive:
+
+* valid -> sound or unsound
+* invalid -> unsound
+
+Inductive:
+
+* strong -> cogent or uncongent
+* weak -> uncogent
+
+Does it matter? Is it worth deeply engaging on this? Always ask yourself this. (always include this context about why it's important in your argument)
+
+Summary, Bringing 3 things together: 
+
+. facts - is it true
+. inference - does it hang together
+. weight - is it important 
+
+=== Structure collective reasoning
+
+Seeking others perspectives.
+
+Synthesize knowledge, experience, good judgement into decisions based on valid reasons (Speakers definition of wisdom)
+
+3 poisons that mean you're not doing this well
+
+. Hierarchy. Anyone in the room who can say 'I don't care what you say', or 'because I said so'. Again, has it's place, but not argumentation. Antidote: everyone is there to strengthen the reasons
+. The No culture. When the first, default, answer is always no (because people haven't thought it through yet). Practice 'Yes, and...' approach - instead of 'no you're wrong because...'. DO THIS, it changes things fast
+. How often we're not solving the same problem. Happens a lot of the time. Solution: DEFINE EVERYTHING. Be explicit. Don't use technology words, use domain words. Another solution: 'Top down elaboration' - why+what+who+how. at least just a sentence, before you dive into anything. Note that how is last. (+whenish, but not too much)
+
+=== Recognize conceptual fallacies
+
+Our brains LOVE to jump to (easy and wrong) conclusions.
+
+Need to be able to recognize easily, get a feel for it.
+
+. appeal to pity
+. ad populum (just because somethings not popular doesn't mean it's not the right solution)
+. ad hominem
+. affirming the consequent (yes, if a than b, but not necessarily if b then a)
+. appeal to ignorance
+. begging the question (The fact that I don't have a tool is the problem, and so if you get me the tool that will fix the problem. As opposed to arguing about the problem)
+
+=== Develop foundational practices like self-awareness, intuition, empathy and energy renewal
+
+* Self awareness - if you don't know what you think then you can't make claims and reasons. Conversation, writing. You need to be aware of your own reactions, otherwise when it comes to going 'live' you're just going to project those onto other people
+* Intuition - use your gut. We are much more pattern-aware than we think we are. This is a big think in system design - a 'design sense', things we can't 'know' in the sense of knowledge. We need to make space to 'fill the gap' between our intuition and reasons. Though you have to be careful not to narrativize - don't create a story.
+* Empathy - seeking to understand ('Change my mind' is the opposite of this). It's not sympathy, not compassion.
+* Energy renewal - make time for it. Don't be Sisyphus. Make time between the intense times. Eat vegetables. Go outside - be in different patterns, listen to the world. Do other hard things - exercise is great for this. 
