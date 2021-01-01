@@ -1,0 +1,237 @@
+= A data description library
+
+I had an idea about how to describe entities you're modelling, and do dev/runtime checking of those entities.
+
+The core idea is that you have a name that represents a conceptual entity that is key to the domain of your system, and that concept can have multiple valid shapes over its lifetime.
+
+The type of entities that this is really intended to help describe are business entities that evolve over their life-cycles, while retaining a thread of identity. We'll use the example of a trade, in the sense of a purchase or sale of shares on the market. The 'birth' of a Trade might happen immediately after the trader has shaken hands (virtually) with the counterpart. At that point the trade will have a lot of the fields known, but there are still other stages of the lifecycle to go through - confirmation, settlement, booking etc. Each of these stages will add, remove or modify keys, producing _variants_ of the entity type.
+
+We're in a Clojure-land, where all entities are modelled as maps of keys to values, possibly nested. Of course we die on the hill of data as open flocks of information. Why only maps? Those are generally the things you I find I need help with remembering what they are, and confirming that they have the stuff in them I expect them to.  Tuples, Lists, scalars, I'm much more comfortable relying on built-in tooling.
+
+(note: for the code here we'll assume entity definitions are stored in a central registry, like spec, and the syntax will generally be spec-like, though it could be done in other styles, eg malli)
+
+You start with just a name: Trade.
+
+This is a named thing, and you can check it at runtime or (with a linter/lsp) at devtime. But it is only the name of the entity, there is no indication of what the keys or values you want in there are. This is not _completely_ useless, since you can at least say in your function body/instrumentation what type of entity you are expecting.
+
+[source,clojure]
+----
+(dd/entity :trade)
+
+(defn my-fn [trade]
+  (dd/expect :trade) ;; no implication that this is correct syntax, it's just for illustration.
+  ,,,
+  (dd/return :trade (thing-that-is-returned)))
+----
+
+From a code assertion perspective, this obviously can't do much, since any map including an empty one will meet the requirements of a `:trade`. What it _can_ do is check that a special metadata key  `entity` is not _something other that trade_ (say, trader).
+
+At various points dd will, or the user can instruct the addition of metadata to the structures, `entity` being one, and these can be checked _negatively_ at dev/runtime.
+
+But mostly an entity is just a conceptual thing that exists, and can have variants, and we want to reify it.
+
+Before we get into the variants, let's look at a possible model for the lifecycle of a trade.
+
+. The trader or a counterpart proposes a trade
+. The trade is rejected or the trade is confirmed
+. The trade is enriched, adding various information about the security
+. The trade is allocated to the various entities the trader is trading on behalf of
+. The trade is booked in the accounting / IBOR system
+. The trade is settled in the market
+
+This is just one possibility, there are many others.
+
+----
+Proposed --------> Rejected
+    |
+    v
+Confirmed  
+    |
+    v
+Enriched  
+    |
+    v
+Allocated  
+    |
+    v
+Booked  
+    |
+    v
+Settled 
+----
+
+OK, let's create our first entity variant. We can start anywhere, but at the start of the process makes most sense.
+
+[source,clojure]
+----
+(dd/variant :trade :proposed [:security-name :bloomberg-id :price :quantity :counterpart :trader])
+----
+
+You provide the entity name, the variant name, then the keys that the map *must* have. (There's no concept of optionality here - a variant _can_ have anything in it, so saying it's optional is useless information.)
+
+Note we're only specifying the keys here, with nothing about the values they can take. While it is important that 'quantity' is a number, not a string, how likely is it you'll actually write something that puts something other than a number in a field called 'quantity'? How difficult will it be to diagnose if you do? There are a couple of instances where I think specifying values will be useful, which we'll get to later, but broadly I think the benefit is mostly in describing what keys an entity has.
+
+Our next variants we'll create for the _confirmed_ and _rejected_ states. We're going to define them *relative* to our initial variant.
+
+[source,clojure]
+----
+(dd/relative-variant :trade :confirmed :proposed but-also-with [:confirmed-on])
+(dd/relative-variant :trade :rejected :proposed but-also-with [:rejected-on :rejected-reason])
+----
+
+This starts to introduce the algebra at the heart of the entity definition. We've defined the new variants relative to proposed, but it's stored absolutely. If you were to 'ask' the registry what a confirmed trade looks like it would give you something like
+
+[source,clojure]
+----
+(dd/describe :trade :confirmed)
+
+;;=> [:security-name :bloomberg-id :price :quantity :counterpart :trader :confirmed-on]
+----
+
+The benefits of the relative definition are 
+
+* It provides clarity for the reader, even though it makes (nearly) no difference to the code.
+* if the dev adds or removes things from the definition of _proposed_ these will carry through to _confirmed_. Obviously this is a double edged sword, and the dev should carefully consider for any variant whether the definition should be absolute or relative, and if relative, relative to _what_. But I think this will be a useful feature in many real world situations.
+* It hints to documentation features how to describe the variants
+
+The 'source' of a variants relative parent is stored though, and you can generate relative descriptions from the parent (if there is one) or from any other entity. Where the variants are this simple collections of keys, it's basic set logic. 
+
+[source,clojure]
+----
+(dd/describe-relative :trade :confirmed)
+
+{:entity :trade
+ :variant :confirmed
+ :relative-to :proposed 
+ :common-keys [:security-name :bloomberg-id :price :quantity :counterpart :trader]
+ :additional-keys [:confirmed-on]}
+
+(dd/describe-relative :trade :confirmed :rejected)
+
+{:entity :trade
+ :variant :confirmed
+ :relative-to :rejected 
+ :common-keys [:security-name :bloomberg-id :price :quantity :counterpart :trader]
+ :additional-keys [:confirmed-on]
+ :removed-keys [:rejected-on :rejected-reason]}
+----
+
+Now we have our variants we can make our function instrumentation a bit more interesting.
+
+[source,clojure]
+----
+(dd/entity :trade)
+
+(defn confirm-trade [trade decision]
+  (dd/expect :trade :proposed)
+  ,,,
+  (dd/return :trade (dd/or :confirmed :rejected) (thing-that-is-returned)))
+----
+
+We described the new variants by saying that they _added_ facts to the previous state. You can also say that some keys are _removed_ between variants - but the things this library is intended to model tend to be accretive, you add facts to them as they go through their lifecycle, rather than remove things.
+
+Of course there's nothing stopping you starting your modelled at the end of the lifecycle, with your relative definitions go backwards in time removing facts as you go, but this is fairly unnatural.
+
+An objection to this might be: what if the difference between the two variants isn't in the keys, but in the _values_? Like, what if I want to have the distinction between the confirmed and rejected variants be the value of the key _was-confirmed?_ (values being `true` `false`), or a `status` that can take `confirmed` or `rejected`? 
+
+Another example might be, if a trade has a quantity of over 10m units, it's a 'large' variant, otherwise it's a 'small'. I would say, just don't do that. If you're using values in this way to distinguish between your variants, they are not really variants in the sense that this library means. Variant here is intended to convey how the entities we model accrete new information over time, and describe _gates_ that they pass through different stages of their life-cycles. The large/small example is better served by a predicative function (`large?`). 
+
+The former case is a bit more subtle. Using values here is usually a poor _modelling_ decision, conflating what are the facts you know about a thing at a point in its lifecycle with the 'content' of those facts. You are declaring in the variant name that this is a confirmed trade, and you are saying that, this being the case, it must have a fact called 'confirmed-on'. Saying the fact is `was-confirmed?` which can take a true or false is not the same thing.
+
+To this you might say - what if my system gets in an invalid state, and I end up with a trade that has a `rejected-on` _and_ a `confirmed-on`? I want to make sure that it is in one state or the other, which is why I wanted to have that true/false thing.
+
+Firstly, you can still do that! And then you can check later on. But this library isn't going to help you do it. And you should think carefully before doing it.
+
+Secondly, this isn't a type system. There is by design *never* any implication that the variants have zero intersection. Any entity could conform to more than one variants (for example, here a confirmed trade will by definition also be a valid proposed trade.) The idea is that, as long as a function has everything it needs to do it's job, it doesn't care what other facts are known about the entity. You can write that kind of validation outside the library if you want. 
+
+We want to avoid rigidly closing off avenues of potential change just because of how things work right now, and especially you don't want to do so in you global data spec. 
+
+What if in a few months you have a scenario where a trade was initially rejected, but was later reconsidered and confirmed? If you put that exclusivity in your type system/data spec, so that any downstream function _can't_ take a data structure that has slots for facts about the initial rejection, you're in for a tough time. You could create a new trade for it, but that's a hack if you genuinely consider it to be the same trade (i.e. it has the same identity), and there might be other business requirements saying to need to maintain that identity. Either have to change your entire type-system, change everything downstream, or drop all the facts about the rejection from your data structure, which will possibly cause it's own downstream problems. 
+
+For our open system, however, you don't need to change anything. Possibly if you separately wrote some guardrail predicate like `is-rejected`, you might have to remove them, or change the implementation of that single function. But it's much easier.
+
+== Summary of the general idea
+
+The above hopefully describes the core concept here. 
+
+* You have an entity, which you intend to model with a data-structure. 
+* You want to describe variants of that entity representing the facts you must know about it at a point in its lifecycle, but without imposing brittle exclusivity that makes your system hard to change. 
+* You want to do this both for your own and for others comprehension, and so your codebase can help you catch at dev and runtime when a function doesn't receive the facts it needs to do its thing.
+
+This isn't a replacement for Spec. While they are both intended to provide the developer with assistance in specifying the shape of data structures, I see Spec as sitting in the middle of a  spectrum which runs from 'nothing' to 'fully closed, mandatory, slotted types'. 
+
+This idea is meant so sit even further towards the 'nothing' end of the scale, and be used right at the top level of abstraction of your system: the domain entities which are descriptions of real-world things.
+
+== Other thoughts
+
+=== unions of variants
+
+You want to be able to describe a variant as a union of two or more other variants, i.e. including the keys of both variants.
+
+=== nesting entities
+
+I mentioned above that generally this library won't allow you to specify what values a key should have, just their presence. The exception to this rule is where a value is itself another entity described by the library (or a collection of those entities)
+
+[source,clojure]
+----
+(variant :trade :proposed [:security :bloomberg-id :price :quantity :counterpart :trader]
+          with-subentities {:security [:security]}) 
+          ;; implying that :security is a registered entity in its its own right. This says we don't
+          ;; care about the variant of security
+
+(variant :trade :proposed [:security :bloomberg-id :price :quantity :counterpart :trader]
+          with-subentities {:security [:security :authorized]}) 
+          ;; specifies that we need it to be an authorized security
+----
+
+This will provide some support for describing nested structures, but only at a quite high level. Nesting makes things complicated, and if something in your system is not important enough to your domain to make it an actual entity, you should avoid nesting it too much, which effectively makes it an implicit entity anyway.
+
+=== Graphing and documentation
+
+We already saw the `describe` function. It seems not so difficult to extend that to produce all that graphviz stuff showing the relationships between them, nor to attach metadata descriptions to entities that can show up in function definitions. 
+
+=== Generative Testing
+
+None of the descriptions above are sufficient to be able to able to generate valuable generative tests, since we only have the names of the keys, and very few functions will work without the 'right' values assigned to them. This isn't a gap in the library, it's just not really what it's for. That said, being able to attach specs ala carte to variants which _do_ describe the data structures in a way sufficient to generate test data, and then running generative tests for functions that have specified expectations and return values would be desirable.
+
+== A rough API
+
+This deviates from the central registry idea, more towards deffing data structures a la Malli
+
+[source,clojure]
+----
+;; e refers to an object which is an entity, v an object which is a variant.
+
+(entity entity-name) -> Entity
+
+(variant e keys) -> Variant
+(variant v f keys & other-fs-and-keys) -> Variant
+  ;; f in the above can be
+  but-also-with
+  but-without
+  with-sub-entities
+
+;; variant descriptions more conducive to threading
+(or v1 v2 & others) -> Variant
+(and v1 v2 & others) -> Variant
+(with-spec v spec) -> Variant;; attaching a spec for generative testing.
+(but-also-with v new-keys) -> Variant
+(but-without v keys-to-remove) -> Variant
+(with-subentities v map-of-keys-to-entities) -> Variant
+
+;; dev and runtime checking, throws on check failure
+(expect e thing-to-check) -> thing-to-check | Throw
+(expect e v thing-to-check) -> thing-to-check | Throw
+(expect e (or v1 v2) thing-to-check) -> thing-to-check | Throw
+(expect e (and v1 v2) thing-to-check) -> thing-to-check | Throw
+
+(return e thing-to-check) -> thing-to-check | Throw
+(return e v thing-to-check) -> thing-to-check | Throw
+
+;; Descriptions and documentation
+(describe v) -> list of keys
+(describe-relative v) -> list of keys
+;; 2 arity uses the comparator the variant was initial described from
+(describe-relative v1 v2)
+(graph e) ; creates a graph using relative definitions
+----

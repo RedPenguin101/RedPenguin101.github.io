@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<title>What&#8217;s on</title>
+<title>A data description library</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -420,155 +420,340 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>What&#8217;s on</h1>
+<h1>A data description library</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A list of things I&#8217;m reading or working on, and what I have in the backlog</p>
+<p>I had an idea about how to describe entities you&#8217;re modelling, and do dev/runtime checking of those entities.</p>
+</div>
+<div class="paragraph">
+<p>The core idea is that you have a name that represents a conceptual entity that is key to the domain of your system, and that concept can have multiple valid shapes over its lifetime.</p>
+</div>
+<div class="paragraph">
+<p>The type of entities that this is really intended to help describe are business entities that evolve over their life-cycles, while retaining a thread of identity. We&#8217;ll use the example of a trade, in the sense of a purchase or sale of shares on the market. The 'birth' of a Trade might happen immediately after the trader has shaken hands (virtually) with the counterpart. At that point the trade will have a lot of the fields known, but there are still other stages of the lifecycle to go through - confirmation, settlement, booking etc. Each of these stages will add, remove or modify keys, producing <em>variants</em> of the entity type.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;re in a Clojure-land, where all entities are modelled as maps of keys to values, possibly nested. Of course we die on the hill of data as open flocks of information. Why only maps? Those are generally the things you I find I need help with remembering what they are, and confirming that they have the stuff in them I expect them to.  Tuples, Lists, scalars, I&#8217;m much more comfortable relying on built-in tooling.</p>
+</div>
+<div class="paragraph">
+<p>(note: for the code here we&#8217;ll assume entity definitions are stored in a central registry, like spec, and the syntax will generally be spec-like, though it could be done in other styles, eg malli)</p>
+</div>
+<div class="paragraph">
+<p>You start with just a name: Trade.</p>
+</div>
+<div class="paragraph">
+<p>This is a named thing, and you can check it at runtime or (with a linter/lsp) at devtime. But it is only the name of the entity, there is no indication of what the keys or values you want in there are. This is not <em>completely</em> useless, since you can at least say in your function body/instrumentation what type of entity you are expecting.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(dd/entity :trade)
+
+(defn my-fn [trade]
+  (dd/expect :trade) ;; no implication that this is correct syntax, it's just for illustration.
+  ,,,
+  (dd/return :trade (thing-that-is-returned)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>From a code assertion perspective, this obviously can&#8217;t do much, since any map including an empty one will meet the requirements of a <code>:trade</code>. What it <em>can</em> do is check that a special metadata key  <code>entity</code> is not <em>something other that trade</em> (say, trader).</p>
+</div>
+<div class="paragraph">
+<p>At various points dd will, or the user can instruct the addition of metadata to the structures, <code>entity</code> being one, and these can be checked <em>negatively</em> at dev/runtime.</p>
+</div>
+<div class="paragraph">
+<p>But mostly an entity is just a conceptual thing that exists, and can have variants, and we want to reify it.</p>
+</div>
+<div class="paragraph">
+<p>Before we get into the variants, let&#8217;s look at a possible model for the lifecycle of a trade.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The trader or a counterpart proposes a trade</p>
+</li>
+<li>
+<p>The trade is rejected or the trade is confirmed</p>
+</li>
+<li>
+<p>The trade is enriched, adding various information about the security</p>
+</li>
+<li>
+<p>The trade is allocated to the various entities the trader is trading on behalf of</p>
+</li>
+<li>
+<p>The trade is booked in the accounting / IBOR system</p>
+</li>
+<li>
+<p>The trade is settled in the market</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This is just one possibility, there are many others.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Proposed --------&gt; Rejected
+    |
+    v
+Confirmed
+    |
+    v
+Enriched
+    |
+    v
+Allocated
+    |
+    v
+Booked
+    |
+    v
+Settled</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>OK, let&#8217;s create our first entity variant. We can start anywhere, but at the start of the process makes most sense.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(dd/variant :trade :proposed [:security-name :bloomberg-id :price :quantity :counterpart :trader])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You provide the entity name, the variant name, then the keys that the map <strong>must</strong> have. (There&#8217;s no concept of optionality here - a variant <em>can</em> have anything in it, so saying it&#8217;s optional is useless information.)</p>
+</div>
+<div class="paragraph">
+<p>Note we&#8217;re only specifying the keys here, with nothing about the values they can take. While it is important that 'quantity' is a number, not a string, how likely is it you&#8217;ll actually write something that puts something other than a number in a field called 'quantity'? How difficult will it be to diagnose if you do? There are a couple of instances where I think specifying values will be useful, which we&#8217;ll get to later, but broadly I think the benefit is mostly in describing what keys an entity has.</p>
+</div>
+<div class="paragraph">
+<p>Our next variants we&#8217;ll create for the <em>confirmed</em> and <em>rejected</em> states. We&#8217;re going to define them <strong>relative</strong> to our initial variant.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(dd/relative-variant :trade :confirmed :proposed but-also-with [:confirmed-on])
+(dd/relative-variant :trade :rejected :proposed but-also-with [:rejected-on :rejected-reason])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This starts to introduce the algebra at the heart of the entity definition. We&#8217;ve defined the new variants relative to proposed, but it&#8217;s stored absolutely. If you were to 'ask' the registry what a confirmed trade looks like it would give you something like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(dd/describe :trade :confirmed)
+
+;;=&gt; [:security-name :bloomberg-id :price :quantity :counterpart :trader :confirmed-on]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The benefits of the relative definition are</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It provides clarity for the reader, even though it makes (nearly) no difference to the code.</p>
+</li>
+<li>
+<p>if the dev adds or removes things from the definition of <em>proposed</em> these will carry through to <em>confirmed</em>. Obviously this is a double edged sword, and the dev should carefully consider for any variant whether the definition should be absolute or relative, and if relative, relative to <em>what</em>. But I think this will be a useful feature in many real world situations.</p>
+</li>
+<li>
+<p>It hints to documentation features how to describe the variants</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The 'source' of a variants relative parent is stored though, and you can generate relative descriptions from the parent (if there is one) or from any other entity. Where the variants are this simple collections of keys, it&#8217;s basic set logic.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(dd/describe-relative :trade :confirmed)
+
+{:entity :trade
+ :variant :confirmed
+ :relative-to :proposed
+ :common-keys [:security-name :bloomberg-id :price :quantity :counterpart :trader]
+ :additional-keys [:confirmed-on]}
+
+(dd/describe-relative :trade :confirmed :rejected)
+
+{:entity :trade
+ :variant :confirmed
+ :relative-to :rejected
+ :common-keys [:security-name :bloomberg-id :price :quantity :counterpart :trader]
+ :additional-keys [:confirmed-on]
+ :removed-keys [:rejected-on :rejected-reason]}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we have our variants we can make our function instrumentation a bit more interesting.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(dd/entity :trade)
+
+(defn confirm-trade [trade decision]
+  (dd/expect :trade :proposed)
+  ,,,
+  (dd/return :trade (dd/or :confirmed :rejected) (thing-that-is-returned)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We described the new variants by saying that they <em>added</em> facts to the previous state. You can also say that some keys are <em>removed</em> between variants - but the things this library is intended to model tend to be accretive, you add facts to them as they go through their lifecycle, rather than remove things.</p>
+</div>
+<div class="paragraph">
+<p>Of course there&#8217;s nothing stopping you starting your modelled at the end of the lifecycle, with your relative definitions go backwards in time removing facts as you go, but this is fairly unnatural.</p>
+</div>
+<div class="paragraph">
+<p>An objection to this might be: what if the difference between the two variants isn&#8217;t in the keys, but in the <em>values</em>? Like, what if I want to have the distinction between the confirmed and rejected variants be the value of the key <em>was-confirmed?</em> (values being <code>true</code> <code>false</code>), or a <code>status</code> that can take <code>confirmed</code> or <code>rejected</code>?</p>
+</div>
+<div class="paragraph">
+<p>Another example might be, if a trade has a quantity of over 10m units, it&#8217;s a 'large' variant, otherwise it&#8217;s a 'small'. I would say, just don&#8217;t do that. If you&#8217;re using values in this way to distinguish between your variants, they are not really variants in the sense that this library means. Variant here is intended to convey how the entities we model accrete new information over time, and describe <em>gates</em> that they pass through different stages of their life-cycles. The large/small example is better served by a predicative function (<code>large?</code>).</p>
+</div>
+<div class="paragraph">
+<p>The former case is a bit more subtle. Using values here is usually a poor <em>modelling</em> decision, conflating what are the facts you know about a thing at a point in its lifecycle with the 'content' of those facts. You are declaring in the variant name that this is a confirmed trade, and you are saying that, this being the case, it must have a fact called 'confirmed-on'. Saying the fact is <code>was-confirmed?</code> which can take a true or false is not the same thing.</p>
+</div>
+<div class="paragraph">
+<p>To this you might say - what if my system gets in an invalid state, and I end up with a trade that has a <code>rejected-on</code> <em>and</em> a <code>confirmed-on</code>? I want to make sure that it is in one state or the other, which is why I wanted to have that true/false thing.</p>
+</div>
+<div class="paragraph">
+<p>Firstly, you can still do that! And then you can check later on. But this library isn&#8217;t going to help you do it. And you should think carefully before doing it.</p>
+</div>
+<div class="paragraph">
+<p>Secondly, this isn&#8217;t a type system. There is by design <strong>never</strong> any implication that the variants have zero intersection. Any entity could conform to more than one variants (for example, here a confirmed trade will by definition also be a valid proposed trade.) The idea is that, as long as a function has everything it needs to do it&#8217;s job, it doesn&#8217;t care what other facts are known about the entity. You can write that kind of validation outside the library if you want.</p>
+</div>
+<div class="paragraph">
+<p>We want to avoid rigidly closing off avenues of potential change just because of how things work right now, and especially you don&#8217;t want to do so in you global data spec.</p>
+</div>
+<div class="paragraph">
+<p>What if in a few months you have a scenario where a trade was initially rejected, but was later reconsidered and confirmed? If you put that exclusivity in your type system/data spec, so that any downstream function <em>can&#8217;t</em> take a data structure that has slots for facts about the initial rejection, you&#8217;re in for a tough time. You could create a new trade for it, but that&#8217;s a hack if you genuinely consider it to be the same trade (i.e. it has the same identity), and there might be other business requirements saying to need to maintain that identity. Either have to change your entire type-system, change everything downstream, or drop all the facts about the rejection from your data structure, which will possibly cause it&#8217;s own downstream problems.</p>
+</div>
+<div class="paragraph">
+<p>For our open system, however, you don&#8217;t need to change anything. Possibly if you separately wrote some guardrail predicate like <code>is-rejected</code>, you might have to remove them, or change the implementation of that single function. But it&#8217;s much easier.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_working_on">Working on</h2>
+<h2 id="_summary_of_the_general_idea">Summary of the general idea</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
+<div class="paragraph">
+<p>The above hopefully describes the core concept here.</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p>Book: Grokking simplicity (as it comes out)</p>
+<p>You have an entity, which you intend to model with a data-structure.</p>
 </li>
 <li>
-<p>Tutorial: <a href="https://www.jacekschae.com/courses/learn-reitit-pro/">Jacek Schae&#8217;s Learn Reitit</a></p>
+<p>You want to describe variants of that entity representing the facts you must know about it at a point in its lifecycle, but without imposing brittle exclusivity that makes your system hard to change.</p>
 </li>
 <li>
-<p>Project: Allocation of trades between funds</p>
+<p>You want to do this both for your own and for others comprehension, and so your codebase can help you catch at dev and runtime when a function doesn&#8217;t receive the facts it needs to do its thing.</p>
 </li>
-</ol>
+</ul>
+</div>
+<div class="paragraph">
+<p>This isn&#8217;t a replacement for Spec. While they are both intended to provide the developer with assistance in specifying the shape of data structures, I see Spec as sitting in the middle of a  spectrum which runs from 'nothing' to 'fully closed, mandatory, slotted types'.</p>
+</div>
+<div class="paragraph">
+<p>This idea is meant so sit even further towards the 'nothing' end of the scale, and be used right at the top level of abstraction of your system: the domain entities which are descriptions of real-world things.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_backlog">Backlog</h2>
+<h2 id="_other_thoughts">Other thoughts</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Project: A 'code challenge' thing with a fund theme</p>
-</li>
-<li>
-<p>Book: Thinking in Systems</p>
-</li>
-<li>
-<p>AWS - next qualification</p>
-</li>
-<li>
-<p>Book: Design Unbound</p>
-</li>
-<li>
-<p>Writing: Why REPL is a superpower <a href="https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html">1</a> <a href="https://clojure.org/guides/repl/introduction">2</a> <a href="https://www.youtube.com/watch?v=Ngt29DyNDRM">3</a> <a href="https://www.youtube.com/watch?v=tpcl5pjkRTQ">4</a> <a href="https://www.youtube.com/watch?v=oLvwbDUXGsc">5</a> <a href="https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/">6</a></p>
-</li>
-<li>
-<p>Book: Data and reality (a second read)</p>
-</li>
-<li>
-<p>Book: Algebra-driven development</p>
-</li>
-<li>
-<p>Project: History generator</p>
-</li>
-<li>
-<p>Project: A DSL/Frontend for modelling time-series</p>
-</li>
-<li>
-<p>Writing: Representing Reality</p>
-</li>
-<li>
-<p>Book: Statistical rethinking</p>
-</li>
-<li>
-<p>Book: Domain Driven Design (a second read)</p>
-</li>
-<li>
-<p>Book: Event Storming</p>
-</li>
-<li>
-<p>Book: Naming and Necessity</p>
-</li>
-<li>
-<p>Book: SICP</p>
-</li>
-<li>
-<p>Book: The Toyota Production System (a second read)</p>
-</li>
-<li>
-<p>Book: The Republic</p>
-</li>
-<li>
-<p>Book: Accelerate</p>
-</li>
-<li>
-<p>Book: The DevOps handbook</p>
-</li>
-<li>
-<p>Book: The managers path</p>
-</li>
-<li>
-<p>Book: DataWarehousing</p>
-</li>
-<li>
-<p>Book: The little lisper</p>
-</li>
-<li>
-<p>Book: High Output Management</p>
-</li>
-<li>
-<p>Book: The Six Sigma Way</p>
-</li>
-<li>
-<p>Book: Information: A history, a theory, a flood</p>
-</li>
-<li>
-<p>Book: Agile Conversations</p>
-</li>
-<li>
-<p>Book: Notes on the synthesis of form</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Living Documentation</p>
-</li>
-<li>
-<p>Book: Mythical Man Month</p>
-</li>
-<li>
-<p>Book: Working with Legacy Code</p>
-</li>
-</ol>
+<div class="sect2">
+<h3 id="_unions_of_variants">unions of variants</h3>
+<div class="paragraph">
+<p>You want to be able to describe a variant as a union of two or more other variants, i.e. including the keys of both variants.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nesting_entities">nesting entities</h3>
+<div class="paragraph">
+<p>I mentioned above that generally this library won&#8217;t allow you to specify what values a key should have, just their presence. The exception to this rule is where a value is itself another entity described by the library (or a collection of those entities)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(variant :trade :proposed [:security :bloomberg-id :price :quantity :counterpart :trader]
+          with-subentities {:security [:security]})
+          ;; implying that :security is a registered entity in its its own right. This says we don't
+          ;; care about the variant of security
+
+(variant :trade :proposed [:security :bloomberg-id :price :quantity :counterpart :trader]
+          with-subentities {:security [:security :authorized]})
+          ;; specifies that we need it to be an authorized security</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will provide some support for describing nested structures, but only at a quite high level. Nesting makes things complicated, and if something in your system is not important enough to your domain to make it an actual entity, you should avoid nesting it too much, which effectively makes it an implicit entity anyway.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_graphing_and_documentation">Graphing and documentation</h3>
+<div class="paragraph">
+<p>We already saw the <code>describe</code> function. It seems not so difficult to extend that to produce all that graphviz stuff showing the relationships between them, nor to attach metadata descriptions to entities that can show up in function definitions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_generative_testing">Generative Testing</h3>
+<div class="paragraph">
+<p>None of the descriptions above are sufficient to be able to able to generate valuable generative tests, since we only have the names of the keys, and very few functions will work without the 'right' values assigned to them. This isn&#8217;t a gap in the library, it&#8217;s just not really what it&#8217;s for. That said, being able to attach specs ala carte to variants which <em>do</em> describe the data structures in a way sufficient to generate test data, and then running generative tests for functions that have specified expectations and return values would be desirable.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_finished">Finished</h2>
+<h2 id="_a_rough_api">A rough API</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Book: I am a strange loop</p>
-</li>
-<li>
-<p>Project: Qniform</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>This deviates from the central registry idea, more towards deffing data structures a la Malli</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;; e refers to an object which is an entity, v an object which is a variant.
+
+(entity entity-name) -&gt; Entity
+
+(variant e keys) -&gt; Variant
+(variant v f keys &amp; other-fs-and-keys) -&gt; Variant
+  ;; f in the above can be
+  but-also-with
+  but-without
+  with-sub-entities
+
+;; variant descriptions more conducive to threading
+(or v1 v2 &amp; others) -&gt; Variant
+(and v1 v2 &amp; others) -&gt; Variant
+(with-spec v spec) -&gt; Variant;; attaching a spec for generative testing.
+(but-also-with v new-keys) -&gt; Variant
+(but-without v keys-to-remove) -&gt; Variant
+(with-subentities v map-of-keys-to-entities) -&gt; Variant
+
+;; dev and runtime checking, throws on check failure
+(expect e thing-to-check) -&gt; thing-to-check | Throw
+(expect e v thing-to-check) -&gt; thing-to-check | Throw
+(expect e (or v1 v2) thing-to-check) -&gt; thing-to-check | Throw
+(expect e (and v1 v2) thing-to-check) -&gt; thing-to-check | Throw
+
+(return e thing-to-check) -&gt; thing-to-check | Throw
+(return e v thing-to-check) -&gt; thing-to-check | Throw
+
+;; Descriptions and documentation
+(describe v) -&gt; list of keys
+(describe-relative v) -&gt; list of keys
+;; 2 arity uses the comparator the variant was initial described from
+(describe-relative v1 v2)
+(graph e) ; creates a graph using relative definitions</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-01 10:55:00 GMT
+Last updated 2021-01-01 14:54:10 GMT
 </div>
 </div>
 </body>
