@@ -4,8 +4,6 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Working on
 
-. Book: I am a strange loop
-. Project: Qniform
 . Book: Grokking simplicity (as it comes out)
 . Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit]
 
@@ -38,6 +36,13 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: The Six Sigma Way
 . Book: Information: A history, a theory, a flood
 . Book: Agile Conversations
+. Book: Notes on the synthesis of form
+. Book: Against Method
+. Book: Living Documentation
+. Book: Mythical Man Month
+. Book: Working with Legacy Code
 
 == Finished
 
+. Book: I am a strange loop
+. Project: Qniform
