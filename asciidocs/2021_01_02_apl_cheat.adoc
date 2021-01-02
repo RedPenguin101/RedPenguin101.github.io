@@ -1,0 +1,174 @@
+= APL Cheat Sheet
+
+== Install/Setup (Ubuntu)
+
+. Go to https://www.dyalog.com/download-zone.htm?p=download
+. Double click the _.deb_ and install
+
+=== Keyboard
+
+Dyalog messes with your keyboard settings so you can type all the glyphs, in particular your super key. *Before* starting it, do the following (as suggested https://unix.stackexchange.com/questions/600039/restore-default-super-key-behavior-xkbmap[here])
+
+. Execute `xkbcomp "$DISPLAY" normal.xkb` to save a default state
+. After you've finished with APL and want your super back, do `xkbcomp normal.xkb "$DISPLAY"`
+
+More on keyboard settings https://stackoverflow.com/questions/27951582/apl-keymapping-on-linux-gnu-apl[here]
+
+=== Running the terminal app
+
+run `dyalog` from the command line to start the app
+
+Super will now be your 'prefix' key.
+
+_Super+ l_ will give you the IO glyph `⎕`
+
+`⎕OFF` to exit
+
+== Resources
+
+* https://tryapl.org/
+* https://www.dyalog.com/uploads/documents/MasteringDyalogAPL.pdf[Dynalog APL manual(pdf)]
+
+== Variable assignment
+
+`x ← 19.6` (_Ctrl+ [_)
+
+== Primitive Functions
+
+=== Basic arithmetic functions
+
+* `+` plus
+* `-` minus
+* `¯` negate
+* `÷` (_Ctrl+ =_) divide 
+* `×` (_Ctrl+ -_) multiply
+* `*` exponent
+* `⌈` (_Ctrl+ S_) max/ceiling
+* `⌊` (_Ctrl+ D_) min/floor
+
+
+=== Boolean / Binary
+
+* Compartors `< ≤ = ≥ >` with _Super+ 3, 4, 5, 6, 7_ respectively 
+* `≠` (_Ctrl+ 8_) not equal (same as XOR when used as boolean)
+* `∨` (_Ctrl+ 9_) or 
+* `∧` (_Ctrl+ 0_) and
+
+=== Sets
+
+* `∊` (_Super+ E_) (d)membership. `A ∊ B` returns a binarray of As that are in the set B
+
+=== Lists
+
+* `↑/↓` (_Super+ y, u_) - `Take/Drop. `a ↑ List` take a vals from list. (negate to take last) 
+
+==== Counting
+
+----
+      Salaries ← 123 543 234 562 123 456 123 423 234 345 654 562
+      +/ Salaries > 300
+7
+----
+
+=== ⍴
+
+Monadic: Shape of
+
+----
+Price ← 5.2 11.5 3.6 4.0 8.45
+⍴ Price
+=> 5, i.e. the length of the list
+
+(Tab from below)
+⍴ Tab
+4 2, i.e. row x col
+----
+
+Dyadic: Reshape
+
+----
+      Tab ← 4 2 ⍴ 25 60 33 47 11 44 53 28
+      Tab
+25 60
+33 47
+11 44
+53 28
+----
+
+=== Filter / Compress / Select
+
+`/` used as a dyadic with LHS being binary. 
+
+`A / B` select the items from B where A is true.
+
+----
+1 1 0 1 0 0 1 / 23 55 17 46 81 82 83 =>  23 55 46 83
+1 0 1 0 0 0 0 1 1/'Drumstick' => Duck
+----
+
+=== Indices ⍳ (_Ctrl+ i_)
+
+Used monadically with an integer, gives the list of integers to that number
+
+`⍳ 5 => 1 2 3 4 5`
+
+Used diadically with, `IndexOf B in A`
+
+  A←15 40 63 18 27 40 33 29 40 88
+  A ⍳ 18 => 4
+  B←29 63 40 33 50
+  A ⍳ B => 8 3 2 7 11 (note the 11 in a 10 length array!)
+  
+== Operators
+
+=== reduction `/`
+
+----
+      +/ 21 45 18 27 11
+122
+----
+
+== Function definition
+
+Use _Super+ W_ for the RHS array variable `⍵`
+
+Use _Super+ A_ for the RHS array variable `⍺`
+
+----
+      Average ← {(+/⍵)÷(⍴⍵)}
+      Average Costs
+14.72
+
+      Plus ← {⍺+⍵}
+      4 Plus 5
+9
+      1 2 3 Plus 4 5 6
+5 7 9
+      Plus/ 1 2 3 4 5
+15
+----
+
+== Idioms
+
+=== Ranges / Indices
+
+`⍳⍴A` gives an indices array of A
+
+=== Searching
+
+  A←15 40 63 18 27 40 33 29 40 88
+  B←29 63 40 33 50
+
+`(A ∊ B) / ⍳⍴A`: In which positions in A do we find a number that also appears in B?
+
+`A∊B` returns a binarray of length `⍴A`, with 1 if the element of A is in B, or 0 if it isn't
+
+`⍳⍴A` is a range `1..⍴A`, i.e. the indices of A
+
+`(A ∊ B) / ⍳⍴A` filters out the range `1..⍴A` so that it only includes the indices where the LHS is 1 - i.e. where the element in question is in B.
+
+Where in A do we find each number in B?
+
+29 is in position 8, 63 is in position 3 etc.
+
+`A ⍳ B`
