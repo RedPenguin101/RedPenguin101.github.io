@@ -1,0 +1,214 @@
+= Notes on Elements of Clojure
+By Zach Tellman
+
+== Intro
+
+*Tacit knowledge* - we know more that we can tell. Knowledge deeper than a linear chain of logic.
+
+== Names
+
+Names should be
+
+* *narrow*: excludes things it can't represent
+* *consistent*: easily understood by someone familiar with the context
+
+=== Implementation and Purpose
+
+Names should describe _purpose_ not implementation
+
+Implementation is self describing. `(get-sol-jupiter m k)` is no more communicative than it's implementation `(get-in m [:sol :jupiter k])`.
+
+Purposeful name: `(jovian-moon galaxy moon-name)`
+
+Describing purpose without implementation is the first form of *indirection*.
+
+=== Signs, referents, senses
+
+Names consist of:
+
+* the *sign* - the textual symbols
+* the *referent* - what the sign refers to (a thing or a set of things)
+* the *sense* - _how_ the sign refers to the referent. The _properties_ of the name.
+
+The second and third roughly correspond to implementation and purpose.
+
+'Sense' is quite subtle, getting into the context in which the name is defined. For example, we can say
+
+  a = 42
+  b = 42
+
+`a` and `b` are different signs which point to the same referent. In a mathematical sense we can plausibly say that `a = b`. In programming it will likely be the case that we expect at least one of these to _change_. In this sense, saying `a = b`, even if right now it happens to be the case, would be less universally correct.
+
+Say we have a name which we give sign `id`. 
+
+* The _referent_ might be the set/type of UUIDs (128bit values). 
+* The _sense_ is the property of uniqueness.
+
+The sense of a name can also be implied by the surrounding context, though obviously you need to be careful with this.
+
+There can be inconsistencies between a sense and referent. A UUID implementation of `id` is not going to guarantee the uniqueness property. The truly correct sense (and therefore name) would be `probably-unique-id`. But this would go too far. We have to make judgments about the probability and impact of these inconsistencies.
+
+=== Dealing with multiple contexts/senses
+
+Consider the name `student`. The sense of student might be different in different contexts: admissions office, bursars office, faculty. Within each context, the sense may be clear. But if we have a scope where we need to deal with multiple senses, this is problematic because the senses can become confused.
+
+We might _qualify_ the name by putting each in it's own namespace (`admissions/student` etc.). But maintaining the clarity of separation can be difficult, and will require constant mental effort. Accidental conflation will cause subtle problems.
+
+We might try to avoid separate contexts by ascribing the name `student` to only the most general case - here probably admissions - and using it in all contexts. But this harms the narrowness of the name.
+
+We might just specifically avoid the general name `student` and create a new name for each of the 3 senses, thus maintaining the one-to-one correspondence between name and sense.
+
+=== Natural and Synthetics names
+
+Student is a particularly problematic name in terms of maintaining the sign-sense unity, since it is a *natural* name. People can and will bring in senses that are from other contexts based on common everyday usages. 
+
+On the other hand, the existing senses that are in peoples heads provide the ability to *reason by analogy*, which is a powerful tool for comprehension.
+
+Creating *synthetic* names avoids the risk of bringing in outside senses, but you lose the ability to reason by analogy. The decision about which to use is a tradeoff between accessibility and the potential for misconception.
+
+=== Controlling the referent
+
+When you name immutable data, you control sign and referent, but not sense (which you never really can).
+
+When you name a function parameter, you control the sign (parameter name), but not the referent, which is whatever the client passes. You might want to enforce referent invariants at the top of the function - typically at the boundaries of your system where you have less control about what is coming in. Types do some of this for you, but usually not a la carte, and usually not with a fine brush.
+
+Let bounds (locally scoped names) can be helpful in providing very *local indirection*. If the sign of the name (the left hand side) is good, the programmer can ignore the right hand side for the most part without sacrificing comprehension. The big caveat is that you _avoid side effects_. Having side effects in the RHS completely eliminates this property.
+
+=== Not naming things
+
+Names are hard. Don't find names if you don't have to. Intermediate variables, especially where they do not represent meaningful purposes in-and-of themselves, should not be named.
+
+A large function is an assertion that it cannot be broken up into well-named pieces.
+
+=== Extremely general names
+
+* `x`: a value which can be anything, any type. Or which can be many types
+* `xs`: a sequence of anything
+* `m`: a map of key to any value
+* `f`: an arbitrary function
+* `[a b c ... & rst]`: a uni-typed sequence
+
+The generality of a name implies the generality of the functions that should be used on it. If your name is `x`, you can use `str` `=` `hash` on it, but probably not much else. If you start to use functions that imply a more specific implementation (e.g. `+`), change the sign to narrow the implied referents the name can take (e.g. `num`).
+
+=== Sequences, maps, tuples
+
+* `student`: denotes a collection (usually a map) which has a well defined minimum set of keys and values.
+* `students`: a collection of students. Usually a collection will have shared properties (e.g. attend the same class), and if that is not clear from context it should be made explicit in name of documentation.
+* A well defined map of keys with type X and vals of type Y should be named `x->y`, e.g. `class->students`. This can apply to nested maps: `department->class->students`
+* A tuple of an x and y should be `x+y`. `tutor+student`, a sequence of these: `tutor+students` - though notice the ambiguity, which could be removed with a more synthetic name: `tuteleges`. This would need to be documented. Generally you want to avoid doing this until absolutely necessary.
+
+=== Function names
+
+*data scope*: any data we can see from within our thread. function params, let bounds, closed-overs, global vars.
+
+Functions can 
+
+. pull new data into scope, 
+. transform data already in scope, 
+. push data into another scope. 
+
+A function should only do one of these things (pushing and pulling in a single function might be done as an optimization).
+
+* A function that pulls or pushes should be named with a verb.
+* A function that pulls should describe the data it returns
+* A function that pushes should describe the effect it has
+
+`get-payload` is a pull, `delete-payload` is a push. `compress-and-get-payload` does both.
+
+Transform functions shouldn't have verbs where possible. Specify what it returns, e.g. `md5-hash`, or if you need to specify the input to the transform, `payload->base64`.
+
+Often you will have to use a verb though. `(add-student university department student)->university`.
+
+=== Namespaces
+
+If the namespace is limited to dealing with payloads (and is named as such) you can omit the payload part of the name and use `get`, `delete`, `compress and get`. Provided you specify and exclude any name collisions with a core function (`get` is a likely one here). 
+
+Functions in a namespace should operate on a common data-type, data scope or both. This gives the namespace cohesion.
+
+Avoid adding namespaces unnecessarily, since it adds cognitive burden. Combined with the previous statement, this implies that you should also limit the number of different types/scopes in your program, which is also a good idea. 
+
+== Idioms
+
+Software is layers of indirection. To understand more, you must dig down into lower layers.
+
+In well designed software, the lessons you learn in lower layers should add _detail_ to the lessons from higher layers, but they will never _invalidate_ lessons learned from higher layers. 
+
+*Idioms* provide a mapping between code structure and intent.
+
+* Prefer `<` and `<=` over `>` and `>=`
+* Support every arity of a monoid `(f a b) -> c`: `(f) -> id` `(f a) -> a`
+* Possibly support higher arities with variadics by self-calling `reduce`: `(reduce f (f a b) rst)`
+* Also try to do this for accumulators, like `conj`: `(f A1 b) -> A2`, `(f A1) -> A1`, `(f) -> Aid`.
+* Use option maps not names parameters.
+* If you have mutable state, use an atom
+* explicit (potentially redundant) `do` implies side effects
+* use `letfn` for mutual recursion
+* make interops obvious
+* use `for` for cartesian products, but when you do, avoid the special clauses (`:let` etc.)
+
+=== Referential transparency
+
+Laziness relies on it. Side effects break it. Side effects mean we need to think about more than just what an expression returns, we need to think about how and when it does it.
+
+Dynamic scope, binding, obviously, also breaks RT.
+
+=== Atoms and refs
+
+With ref's (using STM) you're co-ordinating between state constructs. With Atom (using CAS), you're working on a single state construct. Thus, you can accomplish the same thing as with refs by putting them into a single atom, at the cost of throughput/retries. Since the number of expected retries increases rapidly over 60% utilization, an atom will reach that threshold faster than two refs holding values separately.
+
+But this is almost an edge case, you're talking hundreds of thousands of request per second before this becomes an issue. Your network will usually become a bottleneck before this does.
+
+STM is more difficult to use effectively. It can have weird and subtle bugs. `commute` can can be used inappropriately. Just use and atom. Transactions also make it more difficult to get a consistent snapshot of state. You can't just `(map deref my-refs)` because a transaction might occur during the process. You need to wrap the _read_ in a transaction (`ensure`).
+
+=== Using the narrowest accessor
+
+`(map first x)` and `(map key x)` might be functionally equivalent, but the latter is narrower - it specifies that the x is a map, whereas in the first it could be any collection of collections. This is useful for the reader.
+
+Using a generic accessor, we imply that it doesn't matter which collection they are used with. If it _does_ matter, you, the programmer, should indicate it by using a narrower accessor. 
+
+=== Be very cautious when dealing with nil return values
+
+Clojure has many 'nil-friendly' functions: functions that happily accept or return nils.
+
+`nil` is an absence. An absence of what depends on context.
+
+* absence of seq: `(conj nil :callisto)`
+* absence of things _in_ a seq : `(count nil) => 0`
+* absence of map: `(assoc nil :callisto 1610)`
+* absence of truth: `(if nil :a :b) => :b`
+* absence of something we tried to look up `(get {} :callisto) => nil`
+
+This context requirement means we can't consider a nil returning sequence in isolation. We have to make sure our downstream functions handle it, interpret it in the right context.
+
+[source,clojure]
+----
+(-> keys->numbers
+    :c
+    (conj 8 9 10))
+----
+
+Here, if there is no key `:c` in `keys->numbers`, it will produce nil, with the intended meaning that 'there is no value associated with this key'. However the conj will interpret nil in the sense of 'an empty sequence'.
+
+So here if `:c -> [1 2 3]`, the above returns `[1 2 3 8 9 10]`
+
+And if `:c -> nil`, `(10 9 8)`
+
+We must mitigate the nil case by providing explicit defaults.
+
+Composing nil-friendly functions can obscure the result. If you have a chain of 4 functions, each of which can both accept and return nils, and you get back a nil, what does that represent? At which point did it get nilled? You can't tell, you can't reason about it. You have to test each case.
+
+Again, when you have these chains, you have to make specific 'nil interpretation' guards at well chosen places through your code.
+
+`(-> solar-system :jupiter :callisto :mass)`
+
+`(-> solar-system :jupiter :callisto (:mass :mass-not-found))`
+
+Note this makes your return value a `number-or-keyword` type. But that's at least more explicit than `number-or-nil`
+
+Thus, *avoid* the common idiom `(when x ,,,)`. This is buck passing. If it makes sense in context to return an empty collection, do that. Otherwise throw an error.
+
+== Indirection
+
+
+
+== Composition
