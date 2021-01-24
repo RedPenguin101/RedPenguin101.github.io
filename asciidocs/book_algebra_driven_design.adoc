@@ -1,0 +1,77 @@
+= Algebra Driven Design
+by Sandy Maguire
+
+== Book shape
+
+* Overview
+* Part 1: Designing algebras
+** Tiles
+** Good Algebra?
+** Scavenger hunt
+* Part 2: Deriving Implementations
+** Tiles
+** Scavenger hunt
+* Part 3: Reference Material
+** Property based testing (PBT)
+** QuickSpec
+** Algebraic properties and structures
+
+== Notes
+
+=== Preface
+
+Why is FP not more popular? FP-people aren't good at applying the concepts at scale.
+
+This book presents a different way of thinking about and writing software which aims to resolve this.
+
+== Overview
+
+=== Abstraction
+
+[quote, Dijkstra]
+The purpose of abstraction is not to be vague, but to create a new semantic level in which on can be absolutely precise.
+
+All ideas are metaphors, and no metaphor is _true_. An abstraction is a metaphor for interpreting the world, and allows you to change the way you think. A _good_ abstraction 
+
+* is nearly invisible
+* never reminds us that it is false 
+
+Examples of good abstractions:
+
+* Our sequential operations on a CPU abstraction - actually much more complicated
+* TCP/IP
+* Boolean algebra
+* Newtonian physics
+
+In other words, good abstractions don't *leak*. Leaks mean the user must now keep track of the metaphor, and also the circumstances where the metaphor doesn't work.
+
+Any abstraction which needs to give you a escape hatches out of it (e.g. escape new-line characters in an HTTP header) is a bad abstraction.
+
+This books main contribution: *Code is the wrong abstraction for doing programming*. It's a terrible tool for thought. It's too powerful and too low level.
+
+This book is about designing abstractions that can't possibly leak.
+
+=== Algebra Driven Design
+
+[quote, Harold Abelson]
+Programs are meant to be read by humans and only incidentally for computers to execute.
+
+The valuable part of software engineering is being able to understand problems so well that they can be described, in excruciating detail, to idiot computers. The code is a by-product. Or ot should be. In current practice it takes center stage, and it's not a good tool for doing that. We can make our code more 'readable' with good names and comments. We can document. But this doesn't address the central problem, and introduces some of it's own.
+
+Programmers become skilled, when reading code, in mentally dividing 'what the author is trying to accomplish' from 'how they are doing it'. But it's an inherently lossy procedure from understanding -> code -> understanding.
+
+So don't use code or programs to think. Use algebra. Then offload most of the coding to our computer tool to get:
+
+* Automatic, always up to date documentation
+* Automatically generated unit tests
+
+Three benefits:
+
+. Allows focus on the design
+. Offload work to the computer with machine checkable artifacts, and get them to check things we forgot to check
+. Derive implementations from designs easily
+
+ADD is good for generating re-usable code. Applications become thing wrappers around libraries.
+
+=== Conventions
+
