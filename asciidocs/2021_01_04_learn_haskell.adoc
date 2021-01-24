@@ -1,0 +1,423 @@
+= notes from Learn You A Haskell
+
+http://learnyouahaskell.com/chapters
+
+== Very Brief Summary
+
+=== at the REPL
+
+`:l filename` load
+`:t` give type signature
+
+=== Definition or Name
+
+A zero argument function, that always returns its value.
+
+=== List `[]`
+
+linked list
+
+* `++` is concat
+* `!!` gets by index
+* `:` is cons
+* `init` is but-last
+* `null` is null?
+* `elem` is 'list contains element?'
+
+=== List comprehension syntax
+
+`[fn | x <- binding1, y <- binding2, predicate1, predicate2, ...]`
+
+=== Tuples =()=
+
+=== Pairs
+
+A 2tuple
+
+`fst`, `snd`
+
+`zip` two lists to a list of Pairs
+
+=== Type System
+
+Denoted by upper case 1st char
+
+Declare type signature with `::`
+
+`addThree :: Int -> Int -> Int -> Int`
+
+Annotate a type the same way
+
+`read "5" :: Int`
+
+Instances belong to a Type
+
+==== Type Variable 
+
+Generic type
+
+Denote with a,b,c etc.
+
+Functions with TVs are Polymorphic
+
+==== Type Class
+
+A trait, implemented by Types. e.g. Ordered, Enumerable
+
+==== Class Constraint
+
+Functions can have a constraint, that is they can accept any Instance whose Type implements a given Type Class.
+
+`my-type :: (Eq a)  => String -> a`
+
+=== Pattern Matching
+
+Multiple function definitions with different arguments are checked sequentially
+
+Tuple destructure, list destructure work how you expect
+
+List head/tail destructure like `(x:y:z:tail)`
+
+`(x:[])` matches a 1 length list
+
+Keep reference to the whole thing with =thing@(x:xs)=
+
+=== Guard 
+
+The condition/pipe function thing
+
+Terminate with `otherwise` (optionally)
+
+=== Where clause
+
+You can do =where='s to do intermediate calculations at the bottom of a function for some reason
+
+=== Let/In 
+
+more flexible, and the other way around
+
+=== Case Expression
+
+[source,haskell]
+  case expression of pattern -> result
+                     pattern -> result
+                     pattern -> result
+                     pattern -> result
+
+=== Edge Condition = Termination condition for recursion
+
+== Starting Out
+=== Basic operations
+
+Infix
+
+Careful of negation. `5 * -3` will fail. do `5 * (-3)``
+
+`mod x y`
+
+`^` is exponent
+
+Boolean: `&&`, `||`, `not
+
+Equality: `==` `=/=`
+
+=== Basic functions
+
+Usually prefix
+
+`succ` is successor
+
+`min`, `max` (dyadic only)
+
+Function application is highest precedence in order of ops
+
+call as infix with backticks 
+
+[source,haskell]
+----  
+92 `div` 10`
+----
+
+`even`
+
+=== Function definition
+
+`doubleMe x = x + x`
+
+`[name] [args] = [body]`
+
+Works on any number
+
+`doubleUs x y = x*2 + y*2`
+
+`doubleUs x y = doubleMe x + doubleMe y`
+
+=== files
+
+save file as `baby.hs`
+
+load into repl with `:l baby`
+
+You don't need to worry about order when you define your functions, like clojure.
+
+=== Conditionals
+
+x = "fish" is a zero argument function. This is called a definition, or a name
+
+=== Lists
+
+* must be homogenous
+* You can nest lists, but they must be homogenously typed (e.g. list of lists of strings)
+* Strings are lists
+* implementation is linked lists
+* define with `let lostNumbers = [4,8,15,16,23,42]`
+* `++`  is concat
+* `:` is cons
+* `!!`` gets an element by index, `lst !! 1` gets element at 1
+* List comparison works pairwise with `>, <, =``
+* `head`, `tail`, `last`, `init` (but-last) _these don't work on empty lists, and this is not caught at compile time_
+* `length`
+* `null` returns true if list is empty, otherwise false
+* `reverse`
+* `take x ys`, `drop x ys`
+* `maximum`, `minimum`
+* `sum` `product`
+* `elem x ys` returns true if x is an element in ys, otherwise false 
+
+==== Range sugar
+
+* `[1..20]` creates list from 1-20 inclusive
+* works on chars when list is a string
+* step specified variant is like `[first,next..last]` syntax, so `[2,4..12] = [2,4,6,8,10,12]`
+* use this for reversed ranges `[20,19..1]` counts back from 20
+* It technically works on floating points, but don't do it
+* infinite lists: `[13,26..]`
+
+==== Infinite lists
+
+* `cycle ys`
+* `repeat x`
+* (but use `replicate 3 10` if you want a 3 long list of 10s)
+
+==== List comprehension
+
+* `[x*2 | x <- [1..10]]` applies x*2 to every x in the list `[1..10]``
+* after the `|` is the _binding_
+* `where` predicates go after binding, with comma `[x*2 | x <- [1..10], x*2 > = 12]`
+* You can have many predicates, just separate them with commas. They all must be true for the evaluation to happen (i.e. they are logical ands).
+* You can have multiple bindings `[x*y | x <- [2,5,10], y <- [8,10,1]]`
+* This does _outer join_, not pairwise, so you'll get 9 results here.
+* convention is to us `_` for unused bindings.
+
+=== Tuples
+
+* tuples have fixed length. 
+* Elements can be heterogenous, but a `(string, float)` tuple is a different type than a `(float, float)` tuple
+* A 2-length tuple is a pair
+* `fst` gives first element of a pair, `snd` the second
+* `zip` takes 2 lists and returns a list of pairs.
+* construct with `(1,2,3)`
+* `triangles = [ (a,b,c) | c <- [1..10], b <- [1..10], a <- [1..10] ]`
+
+== Types, Typeclasses
+
+Haskell has type inference
+
+Types have upper case first chars
+
+From the REPL you can examine a type with `:t`
+
+You can explicitly declare a function's type signature with `::`
+
+`removeNonUpperCase :: [Char] -> [Char]`
+
+`addThree :: Int -> Int -> Int -> Int`
+
+You can just do `:t` and see what Haskell thinks it should be, and use that as the basis for your declaration.
+
+=== Primitive types
+
+* `Int` is integer, `Integer` is _unbounded_ integer
+* `Float` has single precision
+* `Double` has double precision
+* `Bool`
+* `Char` (use single quotes)
+
+=== Type variables
+
+* `:t head` gives `head :: [a] -> a`. `a` here is a type variable - it can be any type. It's like generics in other languages. 
+* functions with type variables are called polymorphic
+* convention is to denote them with single letters, a,b etc
+* `fst :: (a,b) -> a`
+
+=== Type class
+
+* an interface that defines some behaviour.
+* classes has members. Types can be a member of a class
+* Haskells version of interfaces or traits
+* But not really like them
+* if we do `:t (==)` we get `(==) :: (Eq a) => a -> a -> Bool`
+* Note the `=>` this is a _class constraint_. Some functions can take any types that are members of that Class.
+* It means that the type variable a can be any type that is a *member* of the `Eq` class (the equality class)
+* (almost everything except IO is part of eq)
+* `Ord` is the order class. Another common one. It allows for comparing values. Anything in the Ord class is also int Eq class
+* `Show` members can be presented as strings. `show` is the basic string coercion function
+* `Read` is the opposite - a string parser class. `read` is the function. 
+* `Enum` members have sequential ordering - i.e. they can be enumerated. You can use range on them, and they have defined successors (`succ`) and predecessors (`pred`). You can use range on them
+* `Bounded` have an upper and lower bound. `Int` `Char` `Bool`. `minBound` and `maxBound`
+* Tuples of `Bounded` are also members of Bounded
+* `Num` members are the real numbers
+* (members of Bounded and Num are *polymorphic constants*. `20 :: (Num t) -> t`, which is why you can do 20 :: Int, 20 :: Float and get different types as the result)
+* `Integral` is the whole numbers - =Int= and =Integer=
+* `Floating` is the =Floats= and =Doubles=
+* `fromIntegral :: (Num b, Integral a) => a -> b` is a useful function for generalising a number.
+
+=== Type annotation
+
+* Most primitives implement `Read`, but usually only in the context of a function (otherwise the type can't be inferred). 
+* `read :: (Read a) => String -> a`
+* You can just tell the compiler the type with `read "5" :: Int`
+
+== Syntax in functions
+
+=== Pattern Matching
+
+* You can have different function bodies for different input patterns, 
+which will be checked sequentially (do most specific first)
+
+[source,haskell]
+lucky :: (Integral a) => a -> String
+lucky 7 = "Lucky number 7!"
+lucky x = "No good'
+
+* You can use this for recursion
+
+[source,haskell]
+factorial :: (Integral a) => a -> a
+factorial 0 = 1 -- termination condition
+factorial n = n * factorial (n - 1)
+
+* Pattern matches are not checked for exhaustiveness.
+
+Another sort of pattern matching: do tuple destructuring in function arguments and bindings
+
+`addVectors (x1,y1) (x2,y2) = (x1+x2, y1+y2)``
+
+List destructuring with `(x:xs)` - x is the head, xs is the tail
+
+(a 1 length list will have an empty list as the tail)
+
+You can use `(x:y:z:xs)` for binding the first 3 elements.
+
+`(x:[])` matches on a 1 length list, `(x:y:[])` on a 2 length, etc.
+
+* _as patterns_ with `@` allow you to keep a reference to the whole thing
+`thing@(x:xs)`
+
+=== Guards
+
+* like cond
+
+[source,haskell]
+  bmiTell :: (RealFloat a) => a -> String
+  bmiTell bmi
+    | bmi <= 18.5 = "underweight"
+    | bmi <= 25.0 = "normal"
+    | bmi <= 30.0 = "fat"
+    | otherwise = "whale"
+
+(note no = after the input, only after first guard)
+
+If there is no `otherwise`, it falls through to the next pattern
+
+=== Where
+
+[source,haskell]
+  bmiTell :: (RealFloat a) => a -> a -> String
+  bmiTell weight height
+    | bmi <= 18.5 = "underweight"
+    | bmi <= 25.0 = "normal"
+    | bmi <= 30.0 = "fat"
+    | otherwise = "whale"
+    where bmi = weight / height ^ 2
+
+[source,haskell]
+  initials :: String -> String -> String
+  initials firstname lastname = [f] ++ ". " ++ [l] ++ "."
+    where (f:_) = firstname
+          (l:_) = lastname
+
+[source,haskell]
+  calcBmis :: (RealFloat a) => [(a,a)] -> [a]
+  calcBmis xs = [bmi w h | (w, h) <- xs]
+      where bmi weight height = weight / height ^ 2
+
+=== Let / In
+
+like where, but more flexible and more local
+
+[source,haskell]
+  cylinder :: (RealFloat a) => a -> a -> a
+  cylinder r h =
+    let sideArea = 2 * pi * r * h
+        topArea = pi * r^2
+    in sideArea + 2 * topArea
+
+again you can use functions
+
+=== Case expressions
+
+[source,haskell]
+  case expression of pattern -> result
+                     pattern -> result
+                     pattern -> result
+                     pattern -> result
+
+== Recursion
+
+Edge condition: the termination condition
+
+as an illustration of how you'd typically use it: Maximum
+
+[source,haskell]
+  maximum' :: (Ord a) => [a] -> a
+  maximum' [] = error "maximum of empty list"
+  maximum' [x] = x
+  maximum' (x:xs)
+    | x > maxTail = x
+    | otherwise = maxTail
+    where maxTail = maximum' xs
+
+or
+
+[source,haskell]
+  maximum' :: (Ord a) => [a] -> a
+  maximum' [] = error "maximum of empty list"
+  maximum' [x] = x
+  maximum' (x:xs) = max x (maximum' xs)
+
+[source,haskell]
+  quicksort :: (Ord a) => [a] -> [a]
+  quicksort [] = []
+  quicksort (x:xs) =
+    let smallSorted = quicksort [a | a <- xs, a <= x]
+        bigSorted = quicksort [b | b <- xs, b > x]
+    in smallSorted ++ x ++ bigSorted
+
+== Higher Order
+
+== Modules
+
+== Making types
+
+== IO
+
+== Functionally solving problems
+
+== Functors and Monoids
+
+== Monads
+
+== Monads 2
+
+== Zippers
