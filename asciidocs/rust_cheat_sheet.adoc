@@ -1,0 +1,57 @@
+= Rust Cheat Sheet
+
+== Cargo
+
+* `cargo build`
+* `cargo run`
+* `cargo test`
+* `cargo new myapplication --bin`
+
+== Strings
+
+=== From string-slice to a vec of chars
+
+`let c: Vec<char> = str.chars().collect();`
+
+== Command Line Args
+
+[source,rust]
+----
+use std::env;
+
+let args: Vec<String> = env::args().collect();
+let file = &args[1];
+----
+
+== Reading from a file
+
+[source,rust]
+----
+use std::fs;
+let file = &args[1];
+let contents = fs::read_to_string(file).expect("File read error");
+----
+
+== Parsing a string to an integer
+
+[source,rust]
+----
+fn parse_number_list(input: String) -> Vec<u32> {
+    let input = input.trim();
+    input
+        .split("\n")
+        .map(|s| s.parse::<u32>().unwrap())
+        .collect()
+}
+----
+
+== Regex
+
+[source,rust]
+----
+[dependencies]
+regex = "1.4.2"
+
+let re = Regex::new(r"(\d+)-(\d+) (\w): (\w+)").unwrap();
+let caps = re.captures(line).unwrap();
+----
