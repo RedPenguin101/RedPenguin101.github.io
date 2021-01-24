@@ -1,0 +1,56 @@
+= Software Aphorisms
+
+== Abstraction
+
+[quote, Harold Abelson]
+Programs are meant to be read by humans and only incidentally for computers to execute
+
+[quote, Dijkstra]
+The purpose of abstraction is not to be vague, but to create a new semantic level in which one can be absolutely precise
+
+
+[quote, John Locke 'An Essay Concerning Human Understanding (1690)']
+____
+
+The acts of the mind, wherein it exerts its power over simple ideas, are chiefly these three: 
+1. Combining several simple ideas into one compound one, and thus all complex ideas are made. 
+2. The second is bringing two ideas, whether simple or complex, together, and setting them by one another so as to take a view of them at once, without uniting them into one, by which it gets all its ideas of relations. 
+3. The third is separating them from all other ideas that accompany them in their real existence: this is called abstraction, and thus all its general ideas are made.
+____
+
+[quote, Hal Abelson in SICP lectures]
+____
+[talking about a rational numbers package] It's absolutely no problem at all to think about what computation you want to make in adding and multiplying these fractions. But as soon as you go to implement it you run up against a problem. You don't _have_ what a rational number _is_. The system gives us individual numbers, so we can have 5 and 3, but we don't have a way of saying theres a thing which has both a 3 and a 4 in it.
+
+We'd like to imagine there are these clouds, which have both a numerator and a denominator in it, and these clouds are what we'd like to work in terms of. We're going to solve this problem using the incredibly powerful design strategy of 'wishful thinking'...let's imagine we have these clouds...let's imagine we have these three procedures, one called `(make-rat n d)` that give us this cloud (and we don't really know what make-rat actually returns - that's its business). Suppose we have one of these clouds, we have a procedure called `(numer cloud)` which takes a cloud and returns the numerator part. And same for `(denom cloud)` ... We don't wanna know [how these clouds are implemented].
+____
+
+== Simplicity, Complexity, Fractality
+
+[quote, Dijkstra]
+Simplicity is prerequisite for reliability
+
+[quote,Bertrand Russell]
+Everything is vague to a degree you do not realize till you have tried to make it precise.
+
+[quote,Antoine de Saint-Exupery]
+“A designer knows he has achieved perfection not when there is nothing left to add, but when there is nothing left to take away.”
+
+== Systems
+
+[quote,Fred Brooks in the Mythical Man Month p42]
+Conceptual Integrity is the most important consideration in systems design.
+
+[quote, Melvin Conway]
+A description of a system, if it is to describe what goes on inside that system, must describe the system's connections to the outside world, and it must delineate each of the subsystems and how they are interconnected. Dropping down one level, we can say the same for each of the subsystems, viewing it as a system. This reduction in scope can continue until we are down to a  system which is simple enough to be understood without further subdivision.
+
+== Teams, projects, products
+
+[quote, Fred Brooks]
+Brooks Law: Adding manpower to a late software project makes it later
+
+== Other
+
+[quote,Wolfgang Pauli]
+It is not only not right, it is not even wrong
+
