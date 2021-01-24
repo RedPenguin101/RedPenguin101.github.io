@@ -4,9 +4,10 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Working on
 
-. Book: Grokking simplicity (as it comes out)
 . Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit]
 . Project: Allocation of trades between funds
+. Book: Mythical Man Month
+. Book: Elements of Clojure
 
 == Backlog
 
@@ -16,7 +17,6 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Design Unbound
 . Writing: Why REPL is a superpower https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html[1] https://clojure.org/guides/repl/introduction[2] https://www.youtube.com/watch?v=Ngt29DyNDRM[3] https://www.youtube.com/watch?v=tpcl5pjkRTQ[4] https://www.youtube.com/watch?v=oLvwbDUXGsc[5] https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/[6]
 . Book: Data and reality (a second read)
-. Book: Algebra-driven development
 . Project: History generator
 . Project: A DSL/Frontend for modelling time-series
 . Writing: Representing Reality
@@ -39,10 +39,11 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Notes on the synthesis of form
 . Book: Against Method
 . Book: Living Documentation
-. Book: Mythical Man Month
+. Book: Algebra-driven development
 . Book: Working with Legacy Code
 
 == Finished
 
 . Book: I am a strange loop
 . Project: Qniform
+. Book: Grokking simplicity
