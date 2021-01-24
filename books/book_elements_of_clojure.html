@@ -821,7 +821,108 @@ b = 42</pre>
 <div class="sect1">
 <h2 id="_indirection">Indirection</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Indirection separates what and how. It has the following qualities</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>when implementation is complicated or subject to change</p>
+</li>
+<li>
+<p>gives us freedom to change detail without users having to care</p>
+</li>
+<li>
+<p>defines semantic layers in software, inviting the reader to stop when they think they know enough</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Two fundamental tools: <strong>references</strong> and <strong>conditionals</strong></p>
+</div>
+<div class="sect2">
+<h3 id="_references">References</h3>
+<div class="paragraph">
+<p>A reference is a value that points to another value (the referent). It can be dereferenced at compiletime (a name) or runtime (a pointer). In both cases a reference can point to nothing.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conditionals">Conditionals</h3>
+<div class="paragraph">
+<p>Conditionals shield callers from implementation detail.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn nth [x idx]
+  (cond
+    (string? x) (.charAt ^String x idx)
+    (instance? List x) (.get ^List x idx)
+...))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, the caller doesn&#8217;t have to think about whether what they are passing in is a string or a list - in both cases they want back the nth value of the input. The conditional takes care of the detail for them.</p>
+</div>
+<div class="paragraph">
+<p>Conditionals can segment behavior across types, as in this case, or unify across types.</p>
+</div>
+<div class="paragraph">
+<p>A reference <em>conveys</em> values, a conditional <em>decides</em> based on values.</p>
+</div>
+<div class="paragraph">
+<p>A reference is <strong>open</strong>, whereas the conditional is <strong>closed</strong> - you can only change the behaviour by changing the underlying code.</p>
+</div>
+<div class="paragraph">
+<p>Conditional code is <em>ordered</em>. Predicates in the conditional may overlap. Any open decision making process must be unordered, thus we can&#8217;t make conditionals open.</p>
+</div>
+<div class="paragraph">
+<p>You can make an open decision making process by making it unordered. That means predicates must be disjoint. Which means you need distinct keys which map to behavior, really. We&#8217;ll call this a <strong>table</strong>, with unique keys. But you need to enforce this uniqueness, so you either make it private (which rather defeats the object), or extensible using only private keys so no one can shadow behavior.</p>
+</div>
+<div class="paragraph">
+<p>Conditionals avoid this by by solving conflicts through ordering. So conditionals are useful <strong>because</strong> they are closed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_method_dispatch">Method dispatch</h3>
 
+</div>
+<div class="sect2">
+<h3 id="_abstraction">Abstraction</h3>
+<div class="paragraph">
+<p>Indirection is a mechanism for creating abstractions. But this is a slippery term.</p>
+</div>
+<div class="paragraph">
+<p>A common definition is from C.A.R Hoare, in <em>Proof of Correctness of Data Representation (1972)</em>. He distinguishes</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>concrete representation: the internal model</p>
+</li>
+<li>
+<p>abstract representation: the interface it exposes</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The first is mapped to the second via an <em>abstraction function</em>.</p>
+</div>
+<div class="paragraph">
+<p>A concrete representation can have an <em>invariant relation</em>: Something that is true of the concrete representation in all cases. To determine if a method is correct, one need only consider the internal model and it&#8217;s invariants. As long as all other methods maintain the invariants, you&#8217;re all good.</p>
+</div>
+<div class="paragraph">
+<p>Invariant relations allow you to change the internal model without impacting the interface. All your method implementations have to be changed to meet the new invariant. But that doesn&#8217;t impact the API.</p>
+</div>
+<div class="paragraph">
+<p>The idea of abstraction above is concerned only with self-consistency. It does not acknowledge that the abstraction, in reality, will be used in a context.</p>
+</div>
+<div class="paragraph">
+<p>Consider early clocks. Early clocks had to sit on flat surfaces, couldn&#8217;t be moved rapidly, had to be regularly wound, and couldn&#8217;t be subject to rapid temperature changes. These are <strong>not</strong> invariants, because they can&#8217;t be enforced by the clock. They are <strong>assumptions</strong> the concrete representation of the clock makes about its environment to be able to provide it&#8217;s abstract representation (the time). Put the clock on a ship, and all of these assumptions just stop working, breaking the abstraction.</p>
+</div>
+<div class="paragraph">
+<p><em>Self consistency of the internal model is not enough for software</em>. The context always matters. We need the models to be <em>useful</em> as well as self consistent. And while self-consistency is objective, utility is totally subjective. You can&#8217;t rely on inductive thinking to figure it out. You have to be deductive, rigorous, curious.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -833,7 +934,7 @@ b = 42</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-24 13:41:38 GMT
+Last updated 2021-01-24 14:35:37 GMT
 </div>
 </div>
 </body>

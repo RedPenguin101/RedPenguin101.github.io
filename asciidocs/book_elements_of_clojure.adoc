@@ -209,6 +209,66 @@ Thus, *avoid* the common idiom `(when x ,,,)`. This is buck passing. If it makes
 
 == Indirection
 
+Indirection separates what and how. It has the following qualities
 
+. when implementation is complicated or subject to change
+. gives us freedom to change detail without users having to care
+. defines semantic layers in software, inviting the reader to stop when they think they know enough
+
+Two fundamental tools: *references* and *conditionals*
+
+=== References
+
+A reference is a value that points to another value (the referent). It can be dereferenced at compiletime (a name) or runtime (a pointer). In both cases a reference can point to nothing.
+
+=== Conditionals
+
+Conditionals shield callers from implementation detail.
+
+[source,clojure]
+----
+(defn nth [x idx]
+  (cond
+    (string? x) (.charAt ^String x idx)
+    (instance? List x) (.get ^List x idx)
+...))
+----
+
+Here, the caller doesn't have to think about whether what they are passing in is a string or a list - in both cases they want back the nth value of the input. The conditional takes care of the detail for them.
+
+Conditionals can segment behavior across types, as in this case, or unify across types.
+
+A reference _conveys_ values, a conditional _decides_ based on values.
+
+A reference is *open*, whereas the conditional is *closed* - you can only change the behaviour by changing the underlying code.
+
+Conditional code is _ordered_. Predicates in the conditional may overlap. Any open decision making process must be unordered, thus we can't make conditionals open.
+
+You can make an open decision making process by making it unordered. That means predicates must be disjoint. Which means you need distinct keys which map to behavior, really. We'll call this a *table*, with unique keys. But you need to enforce this uniqueness, so you either make it private (which rather defeats the object), or extensible using only private keys so no one can shadow behavior.
+
+Conditionals avoid this by by solving conflicts through ordering. So conditionals are useful *because* they are closed.
+
+=== Method dispatch
+
+=== Abstraction
+
+Indirection is a mechanism for creating abstractions. But this is a slippery term.
+
+A common definition is from C.A.R Hoare, in _Proof of Correctness of Data Representation (1972)_. He distinguishes
+
+* concrete representation: the internal model
+* abstract representation: the interface it exposes
+
+The first is mapped to the second via an _abstraction function_.
+
+A concrete representation can have an _invariant relation_: Something that is true of the concrete representation in all cases. To determine if a method is correct, one need only consider the internal model and it's invariants. As long as all other methods maintain the invariants, you're all good.
+
+Invariant relations allow you to change the internal model without impacting the interface. All your method implementations have to be changed to meet the new invariant. But that doesn't impact the API.
+
+The idea of abstraction above is concerned only with self-consistency. It does not acknowledge that the abstraction, in reality, will be used in a context.
+
+Consider early clocks. Early clocks had to sit on flat surfaces, couldn't be moved rapidly, had to be regularly wound, and couldn't be subject to rapid temperature changes. These are *not* invariants, because they can't be enforced by the clock. They are *assumptions* the concrete representation of the clock makes about its environment to be able to provide it's abstract representation (the time). Put the clock on a ship, and all of these assumptions just stop working, breaking the abstraction.
+
+_Self consistency of the internal model is not enough for software_. The context always matters. We need the models to be _useful_ as well as self consistent. And while self-consistency is objective, utility is totally subjective. You can't rely on inductive thinking to figure it out. You have to be deductive, rigorous, curious.
 
 == Composition
