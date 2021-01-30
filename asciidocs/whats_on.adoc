@@ -47,6 +47,11 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Against Method
 . Book: Living Documentation
 . Book: Working with Legacy Code
+. Book: An introduction to general systems thinking.
+. Book: Patterns of Software, Richard Gabriel 
+. Book: Simulacra and Simulation
+. Book: Invisible Cities
+. Book: The image of the city
 
 == Finished
 

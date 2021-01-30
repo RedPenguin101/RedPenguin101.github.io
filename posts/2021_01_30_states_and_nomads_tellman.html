@@ -5,7 +5,8 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<title>What&#8217;s on</title>
+<meta name="author" content="A talk by Zach Tellman, 2015">
+<title>States and Nomads: Handling Software Complexity</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -420,182 +421,129 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>What&#8217;s on</h1>
+<h1>States and Nomads: Handling Software Complexity</h1>
+<div class="details">
+<span id="author" class="author">A talk by Zach Tellman, 2015</span><br>
+</div>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A list of things I&#8217;m reading or working on, and what I have in the backlog</p>
+<p><a href="https://www.youtube.com/watch?v=KGaFcI2UNrI" class="bare">https://www.youtube.com/watch?v=KGaFcI2UNrI</a></p>
+</div>
+<div class="paragraph">
+<p>HG Wells Time Machine: Eloi and Morlochs. Knowledge and Innocence. What you don&#8217;t know will sometimes come up and bite you.</p>
+</div>
+<div class="paragraph">
+<p>We sit on 60 years of accreted abstractions. First principles are not within reach. We have ways of dealing with this. The Tree. Parent/Child and Siblings. Separation means you can divide and conquer. Real systems have connections that are more subtle. Components and sub-components. The tree is a model, not reality.</p>
+</div>
+<div class="paragraph">
+<p>Scientific Forestry (Seeing Like a State). Successful at first. Monoculture. Forests are complicated! But the fault is the limited view. The person with the idea saw the forest was complicated, not in line with his view, and tried to make reality look like the model.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_working_on">Working on</h2>
+<h2 id="_defining_system">Defining System</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Tutorial: <a href="https://www.jacekschae.com/courses/learn-reitit-pro/">Jacek Schae&#8217;s Learn Reitit</a></p>
-</li>
-<li>
-<p>Project: Allocation of trades between funds</p>
-</li>
-<li>
-<p>Book: Mythical Man Month</p>
-</li>
-<li>
-<p>Book: Elements of Clojure</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>From An Introduction to General Systems Thinking. A space of two axes: Complexity - how many moving pieces, Randomness - the degree to which they are related to eachother.</p>
+</div>
+<div class="paragraph">
+<p>Anything low on <em>both</em> of these axes will yield to formal analysis. Anything that is highly random we can use statistical analysis. Systems thinking is for ~ low randomness but high complexity. We need <strong>Heuristic Devices</strong> - inherently lossy ways of looking at the world. Models.</p>
+</div>
+<div class="paragraph">
+<p>No Model will tell you when to stop. It won&#8217;t tell you when it stops being useful. No model can, by definition, describe it&#8217;s own failures.</p>
+</div>
+<div class="paragraph">
+<p>These models are what we use to make software. Choosing what to ignore and what to pay attention to.</p>
+</div>
+<div class="paragraph">
+<p>We will talk about other places where people have struggled with this.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_backlog">Backlog</h2>
+<h2 id="_mid_century_critical_theory">Mid century critical theory</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Paper: <a href="https://erlang.org/download/armstrong_thesis_2003.pdf">Armstrong reliability 2003 paper</a></p>
-</li>
-<li>
-<p>Paper: <a href="http://www.laputan.org/pub/foote/mud.pdf">Foote/Yoder Big Ball of Mud</a></p>
-</li>
-<li>
-<p>Book: Naming and Necessity</p>
-</li>
-<li>
-<p>Book: Data and Reality (2nd Read)</p>
-</li>
-<li>
-<p>Book: Domain Driven Design (a second read)</p>
-</li>
-<li>
-<p>Book: The Toyota Production System (a second read)</p>
-</li>
-<li>
-<p>Book: Algebra-driven design</p>
-</li>
-<li>
-<p>Book: The Republic</p>
-</li>
-<li>
-<p>Paper: <a href="https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf">Hoare, Communicating Sequential Processes</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://dl.acm.org/doi/pdf/10.5555/63445.C1104363">Hoare, Proof of Correctness of Data Representation</a></p>
-</li>
-<li>
-<p>Other: <a href="https://github.com/norvig/pytudes/blob/master/ipynb/Advent-2020.ipynb">Peter Norvigs AOC solutions</a></p>
-</li>
-<li>
-<p>Project: A 'code challenge' thing with a fund theme</p>
-</li>
-<li>
-<p>Book: Thinking in Systems</p>
-</li>
-<li>
-<p>AWS - next qualification</p>
-</li>
-<li>
-<p>Book: Design Unbound</p>
-</li>
-<li>
-<p>Writing: Why REPL is a superpower <a href="https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html">1</a> <a href="https://clojure.org/guides/repl/introduction">2</a> <a href="https://www.youtube.com/watch?v=Ngt29DyNDRM">3</a> <a href="https://www.youtube.com/watch?v=tpcl5pjkRTQ">4</a> <a href="https://www.youtube.com/watch?v=oLvwbDUXGsc">5</a> <a href="https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/">6</a> <a href="https://www.youtube.com/watch?v=gIoadGfm5T8">7</a></p>
-</li>
-<li>
-<p>Book: Data and reality (a second read)</p>
-</li>
-<li>
-<p>Project: History generator</p>
-</li>
-<li>
-<p>Project: A DSL/Frontend for modelling time-series</p>
-</li>
-<li>
-<p>Writing: Representing Reality</p>
-</li>
-<li>
-<p>Book: Statistical rethinking</p>
-</li>
-<li>
-<p>Book: Event Storming</p>
-</li>
-<li>
-<p>Book: SICP</p>
-</li>
-<li>
-<p>Book: Accelerate</p>
-</li>
-<li>
-<p>Book: The DevOps handbook</p>
-</li>
-<li>
-<p>Book: The managers path</p>
-</li>
-<li>
-<p>Book: DataWarehousing</p>
-</li>
-<li>
-<p>Book: The little lisper</p>
-</li>
-<li>
-<p>Book: High Output Management</p>
-</li>
-<li>
-<p>Book: The Six Sigma Way</p>
-</li>
-<li>
-<p>Book: Information: A history, a theory, a flood</p>
-</li>
-<li>
-<p>Book: Agile Conversations</p>
-</li>
-<li>
-<p>Book: Notes on the synthesis of form</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Living Documentation</p>
-</li>
-<li>
-<p>Book: Working with Legacy Code</p>
-</li>
-<li>
-<p>Book: An introduction to general systems thinking.</p>
-</li>
-<li>
-<p>Book: Patterns of Software, Richard Gabriel</p>
-</li>
-<li>
-<p>Book: Simulacra and Simulation</p>
-</li>
-<li>
-<p>Book: Invisible Cities</p>
-</li>
-<li>
-<p>Book: The image of the city</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Marx + Frued: Understanding all human thought.</p>
+</div>
+<div class="paragraph">
+<p>Deluze + Guttari pointed out the holes. "Post Modern Critical Theory".</p>
+</div>
+<div class="paragraph">
+<p>"A Thousand Plateaus".</p>
+</div>
+<div class="paragraph">
+<p>The essense is the recurring theme: the interplay between state and nomad. The State: Something that tries to sit atop the world and control it. It establishes hierarchies (the only tool we have). It tries to conform the world to the model.</p>
+</div>
+<div class="paragraph">
+<p>The Nomad tries to understand the reality, but only locally, only a little bit at a time.</p>
+</div>
+<div class="paragraph">
+<p>The Rhizome. An organism that is connected by the roots. vs. Arborescecnts. Or: Graphs and Trees.</p>
+</div>
+<div class="paragraph">
+<p>Jorge Luis Borges. On Exactitude in Science. The Map is not the territory. Maps are reductive. You can have many maps of the same place, focusing on different aspects. As your model approaches the thing it models in detail and complexity it ceases to be useful.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_finished">Finished</h2>
+<h2 id="_modern_urban_design">Modern Urban Design</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Hausmans Paris (again SLAS). Tore down the slums. Impossible to control. Big wide roads enable projection of force. Save the people from themselves.</p>
+</div>
+<div class="paragraph">
+<p>Brazilia and Braziliitis</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_a_pattern_language">A Pattern Language</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Christopher Alexander</p>
+</div>
+<div class="paragraph">
+<p>The quality without a name. Alive, whole, free, exact, eternal. Totally contextual, specific to the place it occurs. Can only be talked about in totality, not in parts.</p>
+</div>
+<div class="paragraph">
+<p>GOF design patterns is the anti-this. it gives lego blocks</p>
+</div>
+<div class="paragraph">
+<p>Richard Gabriel: Patterns of Software. Habitability. Make a codebase your own. That is the only guarantee.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_closing_thoughts">Closing Thoughts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Techne - Timeless knowledge, outside of the world</p>
+</div>
+<div class="paragraph">
+<p>Metis - Cunning, mired in the specifics of experience.</p>
+</div>
+<div class="paragraph">
+<p>We are taught the former in school, the latter dominates in real life.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_a_syllabus">A syllabus</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Book: I am a strange loop</p>
+<p>Simulacra and Simulation</p>
 </li>
 <li>
-<p>Project: Qniform</p>
+<p>Invisible Cities</p>
 </li>
 <li>
-<p>Book: Grokking simplicity</p>
+<p>The Image of the City</p>
 </li>
 </ol>
 </div>
@@ -604,7 +552,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-30 23:22:58 GMT
+Last updated 2021-01-30 23:50:58 GMT
 </div>
 </div>
 </body>

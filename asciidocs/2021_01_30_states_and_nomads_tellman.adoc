@@ -1,0 +1,68 @@
+= States and Nomads: Handling Software Complexity
+A talk by Zach Tellman, 2015
+
+https://www.youtube.com/watch?v=KGaFcI2UNrI
+
+HG Wells Time Machine: Eloi and Morlochs. Knowledge and Innocence. What you don't know will sometimes come up and bite you.
+
+We sit on 60 years of accreted abstractions. First principles are not within reach. We have ways of dealing with this. The Tree. Parent/Child and Siblings. Separation means you can divide and conquer. Real systems have connections that are more subtle. Components and sub-components. The tree is a model, not reality.
+
+Scientific Forestry (Seeing Like a State). Successful at first. Monoculture. Forests are complicated! But the fault is the limited view. The person with the idea saw the forest was complicated, not in line with his view, and tried to make reality look like the model.
+
+== Defining System
+
+From An Introduction to General Systems Thinking. A space of two axes: Complexity - how many moving pieces, Randomness - the degree to which they are related to eachother.
+
+Anything low on _both_ of these axes will yield to formal analysis. Anything that is highly random we can use statistical analysis. Systems thinking is for ~ low randomness but high complexity. We need *Heuristic Devices* - inherently lossy ways of looking at the world. Models.
+
+No Model will tell you when to stop. It won't tell you when it stops being useful. No model can, by definition, describe it's own failures.
+
+These models are what we use to make software. Choosing what to ignore and what to pay attention to.
+
+We will talk about other places where people have struggled with this.
+
+== Mid century critical theory
+
+Marx + Frued: Understanding all human thought.
+
+Deluze + Guttari pointed out the holes. "Post Modern Critical Theory". 
+
+"A Thousand Plateaus".
+
+The essense is the recurring theme: the interplay between state and nomad. The State: Something that tries to sit atop the world and control it. It establishes hierarchies (the only tool we have). It tries to conform the world to the model.
+
+The Nomad tries to understand the reality, but only locally, only a little bit at a time.
+
+The Rhizome. An organism that is connected by the roots. vs. Arborescecnts. Or: Graphs and Trees.
+
+Jorge Luis Borges. On Exactitude in Science. The Map is not the territory. Maps are reductive. You can have many maps of the same place, focusing on different aspects. As your model approaches the thing it models in detail and complexity it ceases to be useful.
+
+== Modern Urban Design
+
+Hausmans Paris (again SLAS). Tore down the slums. Impossible to control. Big wide roads enable projection of force. Save the people from themselves.
+
+Brazilia and Braziliitis
+
+== A Pattern Language
+
+Christopher Alexander
+
+The quality without a name. Alive, whole, free, exact, eternal. Totally contextual, specific to the place it occurs. Can only be talked about in totality, not in parts.
+
+GOF design patterns is the anti-this. it gives lego blocks
+
+Richard Gabriel: Patterns of Software. Habitability. Make a codebase your own. That is the only guarantee.
+
+== Closing Thoughts
+
+Techne - Timeless knowledge, outside of the world
+
+Metis - Cunning, mired in the specifics of experience.
+
+We are taught the former in school, the latter dominates in real life.
+
+== A syllabus
+
+. Simulacra and Simulation
+. Invisible Cities
+. The Image of the City
