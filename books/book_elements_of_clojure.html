@@ -428,6 +428,272 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
+<h2 id="_an_outline_in_headings">An outline in headings</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Names (20 pages)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Data (6)</p>
+</li>
+<li>
+<p>Functions (3)</p>
+</li>
+<li>
+<p>Macros (3)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Idioms and conventions (38)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Inequalities: Prefer <code>&lt;</code> (2)</p>
+</li>
+<li>
+<p>Support 0, 1 and 2 arities for accumulators (4)</p>
+</li>
+<li>
+<p>Option maps over parameters (5)</p>
+</li>
+<li>
+<p>Hide your <code>binding</code> (7)</p>
+</li>
+<li>
+<p>Use <code>atom</code> for mutable state (5)</p>
+</li>
+<li>
+<p>Use redundant <code>do</code> for side effects (2)</p>
+</li>
+<li>
+<p>Use narrowest possible accessors (2)</p>
+</li>
+<li>
+<p>Use <code>letfn</code> for mutual recursion (2)</p>
+</li>
+<li>
+<p>Make Java interop obvious (1)</p>
+</li>
+<li>
+<p>Use <code>for</code> for cartesian product (2)</p>
+</li>
+<li>
+<p>Use <code>nil</code> carefully (5)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Indirection (33)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Method dispatch (4)</p>
+</li>
+<li>
+<p>What is abstraction? (3)</p>
+</li>
+<li>
+<p>A Model for Modules (9)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Models (4)</p>
+</li>
+<li>
+<p>Invariants (1)</p>
+</li>
+<li>
+<p>Assumptions (1)</p>
+</li>
+<li>
+<p>Conventions (1)</p>
+</li>
+<li>
+<p>Interfaces (1)</p>
+</li>
+<li>
+<p>Environments (1)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Consequences of our model (9)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>To abstract is to treat things which are different as equivalent (1)</p>
+</li>
+<li>
+<p>Models reflect our perception of their environment (0)</p>
+</li>
+<li>
+<p>A module is useful only if its assumptions are sound (1)</p>
+</li>
+<li>
+<p>To know a modules assumptions, we must know it&#8217;s model (1)</p>
+</li>
+<li>
+<p>A module can&#8217;t prevent itself from being misused (0)</p>
+</li>
+<li>
+<p>If a model ignores too much we can grow it, replace it, or narrow its use (0)</p>
+</li>
+<li>
+<p>Models are useful because they are small (1)</p>
+</li>
+<li>
+<p>Starting from scratch is costly (0)</p>
+</li>
+<li>
+<p>If a module makes unrealistic assumptions, users can wrap, create conventions, or discard (0)</p>
+</li>
+<li>
+<p>If it can&#8217;t be discarded, it may destroy what it doesn&#8217;t reflect (1)</p>
+</li>
+<li>
+<p>Software would be easy if things never changed (1)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Systems of Modules (6)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Composition (26)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Unit of computation (7)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Processes provide (some) data isolation (1)</p>
+</li>
+<li>
+<p>Processes provide (some) execution isolation (2)</p>
+</li>
+<li>
+<p>Example: a REPL (1)</p>
+</li>
+<li>
+<p>Example: a web service (1)</p>
+</li>
+<li>
+<p>Example: a frontend app (2)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Building a process (9)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Pulling data (2)</p>
+</li>
+<li>
+<p>Transforming data (1)</p>
+</li>
+<li>
+<p>Pushing Data (4)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Composing processes (7)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terms">Terms</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Abstraction</p>
+</li>
+<li>
+<p>Assumption</p>
+</li>
+<li>
+<p>Context</p>
+</li>
+<li>
+<p>Data scope</p>
+</li>
+<li>
+<p>Deductive</p>
+</li>
+<li>
+<p>Environment</p>
+</li>
+<li>
+<p>Function (push, pull, transform)</p>
+</li>
+<li>
+<p>Idiom</p>
+</li>
+<li>
+<p>Indirection</p>
+</li>
+<li>
+<p>Inductive</p>
+</li>
+<li>
+<p>Interface</p>
+</li>
+<li>
+<p>Invariant</p>
+</li>
+<li>
+<p>Model</p>
+</li>
+<li>
+<p>Module</p>
+</li>
+<li>
+<p>Name</p>
+</li>
+<li>
+<p>Narrow</p>
+</li>
+<li>
+<p>Process</p>
+</li>
+<li>
+<p>Purpose and implementation</p>
+</li>
+<li>
+<p>Natural and Synthetic names</p>
+</li>
+<li>
+<p>Referential transparency</p>
+</li>
+<li>
+<p>Tacit Knowledge</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_intro">Intro</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -535,7 +801,7 @@ b = 42</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_natural_and_synthetics_names">Natural and Synthetics names</h3>
+<h3 id="_natural_and_synthetic_names">Natural and Synthetic names</h3>
 <div class="paragraph">
 <p>Student is a particularly problematic name in terms of maintaining the sign-sense unity, since it is a <strong>natural</strong> name. People can and will bring in senses that are from other contexts based on common everyday usages.</p>
 </div>
@@ -730,7 +996,7 @@ b = 42</pre>
 <div class="sect2">
 <h3 id="_atoms_and_refs">Atoms and refs</h3>
 <div class="paragraph">
-<p>With ref&#8217;s (using STM) you&#8217;re co-ordinating between state constructs. With Atom (using CAS), you&#8217;re working on a single state construct. Thus, you can accomplish the same thing as with refs by putting them into a single atom, at the cost of throughput/retries. Since the number of expected retries increases rapidly over 60% utilization, an atom will reach that threshold faster than two refs holding values separately.</p>
+<p>With ref&#8217;s (using STM) you&#8217;re coordinating between state constructs. With Atom (using CAS), you&#8217;re working on a single state construct. Thus, you can accomplish the same thing as with refs by putting them into a single atom, at the cost of throughput/retries. Since the number of expected retries increases rapidly over 60% utilization, an atom will reach that threshold faster than two refs holding values separately.</p>
 </div>
 <div class="paragraph">
 <p>But this is almost an edge case, you&#8217;re talking hundreds of thousands of request per second before this becomes an issue. Your network will usually become a bottleneck before this does.</p>
@@ -843,7 +1109,7 @@ b = 42</pre>
 <div class="sect2">
 <h3 id="_references">References</h3>
 <div class="paragraph">
-<p>A reference is a value that points to another value (the referent). It can be dereferenced at compiletime (a name) or runtime (a pointer). In both cases a reference can point to nothing.</p>
+<p>A reference is a value that points to another value (the referent). It can be dereferenced at compile-time (a name) or runtime (a pointer). In both cases a reference can point to nothing.</p>
 </div>
 </div>
 <div class="sect2">
@@ -870,7 +1136,7 @@ b = 42</pre>
 <p>A reference <em>conveys</em> values, a conditional <em>decides</em> based on values.</p>
 </div>
 <div class="paragraph">
-<p>A reference is <strong>open</strong>, whereas the conditional is <strong>closed</strong> - you can only change the behaviour by changing the underlying code.</p>
+<p>A reference is <strong>open</strong>, whereas the conditional is <strong>closed</strong> - you can only change the behavior by changing the underlying code.</p>
 </div>
 <div class="paragraph">
 <p>Conditional code is <em>ordered</em>. Predicates in the conditional may overlap. Any open decision making process must be unordered, thus we can&#8217;t make conditionals open.</p>
@@ -920,13 +1186,89 @@ b = 42</pre>
 <p>Consider early clocks. Early clocks had to sit on flat surfaces, couldn&#8217;t be moved rapidly, had to be regularly wound, and couldn&#8217;t be subject to rapid temperature changes. These are <strong>not</strong> invariants, because they can&#8217;t be enforced by the clock. They are <strong>assumptions</strong> the concrete representation of the clock makes about its environment to be able to provide it&#8217;s abstract representation (the time). Put the clock on a ship, and all of these assumptions just stop working, breaking the abstraction.</p>
 </div>
 <div class="paragraph">
-<p><em>Self consistency of the internal model is not enough for software</em>. The context always matters. We need the models to be <em>useful</em> as well as self consistent. And while self-consistency is objective, utility is totally subjective. You can&#8217;t rely on inductive thinking to figure it out. You have to be deductive, rigorous, curious.</p>
+<p><em>Self consistency of the internal model is not enough for software</em>. The context always matters. We need the models to be <em>useful</em> as well as self consistent. And while self-consistency is objective, utility is totally subjective.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_model_for_modules">A Model for Modules</h3>
+<div class="paragraph">
+<p>Expanding on Hoare&#8217;s definition, we can say most software abstractions are <strong>modules</strong>, having</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>model - collection of data and functions</p>
+</li>
+<li>
+<p>interface - means of interaction</p>
+</li>
+<li>
+<p>environment - everything else</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Models have <strong>assumptions</strong>. It should have <strong>invariants</strong> that enforce those assumptions.</p>
+</div>
+<div class="sect3">
+<h4 id="_deductive_and_inductive_reasoning">Deductive and Inductive Reasoning</h4>
+<div class="paragraph">
+<p>Physics aspires to deductive reasoning, mapping the environment into a model, then using the model <em>predict</em> things about the environment. Conclusions in deductive reasoning are <strong>necessary</strong> - if they&#8217;re wrong, it must be because our initial assumptions are wrong. But physics isn&#8217;t, strictly, deductive. Newtons physics assumes a Gravitational constant, and that assumption can be wrong. Be we know also that the fundamental <em>mechanics</em> of the physics are wrong. The model is wrong.</p>
+</div>
+<div class="paragraph">
+<p>In software, post the AI Winter, deductive reasoning has largely given way to practical solutions and inductive models - that is, reasoning by analogy. Conclusions from induction are <strong>contingent</strong> - allowed to be wrong. The inductive model never predicts, only <em>compares</em>.</p>
+</div>
+<div class="paragraph">
+<p>Inductive systems are both simpler and more robust. But they come at the cost of constant observation of the analogy you are drawing. It is a price worth paying.</p>
+</div>
+<div class="paragraph">
+<p>To make a deductive model, you must reduce the problem to arithmetic or first order logic. It is difficult to create a deductive model that is useful, because real world problems are not generally reducible to this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_invariants">Invariants</h4>
+<div class="paragraph">
+<p>We only want our model to represent models that can be found in the environment. We can enforce invariants on our <em>model</em>, but not on the <em>relationship</em> between our model and the environment.</p>
+</div>
+<div class="paragraph">
+<p>Our 'email' field must have an <code>@</code> in there somewhere, not be any string. This we can do easily with regex. But what can be found in the environment are <em>valid</em> emails, so we want to narrow our representable set to those. That is more difficult to do, because it can never solely be determined within our model, so we have to reach out to the environment, via a confirmation email (even then, the environment can 'drift').</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_assumptions">Assumptions</h4>
+<div class="paragraph">
+<p>Omissions from a model are things that modeller has decided to not materially impact operation of the model.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_conventions">Conventions</h4>
+<div class="paragraph">
+<p>If a model doesn&#8217;t hide an assumption, the users must enforce it. This can be done by establishing conventions. C++ RAII. Conventions are not a good solution for flawed assumptions.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_interfaces">Interfaces</h4>
+<div class="paragraph">
+<p>The means by which the model and environment interact. These can be formal (e.g <code>defprotocol</code>) but also effects and shared state: printing, logging, atoms, network requests. All are methods where the software changes, or is changed by it&#8217;s environment.</p>
+</div>
+<div class="paragraph">
+<p>Interfaces are the <em>sense</em> of the module. They should change much more slowly than the module itself, and only ever grow. They should be narrow, hiding much.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_consequences_of_our_model">Consequences of our Model</h3>
+<div class="paragraph">
+<p>To abstract is to treat things that are different as equivalent. If we find two tree which our model says is equivalent, we can apply our understanding of the first to the second. We use existing knowledge in novel situations, conveniently ignoring some differences. We must decide which differences to include, based on the purpose of the model.</p>
+</div>
+<div class="paragraph">
+<p>Judgement of the usefulness of a model is based on the environment as it is, and as it will be. We should describe, upfront, our subjective understanding of the environment.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_composition">Composition</h2>
+<h2 id="_composition_p95">Composition (p95)</h2>
 <div class="sectionbody">
 
 </div>
@@ -934,7 +1276,7 @@ b = 42</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-24 14:35:37 GMT
+Last updated 2021-01-31 14:26:06 GMT
 </div>
 </div>
 </body>

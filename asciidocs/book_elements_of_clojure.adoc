@@ -1,6 +1,84 @@
 = Notes on Elements of Clojure
 By Zach Tellman
 
+== An outline in headings
+
+* Names (20 pages)
+** Data (6)
+** Functions (3)
+** Macros (3)
+* Idioms and conventions (38)
+** Inequalities: Prefer `<` (2)
+** Support 0, 1 and 2 arities for accumulators (4)
+** Option maps over parameters (5)
+** Hide your `binding` (7)
+** Use `atom` for mutable state (5)
+** Use redundant `do` for side effects (2)
+** Use narrowest possible accessors (2)
+** Use `letfn` for mutual recursion (2)
+** Make Java interop obvious (1)
+** Use `for` for cartesian product (2)
+** Use `nil` carefully (5)
+* Indirection (33)
+** Method dispatch (4)
+** What is abstraction? (3)
+** A Model for Modules (9)
+*** Models (4)
+*** Invariants (1)
+*** Assumptions (1)
+*** Conventions (1)
+*** Interfaces (1)
+*** Environments (1)
+** Consequences of our model (9)
+*** To abstract is to treat things which are different as equivalent (1)
+*** Models reflect our perception of their environment (0)
+*** A module is useful only if its assumptions are sound (1)
+*** To know a modules assumptions, we must know it's model (1)
+*** A module can't prevent itself from being misused (0)
+*** If a model ignores too much we can grow it, replace it, or narrow its use (0)
+*** Models are useful because they are small (1)
+*** Starting from scratch is costly (0)
+*** If a module makes unrealistic assumptions, users can wrap, create conventions, or discard (0)
+*** If it can't be discarded, it may destroy what it doesn't reflect (1)
+*** Software would be easy if things never changed (1)
+** Systems of Modules (6)
+* Composition (26)
+** Unit of computation (7)
+*** Processes provide (some) data isolation (1)
+*** Processes provide (some) execution isolation (2)
+*** Example: a REPL (1)
+*** Example: a web service (1)
+*** Example: a frontend app (2)
+** Building a process (9)
+*** Pulling data (2)
+*** Transforming data (1)
+*** Pushing Data (4)
+** Composing processes (7)
+
+== Terms
+
+* Abstraction
+* Assumption
+* Context
+* Data scope
+* Deductive
+* Environment
+* Function (push, pull, transform)
+* Idiom
+* Indirection
+* Inductive
+* Interface
+* Invariant
+* Model
+* Module
+* Name
+* Narrow
+* Process
+* Purpose and implementation
+* Natural and Synthetic names
+* Referential transparency
+* Tacit Knowledge
+
 == Intro
 
 *Tacit knowledge* - we know more that we can tell. Knowledge deeper than a linear chain of logic.
@@ -58,7 +136,7 @@ We might try to avoid separate contexts by ascribing the name `student` to only 
 
 We might just specifically avoid the general name `student` and create a new name for each of the 3 senses, thus maintaining the one-to-one correspondence between name and sense.
 
-=== Natural and Synthetics names
+=== Natural and Synthetic names
 
 Student is a particularly problematic name in terms of maintaining the sign-sense unity, since it is a *natural* name. People can and will bring in senses that are from other contexts based on common everyday usages. 
 
@@ -154,7 +232,7 @@ Dynamic scope, binding, obviously, also breaks RT.
 
 === Atoms and refs
 
-With ref's (using STM) you're co-ordinating between state constructs. With Atom (using CAS), you're working on a single state construct. Thus, you can accomplish the same thing as with refs by putting them into a single atom, at the cost of throughput/retries. Since the number of expected retries increases rapidly over 60% utilization, an atom will reach that threshold faster than two refs holding values separately.
+With ref's (using STM) you're coordinating between state constructs. With Atom (using CAS), you're working on a single state construct. Thus, you can accomplish the same thing as with refs by putting them into a single atom, at the cost of throughput/retries. Since the number of expected retries increases rapidly over 60% utilization, an atom will reach that threshold faster than two refs holding values separately.
 
 But this is almost an edge case, you're talking hundreds of thousands of request per second before this becomes an issue. Your network will usually become a bottleneck before this does.
 
@@ -219,7 +297,7 @@ Two fundamental tools: *references* and *conditionals*
 
 === References
 
-A reference is a value that points to another value (the referent). It can be dereferenced at compiletime (a name) or runtime (a pointer). In both cases a reference can point to nothing.
+A reference is a value that points to another value (the referent). It can be dereferenced at compile-time (a name) or runtime (a pointer). In both cases a reference can point to nothing.
 
 === Conditionals
 
@@ -240,7 +318,7 @@ Conditionals can segment behavior across types, as in this case, or unify across
 
 A reference _conveys_ values, a conditional _decides_ based on values.
 
-A reference is *open*, whereas the conditional is *closed* - you can only change the behaviour by changing the underlying code.
+A reference is *open*, whereas the conditional is *closed* - you can only change the behavior by changing the underlying code.
 
 Conditional code is _ordered_. Predicates in the conditional may overlap. Any open decision making process must be unordered, thus we can't make conditionals open.
 
@@ -269,6 +347,52 @@ The idea of abstraction above is concerned only with self-consistency. It does n
 
 Consider early clocks. Early clocks had to sit on flat surfaces, couldn't be moved rapidly, had to be regularly wound, and couldn't be subject to rapid temperature changes. These are *not* invariants, because they can't be enforced by the clock. They are *assumptions* the concrete representation of the clock makes about its environment to be able to provide it's abstract representation (the time). Put the clock on a ship, and all of these assumptions just stop working, breaking the abstraction.
 
-_Self consistency of the internal model is not enough for software_. The context always matters. We need the models to be _useful_ as well as self consistent. And while self-consistency is objective, utility is totally subjective. You can't rely on inductive thinking to figure it out. You have to be deductive, rigorous, curious.
+_Self consistency of the internal model is not enough for software_. The context always matters. We need the models to be _useful_ as well as self consistent. And while self-consistency is objective, utility is totally subjective.
 
-== Composition
+=== A Model for Modules
+
+Expanding on Hoare's definition, we can say most software abstractions are *modules*, having
+
+* model - collection of data and functions
+* interface - means of interaction
+* environment - everything else
+
+Models have *assumptions*. It should have *invariants* that enforce those assumptions.
+
+==== Deductive and Inductive Reasoning
+
+Physics aspires to deductive reasoning, mapping the environment into a model, then using the model _predict_ things about the environment. Conclusions in deductive reasoning are *necessary* - if they're wrong, it must be because our initial assumptions are wrong. But physics isn't, strictly, deductive. Newtons physics assumes a Gravitational constant, and that assumption can be wrong. Be we know also that the fundamental _mechanics_ of the physics are wrong. The model is wrong.
+
+In software, post the AI Winter, deductive reasoning has largely given way to practical solutions and inductive models - that is, reasoning by analogy. Conclusions from induction are *contingent* - allowed to be wrong. The inductive model never predicts, only _compares_.
+
+Inductive systems are both simpler and more robust. But they come at the cost of constant observation of the analogy you are drawing. It is a price worth paying.
+
+To make a deductive model, you must reduce the problem to arithmetic or first order logic. It is difficult to create a deductive model that is useful, because real world problems are not generally reducible to this.
+
+==== Invariants
+
+We only want our model to represent models that can be found in the environment. We can enforce invariants on our _model_, but not on the _relationship_ between our model and the environment.
+
+Our 'email' field must have an `@` in there somewhere, not be any string. This we can do easily with regex. But what can be found in the environment are _valid_ emails, so we want to narrow our representable set to those. That is more difficult to do, because it can never solely be determined within our model, so we have to reach out to the environment, via a confirmation email (even then, the environment can 'drift'). 
+
+==== Assumptions
+
+Omissions from a model are things that modeller has decided to not materially impact operation of the model.
+
+==== Conventions
+
+If a model doesn't hide an assumption, the users must enforce it. This can be done by establishing conventions. C++ RAII. Conventions are not a good solution for flawed assumptions.
+
+==== Interfaces
+
+The means by which the model and environment interact. These can be formal (e.g `defprotocol`) but also effects and shared state: printing, logging, atoms, network requests. All are methods where the software changes, or is changed by it's environment.
+
+Interfaces are the _sense_ of the module. They should change much more slowly than the module itself, and only ever grow. They should be narrow, hiding much.
+
+=== Consequences of our Model
+
+To abstract is to treat things that are different as equivalent. If we find two tree which our model says is equivalent, we can apply our understanding of the first to the second. We use existing knowledge in novel situations, conveniently ignoring some differences. We must decide which differences to include, based on the purpose of the model.
+
+Judgement of the usefulness of a model is based on the environment as it is, and as it will be. We should describe, upfront, our subjective understanding of the environment.
+
+== Composition (p95)
