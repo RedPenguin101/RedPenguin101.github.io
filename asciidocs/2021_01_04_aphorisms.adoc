@@ -49,6 +49,9 @@ A description of a system, if it is to describe what goes on inside that system,
 [quote, Fred Brooks]
 Brooks Law: Adding manpower to a late software project makes it later
 
+[quote, Fred Brooks, No Silver Bullet]
+The most important function that software builders can do for their clients is the iterative extraction and refinement of the product requirements. For the truth is, the clients do not know what they want. They usually do not know what questions must be answered, and the almost never have thought of the problem in the detail it must be specified.
+
 == Other
 
 [quote,Wolfgang Pauli]

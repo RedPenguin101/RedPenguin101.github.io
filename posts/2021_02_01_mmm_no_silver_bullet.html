@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<title>Software Aphorisms</title>
+<title>MMM: No Silver Bullet</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -420,145 +420,288 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Software Aphorisms</h1>
+<h1>MMM: No Silver Bullet</h1>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_abstraction">Abstraction</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="quoteblock">
 <blockquote>
-Programs are meant to be read by humans and only incidentally for computers to execute
+There is no single development, either in technology or management technique, which by itself promises even one order of magnitude improvement within a decade, in productivity, in reliability, in simplicity.
 </blockquote>
-<div class="attribution">
-&#8212; Harold Abelson
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-The purpose of abstraction is not to be vague, but to create a new semantic level in which one can be absolutely precise
-</blockquote>
-<div class="attribution">
-&#8212; Dijkstra
 </div>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>The acts of the mind, wherein it exerts its power over simple ideas, are chiefly these three:
-1. Combining several simple ideas into one compound one, and thus all complex ideas are made.
-2. The second is bringing two ideas, whether simple or complex, together, and setting them by one another so as to take a view of them at once, without uniting them into one, by which it gets all its ideas of relations.
-3. The third is separating them from all other ideas that accompany them in their real existence: this is called abstraction, and thus all its general ideas are made.</p>
-</div>
-</blockquote>
-<div class="attribution">
-&#8212; John Locke 'An Essay Concerning Human Understanding (1690)'
-</div>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>[talking about a rational numbers package] It&#8217;s absolutely no problem at all to think about what computation you want to make in adding and multiplying these fractions. But as soon as you go to implement it you run up against a problem. You don&#8217;t <em>have</em> what a rational number <em>is</em>. The system gives us individual numbers, so we can have 5 and 3, but we don&#8217;t have a way of saying theres a thing which has both a 3 and a 4 in it.</p>
+<div class="sect1">
+<h2 id="_abstract">Abstract</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Essential Tasks</strong> - the construction of conceptual structures</p>
+</li>
+<li>
+<p><strong>Accidental Tasks</strong> - Representations / implementations of those structures in programming languages</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>We&#8217;d like to imagine there are these clouds, which have both a numerator and a denominator in it, and these clouds are what we&#8217;d like to work in terms of. We&#8217;re going to solve this problem using the incredibly powerful design strategy of 'wishful thinking'&#8230;&#8203;let&#8217;s imagine we have these clouds&#8230;&#8203;let&#8217;s imagine we have these three procedures, one called <code>(make-rat n d)</code> that give us this cloud (and we don&#8217;t really know what make-rat actually returns - that&#8217;s its business). Suppose we have one of these clouds, we have a procedure called <code>(numer cloud)</code> which takes a cloud and returns the numerator part. And same for <code>(denom cloud)</code> &#8230;&#8203; We don&#8217;t wanna know [how these clouds are implemented].</p>
+<p>Previous gains in productivity have come from making accidental tasks easier. Machine time sharing, reduced hardware constraints, awkward languages. But these are running out. Today, most of the time and complexity is in the essential tasks. Can we improve things significantly here?</p>
 </div>
-</blockquote>
-<div class="attribution">
-&#8212; Hal Abelson in SICP lectures
+<div class="paragraph">
+<p>This paper proposes the following ways:</p>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_simplicity_complexity_fractality">Simplicity, Complexity, Fractality</h2>
-<div class="sectionbody">
-<div class="quoteblock">
-<blockquote>
-Simplicity is prerequisite for reliability
-</blockquote>
-<div class="attribution">
-&#8212; Dijkstra
-</div>
-</div>
-<div class="quoteblock">
-<blockquote>
-Everything is vague to a degree you do not realize till you have tried to make it precise.
-</blockquote>
-<div class="attribution">
-&#8212; Bertrand Russell
-</div>
-</div>
-<div class="quoteblock">
-<blockquote>
-“A designer knows he has achieved perfection not when there is nothing left to add, but when there is nothing left to take away.”
-</blockquote>
-<div class="attribution">
-&#8212; Antoine de Saint-Exupery
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Buy don&#8217;t build</p>
+</li>
+<li>
+<p>Prototype rapidly</p>
+</li>
+<li>
+<p>Grow systems organically</p>
+</li>
+<li>
+<p>Find and develop good designers</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_systems">Systems</h2>
+<h2 id="_paper">Paper</h2>
 <div class="sectionbody">
-<div class="quoteblock">
-<blockquote>
-Conceptual Integrity is the most important consideration in systems design.
-</blockquote>
-<div class="attribution">
-&#8212; Fred Brooks in the Mythical Man Month p42
+<div class="paragraph">
+<p>We can increase productivity, but not in a big-bang. Hardware and Moore&#8217;s law have mislead us. Most things don&#8217;t increase exponentially like that.</p>
+</div>
+<div class="sect2">
+<h3 id="_essence">Essence</h3>
+<div class="paragraph">
+<p>Interlocking concepts - data, relationships between those data, algorithms, function invocation. All abstract. But still (hopefully) precise and detailed.</p>
+</div>
+<div class="paragraph">
+<p>This is the hard part of software. The specification, design and testing of this. Writing down the code, the implementation, is the easy bit.</p>
+</div>
+<div class="paragraph">
+<p>Divide essence into:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Complexity</p>
+</li>
+<li>
+<p>Conformity</p>
+</li>
+<li>
+<p>Changeability</p>
+</li>
+<li>
+<p>Invisibility</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_complexity">Complexity</h4>
+<div class="paragraph">
+<p>No two parts of a good software system are alike. If they were they would&#8217;ve been combined. This is different from almost everything else, where duplication abounds.</p>
+</div>
+<div class="paragraph">
+<p>Adding a software element increases combinations non-linearly. This can&#8217;t be <em>reduced</em>, because it&#8217;s essential - simplification loses the essence.</p>
+</div>
+<div class="paragraph">
+<p>Resulting problems:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Communication overhead</p>
+</li>
+<li>
+<p>Comprehending (even enumerating) all states becomes impossible</p>
+</li>
+<li>
+<p>Extending existing programs even slightly becomes increasingly hard the larger the existing codebase</p>
+</li>
+<li>
+<p>Security exploit vectors</p>
+</li>
+<li>
+<p>overview and oversight</p>
+</li>
+<li>
+<p>control over loose ends</p>
+</li>
+<li>
+<p>large learning burdens</p>
+</li>
+</ul>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-A description of a system, if it is to describe what goes on inside that system, must describe the system&#8217;s connections to the outside world, and it must delineate each of the subsystems and how they are interconnected. Dropping down one level, we can say the same for each of the subsystems, viewing it as a system. This reduction in scope can continue until we are down to a  system which is simple enough to be understood without further subdivision.
-</blockquote>
-<div class="attribution">
-&#8212; Melvin Conway
+<div class="sect3">
+<h4 id="_conformity">Conformity</h4>
+<div class="paragraph">
+<p>The models of our software are arbitrary. The Physicist can take comfort in the belief that underlying it all there is a true, coherent, rule set, if only she can find it.</p>
+</div>
+<div class="paragraph">
+<p>We have no such logical underpinning. We have what we make. Often we don&#8217;t even have that freedom: we must conform to what has come before, even if it doesn&#8217;t work well.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_changeability">Changeability</h4>
+<div class="paragraph">
+<p>Manufactured things are changed infrequently, because the cost of doing so is high and widely understood to be high. Think of a car recall.</p>
+</div>
+<div class="paragraph">
+<p>Software&#8217;s plasticity is it&#8217;s superpower, but that doesn&#8217;t mean change is easy.</p>
+</div>
+<div class="paragraph">
+<p>Good software is more likely to require change than bad software. When people are using good software, when they like it, they will try to extend its use to other things they need to do.</p>
+</div>
+<div class="paragraph">
+<p>Good software also lives longer, meaning it will likely have change forced on it by the changing environment.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_invisibility">Invisibility</h4>
+<div class="paragraph">
+<p>Visualizability is a powerful tool. It lets you spot omissions, point out contradictions.</p>
+</div>
+<div class="paragraph">
+<p>When you have a physical thing, your visualization of it does have a clear correspondence to reality even as it simplifies - a blueprint, a schematic.</p>
+</div>
+<div class="paragraph">
+<p>Software lacks the corporeality to inform the visual.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_past_breakthroughs_in_accidental_task_effort">Past breakthroughs in accidental task effort</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>High level languages - the big one. 5x increase. Making the construct abstractions of the PL closer to the conceptual ones. No bits, registers, channels, disks.</p>
+</li>
+<li>
+<p>Time sharing - tightens feedback loops</p>
+</li>
+<li>
+<p>Unified programming environments - Unix</p>
+</li>
+</ul>
 </div>
-<div class="sect1">
-<h2 id="_teams_projects_products">Teams, projects, products</h2>
-<div class="sectionbody">
-<div class="quoteblock">
-<blockquote>
-Brooks Law: Adding manpower to a late software project makes it later
-</blockquote>
-<div class="attribution">
-&#8212; Fred Brooks
 </div>
+<div class="sect2">
+<h3 id="__false_hopes_for_new_breakthroughs">(False) Hopes for new breakthroughs</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Ada</p>
+</li>
+<li>
+<p>OOP</p>
+</li>
+<li>
+<p>AI</p>
+</li>
+<li>
+<p>Expert Systems (AI-2)</p>
+</li>
+<li>
+<p>Automatic programming</p>
+</li>
+<li>
+<p>Graphical Programing</p>
+</li>
+<li>
+<p>Program verification</p>
+</li>
+<li>
+<p>Environments and tools</p>
+</li>
+<li>
+<p>Workstations</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_promising_attacks_on_essential_task_productivity">Promising attacks on essential task productivity</h3>
+<div class="sect3">
+<h4 id="_buy_vs_build">Buy vs. Build</h4>
+<div class="paragraph">
+<p>The mass market for software</p>
+</div>
+<div class="paragraph">
+<p><em>Any</em> product is cheaper to buy than build, by a long way. And you can get it immediately (ignoring on-boarding).</p>
+</div>
+<div class="paragraph">
+<p>They tend to be better documented and maintained.</p>
+</div>
+<div class="paragraph">
+<p>The key tradeoff - applicability. The case-by-case variation in processes is high, the cost is you have to conform your process to the programs, and the fit might not be good.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_requirement_refinement_and_rapid_prototyping">Requirement Refinement and Rapid Prototyping</h4>
+<div class="paragraph">
+<p>The hardest part of building software is deciding what to build. No other part has such crippling effect if done wrong, and is so hard to change later.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 The most important function that software builders can do for their clients is the iterative extraction and refinement of the product requirements. For the truth is, the clients do not know what they want. They usually do not know what questions must be answered, and the almost never have thought of the problem in the detail it must be specified.
 </blockquote>
-<div class="attribution">
-&#8212; Fred Brooks<br>
-<cite>No Silver Bullet</cite>
+</div>
+<div class="paragraph">
+<p>In planning any software you must allow for extensive iteration.</p>
+</div>
+<div class="paragraph">
+<p>The development of approaches for dealing with this is maybe the most promising thing.</p>
+</div>
+<div class="paragraph">
+<p>A Prototype System: has similar behavior, but doesn&#8217;t meet the non-functional requirements. Mostly happy path only. Purpose: make it real, so client can see and use and iterate.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_incremental_development_don_t_build_grow">Incremental development: Don&#8217;t build, grow</h3>
+<div class="paragraph">
+<p>The building metaphor has outlived it&#8217;s usefulness. It requires upfront specifications that are not possibly.</p>
+</div>
+<div class="paragraph">
+<p>Nature, organic growth is the new metaphor. If a system is first made to run, even in dummy mode, your progress will be much more rapid.</p>
+</div>
+<div class="paragraph">
+<p>Moral effect of running software on devs is large.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_other">Other</h2>
+<h2 id="_great_designers">Great designers</h2>
 <div class="sectionbody">
-<div class="quoteblock">
-<blockquote>
-It is not only not right, it is not even wrong
-</blockquote>
-<div class="attribution">
-&#8212; Wolfgang Pauli
+<div class="paragraph">
+<p>Great designs come from great designers</p>
 </div>
+<div class="paragraph">
+<p>Method improvements can liberate creativity, but never inspire it..</p>
+</div>
+<div class="paragraph">
+<p>The difference between great and good designs is an order of magnitude.</p>
+</div>
+<div class="paragraph">
+<p>Great products have one (or a very few) designing minds.</p>
+</div>
+<div class="paragraph">
+<p>Find great designers, nurture them.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-02-01 15:42:31 GMT
+Last updated 2021-02-01 15:47:48 GMT
 </div>
 </div>
 </body>

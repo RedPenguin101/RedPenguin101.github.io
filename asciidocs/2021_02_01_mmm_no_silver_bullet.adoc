@@ -1,0 +1,138 @@
+= MMM: No Silver Bullet
+
+[quote]
+There is no single development, either in technology or management technique, which by itself promises even one order of magnitude improvement within a decade, in productivity, in reliability, in simplicity.
+
+== Abstract
+
+* *Essential Tasks* - the construction of conceptual structures
+* *Accidental Tasks* - Representations / implementations of those structures in programming languages
+
+Previous gains in productivity have come from making accidental tasks easier. Machine time sharing, reduced hardware constraints, awkward languages. But these are running out. Today, most of the time and complexity is in the essential tasks. Can we improve things significantly here?
+
+This paper proposes the following ways:
+
+. Buy don't build
+. Prototype rapidly
+. Grow systems organically
+. Find and develop good designers
+
+== Paper
+
+We can increase productivity, but not in a big-bang. Hardware and Moore's law have mislead us. Most things don't increase exponentially like that.
+
+=== Essence
+
+Interlocking concepts - data, relationships between those data, algorithms, function invocation. All abstract. But still (hopefully) precise and detailed. 
+
+This is the hard part of software. The specification, design and testing of this. Writing down the code, the implementation, is the easy bit.
+
+Divide essence into:
+
+* Complexity
+* Conformity
+* Changeability
+* Invisibility
+
+==== Complexity
+
+No two parts of a good software system are alike. If they were they would've been combined. This is different from almost everything else, where duplication abounds.
+
+Adding a software element increases combinations non-linearly. This can't be _reduced_, because it's essential - simplification loses the essence.
+
+Resulting problems:
+
+* Communication overhead
+* Comprehending (even enumerating) all states becomes impossible
+* Extending existing programs even slightly becomes increasingly hard the larger the existing codebase
+* Security exploit vectors
+* overview and oversight
+* control over loose ends
+* large learning burdens
+
+==== Conformity
+
+The models of our software are arbitrary. The Physicist can take comfort in the belief that underlying it all there is a true, coherent, rule set, if only she can find it.
+
+We have no such logical underpinning. We have what we make. Often we don't even have that freedom: we must conform to what has come before, even if it doesn't work well.
+
+==== Changeability
+
+Manufactured things are changed infrequently, because the cost of doing so is high and widely understood to be high. Think of a car recall.
+
+Software's plasticity is it's superpower, but that doesn't mean change is easy.
+
+Good software is more likely to require change than bad software. When people are using good software, when they like it, they will try to extend its use to other things they need to do.
+
+Good software also lives longer, meaning it will likely have change forced on it by the changing environment.
+
+==== Invisibility
+
+Visualizability is a powerful tool. It lets you spot omissions, point out contradictions.
+
+When you have a physical thing, your visualization of it does have a clear correspondence to reality even as it simplifies - a blueprint, a schematic.
+
+Software lacks the corporeality to inform the visual.
+
+=== Past breakthroughs in accidental task effort
+
+* High level languages - the big one. 5x increase. Making the construct abstractions of the PL closer to the conceptual ones. No bits, registers, channels, disks.
+* Time sharing - tightens feedback loops
+* Unified programming environments - Unix
+
+=== (False) Hopes for new breakthroughs
+
+* Ada
+* OOP
+* AI
+* Expert Systems (AI-2)
+* Automatic programming
+* Graphical Programing
+* Program verification
+* Environments and tools
+* Workstations
+
+=== Promising attacks on essential task productivity
+
+==== Buy vs. Build
+
+The mass market for software
+
+_Any_ product is cheaper to buy than build, by a long way. And you can get it immediately (ignoring on-boarding).
+
+They tend to be better documented and maintained.
+
+The key tradeoff - applicability. The case-by-case variation in processes is high, the cost is you have to conform your process to the programs, and the fit might not be good.
+
+==== Requirement Refinement and Rapid Prototyping
+
+The hardest part of building software is deciding what to build. No other part has such crippling effect if done wrong, and is so hard to change later.
+
+[quote]
+The most important function that software builders can do for their clients is the iterative extraction and refinement of the product requirements. For the truth is, the clients do not know what they want. They usually do not know what questions must be answered, and the almost never have thought of the problem in the detail it must be specified.
+
+In planning any software you must allow for extensive iteration.
+
+The development of approaches for dealing with this is maybe the most promising thing.
+
+A Prototype System: has similar behavior, but doesn't meet the non-functional requirements. Mostly happy path only. Purpose: make it real, so client can see and use and iterate.
+
+=== Incremental development: Don't build, grow
+
+The building metaphor has outlived it's usefulness. It requires upfront specifications that are not possibly.
+
+Nature, organic growth is the new metaphor. If a system is first made to run, even in dummy mode, your progress will be much more rapid.
+
+Moral effect of running software on devs is large.
+
+== Great designers
+
+Great designs come from great designers
+
+Method improvements can liberate creativity, but never inspire it..
+
+The difference between great and good designs is an order of magnitude.
+
+Great products have one (or a very few) designing minds.
+
+Find great designers, nurture them.
