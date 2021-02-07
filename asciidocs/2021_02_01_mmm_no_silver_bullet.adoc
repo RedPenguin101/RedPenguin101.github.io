@@ -125,7 +125,7 @@ Nature, organic growth is the new metaphor. If a system is first made to run, ev
 
 Moral effect of running software on devs is large.
 
-== Great designers
+=== Great designers
 
 Great designs come from great designers
 

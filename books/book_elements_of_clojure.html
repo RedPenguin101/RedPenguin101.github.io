@@ -1259,10 +1259,124 @@ b = 42</pre>
 <div class="sect2">
 <h3 id="_consequences_of_our_model">Consequences of our Model</h3>
 <div class="paragraph">
-<p>To abstract is to treat things that are different as equivalent. If we find two tree which our model says is equivalent, we can apply our understanding of the first to the second. We use existing knowledge in novel situations, conveniently ignoring some differences. We must decide which differences to include, based on the purpose of the model.</p>
+<p>To abstract is to treat things that are different as equivalent. If we find two trees which our model says is equivalent, we can apply our understanding of the first to the second. We use existing knowledge in novel situations, conveniently ignoring some differences. We must decide which differences to include, based on the purpose of the model.</p>
 </div>
 <div class="paragraph">
 <p>Judgement of the usefulness of a model is based on the environment as it is, and as it will be. We should describe, upfront, our subjective understanding of the environment.</p>
+</div>
+<div class="paragraph">
+<p>A module is useful only if its assumptions are sound.</p>
+</div>
+<div class="paragraph">
+<p>To know a modules assumptions, we must know it&#8217;s model.</p>
+</div>
+<div class="paragraph">
+<p>A module can&#8217;t prevent itself from being misused.</p>
+</div>
+<div class="paragraph">
+<p>If a model ignores too much we can grow it, replace it, or narrow its use.</p>
+</div>
+<div class="paragraph">
+<p>Models are useful because they are small. But over time, they tend to grow, meaning it ignores less of its environment. On the one hand this means assumptions are reduced. On the other it makes it harder to understand. A model is a tool for understanding a complex reality, so a model which is too complex to understand is itself useless.</p>
+</div>
+<div class="paragraph">
+<p>Starting from scratch is costly.</p>
+</div>
+<div class="paragraph">
+<p>If a module makes unrealistic assumptions, users can wrap, create conventions, or discard.</p>
+</div>
+<div class="paragraph">
+<p>If a module cannot be discarded, it may destroy what it cannot reflect. Mandatory abstractions are cooercive - If we can&#8217;t change the abstraction, we have to adapt the environment to fit it.</p>
+</div>
+<div class="paragraph">
+<p>Vanishingly little software retains value without continuous, often drastic change. The environment is ever changing. Compare software (as it often is) to civil engineering: A bridge has to change very little, and very infrequently.</p>
+</div>
+<div class="paragraph">
+<p>Since we can&#8217;t avoid change, we should minimize the effect of change. Over the software&#8217;s users, or it&#8217;s problem domain, we have little control. We can minimize the impact of the changes we make on other software.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_systems_of_modules">Systems of Modules</h3>
+<div class="paragraph">
+<p>We want to limit the unintended effects of the changes we make. Two approaches:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Principled system</p>
+</li>
+<li>
+<p>Adaptable System</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Principled system:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Minimizes indirection.</p>
+</li>
+<li>
+<p>Implementation guided by central design, top down design, allows components to make broader assumptions</p>
+</li>
+<li>
+<p>a 'tower' of highly interdependent modules. Each module assume the existence of the others. Moving one brings the whole thing down</p>
+</li>
+<li>
+<p>A 'Shared' module of two systems: neither can shape it. Indirection is needed, an interface forms.</p>
+</li>
+<li>
+<p>Interface is slow changing, the things on either side can change.</p>
+</li>
+<li>
+<p>Fragile because of uniformity of context</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Adaptable System:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>high internal indirection</p>
+</li>
+<li>
+<p>structured as a graph - resists decomposition, not clear root, leaves, layers</p>
+</li>
+<li>
+<p>redundancy through mutual blindness to internals</p>
+</li>
+<li>
+<p>larger, usually less efficient components</p>
+</li>
+<li>
+<p>no structure that is obvious from top view makes exploration hard</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Notes on synthesis of form: unselfconscious vs. self-conscious cultures, building architectures. The igloo vs. the skyscraper.</p>
+</div>
+<div class="paragraph">
+<p>Clojure is mostly unprincipled.</p>
+</div>
+<div class="paragraph">
+<p>Systems built from independent components, with strong indirection.</p>
+</div>
+<div class="paragraph">
+<p>But an interface that only has one thing on either side of it stops looking like an interface over time. The two sides grow interdependent. The Interface will become vestigial. Is that a problem? What is the value of this indirection? The cost, aside from maintaining it, is that crossing an interface puts you in a new context, forcing you to re-examine your surroundings.</p>
+</div>
+<div class="paragraph">
+<p>The best solution is often in the middle: collections of <strong>principled components</strong>, separated by interfaces where necessary. The collections are made to be short lived, the interfaces long lived. The collections can be replaced without changing the essence of the system, like Theseus' ship. These are 'complex adaptive systems'.</p>
+</div>
+<div class="paragraph">
+<p>The collections themselves do not adapt to changing environments - they are replaced, like an organism whose niche has been removed, it dies, something else replaces it. The system adapts by pieces of it dying and being replaced.</p>
+</div>
+<div class="paragraph">
+<p>The cohesiveness of the collections is based on shared assumptions. This keeps the effect of changes small and predictable.</p>
 </div>
 </div>
 </div>
@@ -1276,7 +1390,7 @@ b = 42</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-31 14:26:06 GMT
+Last updated 2021-02-07 11:31:37 GMT
 </div>
 </div>
 </body>

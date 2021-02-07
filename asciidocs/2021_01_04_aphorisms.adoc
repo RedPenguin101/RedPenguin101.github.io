@@ -57,3 +57,5 @@ The most important function that software builders can do for their clients is t
 [quote,Wolfgang Pauli]
 It is not only not right, it is not even wrong
 
+[quote,Zach Tellman]
+We are constantly drawn to software we don't know well enough to dislike. We see its benefits, free from any obvious shortcomings, and wish t possess them.

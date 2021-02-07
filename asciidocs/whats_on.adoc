@@ -11,6 +11,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Backlog
 
+. Writing: Types - pros and cons
 . Project: RestTest. Auto testing and documentation of REST apis.
 . Paper: https://erlang.org/download/armstrong_thesis_2003.pdf[Armstrong reliability 2003 paper]
 . Paper: http://www.laputan.org/pub/foote/mud.pdf[Foote/Yoder Big Ball of Mud]
@@ -53,6 +54,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Simulacra and Simulation
 . Book: Invisible Cities
 . Book: The image of the city
+. Book: Against Method
 
 == Finished
 
