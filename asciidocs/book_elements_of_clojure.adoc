@@ -60,6 +60,7 @@ By Zach Tellman
 * Abstraction
 * Assumption
 * Context
+* Composition: The combination of separate abstractions to create a new abstraction.
 * Data scope
 * Deductive
 * Environment
@@ -454,3 +455,15 @@ The collections themselves do not adapt to changing environments - they are repl
 The cohesiveness of the collections is based on shared assumptions. This keeps the effect of changes small and predictable.
 
 == Composition (p95)
+
+=== Unit of computation (7)
+==== Processes provide (some) data isolation (1)
+==== Processes provide (some) execution isolation (2)
+==== Example: a REPL (1)
+==== Example: a web service (1)
+==== Example: a frontend app (2)
+=== Building a process (9)
+==== Pulling data (2)
+==== Transforming data (1)
+==== Pushing Data (4)
+=== Composing processes (7)

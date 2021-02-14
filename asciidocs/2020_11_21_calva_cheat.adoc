@@ -1,4 +1,4 @@
-= Cheat sheet for Calva and Paredit shortcuts
+= Cheat sheet for Calva and Paredit shortcuts (Linux)
 
 == Evaluations
 
@@ -32,7 +32,7 @@
 
 === Navigation
 
-* `C+A+left/right` forward/back within a list
+* `ctrl+right/left` forward/back sexp.
 
 * JUMP OUT BACKWARDS `C+up` move backward, out of current list  (backward up)
 * DIVE IN BACKWARDS `C+A+up` move backward, into preceding list (backward down)
@@ -41,8 +41,7 @@
 
 === Selection
 
-* grow selection `ctrl+w`
-* shrink selection `C+S+w`
+* grow /shrink selection `shift+alt+right/left` (`ctrl+w` Mac)
 * select top level `C+A+w space` (also `C+A+c C+s`)
 
 * add `shift` to any of the back/forward/up/down/end/start navs to make them to selectors
@@ -55,10 +54,10 @@
 * `C+A+S+q` wrap ""
 * `C+A+S+r (one of the above)` change wrap
 
-* `C+right` slurp
-* `C+left` barf
-* `C+S+left` slurp back
-* `C+S+right` barf from back
+* `ctrl+alt+.` slurp
+* `ctrl+alt+,` barf
+* `ctrl+shift+.` slurp back
+* `ctrl+shift+,` barf from back
 
 * `C+S+s` split sexp
 * `C+S+j` join sexps
