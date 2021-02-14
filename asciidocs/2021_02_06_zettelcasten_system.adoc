@@ -1,0 +1,12 @@
+= Thoughts on the Design of a ZettelCasten system
+
+I like the idea of being as close to index cards as possible. In particular the constraint of character limits. I would like to have it be fairly freeform, i.e. not just text, but images. So actually I'd prefer the canvas size be the limitation than the character limit. But that's probably not possible. So plain text maybe is the compromise there. I should count how many words you can fit on an index card and use that. Maybe say 100 as a default.
+
+The Card as well imposes the need for cohesion as well as concision. What's on the card has to be substantial enough to be an idea in its own right.
+
+The Roam-style linkage is crucial. Both explicit and 'unlinked'. The graph is the main value add. Both the visibility of the graph and the 'flow' around it.
+
+I like the idea of a card having a little arrow where you can 'spin off' from it - though there should be a more thematically consistent name for it.
+
+The ability to reference other media is important. A footnote/reference system like in the HTTSN book. But not so sure on the hard separation of quotes/references and actual slip box cards. What's the reason for the distinction?
+
