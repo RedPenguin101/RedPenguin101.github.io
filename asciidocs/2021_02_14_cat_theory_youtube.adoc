@@ -1,0 +1,98 @@
+= Notes on code_report's category theory for programmers videos
+
+https://www.youtube.com/playlist?list=PLVFrD1dmDdvcjCQDPhExqP56jqxp0Ssn_[Playlist]
+
+https://github.com/hmemcpy/milewski-ctfp-pdf[textbook]
+
+== Video 1: Chapter 1: Category: The essence of composition
+
+9 pages
+
+Author, Bartosz Milewski, former C++ -> Haskell
+
+Sections:
+
+* arrows as functions
+* properties of composition
+* Composition is the essence of programming
+
+(most chapters 10-15 pages, this 9)
+
+Why category theory? A phase transition is coming! Java, C++ have 'functional creep'.
+
+https://www.youtube.com/watch?v=INnattuluiM&t=0s[Ben Deane] - you are using monoids anyway, even if you don't realize it. You'll probably find you've been identifying them intuitively anyway.
+
+The baking analogy: category theory is to coding what chemistry is to baking.
+
+A *category* consists of _objects_ and _arrows_ (aka _morphisms_) that go between them. Thing of arrows as functions: `f(A)` returns a `B`.
+
+[source,haskell]
+----
+f :: A -> B
+g :: B -> C
+g . f -- composition of f and g, the 'bluebird operator' in SKI combinator calculus
+----
+
+Properties of composition: 
+
+* Associative
+* Identity ('Unit of composition'). For every object `A`, there is an arrow/function that returns itself. So `f . idA -> f`
+
+Composition is the essence of programming. Based on the 7+-2 idea. Composition allows us to neatly structure smaller things into larger things, so we can 'subvert' this rule.
+
+== Video 2: Chapter 2: Types and functions
+
+Subsections
+
+* who needs types?
+* types are about composability
+* what are types?
+* why do we need a mathematical model?
+* pure and dirty functions
+* examples of types
+
+Static vs. Dynamic: Whether or not you can change the type of a variable. Like with python you can assign an int to a variable, then later you can assign a string to the same variable and it won't complain.
+
+Weak vs. Strong: Broadly a strong typed language has little or no implicit conversion of types (like not being able to use an int in place of a float in a function). More safety at compile time.
+
+Types:
+
+* sets of values
+* denotational semantics: defined by a mathematical interpretation/theorem.
+
+Functions that are guaranteed to produce the same results given the same inputs, and have no side effects, are _pure functions_.
+
+Functions that have the same implementation over any type are called parametrically polymorphic. Adjacent to 'ad-hoc' Polymorphism
+
+https://ict.senecacollege.ca/~oop244/pages.141/content/adhoc_p.html[Parametric Polymorphism Article]
+
+== Video 3: Chapter 3: Categories great and small
+
+* no objects (~ empty set). Zero objects, zero morphisms
+* simple graphs: A directed graph with objects connected with every possible arrow (morphisms). Usually infinitely many. This is called a _free category_
+* orders
+* monoid as set
+* monoid as category
+
+=== Monoids
+
+simple and powerful
+
+Traditionally: A set (*type*) with an associative *binary operation* and a special *identity* element. Stated "[set] under [operation]" e.g. the set of natural numbers under addition.
+
+* https://www.youtube.com/watch?v=INnattuluiM&t=0s[Ben Deane explanation]
+* https://www.youtube.com/watch?v=giWCdQ7fnQU&t=0s[David Sankel explanation]
+
+Reduce often makes use of monoids: `reduce* :: (a -> a) -> a -> f a -> a`
+
+Haskell type class for monoids:
+
+[source,haskell]
+----
+class Monoid m where
+  mempty  :: m
+  mappend :: m -> m -> m
+----
+
+`mempty` is the identity element, `mappend` is the binary function.
+
