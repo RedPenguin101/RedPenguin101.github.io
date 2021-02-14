@@ -1,0 +1,203 @@
+= Working effectively with Legacy Code
+By Michael Feathers
+
+https://learning.oreilly.com/library/view/working-effectively-with/0131177052/
+
+== In Outline
+
+* The mechanics of change
+** 1. Changing Software
+*** Four reasons to change
+**** Adding features, fixing bugs
+**** Improving design
+**** Optimization
+**** Putting it all together
+*** Risky change
+** 2. Working with Feedback
+*** What is unit testing?
+*** Higher level testing
+*** Test Coverings
+*** The Legacy Code Change Algorithm
+**** Identify change points
+**** Find test points
+**** Break Dependencies
+**** Write tests
+**** Make changes and refactor
+** 3. Sensing and Separation
+*** Faking collaborators
+**** Fake objects
+**** The two sides of a fake object
+**** Fakes Distilled
+**** Mock objects
+** 4. The Seam Model
+*** A huge sheet of text
+*** Seam Types
+**** Preprocessing seams
+**** Link Seams
+**** Object Seams
+** 5. Tools
+*** Automated Refactor Tools
+**** Tests and automated refactoring
+*** Mock Objects
+*** Unit-testing harnesses
+*** General test harnesses
+* Changing Software
+** 6. I don't have time
+*** Sprout Method
+*** Sprout Class
+**** Advantages and Disadvantages
+*** Wrap method
+**** Advantages and Disadvantages
+*** Wrap Class
+** 7. It takes forever to make a change
+*** Understanding
+*** Lag time
+*** Breaking deps
+**** Build deps
+** 8. How do I add a feature?
+*** TDD
+*** Programming by difference
+**** Liskov Substitution Principle
+** 9. I can't get this class into a test harness
+*** The irritating parameter
+**** Test vs. production code
+**** Null objects pattern
+*** Hidden deps
+*** Construction blob
+*** Horrible Include Dependencies
+*** Onion Parameter
+*** Aliased Parameter
+** 10. I can't run this method in a test harness
+*** Hidden method
+*** "Helpful" language feature
+*** Undetectable side effect
+**** Command Query Separation
+** 11. I need to make a change. What methods should I test?
+*** Reasoning about effects
+*** Reasoning Forward
+*** Effect propagation
+*** Learning from effect analysis
+*** Simplifying effect sketches
+**** Effects and encapsulation
+** 12. I need to make many changes. Do I have to break all dependencies?
+*** Interception Points
+**** The simple case
+**** Higher level interception points
+*** Judging design with pinch points
+**** using effect sketches to find hidden classes
+*** Pinch point traps
+** 13. I don't know what tests to write
+*** Characterization tests
+**** The method use rule
+*** Characterizing classes
+*** Targeted testing
+*** A heuristic for writing characterization tests
+** 14. Deps are killing me
+** 15. My app is all API calls
+** 16. I don't understand the code well enough
+*** Notes/sketching
+*** Listing Markup
+**** Separating responsibilities
+**** Understanding method structure
+**** Extract methods
+**** Understanding the effects of a change
+*** Scratch refactoring
+*** Delete unused code
+** 17. My app has no structure
+*** Naked CRC (Class, Responsibility, Collaborations cards)
+*** Conversation scrutiny
+** 18. My test code is in the way
+*** Class naming conventions
+*** Test Location
+** 19. My project is not OO. How do I make safe changes?
+*** An easy case
+*** A hard case
+*** Adding new behavior
+*** Taking advantage of OO
+*** It's all OO
+** 20. This class is already too big
+*** Seeing Responsibilities
+**** Group Methods
+**** Look at hidden methods
+**** Look for decisions that can change
+**** Look for internal relationships
+**** Look for the primary responsibility
+**** Interface Segregation Principle
+**** Do scratch refactoring
+**** Focus on current work
+*** Other techniques
+*** Moving forward
+**** Strategy
+**** Tactics
+**** After extract class
+** 21. I'm making the same changes all over the place
+*** First steps
+**** Deciding where to start
+**** Abbreviations
+**** Open/Closed
+** 22. I need to change a monster method and I can't test it.
+*** Varieties of monster
+**** Bulleted methods
+**** Snarled methods
+*** Tackling monsters with automated refactoring
+*** Manual refactoring challenge
+**** Introducing sensing variable
+**** Extract what you know
+**** Gleaning deps
+**** Break out a method object
+*** Strategy
+**** Skeletonize methods
+**** Find Sequences
+**** Extract to current class first
+**** Extract small pieces
+**** Be prepared to Redo
+** 23. How do I know I'm not breaking anything?
+*** Hyperaware editing
+*** Single Goal editing
+*** Preserve Signatures
+*** Lean on the compiler
+**** Pair programming
+** 24. We feel overwhelmed
+* Dependency Breaking Techniques
+** Adapt parameter
+** Breaking out method object
+** Definition completion
+** Encapsulate global references
+** Expose static method
+** Extract and override call
+** Extract and override factory method
+** Extract implementer
+** Extract interface
+** Introduce instance delegator
+** Introduce static setter
+** Link substitution
+** Parameterize constructor
+** Parameterize method
+** Primitivize parameter
+** Pull Up Feature
+** Push down dependency
+** Replace function with function pointer
+** Replace global ref with getter
+** Subclass and override method
+** Supercede instance variable
+** Template redefinition
+** Text redefinition
+** (Appendix) Extract method
+
+== Terms
+
+* Legacy code
+* Unit test
+* Test Harness
+* Coverage
+* *Seam*: A seam is a place where you can alter behavior in your program without editing in that place.
+* *Enabling Point*: Every seam has an enabling point, a place where you can make the decision to use one behavior or another.
+* *Refactoring*. A change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its existing behavior.
+* *Sensing*
+* *Separation*
+
+== Chapters to focus on
+
+1 to 4
+
+15, 16, 17. 22.

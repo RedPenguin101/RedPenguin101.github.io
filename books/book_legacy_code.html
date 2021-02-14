@@ -5,7 +5,8 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<title>What&#8217;s on</title>
+<meta name="author" content="By Michael Feathers">
+<title>Working effectively with Legacy Code</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -420,206 +421,801 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>What&#8217;s on</h1>
+<h1>Working effectively with Legacy Code</h1>
+<div class="details">
+<span id="author" class="author">By Michael Feathers</span><br>
+</div>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A list of things I&#8217;m reading or working on, and what I have in the backlog</p>
+<p><a href="https://learning.oreilly.com/library/view/working-effectively-with/0131177052/" class="bare">https://learning.oreilly.com/library/view/working-effectively-with/0131177052/</a></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_working_on">Working on</h2>
+<h2 id="_in_outline">In Outline</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Tutorial: <a href="https://www.jacekschae.com/courses/learn-reitit-pro/">Jacek Schae&#8217;s Learn Reitit</a></p>
+<p>The mechanics of change</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1. Changing Software</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Four reasons to change</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Adding features, fixing bugs</p>
 </li>
 <li>
-<p>Book: Mythical Man Month</p>
+<p>Improving design</p>
 </li>
 <li>
-<p>Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)</p>
+<p>Optimization</p>
 </li>
 <li>
-<p>Book: Working with Legacy Code (Started 14 Feb 2021)</p>
+<p>Putting it all together</p>
 </li>
-</ol>
+</ul>
+</div>
+</li>
+<li>
+<p>Risky change</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>2. Working with Feedback</p>
+<div class="ulist">
+<ul>
+<li>
+<p>What is unit testing?</p>
+</li>
+<li>
+<p>Higher level testing</p>
+</li>
+<li>
+<p>Test Coverings</p>
+</li>
+<li>
+<p>The Legacy Code Change Algorithm</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Identify change points</p>
+</li>
+<li>
+<p>Find test points</p>
+</li>
+<li>
+<p>Break Dependencies</p>
+</li>
+<li>
+<p>Write tests</p>
+</li>
+<li>
+<p>Make changes and refactor</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>3. Sensing and Separation</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Faking collaborators</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Fake objects</p>
+</li>
+<li>
+<p>The two sides of a fake object</p>
+</li>
+<li>
+<p>Fakes Distilled</p>
+</li>
+<li>
+<p>Mock objects</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>4. The Seam Model</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A huge sheet of text</p>
+</li>
+<li>
+<p>Seam Types</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Preprocessing seams</p>
+</li>
+<li>
+<p>Link Seams</p>
+</li>
+<li>
+<p>Object Seams</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>5. Tools</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Automated Refactor Tools</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Tests and automated refactoring</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Mock Objects</p>
+</li>
+<li>
+<p>Unit-testing harnesses</p>
+</li>
+<li>
+<p>General test harnesses</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Changing Software</p>
+<div class="ulist">
+<ul>
+<li>
+<p>6. I don&#8217;t have time</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sprout Method</p>
+</li>
+<li>
+<p>Sprout Class</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Advantages and Disadvantages</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Wrap method</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Advantages and Disadvantages</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Wrap Class</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>7. It takes forever to make a change</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Understanding</p>
+</li>
+<li>
+<p>Lag time</p>
+</li>
+<li>
+<p>Breaking deps</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Build deps</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>8. How do I add a feature?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>TDD</p>
+</li>
+<li>
+<p>Programming by difference</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Liskov Substitution Principle</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>9. I can&#8217;t get this class into a test harness</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The irritating parameter</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Test vs. production code</p>
+</li>
+<li>
+<p>Null objects pattern</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Hidden deps</p>
+</li>
+<li>
+<p>Construction blob</p>
+</li>
+<li>
+<p>Horrible Include Dependencies</p>
+</li>
+<li>
+<p>Onion Parameter</p>
+</li>
+<li>
+<p>Aliased Parameter</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>10. I can&#8217;t run this method in a test harness</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Hidden method</p>
+</li>
+<li>
+<p>"Helpful" language feature</p>
+</li>
+<li>
+<p>Undetectable side effect</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Command Query Separation</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>11. I need to make a change. What methods should I test?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Reasoning about effects</p>
+</li>
+<li>
+<p>Reasoning Forward</p>
+</li>
+<li>
+<p>Effect propagation</p>
+</li>
+<li>
+<p>Learning from effect analysis</p>
+</li>
+<li>
+<p>Simplifying effect sketches</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Effects and encapsulation</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>12. I need to make many changes. Do I have to break all dependencies?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Interception Points</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The simple case</p>
+</li>
+<li>
+<p>Higher level interception points</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Judging design with pinch points</p>
+<div class="ulist">
+<ul>
+<li>
+<p>using effect sketches to find hidden classes</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Pinch point traps</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>13. I don&#8217;t know what tests to write</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Characterization tests</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The method use rule</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Characterizing classes</p>
+</li>
+<li>
+<p>Targeted testing</p>
+</li>
+<li>
+<p>A heuristic for writing characterization tests</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>14. Deps are killing me</p>
+</li>
+<li>
+<p>15. My app is all API calls</p>
+</li>
+<li>
+<p>16. I don&#8217;t understand the code well enough</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Notes/sketching</p>
+</li>
+<li>
+<p>Listing Markup</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Separating responsibilities</p>
+</li>
+<li>
+<p>Understanding method structure</p>
+</li>
+<li>
+<p>Extract methods</p>
+</li>
+<li>
+<p>Understanding the effects of a change</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Scratch refactoring</p>
+</li>
+<li>
+<p>Delete unused code</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>17. My app has no structure</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Naked CRC (Class, Responsibility, Collaborations cards)</p>
+</li>
+<li>
+<p>Conversation scrutiny</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>18. My test code is in the way</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Class naming conventions</p>
+</li>
+<li>
+<p>Test Location</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>19. My project is not OO. How do I make safe changes?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>An easy case</p>
+</li>
+<li>
+<p>A hard case</p>
+</li>
+<li>
+<p>Adding new behavior</p>
+</li>
+<li>
+<p>Taking advantage of OO</p>
+</li>
+<li>
+<p>It&#8217;s all OO</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>20. This class is already too big</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Seeing Responsibilities</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Group Methods</p>
+</li>
+<li>
+<p>Look at hidden methods</p>
+</li>
+<li>
+<p>Look for decisions that can change</p>
+</li>
+<li>
+<p>Look for internal relationships</p>
+</li>
+<li>
+<p>Look for the primary responsibility</p>
+</li>
+<li>
+<p>Interface Segregation Principle</p>
+</li>
+<li>
+<p>Do scratch refactoring</p>
+</li>
+<li>
+<p>Focus on current work</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Other techniques</p>
+</li>
+<li>
+<p>Moving forward</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Strategy</p>
+</li>
+<li>
+<p>Tactics</p>
+</li>
+<li>
+<p>After extract class</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>21. I&#8217;m making the same changes all over the place</p>
+<div class="ulist">
+<ul>
+<li>
+<p>First steps</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Deciding where to start</p>
+</li>
+<li>
+<p>Abbreviations</p>
+</li>
+<li>
+<p>Open/Closed</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>22. I need to change a monster method and I can&#8217;t test it.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Varieties of monster</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Bulleted methods</p>
+</li>
+<li>
+<p>Snarled methods</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Tackling monsters with automated refactoring</p>
+</li>
+<li>
+<p>Manual refactoring challenge</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Introducing sensing variable</p>
+</li>
+<li>
+<p>Extract what you know</p>
+</li>
+<li>
+<p>Gleaning deps</p>
+</li>
+<li>
+<p>Break out a method object</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Strategy</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Skeletonize methods</p>
+</li>
+<li>
+<p>Find Sequences</p>
+</li>
+<li>
+<p>Extract to current class first</p>
+</li>
+<li>
+<p>Extract small pieces</p>
+</li>
+<li>
+<p>Be prepared to Redo</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>23. How do I know I&#8217;m not breaking anything?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Hyperaware editing</p>
+</li>
+<li>
+<p>Single Goal editing</p>
+</li>
+<li>
+<p>Preserve Signatures</p>
+</li>
+<li>
+<p>Lean on the compiler</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Pair programming</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>24. We feel overwhelmed</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Dependency Breaking Techniques</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Adapt parameter</p>
+</li>
+<li>
+<p>Breaking out method object</p>
+</li>
+<li>
+<p>Definition completion</p>
+</li>
+<li>
+<p>Encapsulate global references</p>
+</li>
+<li>
+<p>Expose static method</p>
+</li>
+<li>
+<p>Extract and override call</p>
+</li>
+<li>
+<p>Extract and override factory method</p>
+</li>
+<li>
+<p>Extract implementer</p>
+</li>
+<li>
+<p>Extract interface</p>
+</li>
+<li>
+<p>Introduce instance delegator</p>
+</li>
+<li>
+<p>Introduce static setter</p>
+</li>
+<li>
+<p>Link substitution</p>
+</li>
+<li>
+<p>Parameterize constructor</p>
+</li>
+<li>
+<p>Parameterize method</p>
+</li>
+<li>
+<p>Primitivize parameter</p>
+</li>
+<li>
+<p>Pull Up Feature</p>
+</li>
+<li>
+<p>Push down dependency</p>
+</li>
+<li>
+<p>Replace function with function pointer</p>
+</li>
+<li>
+<p>Replace global ref with getter</p>
+</li>
+<li>
+<p>Subclass and override method</p>
+</li>
+<li>
+<p>Supercede instance variable</p>
+</li>
+<li>
+<p>Template redefinition</p>
+</li>
+<li>
+<p>Text redefinition</p>
+</li>
+<li>
+<p>(Appendix) Extract method</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_backlog">Backlog</h2>
+<h2 id="_terms">Terms</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Book: Refactoring: Improving the design of existing code</p>
+<p>Legacy code</p>
 </li>
 <li>
-<p>Writing: Types - pros and cons</p>
+<p>Unit test</p>
 </li>
 <li>
-<p>Project: RestTest. Auto testing and documentation of REST apis.</p>
+<p>Test Harness</p>
 </li>
 <li>
-<p>Paper: <a href="https://erlang.org/download/armstrong_thesis_2003.pdf">Armstrong reliability 2003 paper</a></p>
+<p>Coverage</p>
 </li>
 <li>
-<p>Paper: <a href="http://www.laputan.org/pub/foote/mud.pdf">Foote/Yoder Big Ball of Mud</a></p>
+<p><strong>Seam</strong>: A seam is a place where you can alter behavior in your program without editing in that place.</p>
 </li>
 <li>
-<p>Book: Naming and Necessity</p>
+<p><strong>Enabling Point</strong>: Every seam has an enabling point, a place where you can make the decision to use one behavior or another.</p>
 </li>
 <li>
-<p>Book: Data and Reality (2nd Read)</p>
+<p><strong>Refactoring</strong>. A change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its existing behavior.</p>
 </li>
 <li>
-<p>Book: Domain Driven Design (a second read)</p>
+<p><strong>Sensing</strong></p>
 </li>
 <li>
-<p>Book: The Toyota Production System (a second read)</p>
+<p><strong>Separation</strong></p>
 </li>
-<li>
-<p>Book: Algebra-driven design</p>
-</li>
-<li>
-<p>Book: The Republic</p>
-</li>
-<li>
-<p>Paper: <a href="https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf">Hoare, Communicating Sequential Processes</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://dl.acm.org/doi/pdf/10.5555/63445.C1104363">Hoare, Proof of Correctness of Data Representation</a></p>
-</li>
-<li>
-<p>Other: <a href="https://github.com/norvig/pytudes/blob/master/ipynb/Advent-2020.ipynb">Peter Norvigs AOC solutions</a></p>
-</li>
-<li>
-<p>Project: A 'code challenge' thing with a fund theme</p>
-</li>
-<li>
-<p>Book: Thinking in Systems</p>
-</li>
-<li>
-<p>AWS - next qualification</p>
-</li>
-<li>
-<p>Book: Design Unbound</p>
-</li>
-<li>
-<p>Writing: Why REPL is a superpower <a href="https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html">1</a> <a href="https://clojure.org/guides/repl/introduction">2</a> <a href="https://www.youtube.com/watch?v=Ngt29DyNDRM">3</a> <a href="https://www.youtube.com/watch?v=tpcl5pjkRTQ">4</a> <a href="https://www.youtube.com/watch?v=oLvwbDUXGsc">5</a> <a href="https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/">6</a> <a href="https://www.youtube.com/watch?v=gIoadGfm5T8">7</a></p>
-</li>
-<li>
-<p>Book: Data and reality (a second read)</p>
-</li>
-<li>
-<p>Project: History generator</p>
-</li>
-<li>
-<p>Project: A DSL/Frontend for modelling time-series</p>
-</li>
-<li>
-<p>Writing: Representing Reality</p>
-</li>
-<li>
-<p>Book: Statistical rethinking</p>
-</li>
-<li>
-<p>Book: Event Storming</p>
-</li>
-<li>
-<p>Book: SICP</p>
-</li>
-<li>
-<p>Book: Accelerate</p>
-</li>
-<li>
-<p>Book: The DevOps handbook</p>
-</li>
-<li>
-<p>Book: The managers path</p>
-</li>
-<li>
-<p>Book: DataWarehousing</p>
-</li>
-<li>
-<p>Book: The little lisper</p>
-</li>
-<li>
-<p>Book: High Output Management</p>
-</li>
-<li>
-<p>Book: The Six Sigma Way</p>
-</li>
-<li>
-<p>Book: Information: A history, a theory, a flood</p>
-</li>
-<li>
-<p>Book: Agile Conversations</p>
-</li>
-<li>
-<p>Book: Notes on the synthesis of form</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Living Documentation</p>
-</li>
-<li>
-<p>Book: An introduction to general systems thinking.</p>
-</li>
-<li>
-<p>Book: Patterns of Software, Richard Gabriel</p>
-</li>
-<li>
-<p>Book: Simulacra and Simulation</p>
-</li>
-<li>
-<p>Book: Invisible Cities</p>
-</li>
-<li>
-<p>Book: The image of the city</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-</ol>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_finished">Finished</h2>
+<h2 id="_chapters_to_focus_on">Chapters to focus on</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Book: I am a strange loop</p>
-</li>
-<li>
-<p>Project: Qniform</p>
-</li>
-<li>
-<p>Book: Grokking simplicity</p>
-</li>
-<li>
-<p>Project: Allocation of trades between funds</p>
-</li>
-<li>
-<p>Book: Elements of Clojure (2020-02-12)</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>1 to 4</p>
+</div>
+<div class="paragraph">
+<p>15, 16, 17. 22.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-02-14 11:17:28 GMT
+Last updated 2021-02-14 12:00:06 GMT
 </div>
 </div>
 </body>
