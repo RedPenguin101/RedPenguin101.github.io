@@ -1,0 +1,76 @@
+= Mythical Man Month
+
+== 1: The tar pit
+
+=== Different maturities of a program
+
+You basic program can be _run_. This is your standard 'two guys in a garage' thing.
+
+The program _product_ can be run by _anyone_. That is, it is generalized, tested, documented. The cost of a program product is about 3x as much as just the program itself.
+
+The _integrated_ program is on component of a program _system_. It has well defined interfaces in and out, and needs to be integration tested with any components it can interact with. The cost of a integrated program is about 3x as much as just the program itself.
+
+The _integrated program product_ is both of the above. It costs 9x as much as the program itself. It is the only one of these that is truly useful.
+
+=== Why programming is fun
+
+It gratifies the creative urge:
+
+* The pure pleasure of creation
+* Making _useful_ things
+* The puzzle-box nature, seeing all the gears move together
+* Always learning, always new.
+* Reifying thought, working in a hyper-flexible medium - can feel like poetry
+
+=== Why programming is not fun
+
+* The computer requires perfection from us - we obviously can't all the time. Few other things require this.
+* We are not in control of our own destiny much of the time. Goals, work, resources are usually decided by someone else.
+* We have to work with other peoples programs, which is very hard, and more so if they are not good programs.
+* The inevitable tedious labor that comes with creation - the debugging, the tests.
+* As soon as it's 'done', your program is out of date. Broken or obsolete. The rock of Sisyphus.
+
+== 2. The Mythical Man Month
+
+=== Why projects overrun on time
+
+* Poor estimation techniques
+* Confusing effort (hours spent) with progress
+* Progress is poorly monitored
+* Adding manpower to a late project makes things worse
+
+=== Dorothy Sayers 3 stages of creative activity
+
+. Idea: outside of space and time. Of the mind
+. Implementation: Realization in space and time
+. Interaction: Someone uses it
+
+Incompleteness of and inconsistencies in our ideas only come to light during implementation.
+
+We forget, every time. We are optimists.
+
+=== The Man Month
+
+The amount of work one man can do in one month.
+
+Can 2 men do the same in half a month? No.
+
+At least not unless the work can be _perfectly partitioned_ with no need for _communication_.
+
+Software creation tasks are usually highly connected, and also often sequential and dependent, and so can't be partitioned.
+
+The Communication burden has two parts: Training and intercommunication. Training is linear time. If it takes n hours to train one person, it takes mn hours to train m people.
+
+Intercommunication is quadratic time: _m(m-1)/2_ for m people, assuming each person must communicate with each other person.
+
+=== Splitting time on software projects
+
+* 1/3 planning
+* 1/6 coding
+* 1/4 unit and early system test
+* 1/4 end to end system test
+
+System testing is half the time. This one is particularly pernicious if it takes you by surprise, since it's at the end of the project, so even if everything has been 'on schedule' till now, this will blow you away.
+
+== 3. The Surgical Team
+
