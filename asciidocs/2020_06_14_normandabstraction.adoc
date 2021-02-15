@@ -15,7 +15,7 @@ In the SICP lectures, Abelson presents the idea of 'wishful thinking' design str
 
 [quote, Hal Abelson in SICP lectures, https://www.youtube.com/watch?v=ymsbTVLbyN4[5:12]]
 ____
-[talking about a rational numbers package] It's absolutely no problem at all to think about what computation you want to make in adding and multiplying these fractions. But as soon as you go to implement it you run up against a problem. You don't /have/ what a rational number /is/. The system gives us individual numbers, so we can have 5 and 3, but we don't have a way of saying theres a thing which has both a 3 and a 4 in it.
+[talking about a rational numbers package] It's absolutely no problem at all to think about what computation you want to make in adding and multiplying these fractions. But as soon as you go to implement it you run up against a problem. You don't _have_ what a rational number _is_. The system gives us individual numbers, so we can have 5 and 3, but we don't have a way of saying theres a thing which has both a 3 and a 4 in it.
 
 We'd like to imagine there are these clouds, which have both a numerator and a denominator in it, and these clouds are what we'd like to work in terms of. We're going to solve this problem using the incredibly powerful design strategy of 'wishful thinking'...let's imagine we have these clouds...let's imagine we have these three procedures, one called `(make-rat n d)` that give us this cloud (and we don't really know what make-rat actually returns - that's its business). Suppose we have one of these clouds, we have a procedure called `(numer cloud)` which takes a cloud and returns the numerator part. And same for `(denom cloud)` ... We don't wanna know [how these clouds are implemented].
 ____

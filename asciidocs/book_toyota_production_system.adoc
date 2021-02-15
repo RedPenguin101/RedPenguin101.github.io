@@ -1,0 +1,67 @@
+= The Toyota Production System
+
+== Notes from first read
+
+=== Structure
+
+The book has six chapters. It is a bit hard to pin down exactly what each one is about because it's not the most cleanly sub-divided book; ideas and concepts spill over and crop up all over the place. But broadly here's a good way to think about it if you don't take it too literally
+
+* Chapter 1 *Starting from need* is about the conditions that lead to TPS.
+* Chapters 2 *Evolution of the TPS* and 3 *Further Developments* (which seem to me to be the key ones) focus on the implementation of TPS, but also on some of the ideas about arriving at and implementing ideas in general.
+* Chapter 4 The *Genealogy of TPS* is about how Toyota was formed, and in particular how the genius, ideas and attitudes of Toyoda Sakichi and Toyoda Kiichiro paved the way for the TPS.
+* Chapter 5 *The True Intention of the Ford System* is a comparison of the Toyota’s small batch, Just-in-time system to the Ford’s large batch system - in particular about how, though they are in many ways complete opposite in implementation, there are similar attitudes underpinning them. 
+* The short Chapter 6 *Surviving the low-growth period* is about the current (i.e. late 70s) economic climate of low-growth. Many ideas are the same as in the first chapter.
+
+=== Summary of themes
+
+In Taiichi Ohno's short preface he describes the market changes that necessitated the TPS: namely, customer needs required the production of small batches of variable products which the customer 'pulls' from the market as needed, rather than the mass production of homogeneous components which are 'pushed' onto the market. This made the old 'Ford' system of mass production, which was geared to the latter world, very wasteful. TPS is about finding and reducing waste, so producers can survive in this environment.
+
+Ohno sees the core interconnectedness of this trifecta of focusing on individual customers, who have small and varied needs, which requires a focus on elimination of waste. He finds that this elimination of waste inevitably requires and results in a clearer picture of the individual customer.
+
+Aside from the 'machiney' parts of eliminating waste, other themes are challenging received wisdom, constant questioning and encouraging teamwork.
+
+=== Terms
+
+* *Automation and Autonomation*: Automation is a machine that does everything without a human; Autonomation is when a machine can detect defects, and stops when a defect is detected for a human to intervene, but otherwise can run unsupervised.
+* *Ford system*: Mass production, the assembly line, large batches minimize machine-setup time, bring the car to the inventory not the inventory to the car.
+* *Just-in-time*: Eliminate inventory because inventory is waste. Components should be available when they are required and not before.
+* *Kanban*: Tag, card. In the TPS it’s a printed sheet in a clear plastic folder which has on it (among other things) the number of parts needed, a ‘shopping list’ that a later process passes to an earlier one to withdraw components it needs. A Kanban must be attached to any and all components in the factory.
+* *Wastes*: Inventory is the big one. Defects are another. Moving (i.e. moving components between workstations) is a 3rd. These are non-value add work. There is another kind, which is ‘headless chicken’ movement, which is just people doing things that are not inefficient processes, but result from people not knowing what they are doing, i.e. lack of standardization, formality and clarity.
+* *Production Leveling*: JIT breaks down if flow in the factory is ‘lumpy’, i.e. if the later process is quiet most of the week but suddenly requests a massive amount of components. So the production must be ‘levelled’ and made consistent throughout the day and week, i.e. the flow of requests from later processes must be managed so there are no hills and valleys.
+
+=== Summary of the book after the superficial read
+
+==== What is the book about and what does it say?
+
+The Toyota Production System (TPS) is the authors method of effectively running a (car) factory in a time of low growth, by relentlessly eliminating waste, primarily inventory, but also other wastes.
+
+This is achieved first by focusing on a 'just-in-time' system of production, whereby the later process pulls from the earlier process the components it needs, and the earlier process produces only enough components to satisfy the later process, thereby eliminating inventory and the associated costs. This is enforced by the 'kanban' system of order sheets. A consequence of this is that lot sizes need to be small, and the time necessary to set up a machine to make a different component must be very, very short.
+
+A necessary precondition to this is 'production leveling', where components are required by later process at a steady and reliable pace (a 'flow'), not in big chunks.
+
+The second requirement is 'autonomation', or automation with a human touch, where machines themselves have mechanisms built in where they stop themselves (or refuse to work) if they detect a defective part, preventing the creation of defective parts. This means a machine doesn't need to be monitored all the time, and allows reduction of manpower.
+
+Aside from the concrete implementation of the TPS, the book is also about the method of thought by which one can come up with new ideas, and not be bound by received wisdom - in Ohno's world, the Ford system of mass production which ruled car manufacture methods, and to a lesser extent accounting measures. By questioning deeply ('asking why 5 times') and observing the whole carefully from the factory floor without getting distracted by the detail, we can achieve a 'revolution of consciousness' allowing us see through the accepted 'common sense' and come to deeply understand our working methods, and from them logically derive new and better ideas. In this, Ohno is inspired by the genius of Toyoda Sakichi, inventor and the founder of Toyoda.
+
+He also has much to say in general about implementation of methods. You will have to bust some heads, people are not going to like your changes. Proper processes can't be written from a desk, they have to written on the factory floor, with the workers, and they must be tried and revised many times. If a process can't be understood on sight, you need to simplify it. Management need to be willing to give you some rope to experiment and willing to put up with some complaints (it is unlikely management will be actively supportive, so don’t expect them to be). It will take a long time.
+
+==== Why did the author write it?
+
+He designed the TPS and strongly believes it is the best way to produce things in a low growth environment, and less strongly in general, and he would like to share that with the world, and have other companies use it. He is not very explicit about why, though at one point he does quote Henry Ford admiringly about the purpose of making work more efficient, which is to provide people with lower-cost high-quality products which enable them to enhance their quality of life. Maybe he just loves the puzzle of it though, he strikes me more of that type.
+
+==== What is the main takeaway the author wants to leave you with?
+
+That the TPS is the best way to run a factory in a low growth environment, and that it is necessary to look 'upside down' at things to generate new ideas.
+
+==== Will you read the book more thoroughly? Why or why not?
+
+Yes. It is a weirdly organized book, and hard to pin down the thought behind the ordering of the ideas, but the ideas themselves are very provocative. I found it hard to get through a couple of pages without reading something which sent me off on a tangent bout how to re-contextualize what was said to my own situation. While the TPS ideas are very much focused on the factory (for example inventory is the primary focus), there is much even there which can be re-purposed for the knowledge work which we do - in particular the emphasis on detecting defects early by having gates in place which automatically prevent them being passed on is especially critical and actionable in our world. On the more abstract concepts of idea generation and process implementation, nearly all of that is very directly applicable and there is much to learn from them.
+
+=== The 6 rules of kanban
+
+. The later process pulls from the earlier one
+. The earlier process only produces the amount pulled by the later process
+. You can't pick up or produce components without a kanban (a work order sheet)
+. A kanban must be attached to any and all components
+. Defective products never get sent on to the next process.
+. Reduce the number of kanban

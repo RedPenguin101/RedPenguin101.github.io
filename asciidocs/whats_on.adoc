@@ -4,13 +4,14 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Working on
 
-. Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit] 
-. Book: Mythical Man Month
-. Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)
-. Book: Working with Legacy Code (Started 14 Feb 2021)
+. Book: The Toyota Production System (a second read)
 
 == Backlog
 
+. Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit] 
+. Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)
+. Book: Mythical Man Month
+. Book: Working with Legacy Code (Started 14 Feb 2021)
 . Book: Refactoring: Improving the design of existing code
 . Writing: Types - pros and cons
 . Project: RestTest. Auto testing and documentation of REST apis.
@@ -19,7 +20,6 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Naming and Necessity
 . Book: Data and Reality (2nd Read)
 . Book: Domain Driven Design (a second read)
-. Book: The Toyota Production System (a second read)
 . Book: Algebra-driven design
 . Book: The Republic
 . Paper: https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf[Hoare, Communicating Sequential Processes]
