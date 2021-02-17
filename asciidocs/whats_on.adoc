@@ -4,10 +4,26 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Working on
 
-. Book: The Toyota Production System (a second read)
+. Introduction to general systems thinking (Feb)
+
+== 12 books for 2021
+
+. Elements of Clojure (Jan)
+. Introduction to general systems thinking (Feb)
+. The Republic
+. Naming and necessity
+. Data oriented programming
+. SICP
+. Category Theory for Programmers
+. Patterns of Software
+. Software design for flexibility
+. Data and reality
+. Accelerate
+. Against Method
 
 == Backlog
 
+. Book: https://www.manning.com/books/data-oriented-programming[Data oriented programming]
 . Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit] 
 . Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)
 . Book: Mythical Man Month
