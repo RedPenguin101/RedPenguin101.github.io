@@ -1,0 +1,48 @@
+= An introduction to general systems thinking, by Gerald M Weinberg
+
+== Book in outline
+
+* 1. The problem
+** The complexity of the world
+** Mechanism and mechanics
+** The square law of computation
+** The simplification of science and the science of simplification
+** Statistical mechanics and the law of large numbers
+** The law of medium numbers
+* 2. The approach
+** Organism, Analogy and Vitalism
+** The scientist and her categories
+** The main article of general systems faith
+** The nature of general systems law
+** Varieties of systems thinking
+* 3. Systems and illusion
+** A system is a way of looking at the world
+** A system is a set
+** Observers and observations
+** The principle of indifference
+* 4. Interpreting observations
+** States
+** The eye-brain law
+** The generalized Thermodynamic law
+** Functional notation and reductionist thought
+** Incompleteness and overcompleteness
+** The generalized law of complementarity
+* 5. Breaking down observations
+** The metaphors of science
+** Boundaries and things
+** Qualities and the principle of invariance
+** Partitions
+** The strong connection law
+* 6. Describing behavior
+** Simulation: the white box
+** State spaces
+** Time as a standard of behavior
+** Behavior
+** The principle of indeterminability
+* 7. Some systems questions
+** The systems triumvirate
+** Stability
+** Survival
+** Identity
+** Regulation and adaptation
+** The used car law

@@ -1,5 +1,25 @@
 = The Toyota Production System
 
+== Questions from a second read
+
+=== What is the Toyota Production System, what is it for and why is it necessary?
+
+=== What are the primary goals of the TPS?
+
+=== What is Autonomation and why is it desirable?
+
+=== What is the Kanban systems and how does it work?
+
+=== How does the TPS compare with the Ford system?
+
+=== Who were Toyoda Sakichi and Toyoda Kiichiro?
+
+=== How did the TPS change over time?
+
+=== What are the necessary preconditions for TPS to work as intended?
+
+=== What are the 
+
 == Notes from first read
 
 === Structure
