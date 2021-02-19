@@ -41,6 +41,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Paper: http://www.laputan.org/pub/foote/mud.pdf[Foote/Yoder Big Ball of Mud]
 . Paper: https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf[Hoare, Communicating Sequential Processes]
 . Paper: https://dl.acm.org/doi/pdf/10.5555/63445.C1104363[Hoare, Proof of Correctness of Data Representation]
+. Talk: Denotational Design
 . Book: https://www.manning.com/books/data-oriented-programming[Data oriented programming]
 . Book: Mythical Man Month
 . Book: Working with Legacy Code (Started 14 Feb 2021)
