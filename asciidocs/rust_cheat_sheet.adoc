@@ -13,6 +13,12 @@
 
 `let c: Vec<char> = str.chars().collect();`
 
+or to an iterator of chars:
+
+`caps[2].chars()`
+
+`caps[2].chars().next().unwrap()` where caps[2] is a &str to get the first char of a string
+
 == Command Line Args
 
 [source,rust]
@@ -28,8 +34,14 @@ let file = &args[1];
 [source,rust]
 ----
 use std::fs;
-let file = &args[1];
-let contents = fs::read_to_string(file).expect("File read error");
+let filename = &args[1];
+let contents = fs::read_to_string(filename).expect("File read error");
+
+// or
+
+use std::fs::File;
+use std::io::{BufReader, BufRead};
+let f = BufReader::new(File::open("../input/day01.txt").unwrap());
 ----
 
 == Parsing a string to an integer
@@ -43,6 +55,9 @@ fn parse_number_list(input: String) -> Vec<u32> {
         .map(|s| s.parse::<u32>().unwrap())
         .collect()
 }
+
+//or 
+let num: usize = line.unwrap().parse().unwrap();
 ----
 
 == Regex
@@ -54,4 +69,29 @@ regex = "1.4.2"
 
 let re = Regex::new(r"(\d+)-(\d+) (\w): (\w+)").unwrap();
 let caps = re.captures(line).unwrap();
+
+cap[0] // is full string
+cap[1] // is first match etc
+----
+
+== Integer to string
+
+`num.to_string()`
+
+== String concatenation
+
+[source,rust]
+----
+let mut filename = "resources/day".to_string();
+filename.push_str(&day.to_string());
+filename.push_str("input.txt");
+----
+
+== Named Tuples / Tuple Structs
+
+[source,rust]
+----
+#[derive(Debug)]
+struct Password(u8, u8, char, String);
+let Password(low, high, ch, pw) = pp;
 ----

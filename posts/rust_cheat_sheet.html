@@ -452,6 +452,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p><code>let c: Vec&lt;char&gt; = str.chars().collect();</code></p>
 </div>
+<div class="paragraph">
+<p>or to an iterator of chars:</p>
+</div>
+<div class="paragraph">
+<p><code>caps[2].chars()</code></p>
+</div>
+<div class="paragraph">
+<p><code>caps[2].chars().next().unwrap()</code> where caps[2] is a &amp;str to get the first char of a string</p>
+</div>
 </div>
 </div>
 </div>
@@ -474,8 +483,14 @@ let file = &amp;args[1];</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-rust" data-lang="rust">use std::fs;
-let file = &amp;args[1];
-let contents = fs::read_to_string(file).expect("File read error");</code></pre>
+let filename = &amp;args[1];
+let contents = fs::read_to_string(filename).expect("File read error");
+
+// or
+
+use std::fs::File;
+use std::io::{BufReader, BufRead};
+let f = BufReader::new(File::open("../input/day01.txt").unwrap());</code></pre>
 </div>
 </div>
 </div>
@@ -491,7 +506,10 @@ let contents = fs::read_to_string(file).expect("File read error");</code></pre>
         .split("\n")
         .map(|s| s.parse::&lt;u32&gt;().unwrap())
         .collect()
-}</code></pre>
+}
+
+//or
+let num: usize = line.unwrap().parse().unwrap();</code></pre>
 </div>
 </div>
 </div>
@@ -505,7 +523,42 @@ let contents = fs::read_to_string(file).expect("File read error");</code></pre>
 regex = "1.4.2"
 
 let re = Regex::new(r"(\d+)-(\d+) (\w): (\w+)").unwrap();
-let caps = re.captures(line).unwrap();</code></pre>
+let caps = re.captures(line).unwrap();
+
+cap[0] // is full string
+cap[1] // is first match etc</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_integer_to_string">Integer to string</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>num.to_string()</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_string_concatenation">String concatenation</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-rust" data-lang="rust">let mut filename = "resources/day".to_string();
+filename.push_str(&amp;day.to_string());
+filename.push_str("input.txt");</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_named_tuples_tuple_structs">Named Tuples / Tuple Structs</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-rust" data-lang="rust">#[derive(Debug)]
+struct Password(u8, u8, char, String);
+let Password(low, high, ch, pw) = pp;</code></pre>
 </div>
 </div>
 </div>
@@ -513,7 +566,7 @@ let caps = re.captures(line).unwrap();</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-19 13:55:29 GMT
+Last updated 2021-02-27 12:07:16 GMT
 </div>
 </div>
 </body>
