@@ -46,3 +46,58 @@
 ** Identity
 ** Regulation and adaptation
 ** The used car law
+
+== Laws and principles
+
+* *The law of medium Numbers*: For medium number systems, we can expect that large fluctuations, irregularities, and discrepancy with any theory will occur more or less regularly. 
+* *The main article of general systems faith*: That the order of the empirical world itself has an order which might be called order of the second degree
+* *Composition law*: The whole is more than the sum of it's parts
+* *Decomposition law*: The part is more than a fraction of the whole
+* *The banana principle*: Heuristic devices don't tell you when to stop
+* *The principle of indifference*: Laws should not depend on a particular choice of notation
+* *Principle of difference*: Laws should not depend on a particular choice of symbols, but they usually do
+* *The Eye-Brain law*: To a certain extent, mental power can compensate for observational weakness.
+* *The Brain-Eye law*: To a certain extent, observational power can compensate for mental weakness.
+* *The General Thermodynamic law*: More probably states are more likely to be observed than less probable states, unless specific constraints exist to keep them from occurring.
+* *The Lump Law*: If we want to learn anything, we mustn't try to learn everything.
+* *The General Law of Complementarity*: Any two points of view are complementary
+* *The Axiom of Experience*: The future will be like the past, because, in the past, the future was like the past. Ot, Two things are alike if one in the present can be substituted for one in the past
+* *The Invariance Principle*: With respect to any given property, there are those transformation that preserve is and those that do not preserve it. Or, With respect to a given transformation, there are those properties that are preserved by it and those that are not. Or, We understand change only by observing what remains invariant, and permanence only by what is transformed.
+* *The Perfect Systems Law*: True systems properties cannot be investigated
+* *The Strong Connection Law*: Systems, on the average, are more tightly connected than the average. Or, A system is a collection of parts, no one of which can be changed. Or, In systems, all other things are rarely equal
+* *The picture principle*: When speaking about a dimensional reduction, insert the words "a picture of" in whatever you were about to say.
+* *The Synchronic Principle*: If two systems occupy the same position in the state space at the same time, then the space is under-dimensioned, that is, the view is incomplete.
+* *The Count to Three Principle*: If you cannot think of three ways of abusing a tool, you do not understand how to use it.
+* *The first law of simpledynamics*: Endigitry cannot be created nor destroyed
+* *The second law of simpledynamics*: Eventropy can never decrease
+* *The Principle of Indeterminability*: We cannot with certainty attribute observed constraint either to system or environment
+* *The Systems Triumverate*
+.. Why do I see what I see?
+.. Why do things stay the same?
+.. Why do things change?
+* *The law of effect*: Small changes in structure usually lead to small changes in behaviour. Or, Small changes in behaviour will usually be found to result from small changes in Structure.
+* *The used car law*: A system that is doing a good job of regulation need not adapt. Or, A system may adapt in order to simplify its job of regulating. 
+
+== Terms
+
+* System
+* Observation
+* State
+** State Space
+* Dimension
+* Invariant
+* Constraint
+* Endigitry
+* Eventropy
+* Quality
+* Attribute
+* Identity
+* Stability
+* Regulation
+* Adaptation
+* Regulation
+* Science
+* complementarity
+* Incompleteness / Overcompleteness
+* Partition
+* White Box / Black Box
