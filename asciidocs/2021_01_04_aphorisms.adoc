@@ -59,3 +59,6 @@ It is not only not right, it is not even wrong
 
 [quote,Zach Tellman]
 We are constantly drawn to software we don't know well enough to dislike. We see its benefits, free from any obvious shortcomings, and wish t possess them.
+
+[quote,Perlis in the SICP foreword]
+It is better to have 100 functions operate on one data structure than to have 10 functions operate on 10 data structures.
