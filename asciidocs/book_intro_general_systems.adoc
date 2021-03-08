@@ -101,3 +101,49 @@
 * Incompleteness / Overcompleteness
 * Partition
 * White Box / Black Box
+* *Mechanics*: The study of those systems for which the approximations of mechanics work successfully. 
+
+== Chapter 1: The problem
+
+A confession of ignorance.
+
+Science has been successful - but also full of failure. When things get too complex, science struggles. The method of observation and experiment produces bad results. The General Systems Approach is born out sciences failures in these situations, by generalizing the ideas of observation and experiment in a wider context.
+
+We consider the number of objects involved in a system as a rough measure of simplicity-complexity. Fewer objects make a system simpler. More, more complex.
+
+=== Machines, Analytical Treatment, Organized Simplicity
+
+We start with mechanical systems - machines. These are simple, in the sense they have few identifiable parts: 2, 10, maybe 30 for a complex one. Any more than that, and the equations aren't solvable. These formal methods, then, are limited. We can either simplify, and reduce the number of parts involved, or we can look outside formal methods to informal ones.
+
+For example, the Solar System contains thousands of bodies, but when computing the gravitational effect these bodies have on each other using the Newtonian method, we must ignore nearly all of them. In this case, things work rather well. But it assumes a correlation between size and significance, which doesn't hold more generally - consider the tiny pineal gland in the brain.
+
+Further, the Newtonian method requires that you can isolate and model parts of the system, then combine the isolated results. You can study bodies A and B, A and C, and B and C. Then when extending the model to all three bodies, the system can be composed from the pairwise models. Contrast that to a psychologist studying a family of 3: It's not possible to predict the behavior of the father, mother and child when they are together by studying how the father and mother act when together.    
+
+The square law of computation states that, unless simplifications can be made, the amount of computation increases at least as fast as the square of the number of equations.  
+
+How do we know a problem is a soluble in the space of mechanics? Because when we try the simplified model, the results broadly match the observational data. But note that these observations are from outside the mechanical system. Mechanics by itself doesn't tell us which systems are mechanical.
+
+=== Aggregates, Statistical Treatment, Unorganized Complexity, Law of Large-Numbers
+
+Reducing the number of objects of interest and how they interact is one method of dealing with complexity. Another is to deal with the average properties objects, rather than the exact properties of individual objects - to deal with _aggregates_. Consider the study of air molecules in a container. There are 10^23 molecules, but given their homogeneity, it isn't possible to ignore some of them as 'insignificant', nor to study 10 molecules in isolation. Instead, science in this area deals with average behavior of the molecules, relying on the fact that the large number of them will make the average behavior representative on the whole. This is the statistical approach.
+
+What is the scope of the statistical approach? A requirement is that the population is large, and that behavior is sufficiently random. Randomness is the property that makes statistical calculations come out right.
+
+=== Machines, Aggregates, Systems
+
+Consider an attempt to model infection rates in a flu epidemic. If our population is large, and approximately randomly distributed (say, in a city), the analytical approach will likely not be possible, but the statistical one will. In the countryside, by contrast, the population is small, but is not randomly distributed - instead it's clustered in pockets. Any attempt to model using aggregates is therefore bound to fail.
+
+We can consider the general case here: systems with low randomness and low complexity (number of objects) can be treated by the analytical approach, and those with high randomness and (by the law of large numbers) high complexity can be treated with the statistical approach.
+
+This leaves us wth a significant gap: the region of medium to high complexity and low to medium randomness: Organized Complexity. Too complex for analysis and too organized for statistics. This is the area that systems thinking targets. 
+
+image::../images/book_intro_general_systems/randomness_complexity.png[]
+
+=== The Law of Medium Numbers
+
+*For medium number systems, we can expect that large fluctuations, irregularities, and discrepancy with any theory will occur more or less regularly.* Or, *Anything that can happen, will happen.*
+
+Medium number systems are pervasive, but they are the systems we are least able to cope with using the tool of science. (This is not sciences _fault_ - only the user can be blamed for the application of an unsuitable tool).
+
+== Chapter 2: The approach
+
