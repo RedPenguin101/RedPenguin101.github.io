@@ -51,6 +51,9 @@
 
 * *The law of medium Numbers*: For medium number systems, we can expect that large fluctuations, irregularities, and discrepancy with any theory will occur more or less regularly. 
 * *The main article of general systems faith*: That the order of the empirical world itself has an order which might be called order of the second degree
+* *The law of conservation of laws*: Then the facts contradict the law, reject the facts of change the terms, but never throw away the law.
+* *The law of happy particularities*: Any general law must have at least two specific applications.
+* *The law of unhappy particularities*: Any general law is bound to have at least two exceptions.
 * *Composition law*: The whole is more than the sum of it's parts
 * *Decomposition law*: The part is more than a fraction of the whole
 * *The banana principle*: Heuristic devices don't tell you when to stop
@@ -102,6 +105,9 @@
 * Partition
 * White Box / Black Box
 * *Mechanics*: The study of those systems for which the approximations of mechanics work successfully. 
+* General Laws:
+* Analogy
+* Category System
 
 == Chapter 1: The problem
 
@@ -145,5 +151,80 @@ image::../images/book_intro_general_systems/randomness_complexity.png[]
 
 Medium number systems are pervasive, but they are the systems we are least able to cope with using the tool of science. (This is not sciences _fault_ - only the user can be blamed for the application of an unsuitable tool).
 
-== Chapter 2: The approach
+== Chapter 2: The approach: A loose outline
 
+Finding general laws to aid in thinking about medium number systems.
+
+=== Analogy
+
+> Every model is ultimately the expression of one thing we think hope to understand in terms of another thing we think we understand.
+
+Science is fundamentally reductionist: it claims every phenomenon can be reduced to primitives of physics. Compare this to the argument of the organismists, which argues by analogy to the organism,identifying a 'life force' or 'vital essence'. This viewpoint has gone into retreat as the mechanists start to explain these too in terms of the primitives of physics and chemistry. This is not the end of the conversation though: there are plenty of medium-number systems which cannot yet be reduced to physical primitives. The baby of organismic thinking shouldn't be thrown out with the bathwater of vital essence.
+
+Organismic though is in essence an argument from analogy. We continue to refine the analogy, rendering it into a precise, explicit, predictive model. That analogy should be to known mathematical characteristics.
+
+We want to understand the ways in which thinkers use analogies, and convert them into models. This will raise the epistemological question "How do we come to hold the ideas we hold as knowledge"
+
+=== Category Systems
+
+To understand and function within a system, you need to understand the categories of that system. In the land of the blind, the one eyed man is not king. He can't even function. The Anthropologist "Participant Observer" has skill, not within in a particular system, but in understanding and living within the category systems of others. There is a paradigm here, but it is one which exists at a higher level, an abstraction under which the specific systems in its umbrella seem similar. A *generalist* is one who has this higher level category system, and applies it to several disciplines.
+
+A paradox is that progress in a discipline relies on knowledge of, and faith in, the category system. But that knowledge and faith also acts as a straightjacket, preventing the kind of progress which relies on _changing_ that category system.
+
+=== Generality, and second-degree order
+
+The main article of general systems faith: the order of the empirical world itself has an order which might be called order of the second degree.
+
+[quote,Boulding]
+If he delights to find a law he is ecstatic when he finds a law about laws. If laws in his eyes are good, laws about laws are delicious and are most praiseworthy objects of search.
+
+General laws permit us to draw conclusions about cases not yet observed.
+
+To discover general systems laws, the generalist starts with the laws of different disciplines, searches for similarities among them, and induces from them a law about laws.
+
+This approach has the weaknesses of induction: induction doesn't always work, so these conclusions will not always be right. The generalist must accept this, and always be ready to be wrong. You will find out that you are wrong soon enough, and the errors will serve to refine the general laws.
+
+> To be a successful generalist, one must study the art of ignoring data and of seeing only the "mere outlines" of things.
+
+=== The nature of laws
+
+The pattern of a scientific assertion conditional: "If so ... then so". The condition is often dropped for brevity, but it is essential. The first law of thermodynamics is usually stated as "total energy in a system is constant". But the true law is more like:
+
+> If we have a system to which energy is neither added nor removed, and if we measure the energy of the system without affecting that energy, then every measurement will give us the same value.
+
+If, in our observation, we don't see that behaviour, we will conclude that either the law doesn't hold for this system, or one of the conditions is not met.
+
+Laws play many different roles:
+
+* They prescribe guides to measurement
+* They define terms
+* They remind us to look for things they haven't noticed
+* They predict behaviour
+* They provide a focal point for us to discuss all of the above
+
+It's sometimes said that a quality of the scientific method is that a single negative observation will lead to a law being disgarded. This is untrue. The law is the last thing to change - the terms or conditions will always be adjusted to fit the law. This suggests the *law of conservation of laws*: When the facts contradict the law, reject the facts of change the terms, but never throw away the law.
+
+All of this suggests the obvious: laws can be stated in many different ways for different purposes.
+
+=== Avoiding errors in general system laws
+
+A general law risks _overgenerality_. To prevent this, we state the *law of happy particularities*: any general law must have at least two specific applications.
+
+However we also risk not being bold enough in our generalization, and so missing valuable insight. To counter this we state the *law of unhappy particularities*: any general law must have at least two _exceptions_.
+
+These two address the pitfalls of generality. To address the pitfalls of systems, we state the complementary (and seemingly contradictory) laws:
+
+* The *Composition law*: The whole is more than the sum of it's parts
+* The *Decomposition law*: The part is more than a fraction of the whole
+
+=== Varieties of systems thinking
+
+There are three sorts of activities involving models:
+
+. Improving thought process
+. Studying special systems
+. Creating new laws and refining old
+
+We focus on the first.
+
+The contribution of the general systems approach to thinking is in how new subjects are approached by the generalist. By bringing general laws, you don't have to start from scratch, but can recognize specific laws of the discipline as particular instances of general laws. From the perspective of the particular discipline, the amount of specific utility of the general law might be small, but it is nonetheless an advantage. There is a mapping of existing general knowledge onto the specific cases. And from the general model, "sharp questions" can be posed quickly, which themselves contribute to quick uptake of the subject.
