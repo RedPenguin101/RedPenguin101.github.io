@@ -219,12 +219,4 @@ These two address the pitfalls of generality. To address the pitfalls of systems
 
 === Varieties of systems thinking
 
-There are three sorts of activities involving models:
-
-. Improving thought process
-. Studying special systems
-. Creating new laws and refining old
-
-We focus on the first.
-
 The contribution of the general systems approach to thinking is in how new subjects are approached by the generalist. By bringing general laws, you don't have to start from scratch, but can recognize specific laws of the discipline as particular instances of general laws. From the perspective of the particular discipline, the amount of specific utility of the general law might be small, but it is nonetheless an advantage. There is a mapping of existing general knowledge onto the specific cases. And from the general model, "sharp questions" can be posed quickly, which themselves contribute to quick uptake of the subject.
