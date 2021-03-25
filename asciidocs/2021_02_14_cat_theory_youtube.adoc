@@ -4,6 +4,8 @@ https://www.youtube.com/playlist?list=PLVFrD1dmDdvcjCQDPhExqP56jqxp0Ssn_[Playlis
 
 https://github.com/hmemcpy/milewski-ctfp-pdf[textbook]
 
+image::../images/2021_02_14_cat_theory_youtube/cat_tool_thought.png[]
+
 == Video 1: Chapter 1: Category: The essence of composition
 
 9 pages
@@ -78,12 +80,18 @@ https://ict.senecacollege.ca/~oop244/pages.141/content/adhoc_p.html[Parametric P
 
 simple and powerful
 
-Traditionally: A set (*type*) with an associative *binary operation* and a special *identity* element. Stated "[set] under [operation]" e.g. the set of natural numbers under addition.
+Traditionally: 
+
+* A set (*type*) with 
+* an associative *binary operation* `a -> a -> a` 
+* a special *identity* element. 
+
+Stated "[set] under [operation]" e.g. the set of natural numbers under addition (where identity is 0).
 
 * https://www.youtube.com/watch?v=INnattuluiM&t=0s[Ben Deane explanation]
 * https://www.youtube.com/watch?v=giWCdQ7fnQU&t=0s[David Sankel explanation]
 
-Reduce often makes use of monoids: `reduce* :: (a -> a) -> a -> f a -> a`
+Reduce / fold often makes use of monoids: `reduce* :: (a -> a -> a) -> a -> [a] -> a`, or a binary operation, identity and collection. `sum xs = reduce + 0 xs` 
 
 Haskell type class for monoids:
 
@@ -96,3 +104,108 @@ class Monoid m where
 
 `mempty` is the identity element, `mappend` is the binary function.
 
+== Video 4: Kleisli categories
+
+. The writer category
+. Writer in Haskell
+. Kleisli categories
+
+Say you have a function `negate :: bool -> bool`, and you want to add logging to it. You could do something like:
+
+[source,c++]
+----
+string logger;
+
+bool negate(bool b) {
+  logger += "Not so! ";
+  return !b;
+}
+----
+
+This is suboptimal because (among other reasons) it's not a pure function.
+
+[source,c++]
+----
+pair<bool, string> negate(bool b, string logger){
+  return make_pair(!b, logger + "Not so! ");
+}
+----
+
+This is better, but gets messy to unit test etc.
+
+[source,c++]
+----
+pair<bool, string> negate(bool b){
+  return make_pair(!b, "Not so! ");
+}
+----
+
+In this version we don't bother with the logger in the function itself, but we do return the log entry as a second element of the pair. We can then write a function like this, which when you have several such functions taking an `a` and returning a `(a, s)`, you can put them together: 
+
+[source,c++]
+----
+Writer<vector<string>> process(string s) {
+  auto p1 = toUpper(s);
+  auto p2 = toWords(p1.first);
+  return make_pair(p2.first, p1.second + p2.second)
+}
+----
+
+We can generalise this to the Kleisli or 'fish' operator `>=>`, which composes together functions which return 'elaborated' outputs. So in the case of the Writer elaboration:
+
+`(>=>) :: (a -> Writer b) -> (b -> Writer c) -> (a -> Writer c)`
+
+[source,haskell]
+----
+type Writer a = (a, String)
+
+( >=> ) :: (a -> Writer b) -> (b -> Writer c) -> (a -> Writer c)
+m1 >=> m2 = \ x ->
+    let (y, s1) = m1 x
+        (z, s2) = m2 y
+    in (z, s1 ++ s2)
+
+return :: a -> Writer a
+return x = (x, "")
+
+upCase :: String -> Writer String
+upCase :: (map toUpper s, "upCase ")
+
+toWords :: String -> Writer [String]
+toWords s = (words s, "toWords ")
+
+process :: String -> Writer [String]
+process = upCase >=> toWords
+----
+
+[source,clojure]
+----
+(defn >=> [m1 m2]
+  (fn [x]
+    (let [[y s1] (m1 x) [z s2] (m2 y)]
+      [z (str s1 s2)])))
+
+(defn upCase [string] [(str/upper-case string) "upCase "])
+(defn toWords [string] [(str/split string #" ") "toWords "])
+(def process (>=> upCase toWords))
+(process "hello world")
+;; => [["HELLO" "WORLD"] "upCase toWords "]
+----
+
+== Video 5: Products and Coproducts
+
+. Initial Object
+. Terminal Object
+. Duality
+. Isomorphisms
+. Products
+. Coproducts
+. Asymmetry
+
+The *initial object* is the object that has one and only one morphism going to any object in the category. Think of a DAG where the nodes are objects and the edges are the morphisms. The initial object is a node with no edges coming into it. A *terminal object* is the opposite: it has one and only one morphism coming _into_ it from any object in the category.
+
+Note that the initial and terminal objects have a *duality*: the only difference is the direction of the morphisms. So for category C you can define the opposite category C^op by reversing the directions of all the arrows.
+
+In Math, an *isomorphism* is where you have a mapping `f(a)=b`, and a `f'(b)=a`, where `f` and `f'` are the inverse of each other. In category theory, we just replace the mapping with with morphism. i.e. an isomorphism is a reversible / invertable morphism.
+
+A *product* 
