@@ -35,9 +35,9 @@ Evaluation can take place in different orders. Namely, applicative order is the 
 
 A *predicate* is a procedure that returns true or false.
 
-Procedures are analogous to mathematical functions, with one addition: they must be effective. Consider a mathematical function `sqrt x = y ST y>=0 and y^2 = x`. This is not enough to make a procedure. A procedure must be executable. A procedure must be imperative.
+Procedures are analogous to mathematical functions, with one addition: they must be effective. Consider a mathematical function `sqrt x = y ST y>=0 and y^2 = x`. This is not enough to make a procedure, because it doesn't tell you _how_ to get to y. A procedure must be executable. A procedure must be imperative.
 
-A method for calculating square roots is Newtons method for successive approximations.
+A method for calculating square roots is using a specific case of Newton's method for successive approximations.
 
 . Guess y
 . If y is good enough, stop
@@ -57,11 +57,11 @@ In code:
     (sqrt-iter (improve guess x) x)))
 ----
 
-Computing square roots like this breaks up into a number of sub-problems, each having a procedure. Any program can be divided into parts. The point is to divide it such that each part accomplishes an identifiable and independently meaningful task. In this way, we may treat each subcomponent as a black box. When I am developing `sqrt-iter`, I don't _need_ to know how George is implementing `improve`, only that it returns an improved guess. The detail is suppressed. From this perspective, it is a *procedural abstraction*.
+Computing square roots like this breaks up into a number of sub-problems, each having a procedure. Any program can be divided into parts in many ways. The point is to divide it such that each part accomplishes an identifiable and independently meaningful task. In this way, we may treat each subcomponent as a black box. When I am developing `sqrt-iter`, I don't _need_ to know how George is implementing `improve`, only that it returns an improved guess. The detail is suppressed. From this perspective, it is a *procedural abstraction*.
 
 The procedure `(defn square [x] (* x x))` has the name `x` that is local to its scope. It is a *bound variable* - the procedure definition _binds_ its formal parameters. If a variable is not bound, it is *free*. In `(defn sum-of-squares [x y] (+ (square x) (square y)))`, `square` is a free variable.
 
-We can take advantage of *lexical scoping* to simplify (and limit the scope of) our procedures. Note in the following how `good-enough?` and `improve` now take a single input: guess, since `x` can be a free variable in those definitions.
+We can take advantage of *lexical scoping* to simplify (and limit the scope of) our procedures. Note in the following how `good-enough?` and `improve` now take a single input: guess, since `x` is bound in the lexical scope of the block that these functions exist in, it can be a free variable in those definitions.
 
 [source,clojure]
 ----
@@ -78,7 +78,7 @@ A procedure describes the local evolution of a process. Learning to visualize th
 
 Processes, as they evolve, take up time and space.
 
-Consider the factorial function `n! = n*(n-1)*(n-2)...3*2*1`, and observe that `n!=n*(n-1)!`. In other words, this can be defined recursively.
+Consider the factorial function `n! = n * (n-1) * (n-2) ... 3 * 2 * 1`, and observe that `n!=n*(n-1)!`. In other words, this can be defined recursively.
 
 [source,clojure]
 (defn factorial [n] (if (= n 1) 1 (* n (factorial (dec n)))))
@@ -148,7 +148,7 @@ But this is again recursive. Making this iterative is tough (and an exercise).
 
 We've seen that procedures are abstractions of compound operations.
 
-A limitation of what we've seen so far is that you can only create abstractions across data inputs. To take it to the next level, you want to be able to construct that accept and apply _other procedures_. Such things are called *higher order procedures*.
+A limitation of what we've seen so far is that you can only create abstractions across data inputs. To take it to the next level, you want to be able to construct procedures that accept and apply _other procedures_. Such things are called *higher order procedures*.
 
 Consider the two functions
 
@@ -161,7 +161,7 @@ Clearly these share a lot of similarity. They all follow the pattern
 
 `(defn name [a b] (if (> a b) 0 (+ (term a) (name (next a) b))))`
 
-This indicates an underlying pattern worthy of higher level abstraction - and indeed, this is the expression of the 'summation of a series', or sigma notation. `Σf(n)`. This allows mathematicians to express the concept of summation independent of what is actually being summed. We can do the same thing using higher order functions.
+This indicates an underlying pattern worthy of higher level abstraction - and indeed, this is the expression of the 'summation of a series', or sigma notation. `Σf(n)`. This allows mathematicians to express the concept of summation independent of what is actually being summed. We can do the same thing using higher order functions. In the following, term and next are procedures.
 
 [source,clojure]
 (defn sum [term a next b] (if (> a b) 0 (+ (term a) (pi-sum (next a) b))))
@@ -218,15 +218,185 @@ Finding the fixed point of a function (where `f(x)=x`) can be done in a similar 
 ;; => 1.2587315962971173
 ----
 
-This is effectively an abstraction on the Newton method for finding square roots we looked at earlier, and we can create a sqrt fn like `(defn sqrt [x] (fixed-point (fn [y] (/ x y)) 1.0))`. However note that this would fail to converge because guesses would repeat - hence we need to define f to be `(average y (/ x y))` - exactly as Newton's method dictates. This pattern of preventing the guesses from changing too much is called *average damping*
+This is effectively an abstraction on the method for finding square roots we looked at earlier, and we can create a sqrt fn like `(defn sqrt [x] (fixed-point (fn [y] (/ x y)) 1.0))`. However note that this would fail to converge because guesses would repeat. Hence we need to define f to be `(average y (/ x y))` - exactly as we did above. This pattern of preventing the guesses from changing too much is called *average damping*
 
 We saw how allowing procedures to be passed as arguments we can make our procedures more expressive and general. We can further enhance this by allowing functions to be _returned_ from procedures. Take the average damping process mentioned above. A 1-arity function can be transformed to an average damped version like `(defn average-damp [f] (fn [x] (average x (f x))))`. Our sqrt function can now be defined as `(defn sqrt [x] (fixed-point (average-damp (fn [y] (/ x y))) 1.0))`.
 
-Note now that the 3 ideas that comprise the Newton method of squaring are _totally explicit_: fixed-point search, average damping, and the function x/y. The outcome, and even the way the process evolves is identical to our original sqrt function, but the _idea_ of what it is doing is so much clearer. In addition, the individual ideas can now be reused in other contexts. An experienced programmer can express her ideas in this clear and modular way.
+Note now that the 3 ideas that comprise the method of squaring are _totally explicit_: fixed-point search, average damping, and the function `x/y`. The outcome, and even the way the process evolves is identical to our original sqrt function, but the _idea_ of what it is doing is so much clearer. In addition, the individual ideas can now be reused in other contexts. An experienced programmer can express her ideas in this clear and modular way.
 
+=== Newtons Method
 
+We've been playing with Newton's method for a while without expressing exactly what it is. It is the use of the fixed point method to approximate a solution of an equation. If `g(x)` is a differentiable function, then the solution of the equation `g(x)=0` is the fixed point of `f(x)` (i.e. `f(x)=x`), where `f(x)=x - g(x)/Dg(x)`, where `Dg(x)` is the derivative of g evaluated at x.
+
+We can express the idea of a 'derivative' as `Dg(x) = (g(x+dx)-g(x)) / dx`.
+
+So we can express this idea with a procedure, and use it to calculate the derivative of `g(x)=x^3` at `x=5`, which computationally we know is `3^x2`, or 75 at x=5.
+
+[source,clojure]
+(def dx 0.00001)
+(defn deriv [g] (fn [x] (/ (- (g (+ x dx)) (g x)) dx)))
+((deriv cube) 5)
+;; => 75.00014999664018
+
+Now we can express Newton's method more generally, and use it in an even more explicit version of sqrt:
+
+[souce,clojure]
+(defn newton-transform [g]
+  (fn [x] (- x (/ (g x) ((deriv g) x)))))
+(defn newtons-method [g guess]
+  (fixed-point (newton-transform g) guess))
+(defn sqrt [x] (newtons-method #(- (square %) x) 1.0))
+(sqrt 2)
+;; => 1.4142135623822438
+
+> As programmers, we should be alert to opportunities to identify the underlying abstractions in our programs and to build upon them and generalize them to create more powerful abstractions. This is not to say that one should always write programs in the most abstract way possible; expert programmers know how to choose the level of abstraction appropriate to their task. But it is important to be able to think in terms of these abstractions, so that we can be ready to apply them in new contexts. The significance of higher-order procedures is that they enable us to represent these abstractions explicitly as elements in our programming language, so that they can be handled just like other computational elements.
 
 == Building abstractions with data
+
+So far we've looked at procedural abstractions operating on numerical data. Usually, we'll need to build more complex abstractions on data types themselves. In particular, _compound data types_. Similarly to procedural abstractions, this will allow us to elevate the conceptual level at which we can design our programs.
+
+Consider rational numbers (i.e. those that can be expressed as x/y, where x and y are integers). We could design a program where we we deal with and track numerators and denominators separately. But it would be better if we could 'glue together' the two numbers, and deal with them as a single thing, and we can separate how we deal with rational numbers from their concrete representation, such separation forming an *abstraction barrier* between different parts of a program.
+
+=== Introduction to data abstraction
+
+A data abstraction is when you use compound data objects so that they operate on abstract data. The concrete data representation is defined independently from the programs that use the data. We use *selectors* and *constructors* to interface between the two thing.
+
+Consider an API for a rational numbers abstraction:
+
+[source,clojure]
+(make-rat <n> <d>)
+(numer <x>)
+(denom <x>)
+
+This is an example of the *wishful thinking* strategy. We haven't talked about how this will be implemented, only the operations we would like to use to interact with rationals. Using these, we can trivially implement higher level operations on rationals:
+
+[source,clojure]
+(defn add-r [x y] 
+  (make-rat (+ (* (numer x1) (denom x2)) (* (numer x2) (denom x1))) 
+            (* (denom x1) (denom x2))))
+
+We can implement a data structure for rationals with a pair:
+
+[source,clojure]
+----
+(defn make-rat [n d] (list n d)) 
+(defn numer [x] (first x)) 
+(defn denom [x] (second x)) 
+----
+
+Note that make-rat doesn't reduce its arguments to the gcd, but can be made to do so trivially.
+
+We can envision this schema as a series of abstraction barriers, where at each level separated by a barrier, the level doesn't need to know how the implementation below it works. This makes programs easier to maintain and modify, since provided we don't change the API, we can change how lower level procedures are implemented without breaking the client.
+
+----
+=== Programs that use rational number ===
+    Rational numbers in problem domain
+========= add-rat, sub-rat etc. =========
+    Rational numbers as numer / denom
+======= make-rat, numer, denom ==========
+       Rational numbers as pairs
+========= list, first, second ===========
+    Language implementation of lists
+----
+
+It is worth pausing to consider what we mean by data. We implemented rationals with `list` `first` and `second` above, but we don't know how the language implements them. We assume there is some underlying 'stuff' which allows us to glue together two numbers and then later retrieve them. In fact we can easily implement these without any such underlying data, using only procedures:
+
+[source,clojure]
+----
+(defn list [x y]
+  (fn [m]
+    (cond (= m 0) x
+          (= m 1) y
+          :else (throw (ex-info "Argument not 0 or 1" [x y m])))))
+
+(defn first [z] (z 0))
+(defn second [z] (z 1))
+----
+
+=== Symbolic data
+
+==== Symbolic differentiation example
+
+We will write a program to do automatic differentiation, encoding the following rules:
+
+image::../images/book_sicp/1_2_4_diffs1.gif[]
+image::../images/book_sicp/1_2_4_diffs2.gif[]
+image::../images/book_sicp/1_2_4_diffs3.gif[]
+image::../images/book_sicp/1_2_4_diffs4.gif[]
+
+Our initial evaluator looks like this:
+
+[source,clojure]
+----
+(defn deriv [exp var]
+  (cond (number? exp) 0
+        (variable? exp) (if (same-variable? exp var) 1 0)
+        (sum? exp) (make-sum (deriv (addend exp) var)
+                             (deriv (augend exp) var))
+        (product? exp) (make-sum (make-product (multiplier exp)
+                                               (deriv (multiplicand exp) var))
+                                 (make-product (deriv (multiplier exp) var)
+                                               (multiplicand exp)))
+        :else (throw (ex-info "unknown expression type -- DERIV" exp))))
+----
+
+With one cond branch for each rule. There are a number of procedures we need to create (number? is a built-in in Clojure). To do that, we need to decide on a representation of an expression to be evaluated. Since we have perfectly good list-syntax, with `+` and `*` we can use that. So the exp in the above will look like `'(* (* x y) (+ x 3))`.
+
+[source,clojure]
+----
+
+(def variable? symbol?)
+(defn same-variable? [a b] (and (every? symbol? [a b]) (= a b)))
+(defn sum? [expr] (and (seq expr) (= (first expr) '+)))
+(defn product? [expr] (and (seq expr) (= (first expr) '*)))
+(defn make-sum [e1 e2] (list '+ e1 e2))
+(defn make-product [e1 e2] (list '* e1 e2))
+(defn addend [expr] (nth expr 1))
+(defn augend [expr] (nth expr 2))
+(defn multiplier [expr] (nth expr 1))
+(defn multiplicand [expr] (nth expr 2))
+
+(deriv 1 'x)
+;; => 0
+(deriv '(+ x 3) 'x)
+;; => (+ 1 0)
+(deriv '(* x y) 'x)
+;; => (+ (* x 0) (* 1 y))
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; => (+ (* (* x y) (+ 1 0)) (* (+ (* x 0) (* 1 y)) (+ x 3)))
+----
+
+Unfortunately, the terms aren't being simplified. `(+ (* x 0) (* 1 y))` is obviously just `y`.
+
+We can fix that by iterating our make-sum and make-product so they handle the cases where both values are numbers, the identity cases, and (for multiplication) the null cases.
+
+[source,clojure]
+----
+(defn make-sum [e1 e2]
+  (cond (every? number? [e1 e2]) (+ e1 e2)
+        (and (number? e1) (zero? e1)) e2
+        (and (number? e2) (zero? e2)) e1
+        :else (list '+ e1 e2)))
+
+(defn make-product [e1 e2]
+  (cond (every? number? [e1 e2]) (* e1 e2)
+        (and (number? e1) (zero? e1)) 0
+        (and (number? e1) (= 1 e1)) e2
+        (and (number? e2) (zero? e2)) 0
+        (and (number? e2) (= 1 e2)) e1
+        :else (list '* e1 e2)))
+
+(deriv 1 'x)
+;; => 0
+(deriv '(+ x 3) 'x)
+;; => 1
+(deriv '(* x y) 'x)
+;; => y
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; => (+ (* x y) (* y (+ x 3)))
+----
+
+=== Hierarchical Data and the Closure property
 
 == Modularity, objects and state
 

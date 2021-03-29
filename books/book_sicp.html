@@ -506,10 +506,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>A <strong>predicate</strong> is a procedure that returns true or false.</p>
 </div>
 <div class="paragraph">
-<p>Procedures are analogous to mathematical functions, with one addition: they must be effective. Consider a mathematical function <code>sqrt x = y ST y&gt;=0 and y^2 = x</code>. This is not enough to make a procedure. A procedure must be executable. A procedure must be imperative.</p>
+<p>Procedures are analogous to mathematical functions, with one addition: they must be effective. Consider a mathematical function <code>sqrt x = y ST y&gt;=0 and y^2 = x</code>. This is not enough to make a procedure, because it doesn&#8217;t tell you <em>how</em> to get to y. A procedure must be executable. A procedure must be imperative.</p>
 </div>
 <div class="paragraph">
-<p>A method for calculating square roots is Newtons method for successive approximations.</p>
+<p>A method for calculating square roots is using a specific case of Newton&#8217;s method for successive approximations.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -540,13 +540,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>Computing square roots like this breaks up into a number of sub-problems, each having a procedure. Any program can be divided into parts. The point is to divide it such that each part accomplishes an identifiable and independently meaningful task. In this way, we may treat each subcomponent as a black box. When I am developing <code>sqrt-iter</code>, I don&#8217;t <em>need</em> to know how George is implementing <code>improve</code>, only that it returns an improved guess. The detail is suppressed. From this perspective, it is a <strong>procedural abstraction</strong>.</p>
+<p>Computing square roots like this breaks up into a number of sub-problems, each having a procedure. Any program can be divided into parts in many ways. The point is to divide it such that each part accomplishes an identifiable and independently meaningful task. In this way, we may treat each subcomponent as a black box. When I am developing <code>sqrt-iter</code>, I don&#8217;t <em>need</em> to know how George is implementing <code>improve</code>, only that it returns an improved guess. The detail is suppressed. From this perspective, it is a <strong>procedural abstraction</strong>.</p>
 </div>
 <div class="paragraph">
 <p>The procedure <code>(defn square [x] (* x x))</code> has the name <code>x</code> that is local to its scope. It is a <strong>bound variable</strong> - the procedure definition <em>binds</em> its formal parameters. If a variable is not bound, it is <strong>free</strong>. In <code>(defn sum-of-squares [x y] (+ (square x) (square y)))</code>, <code>square</code> is a free variable.</p>
 </div>
 <div class="paragraph">
-<p>We can take advantage of <strong>lexical scoping</strong> to simplify (and limit the scope of) our procedures. Note in the following how <code>good-enough?</code> and <code>improve</code> now take a single input: guess, since <code>x</code> can be a free variable in those definitions.</p>
+<p>We can take advantage of <strong>lexical scoping</strong> to simplify (and limit the scope of) our procedures. Note in the following how <code>good-enough?</code> and <code>improve</code> now take a single input: guess, since <code>x</code> is bound in the lexical scope of the block that these functions exist in, it can be a free variable in those definitions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -567,7 +567,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Processes, as they evolve, take up time and space.</p>
 </div>
 <div class="paragraph">
-<p>Consider the factorial function <code>n! = n*(n-1)<strong>(n-2)&#8230;&#8203;3*2*1</code>, and observe that <code>n!=n</strong>(n-1)!</code>. In other words, this can be defined recursively.</p>
+<p>Consider the factorial function <code>n! = n * (n-1) * (n-2) &#8230;&#8203; 3 * 2 * 1</code>, and observe that <code>n!=n*(n-1)!</code>. In other words, this can be defined recursively.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -674,7 +674,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>We&#8217;ve seen that procedures are abstractions of compound operations.</p>
 </div>
 <div class="paragraph">
-<p>A limitation of what we&#8217;ve seen so far is that you can only create abstractions across data inputs. To take it to the next level, you want to be able to construct that accept and apply <em>other procedures</em>. Such things are called <strong>higher order procedures</strong>.</p>
+<p>A limitation of what we&#8217;ve seen so far is that you can only create abstractions across data inputs. To take it to the next level, you want to be able to construct procedures that accept and apply <em>other procedures</em>. Such things are called <strong>higher order procedures</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Consider the two functions</p>
@@ -693,7 +693,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>(defn name [a b] (if (&gt; a b) 0 (+ (term a) (name (next a) b))))</code></p>
 </div>
 <div class="paragraph">
-<p>This indicates an underlying pattern worthy of higher level abstraction - and indeed, this is the expression of the 'summation of a series', or sigma notation. <code>Σf(n)</code>. This allows mathematicians to express the concept of summation independent of what is actually being summed. We can do the same thing using higher order functions.</p>
+<p>This indicates an underlying pattern worthy of higher level abstraction - and indeed, this is the expression of the 'summation of a series', or sigma notation. <code>Σf(n)</code>. This allows mathematicians to express the concept of summation independent of what is actually being summed. We can do the same thing using higher order functions. In the following, term and next are procedures.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -759,13 +759,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>This is effectively an abstraction on the Newton method for finding square roots we looked at earlier, and we can create a sqrt fn like <code>(defn sqrt [x] (fixed-point (fn [y] (/ x y)) 1.0))</code>. However note that this would fail to converge because guesses would repeat - hence we need to define f to be <code>(average y (/ x y))</code> - exactly as Newton&#8217;s method dictates. This pattern of preventing the guesses from changing too much is called <strong>average damping</strong></p>
+<p>This is effectively an abstraction on the method for finding square roots we looked at earlier, and we can create a sqrt fn like <code>(defn sqrt [x] (fixed-point (fn [y] (/ x y)) 1.0))</code>. However note that this would fail to converge because guesses would repeat. Hence we need to define f to be <code>(average y (/ x y))</code> - exactly as we did above. This pattern of preventing the guesses from changing too much is called <strong>average damping</strong></p>
 </div>
 <div class="paragraph">
 <p>We saw how allowing procedures to be passed as arguments we can make our procedures more expressive and general. We can further enhance this by allowing functions to be <em>returned</em> from procedures. Take the average damping process mentioned above. A 1-arity function can be transformed to an average damped version like <code>(defn average-damp [f] (fn [x] (average x (f x))))</code>. Our sqrt function can now be defined as <code>(defn sqrt [x] (fixed-point (average-damp (fn [y] (/ x y))) 1.0))</code>.</p>
 </div>
 <div class="paragraph">
-<p>Note now that the 3 ideas that comprise the Newton method of squaring are <em>totally explicit</em>: fixed-point search, average damping, and the function x/y. The outcome, and even the way the process evolves is identical to our original sqrt function, but the <em>idea</em> of what it is doing is so much clearer. In addition, the individual ideas can now be reused in other contexts. An experienced programmer can express her ideas in this clear and modular way.</p>
+<p>Note now that the 3 ideas that comprise the method of squaring are <em>totally explicit</em>: fixed-point search, average damping, and the function <code>x/y</code>. The outcome, and even the way the process evolves is identical to our original sqrt function, but the <em>idea</em> of what it is doing is so much clearer. In addition, the individual ideas can now be reused in other contexts. An experienced programmer can express her ideas in this clear and modular way.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_newtons_method">Newtons Method</h3>
+<div class="paragraph">
+<p>We&#8217;ve been playing with Newton&#8217;s method for a while without expressing exactly what it is. It is the use of the fixed point method to approximate a solution of an equation. If <code>g(x)</code> is a differentiable function, then the solution of the equation <code>g(x)=0</code> is the fixed point of <code>f(x)</code> (i.e. <code>f(x)=x</code>), where <code>f(x)=x - g(x)/Dg(x)</code>, where <code>Dg(x)</code> is the derivative of g evaluated at x.</p>
+</div>
+<div class="paragraph">
+<p>We can express the idea of a 'derivative' as <code>Dg(x) = (g(x+dx)-g(x)) / dx</code>.</p>
+</div>
+<div class="paragraph">
+<p>So we can express this idea with a procedure, and use it to calculate the derivative of <code>g(x)=x^3</code> at <code>x=5</code>, which computationally we know is <code>3^x2</code>, or 75 at x=5.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def dx 0.00001)
+(defn deriv [g] (fn [x] (/ (- (g (+ x dx)) (g x)) dx)))
+((deriv cube) 5)
+;; =&gt; 75.00014999664018</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can express Newton&#8217;s method more generally, and use it in an even more explicit version of sqrt:</p>
+</div>
+<div class="paragraph">
+<p>(defn newton-transform [g]
+  (fn [x] (- x (/ (g x) deriv g) x)))
+(defn newtons-method [g guess]
+  (fixed-point (newton-transform g) guess))
+(defn sqrt [x] (newtons-method #(- (square %) x) 1.0))
+(sqrt 2)
+;; &#8658; 1.4142135623822438</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>As programmers, we should be alert to opportunities to identify the underlying abstractions in our programs and to build upon them and generalize them to create more powerful abstractions. This is not to say that one should always write programs in the most abstract way possible; expert programmers know how to choose the level of abstraction appropriate to their task. But it is important to be able to think in terms of these abstractions, so that we can be ready to apply them in new contexts. The significance of higher-order procedures is that they enable us to represent these abstractions explicitly as elements in our programming language, so that they can be handled just like other computational elements.</p>
+</div>
+</blockquote>
 </div>
 </div>
 </div>
@@ -773,7 +812,189 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_building_abstractions_with_data">Building abstractions with data</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>So far we&#8217;ve looked at procedural abstractions operating on numerical data. Usually, we&#8217;ll need to build more complex abstractions on data types themselves. In particular, <em>compound data types</em>. Similarly to procedural abstractions, this will allow us to elevate the conceptual level at which we can design our programs.</p>
+</div>
+<div class="paragraph">
+<p>Consider rational numbers (i.e. those that can be expressed as x/y, where x and y are integers). We could design a program where we we deal with and track numerators and denominators separately. But it would be better if we could 'glue together' the two numbers, and deal with them as a single thing, and we can separate how we deal with rational numbers from their concrete representation, such separation forming an <strong>abstraction barrier</strong> between different parts of a program.</p>
+</div>
+<div class="sect2">
+<h3 id="_introduction_to_data_abstraction">Introduction to data abstraction</h3>
+<div class="paragraph">
+<p>A data abstraction is when you use compound data objects so that they operate on abstract data. The concrete data representation is defined independently from the programs that use the data. We use <strong>selectors</strong> and <strong>constructors</strong> to interface between the two thing.</p>
+</div>
+<div class="paragraph">
+<p>Consider an API for a rational numbers abstraction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(make-rat &lt;n&gt; &lt;d&gt;)
+(numer &lt;x&gt;)
+(denom &lt;x&gt;)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is an example of the <strong>wishful thinking</strong> strategy. We haven&#8217;t talked about how this will be implemented, only the operations we would like to use to interact with rationals. Using these, we can trivially implement higher level operations on rationals:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn add-r [x y]
+  (make-rat (+ (* (numer x1) (denom x2)) (* (numer x2) (denom x1)))
+            (* (denom x1) (denom x2))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can implement a data structure for rationals with a pair:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn make-rat [n d] (list n d))
+(defn numer [x] (first x))
+(defn denom [x] (second x))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that make-rat doesn&#8217;t reduce its arguments to the gcd, but can be made to do so trivially.</p>
+</div>
+<div class="paragraph">
+<p>We can envision this schema as a series of abstraction barriers, where at each level separated by a barrier, the level doesn&#8217;t need to know how the implementation below it works. This makes programs easier to maintain and modify, since provided we don&#8217;t change the API, we can change how lower level procedures are implemented without breaking the client.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>=== Programs that use rational number ===
+    Rational numbers in problem domain
+========= add-rat, sub-rat etc. =========
+    Rational numbers as numer / denom
+======= make-rat, numer, denom ==========
+       Rational numbers as pairs
+========= list, first, second ===========
+    Language implementation of lists</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is worth pausing to consider what we mean by data. We implemented rationals with <code>list</code> <code>first</code> and <code>second</code> above, but we don&#8217;t know how the language implements them. We assume there is some underlying 'stuff' which allows us to glue together two numbers and then later retrieve them. In fact we can easily implement these without any such underlying data, using only procedures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn list [x y]
+  (fn [m]
+    (cond (= m 0) x
+          (= m 1) y
+          :else (throw (ex-info "Argument not 0 or 1" [x y m])))))
 
+(defn first [z] (z 0))
+(defn second [z] (z 1))</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_symbolic_data">Symbolic data</h3>
+<div class="sect3">
+<h4 id="_symbolic_differentiation_example">Symbolic differentiation example</h4>
+<div class="paragraph">
+<p>We will write a program to do automatic differentiation, encoding the following rules:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs1.gif" alt="1 2 4 diffs1">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs2.gif" alt="1 2 4 diffs2">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs3.gif" alt="1 2 4 diffs3">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs4.gif" alt="1 2 4 diffs4">
+</div>
+</div>
+<div class="paragraph">
+<p>Our initial evaluator looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn deriv [exp var]
+  (cond (number? exp) 0
+        (variable? exp) (if (same-variable? exp var) 1 0)
+        (sum? exp) (make-sum (deriv (addend exp) var)
+                             (deriv (augend exp) var))
+        (product? exp) (make-sum (make-product (multiplier exp)
+                                               (deriv (multiplicand exp) var))
+                                 (make-product (deriv (multiplier exp) var)
+                                               (multiplicand exp)))
+        :else (throw (ex-info "unknown expression type -- DERIV" exp))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With one cond branch for each rule. There are a number of procedures we need to create (number? is a built-in in Clojure). To do that, we need to decide on a representation of an expression to be evaluated. Since we have perfectly good list-syntax, with <code>+</code> and <code><strong></code> we can use that. So the exp in the above will look like <code>'(</strong> (* x y) (+ x 3))</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def variable? symbol?)
+(defn same-variable? [a b] (and (every? symbol? [a b]) (= a b)))
+(defn sum? [expr] (and (seq expr) (= (first expr) '+)))
+(defn product? [expr] (and (seq expr) (= (first expr) '*)))
+(defn make-sum [e1 e2] (list '+ e1 e2))
+(defn make-product [e1 e2] (list '* e1 e2))
+(defn addend [expr] (nth expr 1))
+(defn augend [expr] (nth expr 2))
+(defn multiplier [expr] (nth expr 1))
+(defn multiplicand [expr] (nth expr 2))
+
+(deriv 1 'x)
+;; =&gt; 0
+(deriv '(+ x 3) 'x)
+;; =&gt; (+ 1 0)
+(deriv '(* x y) 'x)
+;; =&gt; (+ (* x 0) (* 1 y))
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; =&gt; (+ (* (* x y) (+ 1 0)) (* (+ (* x 0) (* 1 y)) (+ x 3)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unfortunately, the terms aren&#8217;t being simplified. <code>(+ (* x 0) (* 1 y))</code> is obviously just <code>y</code>.</p>
+</div>
+<div class="paragraph">
+<p>We can fix that by iterating our make-sum and make-product so they handle the cases where both values are numbers, the identity cases, and (for multiplication) the null cases.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn make-sum [e1 e2]
+  (cond (every? number? [e1 e2]) (+ e1 e2)
+        (and (number? e1) (zero? e1)) e2
+        (and (number? e2) (zero? e2)) e1
+        :else (list '+ e1 e2)))
+
+(defn make-product [e1 e2]
+  (cond (every? number? [e1 e2]) (* e1 e2)
+        (and (number? e1) (zero? e1)) 0
+        (and (number? e1) (= 1 e1)) e2
+        (and (number? e2) (zero? e2)) 0
+        (and (number? e2) (= 1 e2)) e1
+        :else (list '* e1 e2)))
+
+(deriv 1 'x)
+;; =&gt; 0
+(deriv '(+ x 3) 'x)
+;; =&gt; 1
+(deriv '(* x y) 'x)
+;; =&gt; y
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; =&gt; (+ (* x y) (* y (+ x 3)))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hierarchical_data_and_the_closure_property">Hierarchical Data and the Closure property</h3>
+
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -803,7 +1024,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-03-27 09:11:29 UTC
+Last updated 2021-03-29 14:05:47 +0100
 </div>
 </div>
 </body>

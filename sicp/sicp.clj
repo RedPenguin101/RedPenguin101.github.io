@@ -92,3 +92,73 @@
 ;; => 1.0
 (fixed-point #(+ (Math/sin %) (Math/cos %)) 1.0)
 ;; => 1.2587315962971173
+
+(def dx 0.00001)
+(defn deriv [g] (fn [x] (/ (- (g (+ x dx)) (g x)) dx)))
+((deriv cube) 5)
+;; => 75.00014999664018
+
+(defn newton-transform [g]
+  (fn [x] (- x (/ (g x) ((deriv g) x)))))
+(defn newtons-method [g guess]
+  (fixed-point (newton-transform g) guess))
+(defn sqrt [x] (newtons-method #(- (square %) x) 1.0))
+(sqrt 2)
+;; => 1.4142135623822438
+
+
+;; Symbolic differentiation
+
+(def variable? symbol?)
+(defn same-variable? [a b] (and (every? symbol? [a b]) (= a b)))
+(defn sum? [expr] (and (seq expr) (= (first expr) '+)))
+(defn product? [expr] (and (seq expr) (= (first expr) '*)))
+(defn make-sum [e1 e2] (list '+ e1 e2))
+(defn make-product [e1 e2] (list '* e1 e2))
+(defn addend [expr] (nth expr 1))
+(defn augend [expr] (nth expr 2))
+(defn multiplier [expr] (nth expr 1))
+(defn multiplicand [expr] (nth expr 2))
+
+(defn deriv [exp var]
+  (cond (number? exp) 0
+        (variable? exp) (if (same-variable? exp var) 1 0)
+        (sum? exp) (make-sum (deriv (addend exp) var)
+                             (deriv (augend exp) var))
+        (product? exp) (make-sum (make-product (multiplier exp)
+                                               (deriv (multiplicand exp) var))
+                                 (make-product (deriv (multiplier exp) var)
+                                               (multiplicand exp)))
+        :else (throw (ex-info "unknown expression type -- DERIV" exp))))
+
+(deriv 1 'x)
+;; => 0
+(deriv '(+ x 3) 'x)
+;; => (+ 1 0)
+(deriv '(* x y) 'x)
+;; => (+ (* x 0) (* 1 y))
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; => (+ (* (* x y) (+ 1 0)) (* (+ (* x 0) (* 1 y)) (+ x 3)))
+
+(defn make-sum [e1 e2]
+  (cond (every? number? [e1 e2]) (+ e1 e2)
+        (and (number? e1) (zero? e1)) e2
+        (and (number? e2) (zero? e2)) e1
+        :else (list '+ e1 e2)))
+
+(defn make-product [e1 e2]
+  (cond (every? number? [e1 e2]) (* e1 e2)
+        (and (number? e1) (zero? e1)) 0
+        (and (number? e1) (= 1 e1)) e2
+        (and (number? e2) (zero? e2)) 0
+        (and (number? e2) (= 1 e2)) e1
+        :else (list '* e1 e2)))
+
+(deriv 1 'x)
+;; => 0
+(deriv '(+ x 3) 'x)
+;; => 1
+(deriv '(* x y) 'x)
+;; => y
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; => (+ (* x y) (* y (+ x 3)))
