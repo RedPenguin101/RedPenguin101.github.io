@@ -1,0 +1,136 @@
+= Church Numerals
+
+What is a number? A number is counting, abstracted across the thing being counted. If you have a pile of rocks, you can count the number of rocks.
+
+Now let's think about counting an action: the number of times _bob_ _jumps_ a skipping rope. `(jump (jump (jump bob)))` is three jumps. But it doesn't have to be bob, we can count anyone jumping, abstracting across the person.
+
+[source,clojure]
+----
+(defn three-jumps [x] (jump (jump (jump x))))
+
+(def three-bob-jumps (three-jumps bob))
+(def three-jane-jumps (three-jumps jane))
+----
+
+So now we have a function three jumps, which takes any person and does the jump action three times.
+
+It doesn't have to be jumps: we can abstract across the _action_ too, so we have the concept of three in it purest form: counting the number of times an action happens to a thing.
+
+[source,clojure]
+----
+(def three (fn [f] (fn [x] (f (f (f x))))))
+
+(def three-bob-jumps ((three jump) bob))
+(def three-bob-skips ((three skip) bob))
+(def three-jane-shouts ((three shouts) jane))
+----
+
+Notice the pattern: `three` is: 
+* a function which takes an operation `f`, and
+* returns a function which takes a value `x` and 
+* applies the `f` to the `x` three times
+
+What about four? It's a function which takes an operation and returns a function which takes a value, and applies the function to the value 4 times.
+
+[source,clojure]
+----
+(def four (fn [f] (fn [x] (f (f (f (f x)))))))
+
+(def four-bob-jumps ((four jump) bob))
+(def four-bob-skips ((four skip) bob))
+(def four-jane-shouts ((four shouts) jane))
+----
+
+So we have our general conceptual definition of number: counting the number of times a process is applied to an object.
+
+[source,clojure]
+----
+(defn zero [f] (fn [x] x))
+(defn one [f] (fn [x] (f x)))
+(defn two [f] (fn [x] (f (f x))))
+(defn three [f] (fn [x] (f (f (f x)))))
+(defn four [f] (fn [x] (f (f (f (f x))))))
+----
+
+It's maybe a little easier to see with a threaded version:
+
+[source,clojure]
+----
+(defn zero [f]  (fn [x] x))
+(defn one [f]   (fn [x] (-> x f)))
+(defn two [f]   (fn [x] (-> x f f)))
+(defn three [f] (fn [x] (-> x f f f)))
+(defn four [f]  (fn [x] (-> x f f f f)))
+----
+
+How do we translate our church numeral to an integer? 
+
+Let's go back to `(def four-jane-shouts ((four shouts) jane))`. We take our conceptual idea of four, and supply it with a concrete action (shout), then apply _that_ to a concrete initial state (jane). What we end up with is a version of jane who has shouted four times, having first shouted once, then shouted twice, then shouted three times.
+
+Consider the action as something that calculates a _successor_, transitioning the object to the 'next' state (whatever that means).
+
+So to apply this to counting integers, we need our initial state: an _identity_, which when an action is applied to it zero times gives us the result we want. So the number `0`. 
+
+Next we need a procedure `f` which, when applied to an integer gives us its successor. So what when applied 1 times to `0` gives us `1`, and two times gives us `2`? `inc`!
+
+[source,clojure]
+----
+(defn church->int [n] ((n inc) 0))
+(church->int three) ;;=> 3
+----
+
+Here we have created a way to go from our weird conceptual idea of three, to the concrete representation of the integer `3`, by mixing our conceptual three with a concrete identity `0`, and the concrete successor action `inc`.
+
+Now lets dig back into the weird conceptual space of numbers, and look at how we can manipulate and combine the numbers without having to get into the messy world of concretions.
+
+How do we add 1 to a number? We simple apply the procedure an additional time:
+
+[source,clojure]
+----
+(defn add-1 [n] (fn [f] (fn [x] (f ((n f) x)))))
+
+"By substitution"
+
+(add-1 four)
+(fn [f] (fn [x] (f ((four f) x))))
+(fn [f] (fn [x] (f (((fn [g] (fn [x] (g (g (g (g x)))))) f) x))))
+(fn [f] (fn [x] (f ((fn [x] (f (f (f (f x)))) x)))))
+(fn [f] (fn [x] (f (f (f (f (f x))))))) ;; => five
+
+"Possibly easier to read in a threaded form"
+(defn add-1 [n] (fn [f] (fn [x] (-> x ((n f)) f))))
+"Take x, apply f n times, then apply it once more"
+----
+
+In general, we can add n to a number by applying `f` n more times:
+
+[source,clojure]
+----
+(defn add-1 [n] (fn [f] (fn [x] (-> x ((n f)) f))))
+(defn add-2 [n] (fn [f] (fn [x] (-> x ((n f)) f f))))
+(defn add-3 [n] (fn [f] (fn [x] (-> x ((n f)) f f f))))
+
+(church->int (add-1 three)) ;;=> 4
+(church->int (add-2 three)) ;;=> 5
+(church->int (add-3 three)) ;;=> 6
+----
+
+Note that `add-3` takes an `x`, applies `(n f)` to it, resulting in a new `x1`, then applies `f` three more times to `x1`. But we already have something that applies a procedure `f` three times to an `x`! That's the definition of the number 3! So we just need to do `((three f) x1)`
+
+[source,clojure]
+----
+(defn add-3 [n] (fn [f] (fn [x] (-> x ((n f)) ((three f))))))
+(church->int (add-3 three)) ;;=> 6
+(church->int (add-3 two))   ;;=> 5
+(church->int (add-3 four))  ;;=> 7
+----
+
+Now we can generalize this even further to add together any numbers:
+
+[source,clojure]
+----
+(defn add [n1 n2] (fn [f] (fn [x] (-> x ((n1 f)) ((n2 f))))))
+
+(church->int (add three two))  ;;=> 5 
+(church->int (add three four)) ;;=> 7
+----
