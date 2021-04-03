@@ -162,3 +162,13 @@
 ;; => y
 (deriv '(* (* x y) (+ x 3)) 'x)
 ;; => (+ (* x y) (* y (+ x 3)))
+
+(defn pair [x y]
+  (list x y))
+
+(def x (pair 1 2))
+(def y (pair 3 4))
+(def z (pair x y))
+
+(first (first z))
+(first (second z))
