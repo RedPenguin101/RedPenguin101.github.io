@@ -632,3 +632,245 @@ Define one and two directly (not in terms of zero and add-1). (Hint: Use substit
 Give a direct definition of the addition procedure + (not in terms of repeated application of add-1). 
 
 *Answer 2.6*. See blog post https://redpenguin101.github.io/posts/2021_04_03_church.html[Church Numerals]
+
+==== Extended exercise: Interval Arithmetic
+
+https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-4.html#%_toc_%_sec_2.1.4[The full example]
+
+This is about providing the ability to manipulate inexact quantities (such as measured parameters of physical devices) with known precision, so the end result also has a known precision.
+
+Consider the equation for parallel equivalent resistance Rp of two resistors R1 and R2:
+
+`Rp = 1 / (1/R1 + 1/R2)`
+
+A resistor might be labelled "6.8 ohms with 10% tolerance", meaning the actual resistance will be between 6.12 and 7.48 ohms. If you have another resistor which is 4.7 5%, the parallel resistance will be between 2.58 (if both are at the lower bound) to 2.97 (if both are at the upper bound).
+
+The goal is to define a data abstraction 'interval', and provide an arithmetic that operates on these intervals. Here's a translation of the code provided in the example:
+
+[source,clojure]
+----
+
+(defn add-interval [x y]
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(defn mul-interval [x y]
+  (let [p1 (* (lower-bound x) (lower-bound y))
+        p2 (* (lower-bound x) (upper-bound y))
+        p3 (* (upper-bound x) (lower-bound y))
+        p4 (* (upper-bound x) (upper-bound y))]
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(defn div-interval [x y]
+  (mul-interval x
+                (make-interval (/ 1.0 (upper-bound y))
+                               (/ 1.0 (lower-bound y)))))
+----
+
+*Exercise 2.7.*  Alyssa's program is incomplete because she has not specified the implementation of the interval abstraction. Define selectors upper-bound and lower-bound to complete the implementation.
+
+*Answer 2.7*
+
+[source,clojure]
+----
+(defn make-interval [lower-bound upper-bound] (list lower-bound upper-bound))
+(defn lower-bound [interval] (first interval))
+(defn upper-bound [interval] (second interval))
+----
+
+*Exercise 2.8.*  Using reasoning analogous to Alyssa's, describe how the difference of two intervals may be computed. Define a corresponding subtraction procedure, called sub-interval. 
+
+*Answer 2.8* Here is Alyssa's reasoning referred to:
+
+* She reasons that the minimum value the sum could be is the sum of the two lower bounds and the maximum value it could be is the sum of the two upper bounds
+* Alyssa also works out the product of two intervals by finding the minimum and the maximum of the products of the bounds and using them as the bounds of the resulting interval.
+* Alyssa multiplies the first by the reciprocal of the second.
+
+Thinking through the subtraction: let's say we have an interval a=5-6, and another b=3-4.
+
+If we take b from a, the minimum value of the result take is the smallest value of a, minus the largest value of b: 5-4=1. The maximum value of the results is the largest value of a, minus the smallest value of b: 6-3=3. So the resulting interval is 1-3.
+
+We can encode this procedures as:
+
+[source,clojure]
+----
+(defn sub-interval [x y]
+  (make-interval (- (lower-bound x) (upper-bound y))
+                 (- (upper-bound x) (lower-bound y))))
+
+(sub-interval (make-interval 5 6)
+              (make-interval 3 4))
+;; => (1 3)
+----
+
+*Exercise 2.9.* The _width_ of an interval is half of the difference between its upper and lower bounds. The width is a measure of the uncertainty of the number specified by the interval. For some arithmetic operations the width of the result of combining two intervals is a function only of the widths of the argument intervals, whereas for others the width of the combination is not a function of the widths of the argument intervals. 
+
+Show that the width of the sum (or difference) of two intervals is a function only of the widths of the intervals being added (or subtracted). Give examples to show that this is not true for multiplication or division. 
+
+*Answer 2.9* Width Interval can be defined like this
+
+[source,clojure]
+----
+(defn width-interval [x]
+  (/ (- (upper-bound x) (lower-bound x)) 2))
+----
+
+This is easier to do with Algebra: `WI[X] = (ux-lx)/2`
+
+Let X and Y be intervals. lx, ux are the lower and upper bounds of X, X can be represented as [lx ux].
+
+_Addition_:
+
+X+Y = [(lx + ly) (ux + uy)] = [lz uz] = Z
+
+`WI[X]` is the width interval operation, `WI[X] = (ux-lx)/2`
+
+`WI[(X+Y)] = WI[(lx+ly) (ux+uy)] = WI[lz uz] = (uz-lz)/2`
+
+`= ((ux+uy) - (lx+ly))/2 = (ux-lx)/2 + (uy-ly)/2 = WI[lx ux] + WI[ly uy] = WI[X] + WI[Y]`
+
+_Subtraction_
+
+X-Y = [(lx - uy) (ux - ly)]
+
+`WI[X-Y] = WI[(lx - uy) (ux - ly)] = WI[lz uz] = (uz-lz)/2`
+
+`= ((ux-ly) - (lx-uy))/2 = (ux-lx)/2 - (uy-ly)/2 = WI[lx ux] + WI[ly uy] = WI[X] + WI[Y]`
+
+[source,clojure]
+----
+(let [X (make-interval 4 10)
+      Y (make-interval 2 3)
+      Z-add (add-interval X Y)
+      Z-sub (sub-interval X Y)
+      Z-mul (mul-interval X Y)
+      Z-div (div-interval X Y)]
+  {:test-add (= (width-interval Z-add) (+ (width-interval X) (width-interval Y)))
+   :test-sub (= (width-interval Z-sub) (+ (width-interval X) (width-interval Y)))
+   :test-mul (= (width-interval Z-mul) (+ (width-interval X) (width-interval Y)))
+   :test-div (= (width-interval Z-div) (+ (width-interval X) (width-interval Y)))})
+;; => {:test-add true, :test-sub true, :test-mul false, :test-div false}
+----
+
+*Exercise 2.10.*  Ben Bitdiddle, an expert systems programmer, looks over Alyssa's shoulder and comments that it is not clear what it means to divide by an interval that spans zero. Modify Alyssa's code to check for this condition and to signal an error if it occurs. 
+
+[source,clojure]
+----
+(defn spans-zero [x]
+  (or (zero? (upper-bound x))
+      (zero? (lower-bound x))
+      (and (neg? (lower-bound x))
+           (pos? (upper-bound x)))))
+
+(defn div-interval [x y]
+  (if (spans-zero y)
+    (throw (Exception. "Divisor interval can't span zero"))
+    (mul-interval x
+                  (make-interval (/ 1.0 (upper-bound y))
+                                 (/ 1.0 (lower-bound y))))))
+----
+
+(It's no super clear to me why spanning zero is a problem - the resulting interval seems to work out OK provided neither of the bounds of y are _equal_ to zero).
+
+*Exercise 2.11.* In passing, Ben also cryptically comments: "By testing the signs of the endpoints of the intervals, it is possible to break mul-interval into nine cases, only one of which requires more than two multiplications." Rewrite this procedure using Ben's suggestion.
+
+*Answer 2.11* The nine cases are
+
+.Table
+|===
+|case|negative|positive
+
+|1: All pos
+|
+|lx ux ly uy
+
+|2: lx neg
+|lx
+|   ux ly uy
+
+|3: both X neg
+|lx ux
+|ly uy
+
+|4: ly neg
+|ly
+|lx ux uy
+
+|5: both Y neg
+|ly uy
+|lx ux
+
+|6: Both span
+|lx ly
+|ux uy
+
+|7: only uy pos
+|lx ux ly 
+|uy
+
+|8: only ux pos
+|lx ly uy
+|ux
+
+|9: all neg
+|lx ux ly uy
+|
+|===
+
+Note: if ux is neg, that implies lx is also neg, and if lx is pos, that implies ux is also pos, hence cutting down on possibilities like 'only ux neg'. This also helps us out in the testing, since we can test that everything is positive just by testing that lx and ly are positive.
+
+[source,clojure]
+----
+(defn mul-interval2 [x y]
+  (let [lx (lower-bound x)
+        ux (upper-bound x)
+        ly (lower-bound y)
+        uy (upper-bound y)]
+    (cond
+      (and (pos? lx) (pos? ly))           (make-interval (* lx ly) (* ux uy)) ;; 1. all pos
+      (and (neg? lx) (pos? ux) (pos? ly)) (make-interval (* lx uy) (* ux uy)) ;; 2. only lx neg 
+      (and (neg? ux) (pos? ly))           (make-interval (* lx uy) (* ux ly)) ;; 3. lx, ux neg
+      (and (neg? ly) (pos? uy) (pos? lx)) (make-interval (* ux ly) (* ux uy)) ;; 4. only ly neg
+      (and (neg? uy) (pos? lx))           (make-interval (* ux ly) (* lx uy)) ;; 5. ly, uy neg
+      (and (neg? lx) (pos? ux)            ;; 6. lx ly neg, ux uy pos (both span)
+           (neg? ly) (pos? uy))           (make-interval (min (* lx uy) (* ux ly))
+                                                         (max (* lx ly) (* ux uy)))
+      (and (neg? ux) (neg? ly) (pos? uy)) (make-interval (* lx uy) (* lx ly)) ;; 7. only uy pos
+      (and (neg? uy) (neg? lx) (pos? ux)) (make-interval (* ux ly) (* lx ly)) ;; 8. only ux pos
+      (and (neg? ux) (neg? uy))           (make-interval (* ux uy) (* lx ly)) ;; 9. all neg
+      )))
+----
+
+*Exercise 2.12.*
+
+After debugging her program, Alyssa shows it to a potential user, who complains that her program solves the wrong problem. He wants a program that can deal with numbers represented as a center value and an additive tolerance; for example, he wants to work with intervals such as 3.5± 0.15 rather than [3.35, 3.65]. Alyssa returns to her desk and fixes this problem by supplying an alternate constructor and alternate selectors:
+
+[source,clojure]
+----
+(defn make-center-width [c w]
+  (make-interval (- c w) (+ c w)))
+
+(defn center [i]
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(defn width [i]
+  (/ (- (upper-bound i) (lower-bound i)) 2))
+----
+
+Unfortunately, most of Alyssa's users are engineers. Real engineering situations usually involve measurements with only a small uncertainty, measured as the ratio of the width of the interval to the midpoint of the interval. Engineers usually specify percentage tolerances on the parameters of devices, as in the resistor specifications given earlier.
+
+Define a constructor make-center-percent that takes a center and a percentage tolerance and produces the desired interval. You must also define a selector percent that produces the percentage tolerance for a given interval. The center selector is the same as the one shown above.
+
+[source,clojure]
+----
+(defn make-center-percent [c pct]
+  (let [wdth (* c pct)]
+    (make-interval (- c wdth) (+ c wdth))))
+
+(defn percent [i]
+  (/ (width i) (center i)))
+
+(percent (make-center-percent 6.8 0.1)) ;; => 0.1
+(center (make-center-percent 6.8 0.1)) ;; => 6.8
+----

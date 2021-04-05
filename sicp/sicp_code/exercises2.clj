@@ -266,3 +266,127 @@ Define one and two directly (not in terms of zero and add-1). (Hint: Use substit
   ((n inc) 0))
 
 (church-to-int three)
+
+"Interval Arithmetic"
+
+(defn make-interval [lower-bound upper-bound] (list lower-bound upper-bound))
+(defn lower-bound [interval] (first interval))
+(defn upper-bound [interval] (second interval))
+
+(defn add-interval [x y]
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(defn mul-interval [x y]
+  (let [p1 (* (lower-bound x) (lower-bound y))
+        p2 (* (lower-bound x) (upper-bound y))
+        p3 (* (upper-bound x) (lower-bound y))
+        p4 (* (upper-bound x) (upper-bound y))]
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(defn div-interval [x y]
+  (mul-interval x
+                (make-interval (/ 1.0 (upper-bound y))
+                               (/ 1.0 (lower-bound y)))))
+
+(defn sub-interval [x y]
+  (make-interval (- (lower-bound x) (upper-bound y))
+                 (- (upper-bound x) (lower-bound y))))
+
+(sub-interval (make-interval 5 6)
+              (make-interval 3 4))
+;; => (1 3)
+
+(defn width-interval [x]
+  (/ (- (upper-bound x) (lower-bound x)) 2))
+
+(width-interval (make-interval 4 10))
+
+(let [X (make-interval 4 10)
+      Y (make-interval 2 3)
+      Z-add (add-interval X Y)
+      Z-sub (sub-interval X Y)
+      Z-mul (mul-interval X Y)
+      Z-div (div-interval X Y)]
+  {:test-add (= (width-interval Z-add) (+ (width-interval X) (width-interval Y)))
+   :test-sub (= (width-interval Z-sub) (+ (width-interval X) (width-interval Y)))
+   :test-mul (= (width-interval Z-mul) (+ (width-interval X) (width-interval Y)))
+   :test-div (= (width-interval Z-div) (+ (width-interval X) (width-interval Y)))})
+;; => {:test-add true, :test-sub true, :test-mul false, :test-div false}
+
+(defn spans-zero [x]
+  (or (zero? (upper-bound x))
+      (zero? (lower-bound x))
+      (and (neg? (lower-bound x))
+           (pos? (upper-bound x)))))
+
+(defn div-interval [x y]
+  (if (spans-zero y)
+    (throw (Exception. "Divisor interval can't span zero"))
+    (mul-interval x
+                  (make-interval (/ 1.0 (upper-bound y))
+                                 (/ 1.0 (lower-bound y))))))
+
+(div-interval (make-interval 3 5)
+              (make-interval -5 4))
+
+(let [x (make-interval -30 10)
+      y (make-interval -15 5)
+      p1 (* (lower-bound x) (lower-bound y))
+      p2 (* (lower-bound x) (upper-bound y))
+      p3 (* (upper-bound x) (lower-bound y))
+      p4 (* (upper-bound x) (upper-bound y))]
+  (make-interval (min p1 p2 p3 p4)
+                 (max p1 p2 p3 p4)))
+
+(defn mul-interval2 [x y]
+  (let [lx (lower-bound x)
+        ux (upper-bound x)
+        ly (lower-bound y)
+        uy (upper-bound y)]
+    (cond
+      (and (pos? lx) (pos? ly))           (make-interval (* lx ly) (* ux uy)) ;; 1. all pos
+      (and (neg? lx) (pos? ux) (pos? ly)) (make-interval (* lx uy) (* ux uy)) ;; 2. only lx neg 
+      (and (neg? ux) (pos? ly))           (make-interval (* lx uy) (* ux ly)) ;; 3. lx, ux neg
+      (and (neg? ly) (pos? uy) (pos? lx)) (make-interval (* ux ly) (* ux uy)) ;; 4. only ly neg
+      (and (neg? uy) (pos? lx))           (make-interval (* ux ly) (* lx uy)) ;; 5. ly, uy neg
+      (and (neg? lx) (pos? ux)                                                ;; 6. lx ly neg, ux uy pos (both span)
+           (neg? ly) (pos? uy))           (make-interval (min (* lx uy) (* ux ly))
+                                                         (max (* lx ly) (* ux uy)))
+      (and (neg? ux) (neg? ly) (pos? uy)) (make-interval (* lx uy) (* lx ly)) ;; 7. only uy pos
+      (and (neg? uy) (neg? lx) (pos? ux)) (make-interval (* ux ly) (* lx ly)) ;; 8. only ux pos
+      (and (neg? ux) (neg? uy))           (make-interval (* ux uy) (* lx ly)) ;; 9. all neg
+      )))
+
+(let [x (make-interval -5 -1)
+      y (make-interval -3 -2)]
+  (= (mul-interval x y) (mul-interval2 x y)))
+
+"2.12"
+
+
+
+(defn make-center-width [c w]
+  (make-interval (- c w) (+ c w)))
+
+(defn center [i]
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(defn width [i]
+  (/ (- (upper-bound i) (lower-bound i)) 2))
+
+(defn make-center-percent [c pct]
+  (let [wdth (* c pct)]
+    (make-interval (- c wdth) (+ c wdth))))
+
+"pct = width / center
+ width = pct*ctr"
+
+(make-center-percent 6.8 0.1)
+
+(defn percent [i]
+  (/ (width i) (center i)))
+
+(percent (make-center-percent 6.8 0.1))
+(center (make-center-percent 6.8 0.1))
