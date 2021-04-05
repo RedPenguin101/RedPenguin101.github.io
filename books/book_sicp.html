@@ -1283,13 +1283,321 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p><strong>Answer 2.6</strong>. See blog post <a href="https://redpenguin101.github.io/posts/2021_04_03_church.html">Church Numerals</a></p>
 </div>
+<div class="sect3">
+<h4 id="_extended_exercise_interval_arithmetic">Extended exercise: Interval Arithmetic</h4>
+<div class="paragraph">
+<p><a href="https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-4.html#%" class="bare">https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-4.html#%</a><em>toc</em>%_sec_2.1.4[The full example]</p>
+</div>
+<div class="paragraph">
+<p>This is about providing the ability to manipulate inexact quantities (such as measured parameters of physical devices) with known precision, so the end result also has a known precision.</p>
+</div>
+<div class="paragraph">
+<p>Consider the equation for parallel equivalent resistance Rp of two resistors R1 and R2:</p>
+</div>
+<div class="paragraph">
+<p><code>Rp = 1 / (1/R1 + 1/R2)</code></p>
+</div>
+<div class="paragraph">
+<p>A resistor might be labelled "6.8 ohms with 10% tolerance", meaning the actual resistance will be between 6.12 and 7.48 ohms. If you have another resistor which is 4.7 5%, the parallel resistance will be between 2.58 (if both are at the lower bound) to 2.97 (if both are at the upper bound).</p>
+</div>
+<div class="paragraph">
+<p>The goal is to define a data abstraction 'interval', and provide an arithmetic that operates on these intervals. Here&#8217;s a translation of the code provided in the example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn add-interval [x y]
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(defn mul-interval [x y]
+  (let [p1 (* (lower-bound x) (lower-bound y))
+        p2 (* (lower-bound x) (upper-bound y))
+        p3 (* (upper-bound x) (lower-bound y))
+        p4 (* (upper-bound x) (upper-bound y))]
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(defn div-interval [x y]
+  (mul-interval x
+                (make-interval (/ 1.0 (upper-bound y))
+                               (/ 1.0 (lower-bound y)))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Exercise 2.7.</strong>  Alyssa&#8217;s program is incomplete because she has not specified the implementation of the interval abstraction. Define selectors upper-bound and lower-bound to complete the implementation.</p>
+</div>
+<div class="paragraph">
+<p><strong>Answer 2.7</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn make-interval [lower-bound upper-bound] (list lower-bound upper-bound))
+(defn lower-bound [interval] (first interval))
+(defn upper-bound [interval] (second interval))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Exercise 2.8.</strong>  Using reasoning analogous to Alyssa&#8217;s, describe how the difference of two intervals may be computed. Define a corresponding subtraction procedure, called sub-interval.</p>
+</div>
+<div class="paragraph">
+<p><strong>Answer 2.8</strong> Here is Alyssa&#8217;s reasoning referred to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>She reasons that the minimum value the sum could be is the sum of the two lower bounds and the maximum value it could be is the sum of the two upper bounds</p>
+</li>
+<li>
+<p>Alyssa also works out the product of two intervals by finding the minimum and the maximum of the products of the bounds and using them as the bounds of the resulting interval.</p>
+</li>
+<li>
+<p>Alyssa multiplies the first by the reciprocal of the second.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Thinking through the subtraction: let&#8217;s say we have an interval a=5-6, and another b=3-4.</p>
+</div>
+<div class="paragraph">
+<p>If we take b from a, the minimum value of the result take is the smallest value of a, minus the largest value of b: 5-4=1. The maximum value of the results is the largest value of a, minus the smallest value of b: 6-3=3. So the resulting interval is 1-3.</p>
+</div>
+<div class="paragraph">
+<p>We can encode this procedures as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn sub-interval [x y]
+  (make-interval (- (lower-bound x) (upper-bound y))
+                 (- (upper-bound x) (lower-bound y))))
+
+(sub-interval (make-interval 5 6)
+              (make-interval 3 4))
+;; =&gt; (1 3)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Exercise 2.9.</strong> The <em>width</em> of an interval is half of the difference between its upper and lower bounds. The width is a measure of the uncertainty of the number specified by the interval. For some arithmetic operations the width of the result of combining two intervals is a function only of the widths of the argument intervals, whereas for others the width of the combination is not a function of the widths of the argument intervals.</p>
+</div>
+<div class="paragraph">
+<p>Show that the width of the sum (or difference) of two intervals is a function only of the widths of the intervals being added (or subtracted). Give examples to show that this is not true for multiplication or division.</p>
+</div>
+<div class="paragraph">
+<p><strong>Answer 2.9</strong> Width Interval can be defined like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn width-interval [x]
+  (/ (- (upper-bound x) (lower-bound x)) 2))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is easier to do with Algebra: <code>WI[X] = (ux-lx)/2</code></p>
+</div>
+<div class="paragraph">
+<p>Let X and Y be intervals. lx, ux are the lower and upper bounds of X, X can be represented as [lx ux].</p>
+</div>
+<div class="paragraph">
+<p><em>Addition</em>:</p>
+</div>
+<div class="paragraph">
+<p>X+Y = [(lx + ly) (ux + uy)] = [lz uz] = Z</p>
+</div>
+<div class="paragraph">
+<p><code>WI[X]</code> is the width interval operation, <code>WI[X] = (ux-lx)/2</code></p>
+</div>
+<div class="paragraph">
+<p><code>WI[(X+Y)] = WI[(lx+ly) (ux+uy)] = WI[lz uz] = (uz-lz)/2</code></p>
+</div>
+<div class="paragraph">
+<p><code>= ux+uy) - (lx+ly/2 = (ux-lx)/2 + (uy-ly)/2 = WI[lx ux] + WI[ly uy] = WI[X] + WI[Y]</code></p>
+</div>
+<div class="paragraph">
+<p><em>Subtraction</em></p>
+</div>
+<div class="paragraph">
+<p>X-Y = [(lx - uy) (ux - ly)]</p>
+</div>
+<div class="paragraph">
+<p><code>WI[X-Y] = WI[(lx - uy) (ux - ly)] = WI[lz uz] = (uz-lz)/2</code></p>
+</div>
+<div class="paragraph">
+<p><code>= ux-ly) - (lx-uy/2 = (ux-lx)/2 - (uy-ly)/2 = WI[lx ux] + WI[ly uy] = WI[X] + WI[Y]</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(let [X (make-interval 4 10)
+      Y (make-interval 2 3)
+      Z-add (add-interval X Y)
+      Z-sub (sub-interval X Y)
+      Z-mul (mul-interval X Y)
+      Z-div (div-interval X Y)]
+  {:test-add (= (width-interval Z-add) (+ (width-interval X) (width-interval Y)))
+   :test-sub (= (width-interval Z-sub) (+ (width-interval X) (width-interval Y)))
+   :test-mul (= (width-interval Z-mul) (+ (width-interval X) (width-interval Y)))
+   :test-div (= (width-interval Z-div) (+ (width-interval X) (width-interval Y)))})
+;; =&gt; {:test-add true, :test-sub true, :test-mul false, :test-div false}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Exercise 2.10.</strong>  Ben Bitdiddle, an expert systems programmer, looks over Alyssa&#8217;s shoulder and comments that it is not clear what it means to divide by an interval that spans zero. Modify Alyssa&#8217;s code to check for this condition and to signal an error if it occurs.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn spans-zero [x]
+  (or (zero? (upper-bound x))
+      (zero? (lower-bound x))
+      (and (neg? (lower-bound x))
+           (pos? (upper-bound x)))))
+
+(defn div-interval [x y]
+  (if (spans-zero y)
+    (throw (Exception. "Divisor interval can't span zero"))
+    (mul-interval x
+                  (make-interval (/ 1.0 (upper-bound y))
+                                 (/ 1.0 (lower-bound y))))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(It&#8217;s no super clear to me why spanning zero is a problem - the resulting interval seems to work out OK provided neither of the bounds of y are <em>equal</em> to zero).</p>
+</div>
+<div class="paragraph">
+<p><strong>Exercise 2.11.</strong> In passing, Ben also cryptically comments: "By testing the signs of the endpoints of the intervals, it is possible to break mul-interval into nine cases, only one of which requires more than two multiplications." Rewrite this procedure using Ben&#8217;s suggestion.</p>
+</div>
+<div class="paragraph">
+<p><strong>Answer 2.11</strong> The nine cases are</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Table</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">case</th>
+<th class="tableblock halign-left valign-top">negative</th>
+<th class="tableblock halign-left valign-top">positive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1: All pos</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ux ly uy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2: lx neg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ux ly uy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3: both X neg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ly uy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4: ly neg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ux uy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5: both Y neg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ly uy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6: Both span</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ux uy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7: only uy pos</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ux ly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">uy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8: only ux pos</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ly uy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9: all neg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lx ux ly uy</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note: if ux is neg, that implies lx is also neg, and if lx is pos, that implies ux is also pos, hence cutting down on possibilities like 'only ux neg'. This also helps us out in the testing, since we can test that everything is positive just by testing that lx and ly are positive.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn mul-interval2 [x y]
+  (let [lx (lower-bound x)
+        ux (upper-bound x)
+        ly (lower-bound y)
+        uy (upper-bound y)]
+    (cond
+      (and (pos? lx) (pos? ly))           (make-interval (* lx ly) (* ux uy)) ;; 1. all pos
+      (and (neg? lx) (pos? ux) (pos? ly)) (make-interval (* lx uy) (* ux uy)) ;; 2. only lx neg
+      (and (neg? ux) (pos? ly))           (make-interval (* lx uy) (* ux ly)) ;; 3. lx, ux neg
+      (and (neg? ly) (pos? uy) (pos? lx)) (make-interval (* ux ly) (* ux uy)) ;; 4. only ly neg
+      (and (neg? uy) (pos? lx))           (make-interval (* ux ly) (* lx uy)) ;; 5. ly, uy neg
+      (and (neg? lx) (pos? ux)            ;; 6. lx ly neg, ux uy pos (both span)
+           (neg? ly) (pos? uy))           (make-interval (min (* lx uy) (* ux ly))
+                                                         (max (* lx ly) (* ux uy)))
+      (and (neg? ux) (neg? ly) (pos? uy)) (make-interval (* lx uy) (* lx ly)) ;; 7. only uy pos
+      (and (neg? uy) (neg? lx) (pos? ux)) (make-interval (* ux ly) (* lx ly)) ;; 8. only ux pos
+      (and (neg? ux) (neg? uy))           (make-interval (* ux uy) (* lx ly)) ;; 9. all neg
+      )))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Exercise 2.12.</strong></p>
+</div>
+<div class="paragraph">
+<p>After debugging her program, Alyssa shows it to a potential user, who complains that her program solves the wrong problem. He wants a program that can deal with numbers represented as a center value and an additive tolerance; for example, he wants to work with intervals such as 3.5± 0.15 rather than [3.35, 3.65]. Alyssa returns to her desk and fixes this problem by supplying an alternate constructor and alternate selectors:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn make-center-width [c w]
+  (make-interval (- c w) (+ c w)))
+
+(defn center [i]
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(defn width [i]
+  (/ (- (upper-bound i) (lower-bound i)) 2))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unfortunately, most of Alyssa&#8217;s users are engineers. Real engineering situations usually involve measurements with only a small uncertainty, measured as the ratio of the width of the interval to the midpoint of the interval. Engineers usually specify percentage tolerances on the parameters of devices, as in the resistor specifications given earlier.</p>
+</div>
+<div class="paragraph">
+<p>Define a constructor make-center-percent that takes a center and a percentage tolerance and produces the desired interval. You must also define a selector percent that produces the percentage tolerance for a given interval. The center selector is the same as the one shown above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn make-center-percent [c pct]
+  (let [wdth (* c pct)]
+    (make-interval (- c wdth) (+ c wdth))))
+
+(defn percent [i]
+  (/ (width i) (center i)))
+
+(percent (make-center-percent 6.8 0.1)) ;; =&gt; 0.1
+(center (make-center-percent 6.8 0.1)) ;; =&gt; 6.8</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-03 20:28:34 +0100
+Last updated 2021-04-04 17:40:02 +0100
 </div>
 </div>
 </body>
