@@ -26,6 +26,7 @@ It doesn't have to be jumps: we can abstract across the _action_ too, so we have
 ----
 
 Notice the pattern: `three` is: 
+
 * a function which takes an operation `f`, and
 * returns a function which takes a value `x` and 
 * applies the `f` to the `x` three times
