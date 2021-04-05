@@ -1,0 +1,85 @@
+= The Wages of Destruction: The making and breaking of the Nazi economy
+By Adam Tooze
+
+== Contents
+
+* Recovery
+** 2. Every worker his work
+** 3. breaking away
+** 4. The state and private business
+** 5. Volksgemeinschaft on a budget
+** 6. Saving the peasants
+* European War
+** 7. 1936
+** 8. The danger zone
+** 9. 1939
+** 10. The first winter
+** 11. Victory in the west
+** 12. Britain and America: the strategic dilemma
+* World War
+** 13. Preparing
+** 14. Racial war
+** 15. December 41: turning point
+** 16. Labour, food, genocide
+** 17. Speer the miracle man
+** 18. no room for doubt
+** 19. Disintegration
+** 20. The end
+
+== Notes
+
+=== Preface
+
+This book analyzes the economy of the third reich, and critiques the war economy. 
+
+It aims to answer questions like:
+
+* How did the great depression's impact on the global power structure enable Germany?
+* What was the relationship between Hitler's imperial ambition, and the German society and economy of the 20's and 30's?
+* How did the local and global economy contribute to war, and the widening of the war?
+* When and how was the blitzkrieg developed?
+* How did Germany continue for three years after the turning points of December 41?
+* What was the role and impact of Speer as Armaments Minister?
+
+Most historians assume Germany has peculiar strength of economy. A superpower in waiting in the 30's. This assumption has been largely unquestioned, until the 21st century.
+
+The story of rich-world economics in the the 20th century was mostly about convergence around the norm defined by Britain - the world's first fully urban, industrial society - and then its eclipse by the US. Germany in the 30's was around the European average by most measures, far behind it's Western neighbours. Relative to France and Britain is was only a partially modernized society. 
+
+From this 21st century perspective, then, we re-examine the narrative of German economic history. We look to throw light on the motives for Hitler's aggression, and why it failed.
+
+One of the arguments seems to be that Hitler was aware of the rise of the US consumerist model and predicted it's gigantic impact on the world order, and that the Third Reich was a last _and concious_ attempt for Europe to stand against it by carving out an imperial hinterland in the East before it was ultimately subsumed.
+
+The book will argue that, despite the largest transfer of resources ever to war production, the German economy was not, and could not be, strong enough to create a war machine sufficient to take on Britain and the USSR, let alone the USA.
+
+It will argue that Hitler went to war with no idea of how Britain could be defeated - an epic gamble, and one of many. 
+
+Why so many wild gambles? Here we reconnect with the mainstream history: the answer is ideology. A worldview of Jewish conspiracy. To settle for the emergence of a new status quo, with Germany an affluent part of the Capitalist Anglophile world order, was not an option. In the Nazi interpretation, what would mean enslavement by Jews, and race-death. It must be war.
+
+=== Conclusion (per Chapter 20)
+
+Two dramatic developments: the rise of the USA and the USSR, must underlie any understanding of the Third Reich. Hitler was certainly anti-Bolshevik, but this was generic on the German right. What was more unique to Hitlerism was the attitude to America. Where the Weimar years were very open to the West, Hitler saw Americas rise as a challenge to be resisted, and for which the obtaining of Lebensraum was the only possible answer. 
+
+Rearmament was the primary concern of economic policy before 1939, and everything was sacrificed. The share of national output going to the military went from 1% to 20% - an unprecedented shift. Far from the inefficiency and disorganization often ascribed to it, this was a system highly effective in realizing its aims.
+
+The state intervention in the economy was extreme - comparisons to the Soviet Union are not unwarranted. The Third Reich never got around to real rationalization of agriculture, but it was planning it.
+
+Why did German business permit this intrusion, when it had frustrated the reforms of the Weimar Republic? First, the Depression did a number on business. Second, though they disliked the autarky, they liked the domestic authoritarianism and the profits that were rolling in by the mid 30's. Third, actual coercion was mostly limited.
+
+So Nazi German was effective at realising its economic aims. But were its aims the right ones? Was the plan for the economy, in conjunction with diplomacy and military strategy, coherent? No. It's hard to accept that the victories up to December 1941 could not have come from a well planned coherent strategy. But it does seem to be the case. It was a mix of tactical brilliance and luck.
+
+Why, then, did Hitler go to war in 1939? Was it miscalculation, and he expected Britain and France to abandon Poland? This proposal is rejected here on the basis of what Hitler knew at the time. The alternative answer to the question has three parts. First, Hitler knew that his attempt to put up a serious challenge to the West had peaked. The Axis of Germany, Italy and Japan had failed. German armaments were struggling to accelerate further, and Britain, France, the USSR and the USA were all piling more resources into the military. Second, the Soviet decision to not stand with France and Britain was a big opportunity, avoiding a second front and the worst effects of blockade at a single stroke. These are both rational concerns. Less rational is the third part: Hitler's worldview could not conceive that war with the West was not completely inevitable. So why _not_ now?
+
+Hitler of the 20's was all about anti-Bolshevism and expansion to the East, and this remained mostly the case to the mid 30's. By 1938, this was flipped to the West, with FDR becoming the main Jewish puppet bogeyman. A cabal of Jewry in Washington, London and Paris was behind it all. So war now is better than war later. And why not expand the war? Why not attack the USSR before Britain is defeated? Why not declare war on the USA, despite not being obliged to? All this makes sense, if you are already at war with the shadowy cabal lead by Roosevelt.
+
+==== Four points of novelty in this book WRT the early war
+
+1. The idea that the war in the West had a different motivation from that in the East is mistaken. Both were ideologically driven by Hitler's belief he was locked in conflict with global Jewry
+2. There was a compelling economic case for invading the USSR. Germany needed grain and oil, and Soviet Union was the only place it could get it.
+3. The Ostheer of 1941 was considerably more powerful than the one that invaded France, but it was calibrated to a short campaign, making Barbarossa very risky. That is true, but this was not due to a lack of materials thanks to a collapse in labour productivity, or a desire to cushion the civilian population, as is usually stated. In fact Germany continued the arms race with the Anglosphere, intentionally weakening Barbarossa by preparing for second war.
+4. Maybe a third war too: against the civilians of Eastern Europe, which itself had large resources devoted to it.
+
+==== Speer and the armaments miracle
+
+In 1942, the first flush of the armaments miracle, Germany was outproduced by the Soviet Union, undergoing a miracle of its own. Despite allied bombing in 43 effectively halting the miracle for 6 months, by 44, Germany had again overtaken the Soviets in the final, famous acceleration, on which Speer's reputation rests. But this was achieved at a point when the war was obviously lost, and only with apocalyptic violence and repression, including in the underground factories. 
+
+=== Introduction
