@@ -164,7 +164,7 @@
 ;; => (+ (* x y) (* y (+ x 3)))
 
 (defn pair [x y]
-  (list x y))
+  [x y])
 
 (def x (pair 1 2))
 (def y (pair 3 4))
@@ -172,3 +172,161 @@
 
 (first (first z))
 (first (second z))
+
+(pair 1
+      (pair 2
+            (pair 3
+                  (pair 4 nil))))
+;; => [1 [2 [3 [4 nil]]]]
+
+(defn scheme-list [fst & rst]
+  (cond (nil? fst) nil
+        (empty? rst) (pair fst nil)
+        :else (pair fst (apply scheme-list rst))))
+
+(scheme-list 1 2 4)
+
+(defn print-scheme-list [sl]
+  (if (nil? (second sl)) (print (first sl))
+      (do (print (first sl))
+          (print ", ")
+          (print-scheme-list (second sl)))))
+
+(print-scheme-list (scheme-list 1 2 4))
+
+(pair 1 nil)
+
+(first '())
+
+(defn list-ref [items n]
+  (if (= n 0) (first items)
+      (list-ref (rest items) (- n 1))))
+
+(list-ref (list 1 4 9 16 25) 3)
+
+(defn length [items]
+  (if (empty? items) 0
+      (+ 1 (length (rest items)))))
+
+(length (list 1 3 5 7))
+
+(defn append [list1 list2]
+  (if (empty? list1) list2
+      (cons (first list1) (append (rest list1) list2))))
+
+(append (list 1 4 9 16 25) (list 1 3 5 7)) ;; => (1 4 9 16 25 1 3 5 7)
+(append (list 1 3 5 7) (list 1 4 9 16 25)) ;; => (1 3 5 7 1 4 9 16 25)
+
+(defn scale-list [items factor]
+  (if (empty? items) nil
+      (cons (* (first items) factor)
+            (scale-list (rest items) factor))))
+
+(scale-list (list 1 2 3 4 5) 10)
+
+(defn map' [f items]
+  (if (empty? items) nil
+      (cons (f (first items))
+            (map' f (rest items)))))
+
+(map' (fn [item] (* item 10)) (list 1 2 3 4 5))
+
+(defn count-leaves [tree]
+  (cond (nil? tree) 0
+        (not (coll? tree)) 1
+        (empty? tree) 0
+        :else (+ (count-leaves (first tree))
+                 (count-leaves (rest tree)))))
+
+(length (list (list 1 2) 3 4)) ;; => 3
+(count-leaves (list (list 1 2) 3 4)) ;; => 4
+
+(length (pair (scheme-list 1 2) (scheme-list 3 4)))
+(count-leaves (pair (scheme-list 1 2) (scheme-list 3 4)))
+
+(seq? [1 2 3])
+
+(defn scale-tree [tree factor]
+  (map (fn [subtree]
+         (if (coll? subtree) (scale-tree subtree factor)
+             (* subtree factor)))
+       tree))
+
+(scale-tree '((1) 2 (3 4)) 3)
+;; => ((3) 6 (9 12))
+
+;; 2.2.3
+
+(defn sum-odd-squares [tree]
+  (cond (not (list? tree)) (if (odd? tree) (square tree) 0)
+        (empty? tree) 0
+        :else (+ (sum-odd-squares (first tree))
+                 (sum-odd-squares (rest tree)))))
+
+(sum-odd-squares '(1 2 3 4 5))
+;; => 35
+
+(defn even-fibs [n]
+  (letfn [(next [k]
+            (if (> k n) nil
+                (let [f (fib k)]
+                  (if (even? f) (cons f (next (inc k))) (next (+ k 1))))))]
+    (next 0)))
+
+(even-fibs 10)
+;; => (0 2 8 34)
+
+(map fib (list 1 2 3 4 5))
+
+(defn filter' [pred s]
+  (cond (empty? s) nil
+        (pred (first s)) (cons (first s) (filter' pred (rest s)))
+        :else (filter' pred (rest s))))
+
+(filter odd? (list 1 2 3 4 5))
+;; => (1 3 5)
+
+(defn accumulate [op init s]
+  (if (empty? s) init
+      (op (first s)
+          (accumulate op init (rest s)))))
+
+(accumulate + 0 (list 1 2 3 4 5))
+;; => 15
+
+(defn enumerate-interval [low high]
+  (if (> low high) nil
+      (cons low (enumerate-interval (inc low) high))))
+
+(enumerate-interval 4 10)
+;; => (4 5 6 7 8 9 10)
+
+(defn enumerate-tree [tree]
+  (cond (not (coll? tree)) (list tree)
+        (empty? tree) nil
+        :else (concat (enumerate-tree (first tree))
+                      (enumerate-tree (rest tree)))))
+
+(enumerate-tree '(1 (2 3) 4 5 (6 7)))
+;; => (1 2 3 4 5 6 7)
+
+
+(defn even-fibs [n]
+  (->> (enumerate-interval 0 n)
+       (map fib)
+       (filter even?)
+       (accumulate cons '())))
+
+(even-fibs 10)
+;; => (0 2 8 34)
+
+(defn sum-odd-squares [tree]
+  (->> (enumerate-tree tree)
+       (filter odd?)
+       (map square)
+       (accumulate + 0)))
+
+(sum-odd-squares '(1 (2 3) 4 5 (6 7)))
+;; => 84
+
+
