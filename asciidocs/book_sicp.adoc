@@ -1,4 +1,5 @@
 = Structure and interpretation of computer programs
+:toc:
 
 == Building Abstractions with procedures
 
