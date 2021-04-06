@@ -1,0 +1,221 @@
+= Peter Norvig's Design of Computer Programs Course
+
+== Lesson 1:  writing a poker problem
+
+This class is about the design process: how to take programming knowledge and use it to solve problems.
+
+Learning by example. Problem -> we try to solve -> Peter runs through his
+
+Learn style and techniques for programming.
+
+Working in Python.
+
+The problems here are _hard_. But _fun_ hard.
+
+=== Outlining the problem
+
+`?? -> [understand] -> problem -> [specify] -> spec -> [design] -> code`
+
+understand: make an inventory of the concepts we'll have to deal with
+
+First: a notion of a _hand_ of 5 _cards_, with each card having a _rank_ and a _suit_.
+
+The main problem we're trying to specify: `poker(hands) -> best-hand`
+
+Another concept: we have a hand rank: `hand -> 2 pair` etc.
+
+What concepts make up the hand rank?
+
+. n-kind (2 of a kind, 3 of a kind etc.)
+. straight (5 consecutive ranks)
+. flush (all 5 cards have same suit)
+
+=== representing hands
+
+Possibilities
+
+`["js" "jd" "2s",,,]`
+
+`[(11,'s') (11 'd'),,,]`
+
+Both these are fine
+
+`set(['js',,,])` is problematic because it doesn't work in the case of duplicates
+
+`"js jd 2s 2c 7h"` is problematic because harder to break up
+
+=== Poker function
+
+We can use the python builtin function `max` with it `key` arg to do this.
+
+[source,python]
+----
+def hand_rank(hand):
+  return ???
+
+def poker(hands):
+  "Return the best hand: poker([hand,...]) => hand"
+  return max(hands, key=hand_rank)
+----
+
+This is nice because it is simple, and corresponds so closely to the problem spec. "Return the highest ranking hand".
+
+Now if we can just make the hand_rank function work, we're good.
+
+=== Testing
+
+This is a vital part of software development. Each part of the specification needs to be turned into code that implements it and a test that tests it. Without tests, you won't know when you're done, or if you've done it right, or if you introduce regressions.
+
+[source,python]
+----
+def test():
+  "Test cases for the functions in poker program"
+  sf = "6C 7C 8C 9C TC".split()
+  fk = "9D 9H 9S 9C 7D".split()
+  fh = "TD TC TH 7C 7D".split()
+  assert poker([sf, fk, fh]) == sf
+  assert poker([fk, fh]) == fk
+  assert poker([fh, fh]) == fh
+  return "tests pass"
+----
+
+=== Extreme values
+
+You need to test extreme values: 1 item, 0 items, 100 items.
+
+What to do in the case of zero hands? Well our function signature makes it clear that we should be returning a hand. Since we have no hands, to maintain that spec we should throw an error if there are zero hands. `None` is another option, but probably worse in this case.
+
+`assert poker([sf] + 99*[fh) == sf`
+
+=== Hand rank attempt
+
+What does hand rank return? A value indicating the value of the hand. Why not a number? We know there are 9 types of hand, so we can start there
+
+[source,python]
+----
+def hand_rank(hand):
+  ranks = card_ranks(hand)
+  if straight(ranks) and flush(hand)
+    return 8
+  elif kind(4, ranks):
+    return 7
+  elif ...
+----
+
+Would this work?
+
+No, because you have different values for two different straights, where the highest card breaks the tie. And the sorting functionality for tuples is given to us by Python - lexigraphic ordering.
+
+We'll have to use something more complicated. We could just use bigger integers. `70905` and `70302` for two four of a kind hands, where the former is 4 nines and a five, and the latter is 4 threes and a 2. Or reals in the same way: `7.0905` etc.
+
+Or we could use tuples: `(7 9 5)`
+
+They would all _work_? But which is the best? Tuples are best, because tuples are most convenient. With the others you'll have to do complicated arithmetic.
+
+== Lesson 2: Zebra puzzle
+
+Back of the envelope is a valuable skill. The important virtue of being lazy.
+
+Allows us to come up with the simplest design, then verify it's efficient enough, then stop.
+
+https://en.wikipedia.org/wiki/Zebra_Puzzle
+
+. There are five houses.
+. The Englishman lives in the red house.
+. The Spaniard owns the dog.
+. Coffee is drunk in the green house.
+. The Ukrainian drinks tea.
+. The green house is immediately to the right of the ivory house.
+. The Old Gold smoker owns snails.
+. Kools are smoked in the yellow house.
+. Milk is drunk in the middle house.
+. The Norwegian lives in the first house.
+. The man who smokes Chesterfields lives in the house next to the man with the fox.
+. Kools are smoked in the house next to the house where the horse is kept.
+. The Lucky Strike smoker drinks orange juice.
+. The Japanese smokes Parliaments.
+. The Norwegian lives next to the blue house.
+
+Now, who drinks water? Who owns the zebra? 
+
+=== Inventory of concepts
+
+Houses: there are 5 of them
+
+Properties of houses and inhabitants (nationality, color pets, drink, smokes)
+
+Locations: 1-5 (first, middle, next-to, to right of)
+
+Assignment of properties to houses. The language is more specific (lives in, owns the). DO we need to separate out? Do we need a property name? Do we need property name/description (smokes kools, lives in), just properties (Englishman, Spaniard etc.), or just ignore the groupings.
+
+The problem with ignoring the groups is that we need to know what possibilities we can eliminate when we know something. If the Englishman lives in house 2, then that eliminates the other nationalities as possibilities for house 2, but doesn't eliminate the possibility that orange juice is drunk in house 2.
+
+== Lesson 4: Later Pouring Problem
+
+You have two beakers: one of 9oz, one of 4oz, and source/sink of unlimited water. The goal is to end up with 6oz in one of the beakers.
+
+=== Inventory of Concepts
+
+* Glass (capacity/current level)
+* Collection of glasses - this is our 'state of the world'
+* Goal
+* 6 Pouring actions: empty, fill, transfer
+.. source -> beaker A
+.. beaker A -> sink
+.. source -> beaker B
+.. beaker B -> sink
+.. Beaker A -> Beaker B (results in Beaker B full, or Beaker A empty)
+.. Beaker B -> Beaker A (results in Beaker A full, or Beaker B empty)
+* solution: sequence of steps
+
+This lesson in general will be about puzzles involving finding solutions that are sequences of steps. These are usually called *search* problems, aka combinatorial optimization.
+
+=== Combinatorial complexity
+
+In previous problems we were able say definitively how big the solution space was: 5!^5 for the Zebra puzzle, 10! for cryptarithmetic.
+
+Here, we don't know: the space is potentially infinite. If we have 6 potential actions, and we start from the root, our first 'step' will have 6 possibilities. Each of those will have six possibilities. But we can't say upfront when to stop.
+
+=== Exploration
+
+It's usually called a search problem, but *exploration* is probably a better term. Let's look at how it works.
+
+We start from home, and from there we walk down the path to any of 6 possibilities. These then form the 'frontier' of the explored space. We then will pick a subsequent path to go down, and the resulting nodes will be part of our new frontier, with the source node relegated to the set of 'explored' set.
+
+Our 'goal' state is that set of states which have 6oz of water in one beaker, and any amount in the other.
+
+We have a couple of problems:
+
+. What if there is no path?
+. How do make sure we find the path in a reasonable time?
+. How to we prevent infinite loops?
+
+We need a _strategy_ for deciding which nodes to act upon. We can:
+
+* take the shortest path first
+* don't re-explore.
+
+== Summary notes
+
+. take an inventory of the concepts. These will translate directly into you code.
+. try to categorize the puzzle, based on previous experience
+. decide on a data representation for the puzzle space. Make it as simple as possible
+. try to enumerate the size of the solution space, to the order of magnitude, and decide whether a brute force approach is possible
+. use the concepts to solve the problem
+. exhaust the possible tests, including 'degenerate cases'
+
+=== Search problems
+
+Examples: The pour puzzle, the bridge puzzle
+
+Search problems are characterised by _choice_: You have a situation where you can take one of x number of _actions_, each resulting in an updated _state_. The goal of the puzzle is to find a _path_ of actions that result in a particular _solution state_ (or set of solution states), and often to make sure that path is optimized.
+
+Each state has a _successor function_, which given a state returns the states resulting from each of the possible actions.
+
+A search problem can be thought of as a graph which is gradually explored, like a map. Given a state, you generate the successors. If a successor state is in the set of solution states, you're done. If not, these successors are added to the _frontier_ of the search space, making them candidates for launching the next round of exploration. The source state can be added to a collection of _explored_ states, meaning you don't want to visit them again - otherwise you can end up in a loop.
+
+A key question is how you choose which state in the frontier you want to launch a new exploration from. In this way, you can optimize the path, and forbid unwanted behaviour. We refer to this as the _search strategy_.
+
+A sensible data representation of a path is a collections of tuples of state and the action used to generate that state.
+
+A search problem has combinatorial complexity. You can predict, if a state has 6 successors, that the first 'step' will result in (1 + 6) total paths, the 2nd will result in (1 + 6 + (6 * 6)) = 33 paths, and in general the nth step will result in the number of paths being sum(x^i) for i=0..n, where x is the number of potential successors. Since we can't say ahead of time when we will find the solution, there are a potentially infinite number of paths. It's more difficult, in this case, to assess ahead of time whether your algorithm will be sufficiently fast. 
