@@ -1,0 +1,251 @@
+= Structure and interpretation of computer programs Part 1: Building Abstractions with procedures
+:toc:
+
+*Computational process*: abstract being that inhabits a computer. Manipulate *data*. Directed by *programs*.
+
+Well designed programs are designed in a modular manner, so the parts can be constructed, replaced and debugged separately.
+
+== The elements of programming
+
+Languages have three mechanisms for combining simple ideas into more complex ones.
+
+* *primitive expressions*
+* *means of combination*, where compound elements are built from simpler ones
+* *means of abstraction*, where compound elements can be named and manipulated
+
+*Data* is the stuff that is manipulated by *procedures*.
+
+An expression is something that can be evaluated. Expressions can be grouped in parens, forming _combinations_. In prefix notation, the leftmost expression is the _operator_, and the other are the _operands_. The operator is applied to the operands.
+
+Names can refer to computational objects. The name is the _variable_ and the object is the _value_. The variable is _defined_ as referring to the object. Definition is the simplest form of abstraction.
+
+Definition can be repeated to build ever more complex things from simpler things, creating a tower of abstraction. This has the benefit of modularity: the ability to build complex things step by step from small procedures.
+
+name/value pairs are maintained in the _global environment_.
+
+To evaluate a combination:
+
+. evaluate its subexpressions and substitute them for their values
+. apply the operator to the operands
+
+Note this is recursive.
+
+Evaluation can take place in different orders. Namely, applicative order is the 'evaluate the arguments and then apply' model, whereas normal order is 'fully expand and then reduce'.
+
+A *predicate* is a procedure that returns true or false.
+
+Procedures are analogous to mathematical functions, with one addition: they must be effective. Consider a mathematical function `sqrt x = y ST y>=0 and y^2 = x`. This is not enough to make a procedure, because it doesn't tell you _how_ to get to y. A procedure must be executable. A procedure must be imperative.
+
+A method for calculating square roots is using a specific case of Newton's method for successive approximations.
+
+. Guess y
+. If y is good enough, stop
+. otherwise, average y with x/y to get the next guess
+
+In code:
+
+[source,clojure]
+----
+(defn good-enough? [guess x] (< (Math/abs (double (- (* guess guess) x))) 0.001))
+
+(defn improve [guess x] (/ (+ guess (/ x guess)) 2))
+
+(defn sqrt-iter [guess x]
+  (if (good-enough? guess x)
+    guess
+    (sqrt-iter (improve guess x) x)))
+----
+
+Computing square roots like this breaks up into a number of sub-problems, each having a procedure. Any program can be divided into parts in many ways. The point is to divide it such that each part accomplishes an identifiable and independently meaningful task. In this way, we may treat each subcomponent as a black box. When I am developing `sqrt-iter`, I don't _need_ to know how George is implementing `improve`, only that it returns an improved guess. The detail is suppressed. From this perspective, it is a *procedural abstraction*.
+
+The procedure `(defn square [x] (* x x))` has the name `x` that is local to its scope. It is a *bound variable* - the procedure definition _binds_ its formal parameters. If a variable is not bound, it is *free*. In `(defn sum-of-squares [x y] (+ (square x) (square y)))`, `square` is a free variable.
+
+We can take advantage of *lexical scoping* to simplify (and limit the scope of) our procedures. Note in the following how `good-enough?` and `improve` now take a single input: guess, since `x` is bound in the lexical scope of the block that these functions exist in, it can be a free variable in those definitions.
+
+[source,clojure]
+----
+(defn sqrt [x]
+  (letfn [(good-enough? [guess] (< (Math/abs (double (- (* guess guess) x))) 0.001))
+          (improve [guess] (/ (+ guess (/ x guess)) 2))
+          (sqrt-iter [guess x] (if (good-enough? guess) guess (sqrt-iter (improve guess) x)))]
+    (sqrt-iter 1 x)))
+----
+
+== Procedures and the processes they generate
+
+A procedure describes the local evolution of a process. Learning to visualize the evolution is crucial to being a good programmer.
+
+Processes, as they evolve, take up time and space.
+
+Consider the factorial function `n! = n * (n-1) * (n-2) ... 3 * 2 * 1`, and observe that `n!=n*(n-1)!`. In other words, this can be defined recursively.
+
+[source,clojure]
+(defn factorial [n] (if (= n 1) 1 (* n (factorial (dec n)))))
+
+We can, by substitution, see that this will evolve thus:
+
+image::../images/book_sicp/1_2_1_linear_recursive.gif[]
+
+And you can see it's O(N) in both time (vertical) and space (horizontal)
+
+If you define factorial differently, like
+
+[source,clojure]
+(defn factorial
+  ([n] (factorial 1 1 n))
+  ([acc i n] (if (= n i) (* acc i) (factorial (* acc i) (inc i) n))))
+
+The process evolves differently:
+
+image::../images/book_sicp/1_2_2_iterative.gif[]
+
+Still O(N) in time, but now only O(1) in space.
+
+In the first case, the process builds up a chain of _deferred operations_.
+
+The first case is called a *linear recursive process*, the second an *linear iterative process*. (not to be confused with a *recursive procedure*, which is just a procedure which calls itself.)
+
+In addition to the difference in space, note that the iterative process the variables contain the complete state of the process at all times. That's not true with the recursive case.
+
+A third common pattern is *tree recursion*. Consider the fibonacci procedure:
+
+[source,clojure]
+(defn fib [n] (if (< n 2) n (+ (fib (- n 1)) (fib (- n 2)))))
+
+This process evolves like this
+
+image::../images/book_sicp/1_2_3_tree_rec.gif[]
+
+Because each call to `fib` calls itself twice, the result is a tree of recursive calls. Note that this is extremely inefficient, because there are redundant calculations: `(fib 3)` is recalculated twice completely independently.
+
+One can create a more efficient, linearly iterative implementation of fib:
+
+[source,clojure]
+(defn fib-iter [a b count] (if (zero? count) b (fib-iter (+ a b) a (dec count))))
+
+Consider the problem of computing the exponential of a given number. This can be computed recursively or iteratively
+
+[source,clojure]
+----
+(defn expt [b n] (if (zero? n) 1 (* b (expt b (dec n)))))
+
+(defn expt-iter [b counter product]
+  (if (zero? counter) product (expt-iter b (dec counter) (* b product))))
+----
+
+These are both O(n) in time. We can reduce this to O(log n) in time _and_ space by using successive squaring:
+
+[source,clojure]
+(defn fast-exp [b n]
+  (cond (zero? n) 1
+        (even? n) (square (fast-exp b (/ n 2)))
+        :else (* b (fast-exp b (- n 1)))))
+
+But this is again recursive. Making this iterative is tough (and an exercise).
+
+== Formulating abstractions with higher order functions
+
+We've seen that procedures are abstractions of compound operations.
+
+A limitation of what we've seen so far is that you can only create abstractions across data inputs. To take it to the next level, you want to be able to construct procedures that accept and apply _other procedures_. Such things are called *higher order procedures*.
+
+Consider the two functions
+
+[source,clojure]
+(defn sum-integers [a b] (if (> a b) 0 (+ a (sum-integers (+ a 1) b))))
+(defn sum-cubes    [a b] (if (> a b) 0 (+ (cube a) (sum-cubes (+ a 1) b))))
+(defn pi-sum       [a b] (if (> a b) 0 (+ (/ 1 (* a (+ a 2))) (pi-sum (+ a 4) b))))
+
+Clearly these share a lot of similarity. They all follow the pattern 
+
+`(defn name [a b] (if (> a b) 0 (+ (term a) (name (next a) b))))`
+
+This indicates an underlying pattern worthy of higher level abstraction - and indeed, this is the expression of the 'summation of a series', or sigma notation. `Σf(n)`. This allows mathematicians to express the concept of summation independent of what is actually being summed. We can do the same thing using higher order functions. In the following, term and next are procedures.
+
+[source,clojure]
+(defn sum [term a next b] (if (> a b) 0 (+ (term a) (pi-sum (next a) b))))
+(sum identity 5 inc 10) ;; equivalent to sum-integers
+(defn sum-cubes [a b] (sum cube a inc b))
+
+This is a little clumsy, because we're required to define (and name) the term and next function each time we want to use it. We can get around that by using *anonymous functions*, or *lambdas*.
+
+[source,clojure]
+(defn pi-sum [a b] (sum (fn [x] (/ 1 (* x (+ x 2))) a (fn [x] (+ x 4) b))))
+
+Passing in functions as arguments means we can use procedures to express general method of computation, like we did with `sum`. Here are a couple of more elaborate examples.
+
+The half-interval method find roots of equations. If `f(a)<0<f(b)`, then f must have a root in the interval a b. By averaging a and b we can recursively narrow on to that root
+
+[source,clojure]
+----
+(defn close-enough? [a b]
+  (< (Math/abs (- a b)) 0.001))
+
+(defn search [f a b]
+  (let [mid (average a b)]
+    (if (close-enough? a b)
+      mid
+      (let [test (f mid)]
+        (cond (pos? test) (search f a mid)
+              (neg? test) (search f mid b)
+              :else mid)))))
+
+(defn half-interval [f a b]
+  (let [fa (f a) fb (f b)]
+    (cond (< fa 0 fb) (search f a b)
+          (< fb 0 fa) (search f b a)
+          :else "Error: values are not of opposite sign")))
+
+(half-interval #(Math/sin %) 2.0 4.0)
+;; => 3.14111328125
+(half-interval #(- (cube %) (* 2 %) 3) 1.0 2.0)
+;; => 1.89306640625
+----
+
+Finding the fixed point of a function (where `f(x)=x`) can be done in a similar way.
+
+[source,clojure]
+----
+(defn fixed-point [f first-guess]
+  (letfn [(close-enough? [v1 v2] (< (Math/abs (- v1 v2)) 0.00001))
+          (try* [guess] (let [next (f guess)] (if (close-enough? guess next) next (try* next))))]
+    (try* first-guess)))
+
+(fixed-point #(Math/cos %) 1.0)
+;; => 1.0
+(fixed-point #(+ (Math/sin %) (Math/cos %)) 1.0)
+;; => 1.2587315962971173
+----
+
+This is effectively an abstraction on the method for finding square roots we looked at earlier, and we can create a sqrt fn like `(defn sqrt [x] (fixed-point (fn [y] (/ x y)) 1.0))`. However note that this would fail to converge because guesses would repeat. Hence we need to define f to be `(average y (/ x y))` - exactly as we did above. This pattern of preventing the guesses from changing too much is called *average damping*
+
+We saw how allowing procedures to be passed as arguments we can make our procedures more expressive and general. We can further enhance this by allowing functions to be _returned_ from procedures. Take the average damping process mentioned above. A 1-arity function can be transformed to an average damped version like `(defn average-damp [f] (fn [x] (average x (f x))))`. Our sqrt function can now be defined as `(defn sqrt [x] (fixed-point (average-damp (fn [y] (/ x y))) 1.0))`.
+
+Note now that the 3 ideas that comprise the method of squaring are _totally explicit_: fixed-point search, average damping, and the function `x/y`. The outcome, and even the way the process evolves is identical to our original sqrt function, but the _idea_ of what it is doing is so much clearer. In addition, the individual ideas can now be reused in other contexts. An experienced programmer can express her ideas in this clear and modular way.
+
+== Newtons Method
+
+We've been playing with Newton's method for a while without expressing exactly what it is. It is the use of the fixed point method to approximate a solution of an equation. If `g(x)` is a differentiable function, then the solution of the equation `g(x)=0` is the fixed point of `f(x)` (i.e. `f(x)=x`), where `f(x)=x - g(x)/Dg(x)`, where `Dg(x)` is the derivative of g evaluated at x.
+
+We can express the idea of a 'derivative' as `Dg(x) = (g(x+dx)-g(x)) / dx`.
+
+So we can express this idea with a procedure, and use it to calculate the derivative of `g(x)=x^3` at `x=5`, which computationally we know is `3^x2`, or 75 at x=5.
+
+[source,clojure]
+(def dx 0.00001)
+(defn deriv [g] (fn [x] (/ (- (g (+ x dx)) (g x)) dx)))
+((deriv cube) 5)
+;; => 75.00014999664018
+
+Now we can express Newton's method more generally, and use it in an even more explicit version of sqrt:
+
+[source,clojure]
+(defn newton-transform [g]
+  (fn [x] (- x (/ (g x) ((deriv g) x)))))
+(defn newtons-method [g guess]
+  (fixed-point (newton-transform g) guess))
+(defn sqrt [x] (newtons-method #(- (square %) x) 1.0))
+(sqrt 2)
+;; => 1.4142135623822438
+
+> As programmers, we should be alert to opportunities to identify the underlying abstractions in our programs and to build upon them and generalize them to create more powerful abstractions. This is not to say that one should always write programs in the most abstract way possible; expert programmers know how to choose the level of abstraction appropriate to their task. But it is important to be able to think in terms of these abstractions, so that we can be ready to apply them in new contexts. The significance of higher-order procedures is that they enable us to represent these abstractions explicitly as elements in our programming language, so that they can be handled just like other computational elements.
