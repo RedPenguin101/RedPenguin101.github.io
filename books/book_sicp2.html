@@ -452,8 +452,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_symbolic_data">Symbolic data</a>
 <ul class="sectlevel2">
-<li><a href="#_symbolic_differentiation_example">Symbolic differentiation example</a></li>
-<li><a href="#_2_3_3_example_representing_sets">2.3.3 Example: Representing Sets</a></li>
+<li><a href="#_example_symbolic_differentiation_example">Example: Symbolic differentiation example</a></li>
+<li><a href="#_example_representing_sets">Example: Representing Sets</a></li>
+<li><a href="#_example_huffman_encoding_trees">Example: Huffman Encoding Trees</a></li>
 </ul>
 </li>
 <li><a href="#_multiple_representations_for_abstract_data">Multiple Representations for Abstract Data</a></li>
@@ -963,7 +964,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_symbolic_data">Symbolic data</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_symbolic_differentiation_example">Symbolic differentiation example</h3>
+<h3 id="_example_symbolic_differentiation_example">Example: Symbolic differentiation example</h3>
 <div class="paragraph">
 <p>We will write a program to do automatic differentiation, encoding the following rules:</p>
 </div>
@@ -1064,7 +1065,229 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2_3_3_example_representing_sets">2.3.3 Example: Representing Sets</h3>
+<h3 id="_example_representing_sets">Example: Representing Sets</h3>
+<div class="paragraph">
+<p>A set is a collection of distinct objects. They have operations <code>union</code> <code>intersection</code> <code>element-of-set?</code> and <code>adjoin-set</code></p>
+</div>
+<div class="paragraph">
+<p>The choice for representation here is not so obvious. There are many possibilities.</p>
+</div>
+<div class="paragraph">
+<p>One way to represent a set is as an unordered list of elements that appear no more than once. In this case the operations could look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn adjoin-set [x set]
+  (if (element-of-set? x set) set
+      (cons x set)))
+
+(defn intersection-set [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (element-of-set? (first set1) set2) (cons (first set1)
+                                                  (intersection-set (rest set1) (set2)))
+        :else (intersection-set (rest set1) set2)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider the efficiency of these operations.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>element-of-set? is O(N) in the worst case (it has to scan every element)</p>
+</li>
+<li>
+<p>because adjoin-set tests element of set, it too is O(N)</p>
+</li>
+<li>
+<p>Intersection is O(N^2), because it does an element-of-set test for every element of set1</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If we could increase the efficiency of element-of-set, we can make all of faster.</p>
+</div>
+<div class="paragraph">
+<p>Consider an implementation as an <em>ordered</em> list. If we do this, we no longer need to scan the entire list:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (&lt; x (first set)) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On average, we can expect that we will have to examine about half the items in the set. So we can say that, though this is still O(N), we&#8217;ve reduced the time by about a factor of 2.</p>
+</div>
+<div class="paragraph">
+<p>We can make <code>intersection</code> O(N) though.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn intersection-set [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (= (first set1) (first set2)) (cons (first set1) (intersection-set (rest set1) (rest set2)))
+        (&lt; (first set1) (first set2)) (intersection-set (rest set1) set2)
+        (&gt; (first set1) (first set2)) (intersection-set set1 (rest set2))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider that we have have two lists: <code>(2 4 6 8 10)</code> and <code>(3 4 5 6 7)</code></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>we test 2 against 3: 2&lt;3 so we recur with <code>(4 6 8 10)</code> and <code>(3 4 5 6 7)</code></p>
+</li>
+<li>
+<p>4&gt;3 so we recur with <code>(4 6 8 10)</code> and <code>(4 5 6 7)</code></p>
+</li>
+<li>
+<p>4=4 so we cons 4 and recur with <code>(6 8 10)</code> and <code>(5 6 7)</code></p>
+</li>
+<li>
+<p>6&gt;5 so we recur with <code>(6 8 10)</code> and <code>(6 7)</code></p>
+</li>
+<li>
+<p>6=6 so we cons 6 and recur with <code>(8 10)</code> and <code>(7)</code></p>
+</li>
+<li>
+<p>8&gt;7 so we recur with <code>(8 10)</code> and <code>()</code></p>
+</li>
+<li>
+<p>set 2 is empty, return false, ending up with <code>(cons 4 (cons 6 false)) &#8658; (4 6)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>At most, we will have number of operations len(set1) + len(set2)</p>
+</div>
+<div class="paragraph">
+<p>A third representation of sets is as a binary tree. Binary meaning that each node as at most 2 children: a left and right branch.</p>
+</div>
+<div class="paragraph">
+<p>The special property of the tree that we want is that, with respect to any given node, everything in the <em>left</em> subtree is smaller than the node value, and everything in the <em>right</em> subtree is larger (we don&#8217;t need to worry about equal to, since a set has no repeated elements). This does mean there can be many representations of the same set. For example {1 3 5 7 9 11} can be represented as.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_16_set_tree.gif" alt="2 16 set tree">
+</div>
+</div>
+<div class="paragraph">
+<p>The rationale for doing this is speed. Consider we want to check if 9 is in the set. In an ordered list representation, this would take 5 checks. In the above tree representations it is 2 or 3, depending on tree structure. e.g. in the first one, set 7, then go right, check 9, done.</p>
+</div>
+<div class="paragraph">
+<p>Comparing the left tree to the ordered list, we can see the number of tests you need to perform (ordered list on the left)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>element-of-set? 1:  1 vs. 3</p>
+</li>
+<li>
+<p>element-of-set? 3:  2 vs. 2</p>
+</li>
+<li>
+<p>element-of-set? 5:  3 vs. 3</p>
+</li>
+<li>
+<p>element-of-set? 7:  4 vs. 1</p>
+</li>
+<li>
+<p>element-of-set? 9:  5 vs. 2</p>
+</li>
+<li>
+<p>element-of-set? 11: 6 vs. 3</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We can see a tree has a maximum of 3 tests. In general, the maximum number of tests for a tree is the height of the tree. This leads to the intuition that shorter trees are better, because it reduces the maximum number of tests. The second tree, for example, has a height of 4, and to check 11 you&#8217;d need to do 4 tests. The height of a <em>balanced</em> binary tree of n elements is log2 n. So our element-of-set operation can now be O(log n), which is <em>much</em> faster than O(N).</p>
+</div>
+<div class="paragraph">
+<p>So we need an abstraction for working with trees. We can again use lists as the underlying structure, where a tree will look like:</p>
+</div>
+<div class="paragraph">
+<p><code>(entry left-subtree right-subtree)</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (nth tree 2 nil))
+(defn make-tree [entry left-branch right-branch]
+  (list entry left-branch right-branch))
+
+(defn element-of-set? [x set]
+  (cond (nil? set) false
+        (= x (entry set)) true
+        (&lt; x (entry set)) (element-of-set? x (left-branch set))
+        (&gt; x (entry set)) (element-of-set? x (right-branch set))))
+
+(element-of-set? 6 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; false
+(element-of-set? 5 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>element-of-set here just walks the tree - very declarative and easy to understand.</p>
+</div>
+<div class="paragraph">
+<p>With this representation, we can&#8217;t just adjoin an element to a set with <code>cons</code>, we have to expand the tree.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn adjoin-set [x set]
+  (cond (empty? set) (make-tree x nil nil)
+        (= x (entry set)) set
+        (&lt; x (entry set)) (make-tree (entry set)
+                                     (adjoin-set x (left-branch set))
+                                     (right-branch set))
+        (&gt; x (entry set)) (make-tree (entry set)
+                                     (left-branch set)
+                                     (adjoin-set x (right-branch set)))))
+
+(adjoin-set 1 '())
+;; =&gt; (1 nil nil)
+(adjoin-set 1 '(2))
+;; =&gt; (2 (1 nil nil) nil)
+(adjoin-set 3 '(2))
+;; =&gt; (2 nil (3 nil nil))
+(adjoin-set 1 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; (7 (3 (1) (5)) (9 nil (11)))
+(adjoin-set 4 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; (7 (3 (1) (5 (4 nil nil) nil)) (9 nil (11)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Essentially, assuming the element isn&#8217;t already in the set, this walks the tree until it finds it&#8217;s 'spot' (a <code>nil</code> on the end of a node), then in place of the nil, puts a new element <code>(x nil nil)</code> (a leaf node). This is very similar in concept to the element-of operation, and is also O(log n)</p>
+</div>
+<div class="paragraph">
+<p>There is a problem here though: Our assumption that the operations are O(log n) are premised on the tree being <em>balanced</em>. Consider a tree that looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_17_tall_tree.gif" alt="2 17 tall tree">
+</div>
+</div>
+<div class="paragraph">
+<p>An element-of operation on this will be O(N), since the height of the tree is N (in fact this is totally equivalent to an ordered list representation). To properly say that this has O(log n) properties, we must make sure the tree is mostly balanced - that is, the size of the left subtrees are about equal to the size of the right subtrees, for all nodes. One way to solve this is to have an operation that 'balances' a tree. This is left as an exercise.</p>
+</div>
+<div class="paragraph">
+<p>The thought process we&#8217;ve examined here comes up again and again in data focused programs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_huffman_encoding_trees">Example: Huffman Encoding Trees</h3>
 
 </div>
 </div>
@@ -1084,7 +1307,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-07 09:03:48 +0100
+Last updated 2021-04-07 10:36:23 +0100
 </div>
 </div>
 </body>

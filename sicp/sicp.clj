@@ -396,3 +396,73 @@
   (flatmap (fn [i] (map (fn [j] (f i j)) (enum i))) s))
 
 (nest-map list #(enumerate-interval 1 (- % 1)) (enumerate-interval 1 10))
+
+;; 2.3.3 sets
+
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn adjoin-set [x set]
+  (if (element-of-set? x set) set
+      (cons x set)))
+
+(defn intersection-set [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (element-of-set? (first set1) set2) (cons (first set1)
+                                                  (intersection-set (rest set1) (set2)))
+        :else (intersection-set (rest set1) set2)))
+
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (< x (first set)) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn intersection-set [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (= (first set1) (first set2)) (cons (first set1) (intersection-set (rest set1) (rest set2)))
+        (< (first set1) (first set2)) (intersection-set (rest set1) set2)
+        (> (first set1) (first set2)) (intersection-set set1 (rest set2))))
+
+(intersection-set (list 2 4 6 8) (list 3 4 5 6 7))
+
+(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (nth tree 2 nil))
+(defn make-tree [entry left-branch right-branch]
+  (list entry left-branch right-branch))
+
+(defn element-of-set? [x set]
+  (cond (nil? set) false
+        (= x (entry set)) true
+        (< x (entry set)) (element-of-set? x (left-branch set))
+        (> x (entry set)) (element-of-set? x (right-branch set))))
+
+(element-of-set? 6 '(7 (3 (1) (5)) (9 nil (11))))
+;; => false
+(element-of-set? 5 '(7 (3 (1) (5)) (9 nil (11))))
+;; => true
+
+(defn adjoin-set [x set]
+  (cond (empty? set) (make-tree x nil nil)
+        (= x (entry set)) set
+        (< x (entry set)) (make-tree (entry set)
+                                     (adjoin-set x (left-branch set))
+                                     (right-branch set))
+        (> x (entry set)) (make-tree (entry set)
+                                     (left-branch set)
+                                     (adjoin-set x (right-branch set)))))
+
+(adjoin-set 1 '())
+;; => (1 nil nil)
+(adjoin-set 1 '(2))
+;; => (2 (1 nil nil) nil)
+(adjoin-set 3 '(2))
+;; => (2 nil (3 nil nil))
+(adjoin-set 1 '(7 (3 (1) (5)) (9 nil (11))))
+;; => (7 (3 (1) (5)) (9 nil (11)))
+(adjoin-set 4 '(7 (3 (1) (5)) (9 nil (11))))
+;; => (7 (3 (1) (5 (4 nil nil) nil)) (9 nil (11)))
+
