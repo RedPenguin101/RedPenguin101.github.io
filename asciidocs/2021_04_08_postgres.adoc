@@ -1,0 +1,23 @@
+= Using Postgres
+
+== Installation
+
+----
+$ sudo apt update
+$ sudo apt install postgresql postgresql-contrib
+----
+
+== Roles
+
+----
+sudo -i -u postgres
+sudo -u postgres psql
+sudo -u postgres createuser --interactive
+----
+
+== Creating a database
+
+----
+sudo -u postgres createdb budget
+psql -d budget
+----
