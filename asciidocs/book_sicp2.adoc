@@ -633,6 +633,143 @@ The thought process we've examined here comes up again and again in data focused
 
 === Example: Huffman Encoding Trees 
 
+ASCII text can be represented as a sequence of seven bits, allowing us to represent (2^7) 128 different characters as binary numbers. In general, a system for representing n symbols will need us to use log2 n bits. These are called *fixed-length codes*. For example, to represent the 8 characters A-H, we could use 3 bits (2^3 = 8)
+
+  A 000 	C 010 	E 100 	G 110
+  B 001 	D 011 	F 101 	H 111 
+
+  BACADAEAFABBAAAGAH = 001000010000011000100000101000001001000000000110000111
+
+We could also represent data using a system of *variable-length codes*. For example:
+
+  A 0 	C 1010 	E 1100 	G 1110
+  B 100 	D 1011 	F 1101 	H 1111
+
+  BACADAEAFABBAAAGAH = 100010100101101100011010100100000111001111
+
+Saving 20% in length.
+
+One of the problems here is that you need to know when you reach the end of one symbol. You could achieve this with an explicit separator (consider the variable length code _morse code_, where letters are separated with with a pause). Another solution is design your code such that no symbol is represented by a code that is the prefix of another code. Taking the above example, since `A` is represented by 0, no other symbol can be represented by a code that starts with 0, since then you couldn't tell if the `0101` is `0` and `101` or `0101`. 
+
+Huffman encoding is a system which which assigns each symbol a _weight_, corresponding the frequency in which that symbol is expected to occur.
+
+For example, consider system for encoding the letters A-H, with a weight of 8 for A, 3 for B, and one for everything else.
+
+We can construct a tree where the leaves are pairs of `[symbol, weight]`, and the parents are merged sets of their children with `[set of symbols, sum symbol weights]`. 
+
+image::../images/book_sicp/2_18_huffman.gif[]
+
+Using this, we can arrive at the representation for any symbol by the following process: Navigate down the tree until you find the symbol you want. Every time you take a left branch, take a 0, and right, take a 1. To get to D, you go right, left, right, right, so the encoding is `1011`. To decode a bit sequence, you do the same thing: starting with 1011, you go right, left, right, right and get to D.
+
+The 'Best' code is one that minimises the number of tests you have to make. This is where the weights (frequencies) come in. You want to construct the tree such that the most frequent symbols take the least amount of branches to reach.
+
+How to construct such a tree?
+
+Start with a set of symbols/weight pairs:
+
+`{(A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)}`
+
+Find the two elements with the lowest weight, and merge them together
+
+`{(A 8) (B 3) ({C D} 2) (E 1) (F 1) (G 1) (H 1)}`
+
+Repeat a couple of times to get:
+
+`{(A 8) (B 3) ({C D} 2) ({E F} 2) ({G H} 2)}`
+
+On the next merge, you are now unioning two sets:
+
+`{(A 8) (B 3) ({C D} 2) ({E F G H} 4)}`
+
+And ultimately you end up
+
+`{({A B C D E F G H} 17)}`
+
+representing your root node.
+
+[NOTE] 
+the below code is quite different from the book, but I thought it was good enough. maybe the exercises will show different.
+
+[source,clojure]
+----
+(def huff '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
+
+(defn make-leaf [symbol weight] (list 'leaf symbol weight))
+(defn leaf? [x] (= 'leaf (first x)))
+(defn symbol-leaf [x] (second x))
+(defn weight-leaf [x] (nth x 2))
+
+(leaf? (make-leaf 'A 8)) ;; => true
+(symbol-leaf (make-leaf 'A 8)) ;; => A
+(weight-leaf (make-leaf 'A 8)) ;; => 8
+
+(defn symbols [node] (if (leaf? node) (list (symbol-leaf node)) (nth node 2)))
+(defn weight [node] (if (leaf? node) (weight-leaf node) (nth node 3)))
+(defn make-code-tree [left right]
+  (list left right (append (symbols left) (symbols right)) (+ (weight left) (weight right))))
+
+(defn left-branch [tree] (first tree))
+(defn right-branch [tree] (second tree))
+
+(defn make-huff-tree [codes]
+  (let [[fst scd & rst] (sort-by weight codes)]
+    (if (= 1 (count codes)) codes
+        (make-huff-tree (cons (make-code-tree fst scd) rst)))))
+
+(first (make-huff-tree (map #(apply make-leaf %) huff)))
+;; =>
+'(((leaf A 8)
+   ((((leaf G 1)
+      (leaf H 1)
+      (G H) 2)
+     ((leaf E 1)
+      (leaf F 1)
+      (E F) 2)
+     (G H E F) 4)
+    (((leaf C 1)
+      (leaf D 1)
+      (C D) 2)
+     (leaf B 3)
+     (C D B) 5)
+    (G H E F C D B) 9)
+   (A G H E F C D B) 17))
+
+(defn decode-bits [bits tree]
+  (cond (leaf? tree) (symbol-leaf tree)
+        (zero? (first bits)) (decode-bits (rest bits) (left-branch tree))
+        :else (decode-bits (rest bits) (right-branch tree))))
+
+;; Redefining unordered list implementation of element of set
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn encode-bits [sym tree]
+  (cond (leaf? tree) '()
+        (element-of-set? sym (symbols (left-branch tree))) (cons 0 (encode-bits sym (left-branch tree)))
+        :else (cons 1 (encode-bits sym (right-branch tree)))))
+
+(encode-bits 'A (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (0)
+(encode-bits 'B (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 1 1)
+(encode-bits 'C (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 1 0 0)
+(encode-bits 'D (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 1 0 1)
+(encode-bits 'E (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 1 0)
+(encode-bits 'F (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 1 1)
+(encode-bits 'G (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 0 0)
+(encode-bits 'H (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 0 1)
+
+
+(decode-bits '(0) (first (make-huff-tree (map #(apply make-leaf %) huff))))       ;; => A
+(decode-bits '(1 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff))))   ;; => B
+(decode-bits '(1 1 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => C
+(decode-bits '(1 1 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => D
+(decode-bits '(1 0 1 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => E
+(decode-bits '(1 0 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => F
+(decode-bits '(1 0 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => G
+(decode-bits '(1 0 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => H
+----
+
 == Multiple Representations for Abstract Data
 
 == Systems with Generic Operations

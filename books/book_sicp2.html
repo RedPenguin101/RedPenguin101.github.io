@@ -1288,7 +1288,188 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="sect2">
 <h3 id="_example_huffman_encoding_trees">Example: Huffman Encoding Trees</h3>
+<div class="paragraph">
+<p>ASCII text can be represented as a sequence of seven bits, allowing us to represent (2^7) 128 different characters as binary numbers. In general, a system for representing n symbols will need us to use log2 n bits. These are called <strong>fixed-length codes</strong>. For example, to represent the 8 characters A-H, we could use 3 bits (2^3 = 8)</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>A 000 	C 010 	E 100 	G 110
+B 001 	D 011 	F 101 	H 111</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>BACADAEAFABBAAAGAH = 001000010000011000100000101000001001000000000110000111</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We could also represent data using a system of <strong>variable-length codes</strong>. For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>A 0 	C 1010 	E 1100 	G 1110
+B 100 	D 1011 	F 1101 	H 1111</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>BACADAEAFABBAAAGAH = 100010100101101100011010100100000111001111</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Saving 20% in length.</p>
+</div>
+<div class="paragraph">
+<p>One of the problems here is that you need to know when you reach the end of one symbol. You could achieve this with an explicit separator (consider the variable length code <em>morse code</em>, where letters are separated with with a pause). Another solution is design your code such that no symbol is represented by a code that is the prefix of another code. Taking the above example, since <code>A</code> is represented by 0, no other symbol can be represented by a code that starts with 0, since then you couldn&#8217;t tell if the <code>0101</code> is <code>0</code> and <code>101</code> or <code>0101</code>.</p>
+</div>
+<div class="paragraph">
+<p>Huffman encoding is a system which which assigns each symbol a <em>weight</em>, corresponding the frequency in which that symbol is expected to occur.</p>
+</div>
+<div class="paragraph">
+<p>For example, consider system for encoding the letters A-H, with a weight of 8 for A, 3 for B, and one for everything else.</p>
+</div>
+<div class="paragraph">
+<p>We can construct a tree where the leaves are pairs of <code>[symbol, weight]</code>, and the parents are merged sets of their children with <code>[set of symbols, sum symbol weights]</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_18_huffman.gif" alt="2 18 huffman">
+</div>
+</div>
+<div class="paragraph">
+<p>Using this, we can arrive at the representation for any symbol by the following process: Navigate down the tree until you find the symbol you want. Every time you take a left branch, take a 0, and right, take a 1. To get to D, you go right, left, right, right, so the encoding is <code>1011</code>. To decode a bit sequence, you do the same thing: starting with 1011, you go right, left, right, right and get to D.</p>
+</div>
+<div class="paragraph">
+<p>The 'Best' code is one that minimises the number of tests you have to make. This is where the weights (frequencies) come in. You want to construct the tree such that the most frequent symbols take the least amount of branches to reach.</p>
+</div>
+<div class="paragraph">
+<p>How to construct such a tree?</p>
+</div>
+<div class="paragraph">
+<p>Start with a set of symbols/weight pairs:</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)}</code></p>
+</div>
+<div class="paragraph">
+<p>Find the two elements with the lowest weight, and merge them together</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) ({C D} 2) (E 1) (F 1) (G 1) (H 1)}</code></p>
+</div>
+<div class="paragraph">
+<p>Repeat a couple of times to get:</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) ({C D} 2) ({E F} 2) ({G H} 2)}</code></p>
+</div>
+<div class="paragraph">
+<p>On the next merge, you are now unioning two sets:</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) ({C D} 2) ({E F G H} 4)}</code></p>
+</div>
+<div class="paragraph">
+<p>And ultimately you end up</p>
+</div>
+<div class="paragraph">
+<p><code>{({A B C D E F G H} 17)}</code></p>
+</div>
+<div class="paragraph">
+<p>representing your root node.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the below code is quite different from the book, but I thought it was good enough. maybe the exercises will show different.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def huff '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
 
+(defn make-leaf [symbol weight] (list 'leaf symbol weight))
+(defn leaf? [x] (= 'leaf (first x)))
+(defn symbol-leaf [x] (second x))
+(defn weight-leaf [x] (nth x 2))
+
+(leaf? (make-leaf 'A 8)) ;; =&gt; true
+(symbol-leaf (make-leaf 'A 8)) ;; =&gt; A
+(weight-leaf (make-leaf 'A 8)) ;; =&gt; 8
+
+(defn symbols [node] (if (leaf? node) (list (symbol-leaf node)) (nth node 2)))
+(defn weight [node] (if (leaf? node) (weight-leaf node) (nth node 3)))
+(defn make-code-tree [left right]
+  (list left right (append (symbols left) (symbols right)) (+ (weight left) (weight right))))
+
+(defn left-branch [tree] (first tree))
+(defn right-branch [tree] (second tree))
+
+(defn make-huff-tree [codes]
+  (let [[fst scd &amp; rst] (sort-by weight codes)]
+    (if (= 1 (count codes)) codes
+        (make-huff-tree (cons (make-code-tree fst scd) rst)))))
+
+(first (make-huff-tree (map #(apply make-leaf %) huff)))
+;; =&gt;
+'(((leaf A 8)
+   ((((leaf G 1)
+      (leaf H 1)
+      (G H) 2)
+     ((leaf E 1)
+      (leaf F 1)
+      (E F) 2)
+     (G H E F) 4)
+    (((leaf C 1)
+      (leaf D 1)
+      (C D) 2)
+     (leaf B 3)
+     (C D B) 5)
+    (G H E F C D B) 9)
+   (A G H E F C D B) 17))
+
+(defn decode-bits [bits tree]
+  (cond (leaf? tree) (symbol-leaf tree)
+        (zero? (first bits)) (decode-bits (rest bits) (left-branch tree))
+        :else (decode-bits (rest bits) (right-branch tree))))
+
+;; Redefining unordered list implementation of element of set
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn encode-bits [sym tree]
+  (cond (leaf? tree) '()
+        (element-of-set? sym (symbols (left-branch tree))) (cons 0 (encode-bits sym (left-branch tree)))
+        :else (cons 1 (encode-bits sym (right-branch tree)))))
+
+(encode-bits 'A (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (0)
+(encode-bits 'B (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 1 1)
+(encode-bits 'C (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 1 0 0)
+(encode-bits 'D (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 1 0 1)
+(encode-bits 'E (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 1 0)
+(encode-bits 'F (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 1 1)
+(encode-bits 'G (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 0 0)
+(encode-bits 'H (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 0 1)
+
+
+(decode-bits '(0) (first (make-huff-tree (map #(apply make-leaf %) huff))))       ;; =&gt; A
+(decode-bits '(1 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff))))   ;; =&gt; B
+(decode-bits '(1 1 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; C
+(decode-bits '(1 1 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; D
+(decode-bits '(1 0 1 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; E
+(decode-bits '(1 0 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; F
+(decode-bits '(1 0 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; G
+(decode-bits '(1 0 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; H</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1307,7 +1488,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-07 10:36:23 +0100
+Last updated 2021-04-07 12:18:46 +0100
 </div>
 </div>
 </body>

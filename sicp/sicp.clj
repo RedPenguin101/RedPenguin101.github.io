@@ -192,7 +192,7 @@
           (print ", ")
           (print-scheme-list (second sl)))))
 
-(print-scheme-list (scheme-list 1 2 4))
+(comment (print-scheme-list (scheme-list 1 2 4)))
 
 (pair 1 nil)
 
@@ -466,3 +466,81 @@
 (adjoin-set 4 '(7 (3 (1) (5)) (9 nil (11))))
 ;; => (7 (3 (1) (5 (4 nil nil) nil)) (9 nil (11)))
 
+;; 2.3.4 huffman
+
+(def huff '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
+
+(defn make-leaf [symbol weight] (list 'leaf symbol weight))
+(defn leaf? [x] (= 'leaf (first x)))
+(defn symbol-leaf [x] (second x))
+(defn weight-leaf [x] (nth x 2))
+
+(leaf? (make-leaf 'A 8)) ;; => true
+(symbol-leaf (make-leaf 'A 8)) ;; => A
+(weight-leaf (make-leaf 'A 8)) ;; => 8
+
+(defn symbols [node] (if (leaf? node) (list (symbol-leaf node)) (nth node 2)))
+(defn weight [node] (if (leaf? node) (weight-leaf node) (nth node 3)))
+(defn make-code-tree [left right]
+  (list left right (append (symbols left) (symbols right)) (+ (weight left) (weight right))))
+
+(defn left-branch [tree] (first tree))
+(defn right-branch [tree] (second tree))
+
+(defn make-huff-tree [codes]
+  (let [[fst scd & rst] (sort-by weight codes)]
+    (if (= 1 (count codes)) codes
+        (make-huff-tree (cons (make-code-tree fst scd) rst)))))
+
+(first (make-huff-tree (map #(apply make-leaf %) huff)))
+;; =>
+'(((leaf A 8)
+   ((((leaf G 1)
+      (leaf H 1)
+      (G H) 2)
+     ((leaf E 1)
+      (leaf F 1)
+      (E F) 2)
+     (G H E F) 4)
+    (((leaf C 1)
+      (leaf D 1)
+      (C D) 2)
+     (leaf B 3)
+     (C D B) 5)
+    (G H E F C D B) 9)
+   (A G H E F C D B) 17))
+
+(defn decode-bits [bits tree]
+  (cond (leaf? tree) (symbol-leaf tree)
+        (zero? (first bits)) (decode-bits (rest bits) (left-branch tree))
+        :else (decode-bits (rest bits) (right-branch tree))))
+
+;; Redefining unordered list implementation of element of set
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn encode-bits [sym tree]
+  (cond (leaf? tree) '()
+        (element-of-set? sym (symbols (left-branch tree))) (cons 0 (encode-bits sym (left-branch tree)))
+        :else (cons 1 (encode-bits sym (right-branch tree)))))
+
+(encode-bits 'A (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (0)
+(encode-bits 'B (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 1 1)
+(encode-bits 'C (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 1 0 0)
+(encode-bits 'D (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 1 0 1)
+(encode-bits 'E (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 1 0)
+(encode-bits 'F (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 1 1)
+(encode-bits 'G (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 0 0)
+(encode-bits 'H (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => (1 0 0 1)
+
+
+(decode-bits '(0) (first (make-huff-tree (map #(apply make-leaf %) huff))))       ;; => A
+(decode-bits '(1 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff))))   ;; => B
+(decode-bits '(1 1 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => C
+(decode-bits '(1 1 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => D
+(decode-bits '(1 0 1 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => E
+(decode-bits '(1 0 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => F
+(decode-bits '(1 0 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => G
+(decode-bits '(1 0 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => H
