@@ -544,3 +544,24 @@
 (decode-bits '(1 0 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => F
 (decode-bits '(1 0 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => G
 (decode-bits '(1 0 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; => H
+
+;; 2.4 Complex Numbers
+
+(defn attach-tag [type-tag contents] (list type-tag contents))
+(def type-tag first)
+(def contents second)
+
+(defn rectangular? [z] (= 'rectangular (type-tag z)))
+(defn polar? [z] (= 'polar (type-tag z)))
+
+(def magnitude-polar first)
+(def angle-polar second)
+
+(defn real-part-rectangular [z] (first z))
+(defn real-part-polar [z]
+  (* (magnitude-polar z) (Math/cos (angle-polar z))))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (ex-info "Unknown type -- REAL PART" z))))

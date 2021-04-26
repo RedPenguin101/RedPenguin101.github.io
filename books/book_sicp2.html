@@ -457,7 +457,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_example_huffman_encoding_trees">Example: Huffman Encoding Trees</a></li>
 </ul>
 </li>
-<li><a href="#_multiple_representations_for_abstract_data">Multiple Representations for Abstract Data</a></li>
+<li><a href="#_multiple_representations_for_abstract_data">Multiple Representations for Abstract Data</a>
+<ul class="sectlevel2">
+<li><a href="#_complex_numbers">Complex Numbers</a></li>
+</ul>
+</li>
 <li><a href="#_systems_with_generic_operations">Systems with Generic Operations</a></li>
 </ul>
 </div>
@@ -1476,7 +1480,92 @@ the below code is quite different from the book, but I thought it was good enoug
 <div class="sect1">
 <h2 id="_multiple_representations_for_abstract_data">Multiple Representations for Abstract Data</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Data abstraction allows us to write much of our program without depending on a specific representation, by erecting an abstraction barrier.</p>
+</div>
+<div class="paragraph">
+<p>But what if there is more than one useful representation? For example, complex numbers can be represented in rectangular or polar form, with each being useful in different cases. In the real world, systems are designed by many people over long periods. You might end up with multiple representations that need to be isolated from each other and allow multiple representations to exist in a single program. You also need to allow for <em>new</em> representations to be added as they become necessary without breaking the existing code.</p>
+</div>
+<div class="paragraph">
+<p>We will get around this by creating <strong>generic procedures</strong> - procedures that can operate on multiple representations, where the type of representation is denoted by a <em>type tag</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_complex_numbers">Complex Numbers</h3>
+<div class="paragraph">
+<p>Complex numbers can be represented in either rectangular form, with real and imaginary parts (<code>5 + 4i</code>) or in polar form, with angle and magnitude <code>[120,3]</code>. Both essentially descriptions of points on a 2d plane.</p>
+</div>
+<div class="paragraph">
+<p>Addition is easy in rectangular form: <code>(a+bi) + (c+di) = (a+c)+(b+d)i</code>.</p>
+</div>
+<div class="paragraph">
+<p>Multiplication is simpler in polar form: <code>[a,b]*[c,d]=[a+c,b*d]</code></p>
+</div>
+<div class="paragraph">
+<p>The principle of data abstraction states that the user should be able to use all operations without caring about the representation.</p>
+</div>
+<div class="paragraph">
+<p>To create a system of complex numbers, we should have two constructors <code>make-from-mag-ang</code> and <code>make-from-real-imag</code>; and four accessors <code>real-part</code>, <code>imag-part</code>, <code>magnitude</code>, <code>angle</code>.</p>
+</div>
+<div class="paragraph">
+<p>Then from these we can easily implement <code>add-complex</code> etc. without specifying a representation. To complete the package we have to pick a representation though, and implement <code>real-part</code> etc. This can be done with a pair of real,imag, or mag,angle.</p>
+</div>
+<div class="paragraph">
+<p>Here we are practicing the <strong>principle of least commitment</strong>. We can use either, we don&#8217;t have to decide until the last minute, thus retaining flexibility.</p>
+</div>
+<div class="paragraph">
+<p>Or, we can just implement both, which effectively defers the commitment <em>even later</em>.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll need a way to determine which representation is actually being used. We&#8217;ll do this with type tags. We&#8217;ll create another abstraction barrier, where we have <code>type-tag</code> and <code>contents</code> procedures that can extract the type or content, and a <code>attach tag</code> to add the tag.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn attach-tag [type-tag contents] (list type-tag contents))
+(def type-tag first)
+(def content second)
 
+(defn rectangular? [z] (= 'rectangular (type-tag z)))
+(defn polar? [z] (= 'polar (type-tag z)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, both representations can have their own procedures - though we have to make sure there are not name collisions, e.g <code>real-part-rectangular</code>, <code>real-part-polar</code>.</p>
+</div>
+<div class="paragraph">
+<p>A generic selector will check a datum&#8217;s type-tag and choose the appropriate concrete implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def magnitude-polar first)
+(def angle-polar second)
+
+(defn real-part-rectangular [z] (first z))
+(defn real-part-polar [z]
+  (* (magnitude-polar z) (Math/cos (angle-polar z))))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (ex-info "Unknown type -- REAL PART" z))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since the complex number arithmetic are defined in terms of <code>real-part</code> etc. these will still work with either representation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>     Programs that use complex numbers
+========== add, sub, mul, div ==============
+       Complex arithmetic package
+== real-part, imag-part, magnitude, angle ==
+       Rectangular  |   Polar
+    Representation  | Representation</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we have a system that has 3 relatively independent parts: the arithmetic operations, the rectangular implementation and the polar representation. The two implementations could&#8217;ve been designed separately, as long as they implement a similar interface.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1488,7 +1577,7 @@ the below code is quite different from the book, but I thought it was good enoug
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-07 12:18:46 +0100
+Last updated 2021-04-18 11:01:13 +0100
 </div>
 </div>
 </body>

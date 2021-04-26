@@ -772,4 +772,72 @@ the below code is quite different from the book, but I thought it was good enoug
 
 == Multiple Representations for Abstract Data
 
+Data abstraction allows us to write much of our program without depending on a specific representation, by erecting an abstraction barrier.
+
+But what if there is more than one useful representation? For example, complex numbers can be represented in rectangular or polar form, with each being useful in different cases. In the real world, systems are designed by many people over long periods. You might end up with multiple representations that need to be isolated from each other and allow multiple representations to exist in a single program. You also need to allow for _new_ representations to be added as they become necessary without breaking the existing code.
+
+We will get around this by creating *generic procedures* - procedures that can operate on multiple representations, where the type of representation is denoted by a _type tag_.
+
+=== Complex Numbers
+
+Complex numbers can be represented in either rectangular form, with real and imaginary parts (`5 + 4i`) or in polar form, with angle and magnitude `[120,3]`. Both essentially descriptions of points on a 2d plane.
+
+Addition is easy in rectangular form: `(a+bi) + (c+di) = (a+c)+(b+d)i`.
+
+Multiplication is simpler in polar form: `[a,b]*[c,d]=[a+c,b*d]`
+
+The principle of data abstraction states that the user should be able to use all operations without caring about the representation.
+
+To create a system of complex numbers, we should have two constructors `make-from-mag-ang` and `make-from-real-imag`; and four accessors `real-part`, `imag-part`, `magnitude`, `angle`.
+
+Then from these we can easily implement `add-complex` etc. without specifying a representation. To complete the package we have to pick a representation though, and implement `real-part` etc. This can be done with a pair of real,imag, or mag,angle.
+
+Here we are practicing the *principle of least commitment*. We can use either, we don't have to decide until the last minute, thus retaining flexibility.
+
+Or, we can just implement both, which effectively defers the commitment _even later_.
+
+We'll need a way to determine which representation is actually being used. We'll do this with type tags. We'll create another abstraction barrier, where we have `type-tag` and `contents` procedures that can extract the type or content, and a `attach tag` to add the tag.
+
+[source,clojure]
+----
+(defn attach-tag [type-tag contents] (list type-tag contents))
+(def type-tag first)
+(def content second)
+
+(defn rectangular? [z] (= 'rectangular (type-tag z)))
+(defn polar? [z] (= 'polar (type-tag z)))
+----
+
+Now, both representations can have their own procedures - though we have to make sure there are not name collisions, e.g `real-part-rectangular`, `real-part-polar`.
+
+A generic selector will check a datum's type-tag and choose the appropriate concrete implementation.
+
+[source,clojure]
+----
+(def magnitude-polar first)
+(def angle-polar second)
+
+(defn real-part-rectangular [z] (first z))
+(defn real-part-polar [z]
+  (* (magnitude-polar z) (Math/cos (angle-polar z))))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (ex-info "Unknown type -- REAL PART" z))))
+----
+
+Since the complex number arithmetic are defined in terms of `real-part` etc. these will still work with either representation.
+
+----
+     Programs that use complex numbers
+========== add, sub, mul, div ==============
+       Complex arithmetic package
+== real-part, imag-part, magnitude, angle ==
+       Rectangular  |   Polar
+    Representation  | Representation
+----
+
+Now we have a system that has 3 relatively independent parts: the arithmetic operations, the rectangular implementation and the polar representation. The two implementations could've been designed separately, as long as they implement a similar interface. 
+
 == Systems with Generic Operations

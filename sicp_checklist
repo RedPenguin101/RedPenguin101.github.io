@@ -3,11 +3,7 @@
             2.2.4  Example: A Picture Language
         2.3  Symbolic Data
             2.3.1  Quotation
-            2.3.3  Example: Representing Sets
-            2.3.4  Example: Huffman Encoding Trees
         2.4  Multiple Representations for Abstract Data
-            2.4.1  Representations for Complex Numbers
-            2.4.2  Tagged data
             2.4.3  Data-Directed Programming and Additivity
         2.5  Systems with Generic Operations
             2.5.1  Generic Arithmetic Operations
