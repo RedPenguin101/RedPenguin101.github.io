@@ -1,0 +1,45 @@
+= Some thoughts around features and operation of a light blogging application
+
+Right now my process for blogging looks like this:
+
+. Create an adoc file with filename in the format `asciidocs/YYYY_MM_DD_blog_title.adoc`
+. Write the post
+. Add any images into `images/YYYY_MM_DD_blog_title/`
+. Run `asciidoctor YYYY_MM_DD_blog_title.adoc && mv *.html ../posts` (or `../books`)
+. Update the relevant index html file to point to the new post
+. git commit and push to github
+. github takes care of the hosting
+
+How much of this can be automated?
+
+A hypothetical framework might have a workflow like this
+
+. `blog create "blog title"` 
+.. creates the file `asciidocs/YYYY_MM_DD_blog_title.adoc`
+.. creates the image directory `images/YYYY_MM_DD_blog_title/`
+.. opens the code editor for that file
+. User writes the post
+. `blog publish`
+.. Runs asciidoctor on _all_ asciidocs (so any changes to existing docs are picked up)
+.. moves the created html files to the `posts` folder
+.. creates the index entry in the relevant index html file
+.. git commits the asciidoc, images, html file and index
+.. pushes the blob to github, which will publish it
+
+More advanced features might be
+
+. `blog list` which lists out all your blog posts (necessitating maintenance of state?) 
+. `blog tag <post> <tags>` adds tags to posts, adds the tags to the index and also provides a list-by-tag page
+. create a new branch for each post added, with a `blog finalize <post>` which merges the branch to main, allowing version control without having to publish things until you're ready
+. `blog workon <post>` would switch to the in-progress branch.
+. working on a blog post would change your terminal prefix to add the post you're working on, 
+.. `blog create` and `blog workon` would switch the branch and terminal prefix
+.. `blog` would just pick up from the last post. 
+.. `blog stop` would switch back to main and remove the terminal prefix
+. You can switch between editors with `blog create <post> --editor vim` etc.
+. `blog create "blog title" --category books` would branch out from the main blog index
+. `blog import filename.adoc` would bring an adoc you've written outside of the framework into it.
+
+Leaning on asciidoctor and github pages (and git itself) obviously introduces some external deps, but better than writing your own.
+
+Clearly there's a fair amount of command line scripting here, so Babashka might be a good fit.
