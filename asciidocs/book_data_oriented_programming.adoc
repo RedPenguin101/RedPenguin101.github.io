@@ -1,0 +1,112 @@
+= Data Oriented Programming
+By Yehonathan Sharvit
+
+== Book contents
+
+* Part 1: Foundations
+** Chapter 0: Principles of DOP
+*** #1: Separate data and code
+*** #2: Represent data with generic structures
+*** #3: Keep data immutable
+** Chapter 1: The tendency of OOP to increased complexity
+** Chapter 2: Separating code from data
+** Chapter 3: Manipulate the whole system data with generic functions
+** Chapter 4: State management with immutable data
+** Chapter 5: Scalable concurrency control
+* Part 2: Implementation
+** Chapter 6: Unit tests and DOP
+** Chapter 7: Persistent data structures
+** Chapter 8: Lock-free transactions
+** Chapter 9: Generic database operations
+** Chapter 10: Data oriented web services
+* Part 3: Evolution
+** Chapter 11: Advanced data manipulation
+** Chapter 12: Polymorphism without objects
+** Chapter 13: Specify the shape of your data
+** Chapter 14: Extend your data types
+
+== Notes
+
+=== Chapter 0: Principles
+
+DOP aims to simplify design an implementation of information centric software systems.
+
+Data is a first class citizen.
+
+The principles:
+
+. Separate code from data
+. Represent data entities with generic data structures
+. Data is immutable
+
+Language agnostic.
+
+*Separating code from data* means that you have functions that don't depend on data that is in the codes lexical scope.
+
+In OO you might have an _author_ object that has a _firstName_, _lastName_, and _books_ they have written. It might have methods _fullName_ and _isProlific_.
+
+Principle 1 would have you create a data structure with _firstName_, _lastName_, and _books_, and have separate functions `fullName(data)` and `isProlific(data)`.
+
+With principle 1, the _fullName_ function can be reused in a context which has nothing to do with authors. The functions _fullName_ and _isProlific_ can be tested in isolation.
+
+More abstractly, it leads to simpler systems. Scopes are smaller, since you're treating either the data or the functions separately. 
+
+The price of principle 1 is that there is some privacy guarantee: data can only be accessed via the methods which are part of that object. Refactoring can be more difficult, because you are changing functions which is not packaged with the data it acts upon, meaning you can break things (Immutability helps solve this) 
+
+If you combine code and data, it can be more comprehensible, since the data the methods act upon are trivial to find - just look up a few lines.
+
+Lastly, since we are separating one thing into several things, we have more things overall, and though the things themselves are simpler, it can become hard to keep track of them.
+
+Another point relating to this, is if you have specific structures, which in effect have their own little API that you need to define and learn, more structures means a large increase in the number of specific things you need to design/learn. This is mitigated by using generic data structures.
+
+*Using generic data structures* means liberally using hashmaps/dictionaries, arrays, sets and queues to represent collections of data, instead of defining custom types/classes/structs.
+
+We might represent `AuthorData` as a class with
+
+[source,javascript]
+----
+class AuthorData {
+    constructor(firstName, lastName, books) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.books = books;
+    }
+}
+----
+
+Or as a map
+
+[source,javascript]
+----
+function createAuthorData(firstName, lastName, books) {
+    var data = new Map;
+    data.firstName = firstName;
+    data.lastName = lastName;
+    data.books = books;
+    return data;
+}
+----
+
+In the latter case we get access to a large library of functions (literally, in the case of things like lodash) for manipulating maps generically, whereas for the former you have to implement your own.
+
+[quote,Alan Perlis]
+It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures.
+
+this includes being able to trivially serialize and deserialize data to and from JSON and other data formats.
+
+Generic data structures are _open_ and therefore flexible. If you are want to represent an author, but don't know a piece of information yet, you can leave it out. If you want to add an additional piece of information, you just add another key value pair. In both cases, when you are using classes, you'll need to create another class.
+
+The downsides are:
+
+* Slower, because you don't get the built in optimizations that classes have (though this is rarely significant these days.)
+* Data shapes are not _self documenting_ like they are in classes
+* You lose compile time checks you get with types.
+
+*Immutable data* means that you only every create and pass around new versions of your data, rather than changing data structures in place.
+
+The benefits of immutability are mainly peace of mind and predictability: If you're passing around a mutable data structure you always have to worry whether some other part of the code that has a reference to that data structure will mutate it without you knowing about it. Obviously this is particularly concerning when you add concurrency to the mix.
+
+The downsides are:
+
+* performance hit. Particularly if you have a naive implementation, like just cloning every object you get. There are much better ways to do this, called Persistent Data Structures, which bring the performance differences within shouting distance of the mutable versions. But it is still there.
+* In most languages you need to import a library that implement these structures.
