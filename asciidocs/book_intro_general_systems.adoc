@@ -108,6 +108,9 @@
 * General Laws:
 * Analogy
 * Category System
+* Absolute and relative thinking
+* *Arbitrary System* Systems about which nothing general can be said, except that "nothing general can be said"
+* Primitives
 
 == Chapter 1: The problem
 
@@ -163,7 +166,7 @@ Science is fundamentally reductionist: it claims every phenomenon can be reduced
 
 Organismic though is in essence an argument from analogy. We continue to refine the analogy, rendering it into a precise, explicit, predictive model. That analogy should be to known mathematical characteristics.
 
-We want to understand the ways in which thinkers use analogies, and convert them into models. This will raise the epistemological question "How do we come to hold the ideas we hold as knowledge"
+We want to understand the ways in which thinkers use analogies, and convert them into models. This will raise the epistemological question "How do we come to hold the ideas we hold as knowledge?"
 
 === Category Systems
 
@@ -220,3 +223,57 @@ These two address the pitfalls of generality. To address the pitfalls of systems
 === Varieties of systems thinking
 
 The contribution of the general systems approach to thinking is in how new subjects are approached by the generalist. By bringing general laws, you don't have to start from scratch, but can recognize specific laws of the discipline as particular instances of general laws. From the perspective of the particular discipline, the amount of specific utility of the general law might be small, but it is nonetheless an advantage. There is a mapping of existing general knowledge onto the specific cases. And from the general model, "sharp questions" can be posed quickly, which themselves contribute to quick uptake of the subject.
+
+== Chapter 3: System and illusion
+
+=== Independent Reality and Relational Thinking
+
+> A system is a way of looking at the world... a point of view
+
+This might worry scientists, who would like to consider their observations as objective. But a point of view is the best we can do, none more 'true' than another. The concept of observer-independent truth is the ultimate egocentrism.
+
+"Belief in an external world independent of the percipient subject" is an heuristic - and one that is very useful. But all heuristics have the attribute that they can't tell you when they stop being applicable. Such information is by definition outside the model encoded by the heuristic. Call this the *Banana Principle*, after the boy who was taught how to spell banana, but wasn't taught when to stop: _heuristic devices don't tell you when to stop_.
+
+We do have labels for heuristics which can give you an indication of when to stop. In ascending order: idea, concept, rule, principle, law, reality, truth. But even at the furthest extreme we must remember that these are just devices.
+
+The independent reality heuristic, or absolute thinking, is both convenient and pervasive. We couldn't stop using it if we wanted to. The alternative is relational thinking.
+
+Consider the passages: 
+
+* _General motors exists to put out cars, not metal scraps, although it extrudes both._. 
+* _Beavers exist to control floods, not to produce piles of wood chips_
+* _Universities exist to produce educated persons and scholars, not retired professors or academic failures_
+* _Oceans exist to produce fresh fish, not mud deposits or dead whales washed ashore_
+
+In the two cases where the system is man made (GM and Universities), the statements seem incontrovertible. In the two 'natural' cases, ridiculous. 
+
+In the man made case, we refer to a more-or-less 'official' purpose. But systems serve many purposes to many people. A scrap metal dealer will have a different view of GM, as will a university professor of a university. In each case, man-made and natural, there is no independent reason for the systems existence. There is only the relation of the system to those who participate in it.
+
+Complex systems are often described to have 'emergent behavior'. That is, the system as a whole exhibits behavior that couldn't be predicted from looking at its individual parts. This will often be contradicted by those who, after observing the unpredicted behavior, will go back and illustrate that it _could_ have been been predicted, and say emergent behaviour is a myth. 
+
+Both of these viewpoints based on absolute thinking. Relative thinking would say that "emergence" can't be treated as "stuff" in the system. It should be treated as a relationship between system and observer. Behavior is emergent to one observer precisely because she didn't predict it, whereas the same behavior would not be emergent to another observer who _did_ predict it.
+
+The order that permits the specification of the system can come either from 'the world', or it can come from the observer. From the above can intuit that the system cannot help but be defined except relative to the observer. The first error in system specification (in the sense of a system as sets of objects with relationships connecting them) is the assumption of absolute principle: the role of observer is ignored.
+
+=== A system is a set
+
+Set theory comes with it's own notation, which we can leverage. A set of objects X,Y,Z (or more properly a set of symbols or names representing the 'things') is represented as `{X Y Z}`. This is set-building by enumeration.
+
+The first challenge is in the complexity inherent in naming. The name might point to a displayable thing ("Eiffel Tower" as a symbol standing in for the actual Eiffel Tower), a or a non-displayable thing ("a Proof of Fermat's last Theorem"), or even things that do not exist but whose existence we accept ("Piltdown Man").
+
+Enumeration of the members of a set is usually not possible. Often we will use 'derived methods', or predicates for determining membership of a set. This can introduce a lot of ambiguity, for example the 'typical member' (aka 'Ideal Type', or 'Platonic form') sets. For example the set of 'Tables' contains all objects that are 'close' to the typical member, the platonic form of the table. This presumes a universality of the form, when in fact the ideal type is usually just the particular observers version of that ideal type, and can vary from observer to observer.
+
+Often we will use 'example members' to indicate the predicate being used. But this is problematic too. Consider the set `{Browning, Black, Byron ...}`. What is the predicate for this set? English poets? Great poets? Surnames beginning with B? The examples provided do not narrow the scope of possible predicates enough.
+
+We can specify predicative rules to specify set membership. But outside of mathematics (e.g. the set of even numbers `{x ⊂ ℕ | ∃ b ⊂ ℕ ST x=2b}`) these rules are often prohibitively difficult or impossible to specify with precision. This is particularly the case when language is involved, because the interpretation of the meaning of words is always much more complex that it first appears. "Time flies like an arrow" and "Fruit flies like a banana" have identical surface syntactic structure, but the meaning typically assigned to them is totally different. We are sloppy grammarians.
+
+Another issue with set building by derivation is the 'choice' or 'precursor' set. If a predicate is applied to determine a set's membership, what is it being applied _to_? Again, this can be relatively simple in mathematics (in the above example of even number, `x ⊂ ℕ` is explicitly stated as the precursor set), but once you're outside of that it gets much more complicated.
+
+Our simplest mental acts are not simple. They are neither completely rational nor entirely arbitrary, but somewhere in the middle. And the ambiguity is almost always invisible to us.
+
+=== Observers and observations
+
+We said above that the set underlying a system is a set of 'objects'. What does that mean? You'll often hear them described as 'parts', 'elements', 'attributes', 'components', or 'variables', but that just begs the question. No-one really knows what a system is a set of. These primitives of the general system set are so abstract, and can take such a broad range of concrete forms, that nothing useful can be said of them.
+
+Who then says what comprises a Thing within a system? Only the observer. An observer may be characterised by the observations that she can make.
+
