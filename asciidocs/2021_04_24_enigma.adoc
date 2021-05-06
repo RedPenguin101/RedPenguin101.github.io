@@ -4,6 +4,8 @@ The story of the enigma machine is famous for it's association with the work of 
 
 I want to understand how the Enigma machines actually worked, by building a model of the machine in code.
 
+NOTE: I can't get my enigma to replicate the results of the one https://cryptii.com/pipes/enigma-machine[here]. I assume there's something subtly wrong with my implementation, but I think the overall pieces are correct.
+
 == Operation of the Enigma machine
 
 The enigma machine allows you to encode a message (called *plaintext*) so that no-one can read it except a person who also has an enigma machine and knows what settings you used to encode it. Or unless you can crack the code.
@@ -89,7 +91,7 @@ The first piece of puzzle is the reflector. This takes the letter signal from th
 
 Drawing this up, you can trace the path of each input letter, through the reflector to the output. If you type A on the keyboard, the C on the lamp board will light up. And if you type C, A will light up.
 
-*diagram of reflector*
+image::../images/enigma/enigma.jpg[]
 
 The first property to notice that this is _reciprocal_ (A->C and C->A). This is a critical property because it's what allows the decoding. Putting the encoded message back into the machine will give you back the plaintext.
 
@@ -189,7 +191,7 @@ It also allows us a neat unique notation for a rotor. If we want a rotor that ma
 
 Now lets look at how the rotor works. Plugging the rotor into our machine, we can now trace a path for each letter through the rotor, through the reflector, and back through the rotor, and we end up with a different letter. 
 
-*diagram of rotor + reflector*
+image::../images/enigma/enigma(1).jpg[]
 
 We expect to get back:
 
@@ -208,11 +210,11 @@ This is going to complicate our `encode-letter` a bit. First, the rotors are not
 
 Next, we need to make a design decision. We know that in the _actual_ enigma machine, there are always exactly 3 rotors. So we could have a signature like `encode-letter : letter r1 r2 r3 -> letter`. But if we do this it could get quite hard to change. And it might be nice to be able to have a number of rotors other than 3. 
 
-First, right now we only have one rotor, so tying ourselves to 3 means we'll have to create more, or reuse the existing one. 
+* First, right now we only have one rotor, so tying ourselves to 3 means we'll have to create more, or reuse the existing one. 
+* Second, for testing and generally for comprehensibility, it might be nicer to use less than three. It's just easier for us to see what's going on. 
+* And third, if we want to make a machine that has _more_ than 3 rotors in the future, this would make it harder. 
 
-Second, for testing and generally for comprehensibility, it might be nicer to use less than three. It's just easier for us to see what's going on. 
-
-And third, if we want to make a machine that has _more_ than 3 rotors in the future, this would make it harder. There's no right answer here, but I'm going to code it in a way that allows variable numbers of rotors, since I don't think it will increase complexity much. 
+There's no right answer here, but I'm going to code it in a way that allows variable numbers of rotors, since I don't think it will increase complexity much. 
 
 To encode the letter we want our procedure to be something like:
 
@@ -223,7 +225,7 @@ letter
 |> run though rotors again, but in reverse*
 ----
 
-(reversed both the order of the rotors, and the rotors themselves)
+(* reversed both the order of the rotors, and the rotors themselves)
 
 So let's just do that:
 
@@ -243,8 +245,7 @@ So let's just do that:
 
 
 (num->str (map #(run-through-rotors % [(:mapping (rotor "BDAC"))]) (str->num "ABCD")))
-;; => "BDAC" 
-;; matching the diagram of just the rotor
+;; => "BDAC", i.e. how we specified the rotor
 
 (num->str (map #(encode-letter % [(:mapping (rotor "BDAC"))]) (str->num "ABCD")))
 ;; => "BADC"
@@ -273,11 +274,11 @@ Finally, update the encode, passing in the rotors:
 
 Let's add another simple rotor and make sure our answers still make sense. We'll add a rotor with mapping "BADC". If we diagram this out, if that's the only rotor, we would expect this to to encode ABCD as CDAB.
 
-*diagram of new rotors*
+image::../images/enigma/enigma(2).jpg[]
 
-If used with our other rotor (BDAC), we expect to encode ABCD as BADC. 
+If used in combination with our other rotor (BDAC), we expect to encode ABCD as BADC. 
 
-*diagram of both rotors*
+image::../images/enigma/enigma(3).jpg[]
 
 Let's check if it works:
 
@@ -362,13 +363,13 @@ Now we're at a bit under 30 lines of code, and have a few examples, it's probabl
 
 This would be a great use case for property based testing, but it's quite a heavy lift for this small thing.
 
-== Entry wheels and window numbers
+== Window numbers and initial rotor positions
 
 So far our cipher is pretty primitive. The rotors are fixed, though you can use them in any order. So with 3 rotors available, you have 3!, or 6 possible combinations. With 8 rotors available you have 8p3 = 336 possibilities. If an attacker had a machine, they would have to try at most 336 possibilities to crack the code. Not great.
 
 One way to introduce more complexity is allow the users to 'rotate' the rotors (as the name suggests!). For each rotor, then, you'll be able to set it in any one of _n_ positions, where _n_ is the number of letters. So 26 for a full one, and 4 for our minigma. If we have chosen three rotors, we can set each in 26^3 ways. So an 8 rotor enigma will have 336*26^3, about 6m, possible settings. Which is much better!
 
-The way the enigma is built, the rotors have a ring of letters, or numbers, round the edge, and when they are slotted into the machine, there is a window which shows one value. This 'window value' is how you set the rotation. 
+The way the enigma is built, the rotors have a ring of letters, or numbers, round the edge, and when they are slotted into the machine, there is a window which shows one value. This 'window value' is how you set the rotation, or *initial rotor position*. 
 
 So, how do we model this. In particular, is the window value a property of the rotor itself, or of the machine? I'm a bit torn on this. 
 
@@ -439,15 +440,11 @@ All that being said, we're going to ignore the notch and ring setting for now, a
 
 But I think there's a potentially better way. To see, let's dig into what's happening when we shift the window:
 
-*diagram of the shift*
+image::../images/enigma/enigma(4).jpg[]
 
-However, this is completely equivalent to writing the end result of the transformation as an effectively new mapping of:
+However, this is completely equivalent to writing the end result of the transformation as an effectively new mapping that can be expressed using modulo arithmetic:
 
-*diagram of the renotated shift*
-
-Moving things around a bit, the relationship becomes clearer:
-
-*diagram with the mods*
+image::../images/enigma/enigma(5).jpg[]
 
 In general, rotating the rotor i times is equivalent to a new mapping, where over every value of the map, you apply the transformation `(x-i mod n)` (where n is the number of letters in the rotor.)
 
@@ -514,7 +511,7 @@ Next, let's try to get one rotor rotating one notch after each character. Happil
               (map rotate rotors)))))
 ----
 
-Note that this rotates _all_ the rotors, so trying this with multiple rotors might yield weird results.
+NOTE: this rotates _all_ the rotors, so trying this with multiple rotors might yield weird results.
 
 Now if we try encoding AAAA again, we get this:
 
@@ -554,7 +551,7 @@ I want to make sure that I can replicate my results with pen and paper while it'
 
 (recall the simple-reflector we have in place is A< - >C, B< - >D)
 
-*diagram working through this*
+image::../images/enigma/enigma(6).jpg[]
 
 I'll add this as a test as-well, since this shouldn't change anymore.
 

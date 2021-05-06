@@ -449,6 +449,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>I want to understand how the Enigma machines actually worked, by building a model of the machine in code.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+I can&#8217;t get my enigma to replicate the results of the one <a href="https://cryptii.com/pipes/enigma-machine">here</a>. I assume there&#8217;s something subtly wrong with my implementation, but I think the overall pieces are correct.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -593,8 +605,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Drawing this up, you can trace the path of each input letter, through the reflector to the output. If you type A on the keyboard, the C on the lamp board will light up. And if you type C, A will light up.</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram of reflector</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma.jpg" alt="enigma">
+</div>
 </div>
 <div class="paragraph">
 <p>The first property to notice that this is <em>reciprocal</em> (A&#8594;C and C&#8594;A). This is a critical property because it&#8217;s what allows the decoding. Putting the encoded message back into the machine will give you back the plaintext.</p>
@@ -712,8 +726,10 @@ simple-rotor1
 <div class="paragraph">
 <p>Now lets look at how the rotor works. Plugging the rotor into our machine, we can now trace a path for each letter through the rotor, through the reflector, and back through the rotor, and we end up with a different letter.</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram of rotor + reflector</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma(1).jpg" alt="enigma(1)">
+</div>
 </div>
 <div class="paragraph">
 <p>We expect to get back:</p>
@@ -746,14 +762,21 @@ simple-rotor1
 <div class="paragraph">
 <p>Next, we need to make a design decision. We know that in the <em>actual</em> enigma machine, there are always exactly 3 rotors. So we could have a signature like <code>encode-letter : letter r1 r2 r3 &#8594; letter</code>. But if we do this it could get quite hard to change. And it might be nice to be able to have a number of rotors other than 3.</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>First, right now we only have one rotor, so tying ourselves to 3 means we&#8217;ll have to create more, or reuse the existing one.</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>Second, for testing and generally for comprehensibility, it might be nicer to use less than three. It&#8217;s just easier for us to see what&#8217;s going on.</p>
+</li>
+<li>
+<p>And third, if we want to make a machine that has <em>more</em> than 3 rotors in the future, this would make it harder.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>And third, if we want to make a machine that has <em>more</em> than 3 rotors in the future, this would make it harder. There&#8217;s no right answer here, but I&#8217;m going to code it in a way that allows variable numbers of rotors, since I don&#8217;t think it will increase complexity much.</p>
+<p>There&#8217;s no right answer here, but I&#8217;m going to code it in a way that allows variable numbers of rotors, since I don&#8217;t think it will increase complexity much.</p>
 </div>
 <div class="paragraph">
 <p>To encode the letter we want our procedure to be something like:</p>
@@ -767,7 +790,7 @@ simple-rotor1
 </div>
 </div>
 <div class="paragraph">
-<p>(reversed both the order of the rotors, and the rotors themselves)</p>
+<p>(* reversed both the order of the rotors, and the rotors themselves)</p>
 </div>
 <div class="paragraph">
 <p>So let&#8217;s just do that:</p>
@@ -788,8 +811,7 @@ simple-rotor1
 
 
 (num-&gt;str (map #(run-through-rotors % [(:mapping (rotor "BDAC"))]) (str-&gt;num "ABCD")))
-;; =&gt; "BDAC"
-;; matching the diagram of just the rotor
+;; =&gt; "BDAC", i.e. how we specified the rotor
 
 (num-&gt;str (map #(encode-letter % [(:mapping (rotor "BDAC"))]) (str-&gt;num "ABCD")))
 ;; =&gt; "BADC"
@@ -821,14 +843,18 @@ simple-rotor1
 <div class="paragraph">
 <p>Let&#8217;s add another simple rotor and make sure our answers still make sense. We&#8217;ll add a rotor with mapping "BADC". If we diagram this out, if that&#8217;s the only rotor, we would expect this to to encode ABCD as CDAB.</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram of new rotors</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma(2).jpg" alt="enigma(2)">
+</div>
 </div>
 <div class="paragraph">
-<p>If used with our other rotor (BDAC), we expect to encode ABCD as BADC.</p>
+<p>If used in combination with our other rotor (BDAC), we expect to encode ABCD as BADC.</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram of both rotors</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma(3).jpg" alt="enigma(3)">
+</div>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s check if it works:</p>
@@ -933,7 +959,7 @@ simple-rotor1
 </div>
 </div>
 <div class="sect1">
-<h2 id="_entry_wheels_and_window_numbers">Entry wheels and window numbers</h2>
+<h2 id="_window_numbers_and_initial_rotor_positions">Window numbers and initial rotor positions</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>So far our cipher is pretty primitive. The rotors are fixed, though you can use them in any order. So with 3 rotors available, you have 3!, or 6 possible combinations. With 8 rotors available you have 8p3 = 336 possibilities. If an attacker had a machine, they would have to try at most 336 possibilities to crack the code. Not great.</p>
@@ -942,7 +968,7 @@ simple-rotor1
 <p>One way to introduce more complexity is allow the users to 'rotate' the rotors (as the name suggests!). For each rotor, then, you&#8217;ll be able to set it in any one of <em>n</em> positions, where <em>n</em> is the number of letters. So 26 for a full one, and 4 for our minigma. If we have chosen three rotors, we can set each in 26^3 ways. So an 8 rotor enigma will have 336*26^3, about 6m, possible settings. Which is much better!</p>
 </div>
 <div class="paragraph">
-<p>The way the enigma is built, the rotors have a ring of letters, or numbers, round the edge, and when they are slotted into the machine, there is a window which shows one value. This 'window value' is how you set the rotation.</p>
+<p>The way the enigma is built, the rotors have a ring of letters, or numbers, round the edge, and when they are slotted into the machine, there is a window which shows one value. This 'window value' is how you set the rotation, or <strong>initial rotor position</strong>.</p>
 </div>
 <div class="paragraph">
 <p>So, how do we model this. In particular, is the window value a property of the rotor itself, or of the machine? I&#8217;m a bit torn on this.</p>
@@ -1047,20 +1073,18 @@ simple-rotor1
 <div class="paragraph">
 <p>But I think there&#8217;s a potentially better way. To see, let&#8217;s dig into what&#8217;s happening when we shift the window:</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram of the shift</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma(4).jpg" alt="enigma(4)">
+</div>
 </div>
 <div class="paragraph">
-<p>However, this is completely equivalent to writing the end result of the transformation as an effectively new mapping of:</p>
+<p>However, this is completely equivalent to writing the end result of the transformation as an effectively new mapping that can be expressed using modulo arithmetic:</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram of the renotated shift</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma(5).jpg" alt="enigma(5)">
 </div>
-<div class="paragraph">
-<p>Moving things around a bit, the relationship becomes clearer:</p>
-</div>
-<div class="paragraph">
-<p><strong>diagram with the mods</strong></p>
 </div>
 <div class="paragraph">
 <p>In general, rotating the rotor i times is equivalent to a new mapping, where over every value of the map, you apply the transformation <code>(x-i mod n)</code> (where n is the number of letters in the rotor.)</p>
@@ -1139,8 +1163,17 @@ simple-rotor1
               (map rotate rotors)))))</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Note that this rotates <em>all</em> the rotors, so trying this with multiple rotors might yield weird results.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+this rotates <em>all</em> the rotors, so trying this with multiple rotors might yield weird results.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Now if we try encoding AAAA again, we get this:</p>
@@ -1195,8 +1228,10 @@ This non-similarity is not guaranteed.
 <div class="paragraph">
 <p>(recall the simple-reflector we have in place is A&lt; - &gt;C, B&lt; - &gt;D)</p>
 </div>
-<div class="paragraph">
-<p><strong>diagram working through this</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="../images/enigma/enigma(6).jpg" alt="enigma(6)">
+</div>
 </div>
 <div class="paragraph">
 <p>I&#8217;ll add this as a test as-well, since this shouldn&#8217;t change anymore.</p>
@@ -1384,7 +1419,7 @@ This non-similarity is not guaranteed.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-26 12:25:20 +0100
+Last updated 2021-04-30 14:07:35 +0100
 </div>
 </div>
 </body>
