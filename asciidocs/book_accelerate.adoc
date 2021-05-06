@@ -1,0 +1,39 @@
+= Accelerate
+Nicole Forsgren, Jez Humble, Gene Kim
+
+== Content
+
+* What we found
+** measuring performance
+** measuring / changing culture
+** technical practices
+** architecture
+** integrating infosec
+** management practices
+** product development
+** sustainable work
+** employee happiness
+** leaders and managers
+* The research
+** the science
+** psychometrics
+** why surveys
+** the data
+* A Transformation case study: high performance leadership and management
+
+== Preface and conclusion
+
+2013: 4 year research into capabilities and practices associated with accelerating software delivery
+
+Going beyond anecdote/experience
+
+Cross sectional studies
+
+Throughout, one constant: All modern companies rely on software, so software delivery is critical.
+
+Many factors:
+
+* leadership
+* tools
+* automation
+* culture of continuous learning / improvement
