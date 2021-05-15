@@ -6,7 +6,6 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 . Course: https://classroom.udacity.com/courses/cs212[Peter Norvig's Design of Computer Programs]
 . SICP
-. Project: Get a GraalVM/Babashka CLI app working
 
 == 12 books for 2021
 
@@ -20,7 +19,6 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Patterns of Software
 . Software design for flexibility
 . Data and reality
-. Accelerate
 . Against Method
 
 == Backlog
@@ -38,7 +36,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 === Writing
 
-. Writing: Representing Reality
+. Writing: Representing Reality / 
 . Writing: Types - pros and cons
 . Writing: Why REPL is a superpower https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html[1] https://clojure.org/guides/repl/introduction[2] https://www.youtube.com/watch?v=Ngt29DyNDRM[3] https://www.youtube.com/watch?v=tpcl5pjkRTQ[4] https://www.youtube.com/watch?v=oLvwbDUXGsc[5] https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/[6] https://www.youtube.com/watch?v=gIoadGfm5T8[7]
 
@@ -101,3 +99,4 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Elements of Clojure (2020-02-12)
 . Book: https://livebook.manning.com/book/rust-in-action[Rust in action]
 . Book12: Introduction to general systems thinking (March)
+. Project: Get a GraalVM/Babashka CLI app working
