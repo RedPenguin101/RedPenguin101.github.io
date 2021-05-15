@@ -1,0 +1,263 @@
+= Rust in Action, by Tim McNamara
+
+* Part 1: intro to Rust
+* Part 2: Systems programming
+* Part 3: Async
+* Part 4: Large software projects 
+
+== Part 1: Language Distinctives
+
+=== 1: Intro
+
+* `cargo` is the build systems and package manager
+* `rustc` is the compiler
+* A rust 'crate' has:
+** A `Cargo.toml`, with the project metadata
+** a `src` dir
+** After running, a `Cargo.lock` and a `target` folder
+
+Rust has
+
+* for loops
+* method syntax (though it's not OO, no inheritance)
+* HOF, lambdas closures
+* good type inference
+* Implicit return
+
+Rust tries hard to catch things at compile time - type and memory issues.
+
+Downsides:
+
+* Cyclic data structures (e.g. graphs, double linked lists) are hard to make 'safe'
+* Compile times are slow
+* Super strict 100% of the time
+* Lots of syntax
+
+=== 2: Foundations
+
+* Grep Lite: a text pattern finding app.
+* `main()` is entry point to all programs
+* `{}` denote codeblocks/lexical scopes
+
+==== Numbers
+
+* numbers have methods, e.g. `24.5_f32.round()`
+* comparisons between types prohibited. 
+* Use `as` to case: `a < (b as i32)` - but try to only cast up
+
+==== Iteration / control flow
+
+* `for item in collection {}` - though you usually want `for item in &collection {}`
+* `&` is a unary operator that when used with a variable returns a reference/pointer to the underlying value. If the type of the value is `T`, then `&T` is a reference to something with value of type `T`. We also call this a 'borrow'.
+* the collection has to be an _iterator_. In some cases, data structures are implicitly turned into iterators. Arrays are an example. 
+* You can do so manually with `[a].iter()`, which returns a `iter &a`
+* `[a].iter_mut()` returns `mut iter a`
+* `[a].into_iter()` returns `iter a` - i.e. take ownership of the collection
+* use `for _ in 0..10 {}` for a more 'for' like, as opposed to a 'for each' loop.
+* don't use manually indexes
+* use `loop` instead of `while true`
+* `if` uses true Bool only, no truthiness.
+* `if` blocks have the same implicit return semantics as other code block.
+* usually prefer `match` to `if`. Match is `switch`
+* many control structures are match under the hood
+* match gets used with Option type a lot
+
+[source, rust]
+----
+match item {
+  0 => {}.        // match value
+  10 ..=20 => {}, // match inclusive range
+  40 | 80 => {},  // match either
+  _ => {},        // match every value
+}
+----
+
+==== Functions
+
+* `fn add(i: i32, j: i32) -> i23 {i+j}`
+* with explicit lifetimes: `fn add<'a,'b>(i: &'a i32, j: &'b i32) -> i23 {*i+*j}` (read `&'a i32` as "reference to i32 with lifetime 'a")
+* Any function which has a param with a `&` type has data which exists outside its scope. 
+* with generics `fn add<T>(i: T, j: T) -> {i+j}`. Note for this to compile you would need to add that T implements addition. Or more specifically, that the type T implements the Add trait (think Haskell type class). 
+* confusing, traits are denoted in the same way as concrete types: capitalized words. 
+
+==== grep-lite
+
+* `str` = string  primitive type. Usually seen in borrowed form, `&str`, aka string slice.
+* high perf, immutable, feature poor. 
+* a string literal is an `&'static str`
+* `&str` is a pointer and length.
+* `str` method `lines(&self) -> Lines<'_>`. `Lines` is an iterator of `str`. It's platform agnostic.
+* `str` method `contains<'a, P>(&'a self, pat: P) -> bool where P: Pattern<'a>`
+* `String` is an owned type.
+* both encode characters as UTF-8
+
+* `enumerate(self) -> Enumerate(Self)` is a member of Iterator trait, which returns an iterator of pairs `(i, val)`, where `i: usize`. Similar to `zip`
+* `for (i, line) in quote.lines().enumerate() {,,,}`
+
+==== sequential collections
+
+* `array` or `[T; N]` primitive type: monotyped, statically sized collection.
+* instantiate with
+** comma delimited list `[1,2,3]` 
+** repeat expression `[val;length]`
+* the size matters: `[u8; 3]` is not the same type as `[u8; 4]`
+
+* `Slice` or `[T]` are array-like types. 
+* Size is unknown at compile time, so unspecified. This makes implementing traits on slices easier than on arrays.
+*  Slices are used as 'view' on arrays (and other slices) - fast, RO access without copy.
+* typically encountered in borrowed form `&[T]`
+
+* `Vec<T>` vectors. Growable lists.
+* performance boost with `Vec::with_capacity(,,)`
+
+==== Files
+
+General pattern:
+
+. open `File` object
+. wrap in `BufReader`
+
+[source,rust]
+----
+use std::fs::File;
+use std::io::BufReader;
+
+fn main() {
+  let f = File::open("readme.md").unwrap();
+  let reader = BufReader::new(f);
+----
+
+A `BufReader` implements `BufRead`, and so `lines()`. This yields an iterator of `io::Result<String>`, stripping out the newline byte.
+
+=== 3: Compound DTs: Struct and Enum
+
+* `()` is the unit type return
+* `!` is the Never type
+
+==== Struct
+
+Define like
+
+[source,rust]
+----
+#[derive(Debug)]
+struct File {
+  name: String,
+  data: Vec<u8>,
+}
+----
+
+Instantiate like
+
+
+[source,rust]
+----
+let f1 = File {
+  name: String::from("f1.txt"),
+  data: Vec::new(),
+}
+----
+
+Access fields like `f1.name`
+
+==== Methods
+
+Methods are functions coupled to types. Use an `impl` block to implement methods on types.
+
+A static method (e.g. `new`) will not reference self, and will be called with `my_type::new(arg)`
+
+Otherwise the first argument needs to be `self: &File`, like Python
+
+==== Error Handling
+
+`Result` type is container that can contain `Ok` or `Err` states. It's used a lot
+
+For interacting with the FileSystem, you'll have a `Result<T, String>` (i.e. your result has an `Ok(T) and Err(String)`). 
+
+Results can be `unwrap()` ed, and it the program will panic on an Err branch. Though using it is often poor style. Better to handle the errors.
+
+Result is just an `enum`
+
+==== enums
+
+* A type that can represent multiple, known, variants.
+* They work well with pattern matching
+* They support impl blocks and methods
+* variants can include data (like the Result type)
+
+Define like 
+
+[source,rust]
+----
+#[derive(Debug, PartialEq)]
+enum FileState {
+  Open,
+  Closed,
+}
+
+FileState::Open;
+----
+
+==== Traits
+
+Define with 
+
+----
+trait Read {
+  fn read(self: &Self, save_to: &mut vec<u8>) -> Result<usize, String>;
+}
+
+impl Read for File {
+  fn read(etc.
+}
+----
+
+You can implement any trait on any struct. e.g. Display trait by implementing a `fmt` function
+
+[source,rust]
+----
+impl Display for File {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "<{}> ({})>", self.name, self.state)
+  }
+}
+----
+
+(write here delegates to the fmt methods of inner types)
+
+==== Private and public
+
+* Use `pub` to make things public
+* enums variants are public id the overall type is public
+* structs internals and methods are private unless specified pub, even if the struct is pub
+
+==== Documentation
+
+* `///` is a docstring for the following block
+* Markdown is supported
+* use `cargo doc --open` from root to autogen html documentation for the project.
+* can also use `rustdoc`, but don't.
+
+=== 4. Lifetimes, Ownership, Borrowing
+
+* _ownership_ is a stretched metaphor.
+* a value's _lifetime_ is the period when accessing it is valid.
+* _borrow_ means to access. Confusingly, a borrowed value doesn't need to be explicitly returned to its owner. It happens explicitly when a borrowed value goes out of scope.
+* _movement_ in rust refers to the change in ownership
+* every value in Rust is owned by a variable.  
+* primitives are special: they implement `Copy` trait, meaning they are often duplicated when being passed around, and we don't need to worry so much about borrowing. They are said to have copy semantics vs. move semantics 
+* value ownership shifts through assignment, or through a function barrier (passing it in as an argument, getting it back as a return value)
+
+==== Resolving ownership issues
+
+Strategies:
+
+. Use references where full ownership isn't required
+. Duplicate the value
+. Refactor to reduce reliance on long-lived objects
+. Wrap data in a type that helps with movement issues
+
+
+
+
+== Part 2: Systems Programming
