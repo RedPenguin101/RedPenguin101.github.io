@@ -4,8 +4,9 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Working on
 
-. Book12: Introduction to general systems thinking (March)
 . Course: https://classroom.udacity.com/courses/cs212[Peter Norvig's Design of Computer Programs]
+. SICP
+. Project: Get a GraalVM/Babashka CLI app working
 
 == 12 books for 2021
 
@@ -26,9 +27,9 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 === Projects
 
-. Project: Get a GraalVM/Babashka CLI app working
 . Project: PrismSync in Clojure
 . Project: Learn about FTPs
+. Project: File ETL program
 . Project: RestTest. Auto testing and documentation of REST apis.
 . Project: A DSL/Frontend for modelling time-series
 . Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)
@@ -99,3 +100,4 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Project: Allocation of trades between funds
 . Book: Elements of Clojure (2020-02-12)
 . Book: https://livebook.manning.com/book/rust-in-action[Rust in action]
+. Book12: Introduction to general systems thinking (March)
