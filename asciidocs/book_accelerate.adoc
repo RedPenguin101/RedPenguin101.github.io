@@ -40,32 +40,41 @@ Many factors:
 
 == the 24 capabilities, listed
 
-* Continuous Delivery
-** version control
-** deployment automation
-** continuous integration
-** trunk-based development
-** test automation
-** test data management
-** shift left on security
-** continuous delivery
-* Architecture
-** loosely coupled architecture
-** Empowered teams
-* Product and process capabilities
-** customer feedback
-** value stream
-** working in small batches
-** team experimentation
-* Lean management and monitoring capabilities
-** change approval processes
-** monitoring
-** proactive notification
-** WIP limits
-** visualising work
-* Cultural capabilities
-** Westrum organization culture
-** Supporting learning
-** Collaboration among teams
-** Job satisfaction
-** Transformational leadership
+=== Continuous Delivery
+
+* version control
+* deployment automation
+* continuous integration
+* trunk-based development
+* test automation
+* test data management
+* shift left on security
+* continuous delivery
+
+=== Architecture
+
+* loosely coupled architecture
+* Empowered teams
+
+=== Product and process capabilities
+
+* customer feedback
+* value stream
+* working in small batches
+* team experimentation
+
+=== Lean management and monitoring capabilities
+
+* change approval processes
+* monitoring
+* proactive notification
+* WIP limits
+* visualising work
+
+=== Cultural capabilities
+
+* Westrum organization culture
+* Supporting learning
+* Collaboration among teams
+* Job satisfaction
+* Transformational leadership
