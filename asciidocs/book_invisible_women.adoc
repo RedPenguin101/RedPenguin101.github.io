@@ -1,0 +1,92 @@
+= Invisible Women: Data bias in a world designed for men
+By Caroline Criado Perez
+
+== Contents
+
+* Part 1: Bias in daily Life
+* Part 2: Bias in the workplace
+* Part 3: Bias in product design
+* Part 4: Bias in healthcare
+* Part 5: Bias in public and government policy
+* Part 6: when it goes wrong - the female perspective in disaster relief
+
+== What the book is about, from the Preface, Intro and Afterword
+
+The narrative of history is silent when it comes to the role of women. There is a long standing *Gender Data Gap*, caused by and reinforcing a *Male-default bias*. The "absent presence" of women is in film, literature, science, economics. In discussions of past, present, future. Silences are by nature hard to communicate. But that is the aim of this book.
+
+The Gap has real consequences - some minor, some major. The *male default* manifests in shelf height, car safety measurements, temperature norms, what symptoms are considered 'atypical' by doctors.
+
+The bias is not, generally, malicious or deliberate - it's an entrenched habit of thinking, or not thinking.
+
+It's been present and known about for a long time. The new twist: big data. Resultant 'truths' of big data analysis are corrupted by the Gap. As we rely more on these, the seriousness of the consequences will increase. 
+
+People hold out the hope that more equal results can be obtained, and bias eliminating, through using "objective" data. But this is fatally undermined by the gender data gap.
+
+The main arguments of the book:
+
+* The gender data gap exists
+* The gender data gap is not a coincidence
+* It is a cause and consequence of the male-default bias
+* closing the data gap is key
+* this is done by closing the female representation gap
+
+The book will show:
+
+* Where the bias crops up
+* How it distorts 'objective' data
+* How, in an increasingly data-driven world, the historic pattern is being perpetuated, not resolved.
+* How the the bias impacts women, in particular:
+** The female body
+** The women's unpaid care burden
+** Male violence against women
+
+The intro has some historiography: Aristotle, "Man The Hunter" (UoChicago, '66), "Woman the Gatherer" (Slocum, '75). The pre-history focus on the male role as hunter / fighter puts violence and aggression at the center of conceptions of human evolution ('The phylogenetic roots of human lethal violence', '16), ignoring that fully half the individuals were not focused on these thing.
+
+=== Male-default in language
+
+The "Male-unless-otherwise-indicated" thinking: cave paintings, archeology. In many languages, "man" or "he" is very often used with gender-neutral intent. But it is consistently found that while the intent may be gender neutral, the _interpretation_ is not. It is read as male gendered. It has demonstrable consequences for the thoughts conjured by the listener. While some 'generic masculine' terms (Doctor, Actor) are now truly gender neutral [are they?], new ones have arisen: Dude, Guys, Lads. Things like Fireman also persist.
+
+In gender inflected languages - romance, german - female terms are often modified male terms. Collective terms often default to the masculine in mixed gender groups. Analysis has found (WEF, 2012) that gender inequality is higher in countries with gender inflected languages [controlled? CDNIC]. "Genderless" languages (Hungarian, Finnish) are less so. Countries with "natural gender" languages like English, where gender can be marked but is not woven into the language itself, are the most equal.
+
+The fastest growing language is "Emoji". Here too, male-default was pervasive until 2016. Though gender was not generally specified in the unicode name (e.g. it was "Runner" not "Man running"), implementations by font designers tended to be male. In 2016 the unicode explicitly gendered all emojis that depicted people.
+
+=== Other stuff in the Intro
+
+The intro also covers the following examples where male bias manifests
+
+* "Draw a [user/participant/person/designer]". Men and women both drew men in most cases - though women drawing participants and persons drew women 50% of the time
+* "Draw an of 'us' [to Pakistani 9-10 year old]" - no males drew women, nearly no females did.
+* Stuffed animals are seen as male unless 'super-feminine'
+* 13% of non-human children's TV characters are female (2007) (Human characters: 32%)
+* In children's films, 28% of speaking roles were women, and 17% of people in crowd scenes were women
+* In films with male leads, men have 3x screen time. In female lead films its 50/50
+* There are more statues in the UK of people called John than there are non-royal females
+* When Andy Murray won Wimbledon in 2013 he was widely described as having ended a '77 year wait' - ignoring Wades win in '77. In 2016 when told he was the first person to win two Olympic golds in Tennis, when Serena has 4 and Venus 5 
+
+And many, many others, anecdotal and study-driven.
+
+Also discussed is 
+
+* widespread backlash against disturbances to the cultural entrenchment of males: Dr. Who and video games
+* The silence of female composers and the 'self-exclusionary' attitudes of women in history
+* The impact of (white) male-default views on current (~2016) political debates, in particular the Trump/Clinton election and backlash against "Identity" politics on the left (including _by_ the left)
+
+=== Afterword
+
+When we exclude half of humanity from the production of knowledge we lose out, both from pure computing power but also because of the difference in perspective.
+
+We must start accounting for the three themes that define women's relationship with the world
+
+* The female body. It's accommodation in design of tools. Making the female body _fit_ in the world.
+* Sexual violence against women. It's under-measured. The world isn't designed for it to be accounted for.
+* Unpaid care work. Women do far more, out of necessity, to keep things together. It is under seen
+
+Another trend: the excuses. "Women are just too complicated to measure". "Female bodies are too unharmonious". Travel patterns, work schedules, voices.
+
+"The end of theory: the data deluge makes the scientific model obsolete" (Wired, 2008). "The Petabyte Age", Big data, "Correlation is enough". Not true. See data scandals for a start. But mostly this data gap.
+
+The way to close the data gap: increase female representation in all spheres of life. More women in positions of power and influence. Women are less likely to forget women exist (stats provided on this, e.g. female film industry people more likely to employ women).
+
+Nice story from Sandi Toksvig:
+
+> A female anthropology professor holds up a photo of an antler bone with 28 markings on it. "This is alleged to be man's first attempt at a calendar. Tell me, what man needs to know when 28 days have passed? I suspect this is a _woman's_ first attempt at a calender"
