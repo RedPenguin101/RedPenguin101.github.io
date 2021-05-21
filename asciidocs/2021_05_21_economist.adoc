@@ -1,0 +1,177 @@
+= The Economist: Summary of the May 22nd edition
+
+== Leaders
+
+=== Race in America
+
+Flloyd's death prompted the biggest civil rights protest in American history. Chauvin was convicted of murder.
+
+What needs to change?
+
+Despite gains in legal and political rights, measures of relative poverty and segregation haven't moved in 50 years.
+
+Three causes:
+
+* secular economic trends
+* aftershocks of slavery and segregation
+* present day bigotry and racism
+
+The first two are the biggest causes, but the last gets most attention. Covid-19 has killed blacks disproportionately, but it's unlikely that racist doctors are to blame. Due to past racism and present poverty, blacks are more likely to suffer from pre-existing conditions, and less safe work environments, less likely to have health insurance.
+
+==== Poverty Policy
+
+Rooting out entrenched racist views is largely not in the power of government. Poverty and structural racism are.
+
+Biden's new child tax credit expects to reduce child poverty by 40%, and halve the number of poor black children.
+
+This colorblind legislation is preferable to racially targetted ones. First, it is more likely to get broad backing from the public. Second, helping all poor Americans is beneficial in general, and helps blacks disproportionately. The ACA has reduced the number of uninsured African Americans by 40%.
+
+Policies aimed generally at poverty are morally preferable: Not all blacks need help. Other minorities with similar conditions will also be helped: Latino, Native American, Asian.
+
+==== Police reform
+
+There have been advances in the last year. "Qualified Immunity" has been trimmed in many places. While presented as a racial issue, police killings of all unarmed men is higher than it should be. Separating unjustified killings should be seen as a nation priority, and a civil rights issue affecting all Americans.
+
+==== Organizations
+
+Companies and Universities should pay more attention to race when hiring. But, where practical, a race-neutral approach would be better for America, and especially its African American citizens.
+
+==== The Future
+
+In the next 50 years the US will become the first big, rich country where no single racial, ethnic or religious group will be in the majority. If politicians exploit the tribal fears this raises, the transition will be turbulent.
+
+=== Job vacancies in the rich world
+
+As they come out of the pandemic, businesses are shouting about labor shortages. But unemployment is high and not dropping. Why the mismatch?
+
+Some see this as good. Companies are boosting wages to attract workers. Pay growth is a strong 3% in the US. Qualification requirements are being dropped.
+
+There is a downside: a bidding war for workers could cause an inflationary spiral. A labour shortage means products that are wanted won't get produced. Having people sitting idle is a waste of talent. 
+
+Governments should consider:
+
+* Payments
+* Passports
+* Patience
+
+Business people are convinced that unemployment insurance and benefits are the cause of the shortage. The evidence for this is slim. Australia has ditched its payouts, and still has the same problem - in fact shortages have worsened. UI should be redesigned to encourage work. Making one-off payments to people who find work, for example, has had good results in past recessions.
+
+Immigration has been slashed during the pandemic. This is a price-tag that must be accepted or reversed.
+
+Finally, just waiting for more people to get comfortable with going to work should show results.
+
+=== Italy might get a hard right government
+
+In February, Draghi became PM. Italian debt yields has only a 1.2pp premium on Germany's, his government has a large majority in parliament, and the EC is about to give him a huge amount in C19 recovery funds.
+
+However, Italian politics is unpredictable. Populists are seizing on an increase in boat migrants. Salvini's Northern League, still the most popular party in the country, is losing ground to an even more radical outfit, the Brothers of Italy (FdI), which has roots in the Fascist movement. The FdI has overtaken Letta's Democrats, the main center-left party.
+
+The FdI, League and Berlusconi could probably get enough votes to form a coalition government.
+
+Throughout Europe, having the hard-right in power is becoming less unthinkable. Le Pen is neck and neck with Macron. Spain's Peoples Party is seeking a deal with Vox in the Madrid region.
+
+=== Sustainable Finance is a mess
+
+The private sector has a hard-on for green investing. Green firms, like solar panel firms and hydrogen fuel producers, have seen share prices rocket, with 6 doing better than Tesla since the start of 2019. Big companies boast about their green credentials. Assets Managers are selling ESG products - inflows for these are a quarter of the total, up from a tenth in 2018.
+
+ESG funds suffer from Greenwashing. The 20 biggest ESG funds hold 17 fossil fuel producers on average, including Exxon and Saudi Aramco. Gambling, alcohol and tobacco holdings are also common. The SEC worries that investors are being mislead.
+
+The EU's Green Deal includes rules about sustainable finance, telling investors what is green and what isn't. This has been subject to political forces, with countries lobbying to have nationally important industries, including natural gas, included.
+
+Instead, investors should decide for themselves what is green. But to make this practical, better disclosure is needed. Current reporting is largely voluntary, and full of holes. Obscurantist puffery is common. A manager should be able to figure out the carbon footprint of their holdings, but this is not disclosed rigorously, and how to aggregate results is unclear. There should clear an mandatory guidelines for this disclosure. 
+
+=== Eritrea on the march
+
+Ethiopia's prime minister, Abiy Ahmed, and Eritrea's president, Issaias Afwerki, are partners in a bloody war in Tigray.
+
+The two countries were formerly at war. Abiy won a nobel peace prize for brokering a peace in 2019. He was seen as a force for liberalization and democracy. Issaias is an aging and violent dictator. The peace seemed to bode well for Eritrea also. Sanctions were lifted, cash poured in.
+
+Things have soured since. Encouraged by promises of support from Issaias, Abiy attacked Tigray, in what has now devolved into a bloody stalemate. War crimes against civilians by Eritrean and Ethiopian troops in Tigray are common. Food and farming supplies to the region have been cut off. Issaias is the winner from this. His troops are deep in Ethiopian territory, including along its border with Sudan, which Eritrea has a separate beef with.
+
+Issaias seems to be encouraging despotic behaviour in Ethiopia, and also in Somalia, encouraging the president there to overstay his term limit.
+
+The West is slowly cancelling the recent opening up to Eritrea, though few hold out hope that it will have much impact: the country is used to isolation. Pressure on Abiy may be more successful though. 
+
+== USA
+
+=== The American Welfare State
+
+Biden is proposing an ambitious European-style expansion of the safety-net, the American Families Plan, at a cost of $1.8trn. It includes
+
+* Child allowance
+* Paid family leave
+* universal pre-school
+* subsidized child care
+* free community college
+
+This reflects a shift in the Democratic party over the last 20 years. Clinton-era democrats were largely on-board with Reaganite ideas of limited government assistance. These days they are not. Several factors are contributing to the shift:
+
+* general worries about inequality
+* changes in the views of economists
+* a leftward shift in the party
+* GOP abandonment of fiscal responsibility in the Trump era.
+* recent spending splurges following C19
+
+Polls show broad support from Republicans on pre-school, clean energy research, and child allowance (though not on a public option for health insurance).
+
+Poverty reduction has tepid support across the board. What is popular are programs aimed at the middle class, which the poor also benefit from.
+
+the AFP is a good plan, but could use some trimming.
+
+One in six American children live in poverty, among the highest in the rich world. Support for young people is flimsy (the elderly get Social Security and Medicare). Child allowance is the main anti-child-poverty tool in rich countries, and America doesn't have one. The AFP would extend a recent C19-bill payment plan ($3k pa per child) beyond its 1 year duration, to 2025. This is expected to halve child poverty.
+
+The paid family leave allowance, almost universal in the rich world, would guarantee 12 weeks of paid maternity leave, costing $225bn over the next 10 years. Improvements in infant health and maternal health from this are well demonstrated outside of the US and within in, in state programs such as California's.
+
+Universal pre-school for 3-4 year olds has a bill of $200bn. Small scale pre-school initiatives have impressive results, though it remains to be seen how well it scales.
+
+Other parts of the AFP are more questionable. Child care is already incredibly expensive in the US. The white house believes subsidies would improve this, but it is also possible it will merely push up prices and reduce quality of care. A study of Quebec's program of subsidised child care found that child behaviour was worsened, and parents were less caring and had worse health.
+
+The far left of the Dems has much more radical aspirations, including cancellation of student debt and regressive subsidies of college courses which are mostly attended by the rich. Nonetheless, this is the biggest social policy experiment since the 60s.
+
+=== Silicon valley and politics
+
+Most people try to keep work and politics separate. Techland is different. Internal forums debate politics and social issues. Some firms, including Facebook, Google and Shopify, are pushing back. Basecamp caused a stir (and lost a lot of employees) by declaring itself 'politics free'
+
+Silicon valley had roots in the counterculture of the 60's, and tech shifts often intersect with social issues - the FOSS movement for example. More recently, employees have started expecting workplaces that align with their personal values.
+
+The pendulum is swinging back. Slack is not a great place to put across nuanced views. Moderators have had to be put in place. Workers are vocal and management are defensive.
+
+A recent poll suggests two-thirds of adults want to be able to discuss racial-justice issues at work.
+
+=== Children divorcing parents
+
+Estrangement between family members is common in America. A recent survey found 27% of adults are estranged from a close family member - though it is thought that this under-reports the true number because of the shame of admitting it. There isn't much historical research on it, so it's not clear what the trend is
+
+The most common estrangement is between parent and child, usually with the child initiating it.
+
+A rise in individualism emphasising personal happiness, displacing filial duty is the biggest factor. This is emphasised in America, which is more individualistic than most rich countries, has a commensurately higher divorce rate, as well as a fair amount of inter-state mobility.
+
+The consequences of estrangement are, first, that it tends to perpetuate within families. It likely exacerbates loneliness in old age.
+
+=== CDC guidance and America's vaccination rate
+
+The CDC this week rolled back mask requirements for vaccinated Americans. Possibly this was an incentive to get vaccinated. But vaccination rates are slowing despite an ample supply.
+
+Possibly the announcement is a reaction to criticism by public health officials of previous overcaution by the CDC.
+
+The announcement was criticized as being out-of-bounds of the CDCs responsibility. The CDC is supposed to provide scientific advice, not announce policy.
+
+Probably it will act as a _disincentive_ for vaccination. Minnesota was encouraged enough to remove all mask requirements (except for child-care and schools), regardless of vaccination status. Many states are following th guidance to remove mask requirements for vaccinated people without procedures for checking vaccination status, effectively removing all mask requirements. 
+
+=== Philadelphia police 1985 house bombing
+
+In 1985, the Philly police were involved in a shootout with a black cult, MOVE, in a house. In the end, they dropped explosives on it from a helicopter, knowing there were children inside. 60 houses were destroyed in the resulting fire, 250 were left homeless. 11 people died, 5 children. The fire department were ordered to let the fire burn.
+
+=== Lexington: Biden and the Middle East
+
+Despite opposite policies, America's results in the Middle East have been largely the same under Obama and Trump. Both tried and failed to scale back commitments in the region. Biden will try the same thing.
+
+The violence in Palestine this week is a test of that resolve.
+
+Despite being a rare Democratic Zionist, Biden will not be ditching the Palestinians. He restored $250m in aid that Trump but. He has promised to reopen the consulate in Jerusalem that Trump closed. But he views the peace cause as a losing one under the current leadership of both sides, and says he won't be spending much time on it.
+
+The administration was slow to respond to events. Its strategy is supportive of the status quo, resisting calls from the left to pressure Israel. It has not called for a ceasefire, or allowed the UNSC to do so.
+
+The administration is going the quiet diplomacy route. It believes Obama's attitude to Netanyahu was counterproductive. Instead it hopes to gain leverage on him by providing early support which it can later threaten to withdraw. It hopes that growing antipathy to his cause on the left will provide further leverage.
+
+The administration does have ambitions to restore the Iran nuclear agreement, which affects its ME moves. All powers in the region will be looking to Biden's reaction as an indicator willingness to stand by its allies.   
