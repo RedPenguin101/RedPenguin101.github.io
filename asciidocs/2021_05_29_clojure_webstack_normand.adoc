@@ -1,0 +1,305 @@
+= Eric Normand's roll your own web stack
+
+https://purelyfunctional.tv/guide/clojure-web-tutorial/[link to full tutorial]
+
+== Summary
+
+* Ring converts *HTTP requests* to map, then _handles_ the request, turning the response into *HTTP responses*.
+* 3 parts: adapters, handlers, middleware
+* *Adapters* translate between HTTP and Ring maps
+* *Handlers* accept ring request into ring responses
+* *Middleware* add common HTTP functionality to handlers
+* *Routing* means using the url path to direct requests to specific pieces of code
+
+== Path from browser to app and back
+
+* browser sends an HTTP request
+* *Jetty Server* picks it up and turns it into a Java Servlet request, sends it to a *Jetty Adapter*
+* Adapter turns that into a *Ring Request* and sends it through the *Middleware stack*, modifying the ring request
+* the *Ring Handler* applies the business logic to the request and returns a *Ring response*
+* This is shuttled through the above in reverse, with the Jetty server turning the Servlet response into an HTTP response and sending that to the browser
+
+== HTTP requests
+
+HTTP request is a standard text format: 
+
+[source,text]
+GET / HTTP/2
+Host: ericnormand.me
+User-Agent: curl/7.64.1
+Accept: */*
+
+3 parts:
+
+. the request line
+. the headers
+. the body (optional)
+
+Request line has
+
+. request method (GET etc.)
+. the path (/health)
+. the HTTP protocol version (not covered here)
+
+Headers has a bunch of stuff. host, user-agent is standard. Accept specifies what data format the client wants: application/json etc. This will be used in _content negotiation_, though we won't use that here.
+
+== Curl
+
+curl is a web client for sending http requests
+
+`curl -v https://ericnormand.me`
+
+`-v` means verbose output, it'll return a bunch of stuff. Request lines are prefixed with `>`, response lines by `<`
+
+== Java servers
+
+e.g. Jetty, Netty Vert.x Undertow.
+
+They parse HTTP requests and create Java objects from them.
+
+== Ring
+
+Ring takes these Java objects and _adapts_ them to a _Ring Request_. 
+
+Here is a standard ring request using the curl request from above
+
+[source,clojure]
+----
+{:ssl-client-cert nil,
+ :protocol "HTTP/2",
+ :remote-addr "[0:0:0:0:0:0:0:1]",
+ :headers {"accept" "*/*",
+           "user-agent" "curl/7.64.1",
+           "host" "ericnormand.me"},
+ :server-port 3001,
+ :content-length nil,
+ :content-type nil,
+ :character-encoding nil,
+ :uri "/",
+ :server-name "localhost",
+ :query-string nil,
+ :body #object[org.eclipse.jetty.server.HttpInputOverHTTP 0x4c653787 "HttpInputOverHTTP@4c653787[c=0,q=0,[0]=null,s=STREAM]"],
+ :scheme :https,
+ :request-method :get}
+----
+
+Important parts:
+
+. `:request-method`
+. `:uri`
+. `protocol`
+. `:headers`
+. `:body` is a `java.io.InputStream` - not yet parsed into a string because it can be very large. Note it's always present even when the body has no data
+
+https://github.com/ring-clojure/ring/blob/master/SPEC[the Ring Spec] has the full specs.
+
+== Handler
+
+The handler is a clojure function that takes a Ring request and returns a Ring Response. A Ring response looks like this
+
+[source,clojure]
+----
+{:status 200
+ :headers {"Content-Type" "text/html"}
+ :body "<!DOCTYPE html><html><body>Hello</body></html>"}
+----
+
+This will get converted to an HTTP response:
+
+[source,text]
+----
+HTTP/1.1 200 OK
+Date: Thu, 18 Mar 2021 17:07:45 GMT
+Content-Type: text/html
+Content-Length: 46
+Server: Jetty(9.4.36.v20210114)
+
+<!DOCTYPE html><html><body>Hello</body></html>
+----
+
+Which again has response line, headers, and body
+
+The response line is different to the request line. It has the format:
+
+`protocol status_code status`
+
+Note the adapter and server figured some stuff out without being told, e.g. the content length.
+
+== A clojure web app
+
+You'll need deps: `ring/ring-core`, and `ring/ring-jetty-adapter`
+
+`(:require [ring.adapter.jetty :as jetty])`
+
+Run a server with
+
+[source,clojure]
+----
+(jetty/run-jetty (fn [req] {:status 200 :body "Hello" :headers {}})  ;; a really basic handler
+                 {:port 3001     ;; listen on port 3001
+                  :join? false}) ;; don't block the main thread
+----
+
+`run-jetty` runs the server and adapter together.
+
+the args are `handler` and an options map.
+
+then `curl -v localhost:3001`
+
+`run-jetty` returns a server object. It has a `.stop` method which stops the server.
+
+Wrap the run server in a function `start-server` which stores the server in an atom so can hold on to the reference:
+
+[source,clojure]
+----
+(defonce server (atom nil))
+
+(defn start-server []
+  (reset! server
+          (jetty/run-jetty (fn [req] {:status 200 :body "Hello" :headers {}})
+                           {:port 3001      
+                            :join? false})))
+
+(defn stop-server []
+  (when-some [s @server] ;; check if there is an object in the atom
+    (.stop s)            ;; call the .stop method
+    (reset! server nil)));; overwrite the atom with nil
+----
+
+== Extracting the handler
+
+Right now the handler is embedded in the server, so you can't redefine it while the server is running. You can extract the handler so you can do this.
+
+`(defn app [req] {:status 200 :body "Hello, World!" :headers {}})`
+
+(the handler is called `app` by custom)
+
+`(jetty/run-jetty (fn [req] (app req)) ,,, )`
+
+Now you can dynamically change the response while the server is running by changing and evaluating the app fn.
+
+== Return types
+
+It's impolite to not state your content type (your *MIME type*). The 2 basic ones are `text/plain` and `application/octet-stream` (for binary files)
+
+The full list is huge, and even the https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types[list of common types] is very large.
+
+To add the return type, put `:headers {"Content-Type" "text/plain"}`
+
+Here we state it explicitly. In more sophisticated stacks we use content negotiation to determine and convert return types.
+
+`application/json` is a common return type.
+
+== Printing the ring request
+
+Often handy. Use `text/plain`, but use pretty printing
+
+`:body (with-out-str (pprint/pprint req))` (with-out-str captures pprint output, which goes to stdout, in a string)
+
+== Routing different URLs
+
+Urls are used to map functionality. e.g. we might have a "/" url to show a homepage, "/greeting" to show "Hello world" and "/echo" to echo the request
+
+Anything that our app doesn't know how to handle will return a "not found" (404) response.
+
+A very basic approach to routing is using conditionals
+
+[source,clojure]
+----
+(defn app [req]
+  (case (:uri req)
+    "/" {:status 200
+         :body "<h1>Homepage</h1>
+                <ul>
+                    <li><a href="/echo">Echo request</a></li>
+                    <li><a href="/greeting">Greeting</a></li>
+                </ul>"
+         :headers {"Content-Type" "text/html; charset=UTF-8"}}
+    "/echo" {:status 200
+             :body (with-out-str (pprint/pprint req))
+             :headers {"Content-Type" "text/plain"}}
+    "/greeting" {:status 200
+                 :body "Hello, World!"
+                 :headers {"Content-Type" "text/plain"}}
+    {:status 404
+     :body "Not found."
+     :headers {"Content-Type" "text/plain"}}))
+----
+
+There are also routing libraries. One of them is compojure, which is nice and simple.
+
+`[compojure "1.6.2"]`
+
+`(:require [compojure.core :as comp] [compojure.route :as route])`
+
+with compojure we use `comp/defroutes` to define our routes. It defines a var whose value is a ring handler.
+
+`(comp/defroutes app)` defines an empty route table. You can call it from the REPL with `(app {})`, which will return nil since we haven't defined any routes (putting in an HTTP request will return a 204 No Content)
+
+We can replace our hand-rolled handler with
+
+[source,clojure]
+----
+(comp/defroutes app
+  (comp/GET "/" [] {:status 200
+                    :body "<h1>Homepage</h1>
+                           <ul>
+                               <li><a href="/echo">Echo request</a></li>
+                               <li><a href="/greeting">Greeting</a></li>
+                           </ul>"
+                    :headers {"Content-Type" "text/html; charset=UTF-8"}})
+  (comp/ANY "/echo" req {:status 200
+                         :body (with-out-str (pprint/pprint req))
+                         :headers {"Content-Type" "text/plain"}})
+  (comp/GET "/greeting" [] {:status 200
+                            :body "Hello, World!"
+                            :headers {"Content-Type" "text/plain"}})
+  (route/not-found {:status 404
+                    :body "Not found."
+                    :headers {"Content-Type" "text/plain"}}))
+----
+
+Note that 
+
+* `ANY` will match any request method
+* the format of a route is `(Methodtype path-string params ring-response)`
+* `route/not-found` is in last, and like in the `case` statement is used as the fall-through
+
+== Parsing the query string with middleware
+
+Visiting `/echo?g=yo` with the above router will show you that the `:query-string` in the ring request is `g=Yo`. The adapter has done that for you automatically.
+
+query string args are typically key value pairs: `?key1=value1&key2=value2`. Ring separates the kvpairs, but doesn't parse them - hence the single string `g=Yo`
+
+We could write a function to do this, but since it's so common and we'll want to do it a lot, we can just use middleware to do it for us. Ring comes with `ring.middleware.params :refer [wrap-params]`.
+
+rename your `defroutes` thing from `app` to `routes` (again convention).
+
+Now we'll define a new `app`, which is going to implement a middleware stack.
+
+`(def app (wrap-params routes))`
+
+When you do this and visit `/echo?g=yo`, the request you'll see will still have `:query-string ["g=Yo"]`, but you'll now have a new key `:query-params {"g" "Yo"}`.
+
+You also have a more general key `:params` which (for now) will have the same stuff as `:query-params`
+
+Other common uses of middleware:
+* modify the ring request on the way to the handler
+* modify the ring response on the way to the adapter
+* wrap the call to handler in try/catch for error reporting
+
+Another good one is `ring.middleware.keyword-params :refer [wrap-keyword-params]`. This will change the keys in your `:params` key to from strings to keywords.
+
+`(def app (wrap-params (wrap-keyword-params routes)))`
+
+Note the sort of weird ordering here, seems backwards. Order does matter.
+
+Note that the `app` here is now a var which points to a ring handler. So we have the same problem we did a while back that we can't dynamically change the app at the REPL. So wrap routes in a function: 
+
+[source,clojure]
+----
+(def app
+  (-> (fn [req] (routes req))
+      wrap-keyword-params
+      wrap-params))
+----
