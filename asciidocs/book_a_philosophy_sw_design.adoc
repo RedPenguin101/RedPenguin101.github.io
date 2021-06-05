@@ -1,0 +1,60 @@
+= A Philosophy of Software Design
+By John Ousterhout
+
+== Content
+
+. The nature of complexity
+. Working code isn't enough
+. Modules should be deep
+. Information hiding
+. General purpose modules are deeper
+. Different layers, different abstraction
+. Pull complexity downwards
+. Better together or better apart
+. Define errors out of existance
+. Design it twice
+. Why comments?
+. Comments should describe things that aren't obvious from the code
+. Naming
+. Write comments first
+. Modifying existing code
+. Consistency
+. Code should be obvious
+. Software trends
+. Performance
+
+== Preface, Intro, Conclusion
+
+== Summaries of:
+
+=== Design principles
+
+* Complexity is incremental. You have to sweat the small stuff
+* Working code isn't enough
+* Make continual small investments to improve system design
+* Modules should be deep
+* Interfaces should be designed to make the most common uses as simple as possible
+* Simple interfaces are more important than simple implementation
+* General purpose modules are deeper
+* Separate general purpose and special purpose code
+* Different layers should have different abstractions
+* Pull complexity downwards
+* Define errors and special cases out of existence
+* Design it twice
+* Comments should describe things that aren't obvious from the code
+* Software should be designed for ease of reading not eas of writing
+* The increments of software development should be abstractions not features
+
+=== Red flags
+
+* Shallow modules - the interface isn't much simpler than its implementation
+* Information leakage - a design decision is reflected in multiple modules
+* Temporal decomposition - the code structure is based on the order in which operation happen, not information hiding
+* Over exposure - an API forces users to be aware of rarely used features in order to use commonly used features
+* Pass through methods - A method does almost nothing except pass its arguments to a similar method
+* Repetition - A non-trivial piece of code is repeated over and over
+* Special-General mixture
+* Conjoined methods - You can't understand one method without understanding the other, because of dependencies
+* Comment repeats code
+* Implementation documentation contaminates interface
+* Vague name
