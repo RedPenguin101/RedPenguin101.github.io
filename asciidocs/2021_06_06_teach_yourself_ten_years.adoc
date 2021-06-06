@@ -1,0 +1,41 @@
+= Teach yourself programming in ten years
+By Peter Norvig
+
+https://norvig.com/21-days.html[Link]
+
+Books such as "Teach yourself C++ in 24 hours" are common. Is programming so simple that it can be learned in 24 hours? Why are people in such a rush?
+
+24 hours can give, at best, superficial knowledge. It is not sufficient time to:
+
+* write several significant programs
+* learn from successes and failures
+* work with experienced programmers
+* learn how to use a language in any sense expect to recognise syntax
+* learn what a language is good for an bad for
+
+Several studies show it takes about 10 years to develop expertise in one of a wide variety of tasks (Gladwell says 10,000 hours - both of these should be an indication of order of magnitude only). They emphasize the role of _deliberative practice_: taking on a task beyond your current ability, analysing your performance and getting better. Grow and repeat.
+
+> Excellence in any department can attained inly by the labor of a lifetime; it is not to be purchased at a lesser price (Samuel Johnson)
+
+> the lyf so short, the craft so long to lerne. (Chaucer)
+
+> Life is short, the craft long, opportunity fleeting, experiment treacherous, judgment difficult. (Hippocrates)
+
+The recipe for programming success:
+
+. Be interested, find it fun. You can't put 10 years into something you don't like
+. Program. Learn by doing. Practice deliberately
+. Talk to other programmers - including reading programs they have written
+. Put in four years at a college. Mainly this gives you access to jobs where you'll be in a position to learn better, rather than for the education itself
+. Work on projects with other programmers. Be the best programmer (and a leader) on some projects, the worst on others (to learn from masters).
+.  Work on projects _after_ other programmers. Learn how to get in the head of other programmers, try to comprehend why they made the design decisions they did, and why they made the mistakes they did. From these experiences, learn how to write programs in a way that those who come after you will be able to understand and change them
+. Learn at least half a dozen programming languages. Make them as different as possible. Class based (Java, C#), functional abstraction (Lisp, Haskell), syntactic abstraction (Lisp), declarative specification (Prolog), parallelism (Go)
+. Know the computer. Understand how long it takes to execute instructions, and why.
+. get involved in a language standardisation effort, from the ANSI C++ committee to your teams indentation style
+. Then get off the language standardization effort as soon as possible
+
+Fred Brooks in No Silver Bullet has a 3 part plan for finding great designers:
+
+. Identify them as soon as possible
+. Assign a career mentor, track their career
+. Provide opportunities for interaction and stimulating interactive work
