@@ -84,6 +84,8 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Invisible Cities
 . Book: The image of the city
 . Book: Against Method
+. Book: Concepts, Techniques, and Models of Computer Programming
+. Book: How to Design Programs, Felleisen
 
 === Other
 
