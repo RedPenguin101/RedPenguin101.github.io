@@ -86,6 +86,9 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Book: Against Method
 . Book: Concepts, Techniques, and Models of Computer Programming
 . Book: How to Design Programs, Felleisen
+. Book: A Pattern Language, Christopher Alexander
+. Book: Timeless ways of building, Christopher Alexander
+. Book: The Oregon Experiment, Christopher Alexander
 
 === Other
 
