@@ -1,0 +1,119 @@
+= The Private Equity Podcast: The coming digital collision
+With Kjael Skaalerud
+
+See also: https://altvia.com/the-digital-collision/[Altvia on the Digital Collusion]
+
+== Summary
+
+PE firms have not adopted technology solutions because they haven't needed to. They have large moats which incubate them against change. Compare this to public markets where tech and in particular the internet has been disruptive in breaking down old ways of doing things and driving efficiencies in markets by removing barriers to connect buyers and sellers.
+
+PE firms see their differentiators as the people who can source capital and deals, and especially the networks those people have. They have track records which can be used to raise capital and make deals, and these track records can't be replicated easily.
+
+This will change. Companies who have strong technology practices are going to move into the investing domain with that technology. The moats won't be enough.
+
+Technology offers the opportunity to radically increase the productivity of PE fundraising teams and deal sourcing teams by being able to rapidly build the networks that are fundamental to these activities, and which are one of the key moats for old PE.
+
+On both investing and fundraising side, you can use data streams - public, purchased, or internally sourced - to rapidly identify new opportunities that are invisible through traditional means. You can then use technology to narrow those opportunities to only the best ones. And you can use the data to analyze past results and inform your future decisions, creating a virtuous circle.
+
+The first step is to get a good, well managed CRM to use as your system of records both for fundraising and deal sourcing. This is foundational, working off spreadsheets isn't going to cut it.
+
+Next you need to use data and industry knowledge to identify the attributes of opportunities that will constitute your target market.
+
+Then you need to get data. Lots of them. And there are lots available publicly, but the best is asymmetric data: data you have but no-one else does. PE firms have some great private sources: their track record on the fundraising side, and their portfolio companies on the deal side. This should be heavily leveraged. The goal here is to apply the target attributes you identified in the previous step to the data you have with cluster analysis, looking for opportunities which have those attributes. By doing this you will be able to identify opportunities before they become apparent to the rest of the market, or without needing an intermediary like an investment bank.
+
+Once you've done that you have an initial pool of opportunities. The next place tech can help is to quickly narrow that pool to the most promising. This is done with automation of outreach, and the automated measuring of engagement with these outreaches. Engagement is a great proxy for likelihood of conversion. This has the dual benefits of making your opportunity search better ("opportunities with these attributes seem to be much more likely than average to engage, so we should be searching for that") and improving your network, since even if the particular opportunity doesn't complete, a partner who has high engagement will be more likely to bring opportunities in the future.
+
+After this is done and you have gone from a wide pool of opportunities to hopefully some conversions, you can use the data about what converted and what didn't to feed back into the process, improving your criteria for identifying future opportunities. This virtuous feedback loop is what drives continuous improvement and growth.
+
+A holy grail of PE is getting proprietary deal flow. The ability to access opportunities without investment bankers as market intermediaries. Aside from taxing the deal flow, any deals offered by IBs become a flea market, where you'll inevitably get involved in an auction which will drive up prices. Accessing non-traditional data streams allows you you bypass the flea market.
+
+It's mentioned above but bears repeating: the greatest untapped asset of a PE firm is the data they get from their portfolio companies. Most PE firms will be using this to some extent to asses the deal itself in isolation. But if it isn't also being used in a wider context to identify future opportunities, you're leaving massive value on the table.
+
+Another priority for PE firms should be using technology to provide a better LP experience. Public markets used to have barriers to accessing and analysing information. To know how your portfolio was doing you had to either call your broker, or wait for your monthly statement, and if you wanted to do any analysis you had to laboriously extract that information. Now you can log on Fidelity and get an up-to-the-second accounting of your portfolio and do any kind of analysis you want.
+
+PE firms still follow the old model. LPs can either reach out to client services, or wait for their monthly statement or data dump. But LPs are not isolated, they have seen the information and tools available on the public side and see that as a valuable service. Their expectations for the private side will be informed by that, and eventually the same ability to access and analyze information will become the norm. So PE firms should get ahead of that, provide an investor portal that provides the latest information on their holdings and the ability to analyse it. In the medium term this will provide a competitive advantage, and in the long term _not_ having it will be a liability.
+
+== Content
+
+* How data is taking over the Private Equity and Venture Capitals space
+* Two well-known ways companies grow their revenue
+* Why Private Equity Firms are not at the forefront of tech adoption
+* How industry revolution is positively impacting value creation and shifting * market dominance
+* Mistakes made by PE Firms and their portfolio companies
+* The digital collision coming for PE and VC firms
+* Technology adoption in the PE space
+* Understanding proprietary deal flow
+* How to accelerate growth in the venture capital/private equity space
+* Attributes of a top-performing individual
+
+== Notes
+
+Kjael is Chief Revenue Officer at https://altvia.com/[Altvia], a tech platform for private capital markets. Managing fund lifecycle: raising and deploying, LP services.
+
+What mistake do PE firms make? A hesitation to embrace/adopt tech.
+
+> “Let’s talk a little bit about disruption in the private equity industry itself. …when I think of the most manual industries, I start with something like landscaping and very quickly get to private equity investing after that.”  – Hugh MacArthur, Global Head of PE, Bain & Co.
+
+Hedge funds, other public facing firms are some of the most tech enabled in the world. Data, machine learning for making decisions.
+
+For PE's their most valuable piece of tech is Outlook or Excel. The industry has not kept pace. Why? Most of the incumbents are unchallenged, big moats. They haven't been disrupted by tech _yet_. 
+
+*Hedge fund world*: "Why did you make this deal?" "We looked at satellite imagery to understand crop yields, then we cross referenced that against credit card transaction datasets to infer that this commodity price was going to move.
+
+*PE world*: "How do you raise money?" "I look at a spreadsheet of our current investors and call them and see if they want to invest again."
+
+PE firms see their differentiators as their team, network, track record. But in terms of defining a repeatable investment thesis based on data, they can't do that. There's not a lot of tech in what they do.
+
+*The main problem is that PE firms try to address this problem with human power: hiring, scaling out, rather than thinking about how technology and data can help them scale up*
+
+PE/VC are on the verge of a radical tech driven transformation. What do you mean by that?
+
+Firms in other domains that have gotten big by leveraging cutting edge tech are leaving those domains and becoming investors, challenging the incumbents. If I was starting a PE firm tomorrow, I would be buying datasets, 3rd party information, to identify a set of target investors, diminishing the importance of a traditional large and slow growing network. Use machine learning to analyse that data, use simple cluster analysis, tease out the attributes that make those investors unique and desirable. 
+
+In communicating with them I'd have a feedback loop where the messages I want to put out there are automated, but also I'd have in place tech to measure very precisely how that message is interacted with. What emails are being opened? What links are being clicked? I'd be using this data to hone the message over time. I'd also get from this an accurate view of who is most valuable to interact with, where should I focus my time to maximise the probability of bringing in new money.
+
+This is how you can have teams of two or three people with the same output in terms of capital raised as teams of 20+.
+
+These mechanics can be extended to the deal side. I'd use the data I'm harvesting from these portfolio companies and to identify potential new investments that aren't on the radar. It's about *asymmetric action*. How deals are traditionally sourced is that you have a network of investment banker contacts, they invite you to a flea market of potential deals and you hope you don't reach for the same deal as someone else.
+
+*On both sides of the business, you want to make data do the heavy lifting to identify opportunities, and then automate the communication with that opportunity so you can get through a greater volume of opportunities. That will let you identify the best ("most engaged" => likelihood of converting) opportunities and focus your precious human resources only on those.*
+
+If I'm a Partner at a PE/VC firm (who is at least somewhat amenable to change) what's a simple move I should be making to start to take advantage of this?
+
+It depends. If there's no true, good, system of record for networks and managing communication with them, i.e. a CRM on both Investor and Deal side, if you're still working from spreadsheets, get a CRM and get it working well and consistently. Even AirTable is an improvement. That's a foundational base requirement.
+
+If you do have that, the next thing is providing good portals for your LPs to get portfolio information, and providing analytical capabilities with that. 
+
+Think of public markets: You used to have to call up your stock broker, or look in the paper to get information about how your portfolio is doing. Now you can go to the Fidelity portal and get everything you need to view and analyze your portfolio right there. 
+
+That should be the goal for PE firms. Right now LPs are in the same world public markets used to be. They have essentially zero visibility into anything. It's a quarterly report, or an email: "Hows Fund A doing?". LPs expectations are shifting to a self service on demand tech driven experience. Giving LPs that will be a differentiator, because it gives them something that they're now used to from public markets, and it also builds trust (what they can't see in real time they'll be less likely to trust). Though if returns are through the roof LPs will care much less about this.
+
+This isn't universal. If you offer a digital experience, some investors will still say "print that off and overnight it to me". That's a different demographic. We're seeing new firms which are offering the digital LP experience as a differentiator to attract the demographic that _is_ interested in that.
+
+We're seeing an increase in off-market deals (i.e. not through an Investment Bank) - admittedly from a small base. Proprietary deal flow is the holy grail. Look again at public markets for a comparison. They're fully digitized with exchanges. There are no intermediaries to tax the transactions, because that's an inefficiency in the market. The internet is very useful for creating those markets.
+
+On proprietary deal flow I'd encourage people to understand: how they've quantifying their network, how do they understand the connectivity across that network. What are the data-streams they have unique access to that allow them to fund private companies? How do you take your _granular_ investment thesis (the attributes of portfolio companies you want to target, which you get in part from analysis of data-streams from your existing deals), and get to a long list of companies that meet that criteria. Then how do you get as much information about these companies as humanly possible. News feeds, Slack integrations, 3rd party data providers.
+
+e.g. a possible proxy for revenue growth in private companies is a low rate of churn of their sales people. You can scrape that from Linkedin.
+
+Relationships are still important. The process described above might lead to opportunities that don't materialize, but you still get the relationship and you should maintain those 'warm leads' in the traditional way. This method is a way to bring them onto your radar.
+
+To recap, you need an edge, and that edge is data and asymmetric access to that information. There's no shortage of data, but you have to be clever about how you find those streams.
+
+Post-hoc, you have to understand where you've succeeded and where you've failed. You need to analyse your results to drive your future actions and allocation of resources. You don't want to focus on the bank that gives you the most leads, you want to focus on the bank that gives you the most closed deals.
+
+Then, full circle, you analyse those successes and extract from them their attributes, then use your data streams to go out and find more like them.
+
+PE firms have a great, incredibly private (and so valuable) source of information: their portfolio companies. Use them. Spend a ton of time on it. What were the breakout performers. What are the true attributes.
+
+What advice would you give to a CEO of a growth stage company?
+
+The macro themes are the same. The target is different. Where before we were looking at potential deals and investors, now we're looking at potential customers. What is your ideal customer profile (ICP)? What are the attributes that make them unique? Take the market, identity your ICP, that's your low hanging fruit. Put all energy into going after them first. Then 'lift the ladder up' and go after the next segment to the market. The point is: *focus*. Find the customer set that are easiest to convert and go after them 100%. Then go to the next one. Don't spread your attention.
+
+What are 3 attributes that you believe make a top performing person.
+
+I look for Super Learners. People who are constantly looking for growth, looking for new information. If they're focused on their rituals and rhythms. If they can take rejection, they don't quit. An obsessive pursuit of the next plane. Those people can succeed in just about anything. 
+
+You can commit to the product or the process. If you love cars, but you love sales, you're better off being a toy saleswoman than a car mechanic. Focus on the process, the craft, not the product or subject. That will yield more fulfillment over time.
+
+So bringing people in from other industries isn't a concern for me, I'm not so worried about the learning curve.
