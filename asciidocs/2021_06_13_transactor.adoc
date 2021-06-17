@@ -1,0 +1,68 @@
+= Thoughts on the design of a structured transactor system
+
+== Introduction
+
+In asset management the main motivation is the connection of investor cash to deals. Investors provide capital to the "investment funds" of the asset manager. The investment funds send that cash out into the world to (hopefully) generate a return. As those return dollars come back in over time, they flow back to the investment funds, then eventually back to investors.
+
+This is a simplification in a couple of ways.
+
+The "investment funds" that investors put their cash into ("_ABC Opportunity Fund 3_") are a fairly abstract concept - they don't 'exist' in a very concrete way. The 'real world' implementation of these funds is via incorporated entities or partnerships - referred to here as *fund entities*. One "investment fund" may be implemented with multiple entities: Master/Feeder structures, blockers etc. These are largely irrelevant to the investors and to the high level management of the asset manager, but the details are crucial to the actual operation of the funds, since the entities and the transactions against financial instruments between them, as well as the accounting, are all at the level of the entity. Thus, when and Investor invests in _ABC Opportunity Fund 3_, they are signing a contract with "_ABC OpFund 3 Feeder C LP_", and they are paying their money into that entity, which itself subscribes to Class C shares of "_ABC OpFund 3 Master Fund Cayman Ltd_".
+
+When _ABC Opportunity Fund 3_ is said to invest its capital, this is another simplification. It is a legal entity like _ABC OpFund 3 Master Fund Cayman Ltd._ which is holding the shares of the investee company.
+
+It may be the case that a fund entity holds shares (or other financial instruments) issued by the investee directly, but more generally there is some other, intermediate entities, between the fund entity and the investee. That is, _ABC OpFund 3 Master Fund Cayman Ltd._ will hold shares in _ABC Blocker 16 Ltd._ which will hold shares in the investee company. This is the simplest possible form of such a investment structure, but they can get very large indeed, with a dozen or more entities in a single structure.
+
+There are several overlapping reasons for creating these structures:
+
+* to pool the capital of several funds into a single entity
+* to ring fence parts of the investment to different investors, including joint venture partners and co-investors
+* to 'securitise' or otherwise structure the returns on an investment (trancheing etc.)
+* to utilize the tax benefits that some types of entities offer
+* To create a structure for management - for example permit a board of directors who will be managing the underlying investment
+* To provide bankruptcy protection for the funds
+* To avoid the publicity of having the funds name associated with the investment (though with the spread of beneficial ownership registers this is diminishing)
+* To provide an entity which can issue loans or bonds to leverage the investment
+
+So what we tend to end up with at even a modestly sized asset manager is the obligation to manage several of these structures, potentially totalling hundreds of entities, potentially interacting in non-trivial ways. This imposes a significant administration burden. Moving cash up and down these structures can become a real chore, figuring out how to route the cash, requiring hundreds of pages legal documentation, coordination across continents. Often the process takes weeks or even months.
+
+The traditional approach to this by investment management firms, particularly private investment firms has the same as it's approach to nearly all problems: throw bodies at it, by hiring if you have to, by outsourcing if you can. This raises obvious concerns about scalability, which would be essentially linear in this model.
+
+== How much of this work can be automated?
+
+The aim of this post is to explore to what extent this process of navigating and transacting with these structures can be automated. The focus will be on automating the generation of transactions - that is, starting with a *goal* ("we want $x at this entity from funds a, b and c in these proportions, to make an investment.") and automatically answering the question "What transactions do we need to make this happen?". This does ignore the part of the process where most of the admin work tends time to be, which is:
+
+* making payments
+* drafting and signing documents
+* recording transactions in the books of record of each of the entities.
+
+However once you have the transactions this process can be largely deterministic, or even generic, since there's plenty of off-the-shelf software to help you do all of these things. The "Deciding what transactions you need" part of it is the starting point for all of this, and once you have a methodology for automatically generating transactions for a structure from a stated 'goal' it can be intuited how all of these actions can also be automated to a greater or lesser degree.
+
+The ultimate aim is that the effort of administering these structures becomes trivial, with the human interaction limited to stating the goal (this, too, can be automated). In this way the incremental cost in time of a transaction becomes minimal, and the investment manager can scale to hundreds of structures without significantly increasing the resources needed to implement them.
+
+== Goals of a structural transaction engine
+
+To reiterate, we start with a structure: effectively a directed acyclic graph of legal entities (the nodes) connected by financial instruments (the edges). At the top of the graph are the fund entities that directly face the investors. At the bottom are the investee entities. Here I'll define the investee entities as the first entities in the structure which are outside of the direct control of the asset manager, though there could be several alternatives.
+
+Here are several goals which can be implemented via transactions on the financial instruments of a structure:
+
+. We want to put $x into an investee company, with the cash coming ultimately from a set of funds. While doing this, each of the entities in the structure through which the cash will pass should be allowed to deduct an amount before passing it on, as a 'float' to meet its operating costs. The combined floats should be factored in so the full $x reaches the investee company. However any excess cash in the structure should be used where possible. 
+. An portfolio company is going to pay a dividend. We want to flow this cash up the structure to the funds.
+. An entity in the structure issues publicly held bonds, which have an upcoming interest payment. We want to pay the interest by utilising the free cash flow of the investee entity to the extent possible
+. An entity in the structure has an upcoming legal fee to pay. Move sufficient cash into that entity, preferably without drawing cash from the funds
+
+On its face this is not a especially complex problem. Each entity is proportionally owned by its parents via the financial instruments it issues to them, and whenever cash is moved it should be done in proportion to those ownerships. The devil, however, is in the detail. There is another layer of complexity in how the instruments are set up to be operated and their order of precedence. For example
+
+. An entity might issue debt and equity to its parents. When paying cash upwards it should first pay accrued interest on its debt, then dividend of declared profit, then pay down debt principal.
+. An entity might draw 99% of its capital via the issuance of debt and 1% via issuance of shares.
+
+== A simple API
+
+From the above we can state a simple public API for a program intended to generate transactions:
+
+[source,clojure]
+----
+(generate-transactions goal structure) ;;=> transactions
+----
+
+This assumes that the current state of the structure (current cash positions etc.), as well as the _rules_ for precedence at an entity and instrument level are part of the structure itself.
+
