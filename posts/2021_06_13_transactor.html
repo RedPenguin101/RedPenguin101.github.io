@@ -445,19 +445,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In asset management the main motivation is the connection of investor cash to deals. Investors provide capital to the "investment funds" of the asset manager. The investment funds send that cash out into the world to (hopefully) generate a return. As those return dollars come back in over time, they flow back to the investment funds, then eventually back to investors.</p>
+<p>In asset management the main motivation is the connection of investor cash to deals. Investors provide capital to the <strong>investment fund</strong> of the asset manager. The investment fund sends that cash out into the world to (hopefully) generate a return. As those return dollars come back in over time, they flow back to the investment funds, then eventually back to investors.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/2021_06_13_transactor/trans1.png" alt="trans1">
+</div>
 </div>
 <div class="paragraph">
 <p>This is a simplification in a couple of ways.</p>
 </div>
 <div class="paragraph">
-<p>The "investment funds" that investors put their cash into ("<em>ABC Opportunity Fund 3</em>") are a fairly abstract concept - they don&#8217;t 'exist' in a very concrete way. The 'real world' implementation of these funds is via incorporated entities or partnerships - referred to here as <strong>fund entities</strong>. One "investment fund" may be implemented with multiple entities: Master/Feeder structures, blockers etc. These are largely irrelevant to the investors and to the high level management of the asset manager, but the details are crucial to the actual operation of the funds, since the entities and the transactions against financial instruments between them, as well as the accounting, are all at the level of the entity. Thus, when and Investor invests in <em>ABC Opportunity Fund 3</em>, they are signing a contract with "<em>ABC OpFund 3 Feeder C LP</em>", and they are paying their money into that entity, which itself subscribes to Class C shares of "<em>ABC OpFund 3 Master Fund Cayman Ltd</em>".</p>
+<p>The "investment funds" that investors put their cash into ("<em>ABC Opportunity Fund 3</em>") are a fairly abstract concept - they don&#8217;t 'exist' in a very concrete way. The 'real world' implementation of these funds is via incorporated entities or partnerships - referred to here as <strong>fund entities</strong>. One "investment fund" may be implemented with multiple entities: Master/Feeder structures, blockers, as well as GPs etc. These are largely irrelevant to the investors and to the high level management of the asset manager, but the details are crucial to the actual operation of the funds, since the entities, financial instruments and transactions, as well as the accounting for all of these, are all at the level of the entity. Thus, when and Investor invests in <em>ABC Opportunity Fund 3</em>, they are signing a contract with "<em>ABC OpFund 3 Feeder C LP</em>", and they are paying their money into that entity, which itself subscribes to Class C shares of "<em>ABC OpFund 3 Master Fund Cayman Ltd</em>".</p>
 </div>
 <div class="paragraph">
 <p>When <em>ABC Opportunity Fund 3</em> is said to invest its capital, this is another simplification. It is a legal entity like <em>ABC OpFund 3 Master Fund Cayman Ltd.</em> which is holding the shares of the investee company.</p>
 </div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/2021_06_13_transactor/trans2.png" alt="trans2">
+</div>
+</div>
 <div class="paragraph">
 <p>It may be the case that a fund entity holds shares (or other financial instruments) issued by the investee directly, but more generally there is some other, intermediate entities, between the fund entity and the investee. That is, <em>ABC OpFund 3 Master Fund Cayman Ltd.</em> will hold shares in <em>ABC Blocker 16 Ltd.</em> which will hold shares in the investee company. This is the simplest possible form of such a investment structure, but they can get very large indeed, with a dozen or more entities in a single structure.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/2021_06_13_transactor/trans3.png" alt="trans3">
+</div>
 </div>
 <div class="paragraph">
 <p>There are several overlapping reasons for creating these structures:</p>
@@ -529,7 +544,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_goals_of_a_structural_transaction_engine">Goals of a structural transaction engine</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To reiterate, we start with a structure: effectively a directed acyclic graph of legal entities (the nodes) connected by financial instruments (the edges). At the top of the graph are the fund entities that directly face the investors. At the bottom are the investee entities. Here I&#8217;ll define the investee entities as the first entities in the structure which are outside of the direct control of the asset manager, though there could be several alternatives.</p>
+<p>To reiterate, we start with a <strong>structure</strong>: effectively a directed acyclic graph (DAG) of legal entities (the nodes) connected by positions in financial instruments (the edges). At the top of the graph are the fund entities that directly face the investors. At the bottom are the investee entities. Here I&#8217;ll define the investee entities as the first entities in the structure which are outside of the direct control of the asset manager, though there could be several alternatives.</p>
 </div>
 <div class="paragraph">
 <p>Here are several goals which can be implemented via transactions on the financial instruments of a structure:</p>
@@ -540,7 +555,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>We want to put $x into an investee company, with the cash coming ultimately from a set of funds. While doing this, each of the entities in the structure through which the cash will pass should be allowed to deduct an amount before passing it on, as a 'float' to meet its operating costs. The combined floats should be factored in so the full $x reaches the investee company. However any excess cash in the structure should be used where possible.</p>
 </li>
 <li>
-<p>An portfolio company is going to pay a dividend. We want to flow this cash up the structure to the funds.</p>
+<p>An portfolio company is going to pay a dividend. We want to flow this cash up the structure to the funds (referred to in the jargon as a <em>waterfall</em>).</p>
 </li>
 <li>
 <p>An entity in the structure issues publicly held bonds, which have an upcoming interest payment. We want to pay the interest by utilising the free cash flow of the investee entity to the extent possible</p>
@@ -561,6 +576,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>An entity might draw 99% of its capital via the issuance of debt and 1% via issuance of shares.</p>
 </li>
+<li>
+<p>A waterfall can reflect a complex arrangement between owners, lenders and service providers, with service fees being paid before interest, interest being paid before loan principal (itself the result of complicated formula), and the residual being paid by to the owners.</p>
+</li>
 </ol>
 </div>
 </div>
@@ -577,14 +595,100 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>This assumes that the current state of the structure (current cash positions etc.), as well as the <em>rules</em> for precedence at an entity and instrument level are part of the structure itself.</p>
+<p>This assumes that the current state of the structure (current cash positions etc.), as well as the <em>rules</em> for precedence at an entity and instrument level are encoded into the structure itself.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll need an API for creating and manipulating structures. We&#8217;ll keep it to the very simple <code>add-position</code> for now, though I expect we&#8217;ll outgrow this very quickly.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(add-position structure from-entity to-entity instrument) ;;=&gt; structure</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_layers_of_the_system_and_a_model_for_transactions">Layers of the system and a model for transactions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The slow-changing core of the system we are building is around entities, instruments, positions and transactions. Let&#8217;s spend some time exploring and defining this model.</p>
+</div>
+<div class="paragraph">
+<p>An <strong>entity</strong> is a legal entity - a corporation or limited partnership. It is an independent entity which has ownership, can enter into contracts, can issue financial instruments and can hold positions in financial instruments issued by other entities.</p>
+</div>
+<div class="paragraph">
+<p>An <strong>instrument</strong> is a legal contract that promises the exchange of cash at a future date. It can be <strong>securitized</strong>, meaning it is unitized into securities representing fractional units of that instrument (examples are shares or bonds), or <strong>principal-based</strong>, meaning that the whole of the instrument is represented by a monetary amount, with holders of that instrument owning fractions of that principal (e.g. a loan, a limited partnership interest). The unit of these types of instrument can be thought of as one unit of the monetary amount. All instruments are <strong>issued</strong> by an entity.</p>
+</div>
+<div class="paragraph">
+<p>A <strong>position</strong> is a fractional holding that one entity has in an instrument, denominated in units of that instrument - a number of securities for securitised instruments, or a principal amount for a principal-based instrument. Entity A can have a position of 100 shares of an instrument issued by entity B</p>
+</div>
+<div class="paragraph">
+<p>A <strong>transaction</strong> is a notional or real exchange of value between the issuer and holder of an instrument. When Entity B pays a dividend on an instrument to Entity A which holds a position in that instrument, that is a transaction, whereby an obligation is extinguished by the payment of cash. A drawdown on a loan facility is a transaction whereby Entity A pays cash to Entity B in exchange for the promise of future cash flows from B to A, represented by an increase in the principal balance of the instrument.</p>
+</div>
+<div class="paragraph">
+<p>A <strong>trade</strong> is an exchange of notional or real value between entities that doesn&#8217;t involve the issuer of an instrument. The most common forms are the buying and selling of securities between entities.</p>
+</div>
+<div class="paragraph">
+<p>A transaction or trade can be applied to a structure, modifying the instrument, position and entities.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(apply-transaction structure transaction) ;; =&gt; structure</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, the application of a drawdown transaction on an instrument issued by Entity A, in which Entities B and C have positions, would have the following effects on the state of the structure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The cash positions of B and C is reduced</p>
+</li>
+<li>
+<p>The cash position of A is increased</p>
+</li>
+<li>
+<p>The overall principal amount of the instrument is increased</p>
+</li>
+<li>
+<p>The principal amounts of the positions of B and C would be increased</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>How would we describe this transaction and its impact on the structure?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;; structure before
+{:entities    [{:name "Entity A" :cash-position 0}
+               {:name "Entity B" :cash-position 500}
+               {:name "Entity C" :cash-position 200}]
+ :instruments [{:name "Entity A Term Loan" :principal 100}
+ :positions   [{:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity B" :amount 75}
+               {:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity C" :amount 25}]]}
+
+;; transaction
+{:instrument "Entity B Term Loan"
+ :action     :loan-drawdown
+ :amount     100}
+
+;; structure after
+{:entities    [{:name "Entity A" :cash-position 100} ;; cash increase 100
+               {:name "Entity B" :cash-position 425} ;; cash decrease 75
+               {:name "Entity C" :cash-position 175}] ;; cash decrease 25
+ :instruments [{:name "Entity A Term Loan" :principal 200} ;; principal increase 100
+ :positions   [{:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity B" :amount 150} ;; amount increase 75
+               {:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity C" :amount 50} ;; amount increase 25
+               ]]}</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-06-17 12:16:17 +0100
+Last updated 2021-06-17 14:02:46 +0100
 </div>
 </div>
 </body>
