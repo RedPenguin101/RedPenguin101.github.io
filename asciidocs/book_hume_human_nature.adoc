@@ -1,0 +1,77 @@
+= An Enquiry Concerning Human Understanding
+By David Hume
+
+== Content
+
+. The different types of philosophy
+. The origin of ideas
+. The association of ideas
+. sceptical doubts about the operations of understanding
+. solutions of these doubts
+. probability
+. the idea of necessary connexion
+. liberty and necessity
+. the reason of animals
+. miracles
+. A particular providence and a future state
+. the academical or sceptical philosophy
+
+== Terms
+
+Moral philosophy: the science of human nature
+
+Metaphysics: The profound and abstract philosophy
+
+Human nature: The operations of the human mind.
+
+== On the different types of philosophy
+
+=== Easy and profound philosophy, and the superiority of the easy
+
+Moral philosophy is the science of human nature. It has two flavors.
+
+The first considers man as born for action, and as influenced in his actions by taste and sentiment. He pursues and avoids objects according the perceived value of these objects. Philosophers view virtue as the most valuable of objects, and expend many words in talking it up in an effort to convince us to take actions that will lead us to virtue.
+
+The second consider man as a reasonable rather than active being. Philosophers aim to shape our understanding rather than change our actions. They aim to examine human nature to find the principles which regulate our understanding and make us view object with approval or blame. They think that the foundations of morals and reasoning can be clearly defined and fixed. It is for them frustrating that we talk of truth, virtue or beauty without being able to determine and define the sources of these things.
+
+The first is easy and obvious, the second is abstract and abstruse. For most people, the former will be seen as more agreeable and more useful in daily life. The second, in fact, vanishes on contact with the real world.
+
+The easy philosophy has proved more durable through history. A profound philosopher, when she makes a mistake in reasoning and arrives at a conclusion that contradicts common sense, will push on with her reasoning to a conclusion, and use that conclusion as the basis for another line of reasoning, always straying further from truth. The easy philosopher only needs to check her conclusion against common sense to detect her error, and quickly correct herself to the right path.
+
+The philosopher and the ignorant are  viewed as contributing nothing to society. The most perfect character lies between the extremes, with ability and taste in books, company and business. Compositions of the easy philosophy, which are comprehensible and applicable, are the best at cultivating this character.
+
+Man is a reasonable animal, and draws nourishment from science. But because the bounds of human understanding are narrow, little satisfaction can be gained from this. Man is a social animal. But she cannot always be in good company. Man is an active animal, and must engage in business and occupation. But she needs relaxation. Nature points to mixed life as the most suitable one, and punishes those who focus on one at the expense of the others.
+
+> Indulge your passion for science, says [Nature], but let your science be human, and as such as may have a direct reference to action and society. Abstruse though and profound researches I prohibit, and will severely punish, by the pensive melancholy which they introduce, by the endless uncertainty in which they involve you, and by the cold reception which your pretended discoveries shall meet with, when communicated. Be a philosopher; but, amidst all your philosophy, be still a man.
+
+So profound reasoning, or _metaphysics_, is rejected by humanity. Can we make an argument in its favor?
+
+=== An argument for profound reasoning
+
+The practical argument for metaphysics is that without the profound, the easy philosophy can't attain sufficient exactness in its reasoning. It is limited to presenting pictures of human life in various situations, and from that situation assigning praise or blame. But knowledge of what lies beneath the surface helps us better express that surface.
+
+As an analogy: The artist may draw pictures of people from what she sees. But by studying the science of anatomy, what lies _beneath_ the skin and clothes - skeleton, muscles, joints - she is able to better draw what she can see.
+
+> Accuracy is, in every case, advantageous to beauty, and just reasoning to delicate sentiment. In vain would we exalt the one by depreciating the other.
+
+As the artist uses the accuracy of anatomical science to improve the beauty of art, the philosopher can use just but abstract reasoning to improve society by using it to inform the easy and practical philosophy. 
+
+Even without a practical argument, the pursuit of the profound shouldn't be rejected. It's harmless enough. It might be painful and fatiguing, but as strenuous physical exercise can give great pleasure, so can the great mental effort. Neither have direct object beyond that pleasure, but so what?
+
+It is objected that abstract philosophy is _not_ harmless. The nature of its abstraction means it's a constant source of uncertainty and error. It's not a proper science, just an expression of human vanity and hubris, or even an effort to obscure challenges to dogma and superstition. So the field should be abandoned.
+
+Shouldn't we draw the opposite conclusion though? Those who use the abstract reasoning in this way will not _stop_ doing it until we take the battle to them on their own ground, finding the methods with which to refute and disprove their erroneous arguments, and bring the exactitude we want. History teaches us that, even when a subject seems impenetrable to science, concerted effort over the generations can punch through the wall of darkness and bring the light of reason. 
+
+For millennia, the astronomers contented themselves with describing, from observation, the motions of the planets. Eventually Newton came along, and by the force of reason was able to also determine the laws and forces which govern that motion. This pattern has repeated itself in many spheres, and there is no reason to think that human nature is immune.
+
+The only hope of removing the abstruseness is to continue to enquire seriously into the nature of human understanding. This is what this book will attempt to do.
+
+=== Human nature and the operations of the mind
+
+It is remarkable that, despite being the thing that is closest to us, the operations of the mind are so  resistent to reflection. We cannot see in them the lines and boundaries which discriminate and distinguish them. When we try, they seem shift under our gaze like smoke. 
+
+The aim of this work is to propose some model of classification, to delineate and distinguish the parts and powers of the mind, to allow us to make this reflection possible.
+
+I take as our starting assumption that such a classification of powers and faculties of the mind is possible at all. As evidence for this I point to some delineations that already exist, without the exactness which is our goal, in the common philosophy. The distinction between will and understanding, or the imagination and the passions. Finer and more exact distinctions can also be found, though with much more difficulty. footnote:[Paragraphs 9 and 10 of the original work are not included here. They labor the justification this is a worthwhile endeavour without adding much to what has already been said.]
+
+== The origin of ideas
