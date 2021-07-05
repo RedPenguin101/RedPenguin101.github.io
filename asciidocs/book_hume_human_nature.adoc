@@ -24,6 +24,10 @@ Metaphysics: The profound and abstract philosophy
 
 Human nature: The operations of the human mind.
 
+Thought / Idea: 
+
+Impression: 
+
 == On the different types of philosophy
 
 === Easy and profound philosophy, and the superiority of the easy
@@ -75,3 +79,29 @@ The aim of this work is to propose some model of classification, to delineate an
 I take as our starting assumption that such a classification of powers and faculties of the mind is possible at all. As evidence for this I point to some delineations that already exist, without the exactness which is our goal, in the common philosophy. The distinction between will and understanding, or the imagination and the passions. Finer and more exact distinctions can also be found, though with much more difficulty. footnote:[Paragraphs 9 and 10 of the original work are not included here. They labor the justification this is a worthwhile endeavour without adding much to what has already been said.]
 
 == The origin of ideas
+
+(11) There is a difference between sensation (feeling the pain of excessive heat) and the recollection of that sensation afterwards, or the anticipation of that sensation by imagination. The former will always have more force and vivacity. The most lively thought is still inferior to the dullest sensation.
+
+Non-physical sensations can also be so divided. The _recollection_ of anger is only every a shadow of the actual sensation of anger. 
+
+(12) We will divide all the perceptions of the mind into two classes, distinguished by their degrees of force and vivacity. The less forcible are _Ideas_. The more forcible are _Impressions_.
+
+(13) At first glance human thought may appear unbounded. We can imagine monsters as readily as we can real creatures. 
+
+Actually the limits of imagination are bounded by ideas we have, which we can creatively combine. Though a mountain of gold does not exist, we can imagine one by joining the two ideas 'gold' and 'mountain'. But we had to have had the *Simple ideas* (i.e. those which are ultimately formed of Impressions) of 'gold' and 'mountain' to create this *Compound idea* of the mountain of gold (which can have no corresponding Impression).
+
+Consider God: An infinitely intelligent, good and wise being. This is a extension of the idea of our own mind, augmenting it without limit with the ideas of intelligence, goodness and wisdom. 
+
+Any thought or idea we have can be decomposed into simple ideas.
+
+(14) I present two arguments to support this theory:
+
+First: Were it not true, it would be easy to refute by presenting an idea which cannot be so decomposed.
+
+(15) Second: If we come across a person whose sense organs are defective, the person does not have the capability to create Ideas based on Impressions from that organ. A blind person has no Idea of color. If a blinder persons sight is restored they will have no problem imagining color.
+
+(16) There is a counterargument that would suggests we _can_ create ideas without corresponding impressions. Suppose that a woman has lived 30 years and has seen many shades of blue in that time, except one specific kind. Suppose that examples of all the different shades of blue _except_ the one she isn't familiar with are placed before her, from darkest to lightest. Would it be possible for her to imagine the missing shade of blue without having ever perceived it? It is absurd to suggest she would not. 
+
+This, then, is a Simple Idea created without a corresponding Impression. The counterexample is so particular, though, that it's not worth abandoning the general idea.
+
+== The association of ideas
