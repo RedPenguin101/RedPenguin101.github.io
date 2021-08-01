@@ -1,0 +1,159 @@
+= Graphs and graph algorithms
+
+A graph is a series of *nodes* connected by *edges*. They are a useful abstraction for the representation of many problems you can come across, since several real world systems can be described in this way. Road networks are graphs, where road junctions are nodes and the roads themselves are the edges. Computer networks are graphs where the computers are the nodes. Both of these domains will commonly have a 'shortest path' problem: given that I am at this place, what is the shortest route to that place? By modelling the network using a graph you can use the established algorithms for solving common graph problems like the shortest path, in this case using _Dijsktra's algorithm_ or the _A* Algorithm_.     
+
+In finance, foreign exchange forward contracts (a type of OTC derivative) have a 'currency pair': I pay you X GBP, you pay me Y USD. The price of the contract is given as X over Y. Or should that be Y over X? Market conventions have grown around this, such that one currency is always the 'first' in the currency pair. So it's always 'EUR/USD', not 'USD/EUR', and always 'USD/CAD' not 'CAD/USD'. You can see a list of common currency pairs https://www.oanda.com/us-en/trading/instruments/[here].
+
+How to program a system that 'knows' these currency pairs? You could put them all in a giant conditional (`if ccy-a = USD and ccy-b = CAD, then USD/CAD elseif ...`), or you could derive from the provided pairs a "pecking order",  like `EUR>GBP>USD>CAD>JPY` etc. A way to do this is to model the currency pairs as a graph, with each currency as a node, and a edge between each pair. So There would be an edge from USD to CAD, and EUR to USD. You would then use a _topological sort_ on the graph to determine the pecking order.
+
+== Types of graph and terms
+
+A graph can can have directed edges or undirected edges. A graph with exclusively directed edges is called a *digraph*.
+
+A digraph can be *acyclic*. That is when, for any starting node you pick, you are unable to get back to that starting node by following the edges. A *directed acyclic graph*, or *DAG*, is a common type of graph.
+
+Two nodes in a graph can have at most one edge connecting them. A graph that can have more than one edge between two nodes is called a *multigraph*.
+
+An edge can have one or more *values* associated with it. In the case of a road network, the value of an road/edge might be its distant in miles, or the time it takes to travel it.
+
+A *tree* is a subclass of graphs, with the property that any node can be reached by one and only one path. There are also several types of tree.
+
+== Representing a digraph, and simple questions to answer
+
+NOTE: Clojure has core functions that duplicate some of the functions we'll use here so put `(:refer-clojure :exclude [parents ancestors descendants])`` in your namespace definition
+
+We'll start with a very simple representation of a digraph: a sequence of edges, where is edge is a tuple is in the form `[from-node to-node value]`. (This is _very much_ not the most performant representation)
+
+What are the simple questions we can ask about a graph which will describe it?
+
+First, we can list the edges and nodes. Since the list of edges is just our data structure, we don't need to bother with that.
+
+Next, we can ask of a node in the graph, what are its *parents* (the nodes with an edge leading into it) and its *children* (the nodes with an edge from this node).
+
+[source,clojure]
+----
+(defn add-directed-edge [graph edge] (conj graph edge))
+
+;; to find the nodes, we take each edge and extract it's 'from' and 'to' elements, then
+;; put them all in a set to remove duplicates. Note this model doesn't permit 'unconnected' nodes.
+(defn nodes [graph] (set (mapcat #(take 2 %) graph)))
+
+;; To find parents, we iterate through the list of edges. If the node is in the second position
+;; (i.e. there is an edge where our node is in the "to" position), we return the first
+;; element of the edge (the "from" node, which is the parent of the "to" node)
+;; The children functions reverses the "from" and "to"
+(defn parents  [graph node] (keep #(when (= node (second %)) (first %)) graph))
+(defn children [graph node] (keep #(when (= node (first %)) (second %)) graph))
+
+(def test-graph
+  (-> []
+      (add-directed-edge [:a :b 2])
+      (add-directed-edge [:b :c 1])
+      (add-directed-edge [:a :d 3])
+      (add-directed-edge [:d :e 4])))
+;; => [[:a :b 2] [:b :c 1] [:a :d 3] [:d :e 4]]
+
+(nodes test-graph) ;; => #{:e :c :b :d :a}
+
+(parents test-graph :c) ;; => (:b)
+(children test-graph :a) ;; => (:b :d)
+
+(parents test-graph :a) ;; => ()
+(children test-graph :e) ;; => ()
+----
+
+Next we might ask, continuing the family analogy, what are the *ancestors* and *descendants* of a node? That is, for a node, what are its parents, its parents parents, etc. to the *root* of the graph.
+
+[source,clojure]
+----
+;; To get the ancestors of a node, we simply return the parents, and the ancestors of those parents
+;; For descendants, we apply the same process with children
+(defn ancestors [graph node]
+  (let [prnts (parents graph node)]
+    (set (concat prnts (mapcat #(ancestors graph %) prnts)))))
+
+(defn descendants [graph node]
+  (let [chldrn (children graph node)]
+    (set (concat chldrn (mapcat #(children graph %) chldrn)))))
+
+(ancestors test-graph :e) ;; => #{:d :a}
+(ancestors test-graph :d) ;; => #{:a}
+(ancestors test-graph :a) ;; => #{}
+(ancestors test-graph :c) ;; => #{:b :a}
+
+(descendants test-graph :a) ;; => #{:e :c :b :d}
+(descendants test-graph :b) ;; => #{:c}
+(descendants test-graph :c) ;; => #{}
+(descendants test-graph :d) ;; => #{:e}
+----
+
+Speaking of roots, we might want to ask, what are the roots and 'leaves' of the graph. That is, respectively, the nodes that have no edges leading into them, and no edges leading out of them. Or put another way, edges with no parents and children.
+
+[source,clojure]
+----
+;; the roots of a graph are any nodes which have no edge leading into them - i.e. where no edges have
+;; that node in the second position. The leaves are nodes where no edges have that node in the first position. 
+(defn roots [graph]  (set/difference (nodes graph) (set (map second graph))))
+(defn leaves [graph] (set/difference (nodes graph) (set (map first graph))))
+
+(roots test-graph) ;; => #{:a}
+(leaves test-graph) ;; => #{:e :c}
+----
+
+Lets implement a way of finding an edge:
+
+[source,clojure]
+----
+(defn find-edge [graph from to] (first (filter #(= (take 2 %) [from to]) graph)))
+
+(find-edge test-graph :a :b) ;; => [:a :b 2]
+----
+
+Finally, we'll generalize the model a bit to allow for _non_-directed-edges. To do this, when given a union instruction we'll just add two edges: `[from to value]` and `[to from value]`. Very inefficient, but fine for now.
+
+[source,clojure]
+----
+(defn add-edge [graph edge]
+  (let [[from to & values] edge]
+    (-> graph (add-directed-edge edge) (add-directed-edge (apply vector to from values)))))
+
+(def test-graph2 (-> []
+                     (add-edge [:a :b 2])
+                     (add-edge [:b :c 1])
+                     (add-edge [:a :d 3])
+                     (add-edge [:d :e 4])))
+;; => [[:a :b 2] [:b :a 2] [:b :c 1] [:c :b 1] [:a :d 3] [:d :a 3] [:d :e 4] [:e :d 4]]
+
+
+(nodes test-graph2) ;; => #{:e :c :b :d :a}
+
+(parents test-graph2 :c) ;; => (:b)
+(children test-graph2 :a) ;; => (:b :d)
+(parents test-graph2 :b) ;; => (:a :c)
+
+;; note that with a non-directed graph, ancestors and descendants will be useless 
+(ancestors test-graph2 :e)
+;; => Execution error (StackOverflowError) at graphs/ancestors (REPL:28).
+
+;; and since there are no roots or leaves, so will those functions 
+(roots test-graph2) ;; => #{}
+(leaves test-graph2) ;; => #{}
+
+;; find-edge still works OK though
+(find-edge test-graph2 :a :b) ;; => [:a :b 2]
+(find-edge test-graph2 :b :a) ;; => [:b :a 2]
+----
+
+That's all we need for now, let's look at some more interesting questions.
+
+== Shortest Path
+
+The use-cases for finding the shortest path between two nodes are many and obvious. For a road network the shortest path between two geographical points (nodes) can be used to determine a route for a GPS. For a computer network, the shortest path between two computers can be used to route network traffic.
+
+For this we'll need a slightly more complex graph to work with:
+
+=== Dijkstra
+
+=== A*
+
+== Sort
