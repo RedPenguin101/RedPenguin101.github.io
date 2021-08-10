@@ -1,0 +1,68 @@
+= Reading a Clojure Function
+
+From https://old.reddit.com/r/Clojure/comments/p1a05t/im_finding_this_language_very_hard_to_understand/[this] thread on Reddit.
+
+[source,clojure]
+----
+(defn hit
+  [asym-body-parts]
+  (let [sym-parts (better-symmetrize-body-parts asym-body-parts)
+        body-part-size-sum (reduce + (map :size sym-parts))
+        target (rand body-part-size-sum)]
+    (loop [[part & remaining] sym-parts
+           accumulated-size (:size part)]
+      (if (> accumulated-size target)
+        part
+        (recur remaining (+ accumulated-size (:size (first remaining))))))))
+----
+
+> Is that honestly not a mindfuck? It feels like I have to read it in a backwards, way to totally understand it. Is there something I'm missing from understanding this language? ... the language itself is so confusing to me. Even just glancing at that function gives me a headache, and I'm fairly used to some complex stuff. 
+
+Here's my mental process when reading that function:
+
+. The name is `hit` and the single argument is `sym-body-parts`. Possibly this is a game-type situation, where there's an (asymmetric?!) monster, and we are hitting the monster?
+. `asym-body-parts` - not a lot of clues on what this is, but the name is plural, so the working theory is that it's a sequence of body parts.
+. let bindings next: these are useful because they're mini-indirections. Once we understand the LHS name, either from the name itself or the RHS, we don't need to think about it any more.
+.. `sym-parts = better-symmetrize-body-parts asym-body-parts` - a sensible guess here from what we've seen so far is that we start with a list of body parts (`left hand`) and we want to end up with symmetric body parts (so `left hand` and `right hand`). That seems to be what `better-symmetrize-body-parts` is doing. The important bit is that we'll be operating on these symmetrized body parts for the rest of the function. 
+.. `body-part-size-sum` is pretty clearly named, even without looking at the RHS of the binding, which is equally clear. To be honest, this is clear enough that it's probably unnecessary.
+.. `target (rand body-part-size-sum)`. The intent here is a bit more obscure. What is clear is that it's a random number between 0 and the total 'size' of the monster, or whatever it is.
+. Next we come to a loop. A glance at the termination condition returns `part`, which supports the above theory: given a monster comprised of body parts, the function returns the body part that it being hit. 
+
+Depending on the goal we might stop here if we want. We probably know all we need to know about _what_ the function does, its intent. It could be summarized as:
+
+> "Given a sequence of body-parts, completes the symmetry of those body parts then randomly (weighted by size) returns one of them."
+
+Or more domain specifically:
+
+> "Given a monster, randomly selects a body part of that monster to hit."
+
+If we want also wanted to understand the implementation, we could continue, though there's not much more to do.
+
+The termination condition is `(> accumulated-size target)`. So we've effectively got a while loop. The loop runs through the body part sequence, keeping track of the cumulative size of the parts seen. If the accumulated size exceeds the target, return the part. Else, recur with the remaining parts, and increase the accumulator.
+
+The wrinkle here that probably trips people up is the loop syntax, in particular the sequence destructuring in the loop. Once you're familiar with the pattern, the mechanics are as obvious as a `for` loop in Python. But if you're not it can look weird.   
+
+== Thoughts on the code
+
+This is meant to be an explanatory example, so to critique it might be overkill, not to mention unfair to do outside of the context of the rest of the tutorial.
+
+First, this function is _symmetrizing the body parts_ before picking a random one. That feels weird in the narrow context of the function. Why are you _creating_ body parts ot of thin air? Possibly this is evident from the wider context of the program, but within the narrow scope of the function it's confusing. It might be better to do something like `(hit (symmetrize asym-body-parts))`, and keep `hit` purely focused on one thing: selecting the body part.
+
+Finally, the whole method is fairly unidiomatic in Clojure. Explicit loops are uncommon for a start, you'll more commonly see higher order functions like reduce and map to achieve the same ends.
+
+One piece of advice I saw once related to what to do when you have a sequence: Don't think about operating on the elements of the sequence, operate on the sequence as a whole.
+
+In this case we can think of it like this: we have a sequence of monster parts. We want to select the part that is some random way through that sequence, weighted by part size. So lets just do that, rather than all this looping nonsense.
+
+Lastly: the name. Again, this highly context dependent, but this function is not what I think of when I think of 'hitting' a monster. There's no indication in the function that the monsters health is reduced. What the function ("Given a monster, return a random body part"), could be better described as 'picking a target body part', or just `pick-target`
+
+[source,clojure]
+----
+(defn pick-target 
+  "Given a monster, returns a randomly targeted body part of that monster,
+  relatively weighted by the size of each of the body parts."
+  [monster]
+  (rand-nth (mapcat (fn [part] (repeat (:size part) part)) monster)))
+
+(pick-target (symmetrize asym-parts))
+----
