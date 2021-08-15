@@ -984,13 +984,213 @@ impl Read for File {
 <div class="sect1">
 <h2 id="_part_2_systems_programming">Part 2: Systems Programming</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_5_data_in_depth">5. Data in depth</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>how computer represents data</p>
+</li>
+<li>
+<p>A CPU emulator</p>
+</li>
+<li>
+<p>Defining a numeric data type</p>
+</li>
+<li>
+<p>Floating point numbers</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_bit_patterns">Bit patterns</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>A bit is a <code>1</code> or <code>0</code>. It&#8217;s the only thing the computer actually stores</p>
+</li>
+<li>
+<p>A bit pattern / bit string is a series of bits: <code>1100001111000011</code></p>
+</li>
+<li>
+<p>A bit pattern can be interpreted in different ways. The 'type' is the interpreter</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-rust" data-lang="rust">fn main() {
+  let a: u16 = 50115;
+  let b: i16 = -15421;
 
+  println!("a: {:016b} {}", a, a);
+  println!("a: {:016b} {}", b, b);
+}
+
+// a: 1100001111000011 50115
+// b: 1100001111000011 -15421</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A text file is just a binary file that has a consistent mapping (an <strong>encoding</strong>) between bit-strings and characters.</p>
+</li>
+<li>
+<p>What happens if we change the interpreter, by treating a bit-string instantiated as one type as another type?</p>
+</li>
+<li>
+<p>We&#8217;ll use an <code>unsafe</code> block and a <code>transmute()</code> function.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-rust" data-lang="rust">fn main() {
+    let a: f32 = 42.42;
+
+    let b: u32 = unsafe { std::mem::transmute(a) };
+
+    println!("u32 b: {}", b);
+    println!("Binary b: {:032b}", b);
+
+    let c: f32 = unsafe { std::mem::transmute(b) };
+
+    println!("f32 c: {}", c);
+    assert_eq!(a, c);
+}
+
+// u32 b: 1110027796
+// Binary b: 01000010001010011010111000010100
+// f32 c: 42.42</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>unsafe</code> should be used sparingly - preferably only when interacting with external code, C libraries etc.</p>
+</li>
+<li>
+<p>we use it here as a teaching tool to peek under the covers.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_integers">Integers</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Integers live in fixed ranges.</p>
+</li>
+<li>
+<p><code>u8</code> can cope with 0 to 255 (2^8 numbers) inclusive</p>
+</li>
+<li>
+<p><code>u16</code> can cope with 0 to 65,535 (2^16 numbers) inclusive</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-rust" data-lang="rust">fn main() {
+    let mut i: u16 = 0;
+    print!("{}..", i);
+    loop {
+        i += 1000;
+        print!("{}..", i);
+        if i % 10000 == 0 {
+            print!("\n")
+        }
+    }
+}
+
+// 0..1000..2000..3000..4000..5000..6000..7000..8000..9000..10000..
+// blah
+// 51000..52000..53000..54000..55000..56000..57000..58000..59000..60000..
+// thread 'main' panicked at 'attempt to add with overflow', src/main.rs:5:9
+// note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+// 61000..62000..63000..64000..65000..%
+
+#[allow(arithmetic_overflow)]
+fn main() {
+    let (a, b) = (200, 200);
+    let c: u8 = a + b;
+    println!("200 + 200 = {}", c)
+}
+
+// 200 + 200 = 144
+// (compiled with rustc -O src/main.rs &amp;&amp; ./main)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_floating_point_numbers">Floating point numbers</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><em>scientific notation</em> represents numbers like <code>-1.898 x 10^27</code></p>
+</li>
+<li>
+<p>Comprising a <em>sign</em>, a <em>mantissa/significand</em> (bit before the <code>x</code>), a <code>radix</code> (here 10), a <code>exponent</code> (the power bit)</p>
+</li>
+<li>
+<p>a rust <code>f32</code> float is the IEEE 754 <em>binary32</em>.</p>
+</li>
+<li>
+<p><em>floats</em> are stored as a sign-bit, an exponent and a mantissa (radix is always 2)</p>
+</li>
+<li>
+<p>the translation from binary to decimal is like this:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>01000010001010011010111000010100</code></p>
+</li>
+<li>
+<p><code>0-100001000-1010011010111000010100</code> (s, e, m)</p>
+</li>
+<li>
+<p>as base10 u32: <code>0 132 2731540</code>. <code>2731540</code> decodes to <code>1.325625</code> somehow</p>
+</li>
+<li>
+<p><code>n = -1^s * m * 2^(e-127)</code></p>
+</li>
+<li>
+<p><code>n = -1^0 * 1.325625 * 2^(132-127) = 1 * 1.325625 * 32</code></p>
+</li>
+<li>
+<p><code>n = 42.42</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fixed_point_numbers">Fixed point numbers</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>some CPUs don&#8217;t have Floating Point Units (e.g. microcontrollers)</p>
+</li>
+<li>
+<p>We can still represent decimals as fixed point numbers</p>
+</li>
+<li>
+<p>The <em>Q format</em> is a fixed point number using a since byte. <em>Q7</em> uses 1 bit for the sign and 7 bits for the number.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-02-19 14:45:00 UTC
+Last updated 2021-08-15 09:27:41 +0100
 </div>
 </div>
 </body>
