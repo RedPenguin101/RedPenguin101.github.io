@@ -33,6 +33,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)
 . Project: A 'code challenge' thing with a fund theme
 . Project: History generator
+. Project: Chess display engine
 
 === Writing
 
