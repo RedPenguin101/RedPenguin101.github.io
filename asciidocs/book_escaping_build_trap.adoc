@@ -41,6 +41,41 @@
 * Build trap
 * Value exchange System
 
+== 2hr Summary
+
+The Build Trap is the authors term for the common pattern in technology teams of building the wrong thing, and so ending up with products that no-one wants.
+
+Her hypothesis is that the major cause of the build trap is that the organization is focused on *outputs* - "we released 10 features", "we met our deadlines" - not *outcomes* - measuring the value being given to the customer. The prerequisite for this is putting much more emphasis on thinking in terms of the *product* being offered instead of narrower focuses on projects and services. 
+
+This problem starts at the top: The organization as a whole should be *product-led* - that is, optimizing for business outcomes. Every change to a product should tie back to producing value to the customer.  
+
+She claims this is a problem with the way the _product management_ function of the technology organization, and the solution is to set up robust product management practices. There are four interconnected areas which comprise these practices. Interconnected because, for example, if the organization is not product-led, the PM function will not be incentivized to create practices that focus on outcomes.
+
+image::../images/book_escaping_build_trap/four_layers.png[]
+
+Part of being a PM is being the _Product Owner_ - but only in a sense. They are responsible for the _why_: determining and communicating why the product is being built and the outcome it will produce. They are not responsible for the _when_. They do not own (but do work with the team on) the _what_. They don't care much about the _how_.
+
+They need to have a very deep understanding of the business and the customer, so they can identify what is valuable, and see opportunities to create value. They should talk to (and otherwise get feedback from) the customer a _lot_. Empathy for the customer is the critical attribute. Tech-literacy is a must, but tech-expertise is not.
+
+They should not be a mini-dictator, lording it over the team; a waiter, mindlessly communicating customer requests to developers; or a pseudo project manager, taking ownership of the _when_.
+
+The _why_ is the *product vision*. The PM needs to have the vision and to effectively communicate it. They need to determine metrics and goals for the product. They need to be given the time and space to do vision and research work.
+
+What product to build though? And what should they do? To make these decisions, you need a *strategy*. 
+
+A Strategy is _not_ a plan, nor a stakeholder's wishlist of features. It's not the vision for the end state of the product (though you should have this). It's a *framework for making decisions* about products. It has to start at the top with the vision and desired economic outcomes of the company: the *Company Strategy*.
+
+Strategies are interconnecting stories told throughout the organization that explain the objective and outcomes, tailored to a specific time frame. We call this act of communicating and aligning those narratives strategy deployment. Time frames at the executive level are several years (setting *Company Vision*, *Strategic Intentions*). At the middle management, they are quarterly or yearly (setting *product initiatives*). At the team level they are monthly or weekly.
+
+The product management process (or the *Product Kata*) is how the strategy is implemented. It has four steps, that span the entire product management function:
+
+. Understanding the direction: to get from the Company Strategy to the Product Initiative. 
+. Analyze the current state of the initiative/product
+. Set the next goal: go from Product Initiative to *Option Goal*.
+. Execute on the Option Goal: Problem exploration, Solution experimentation, Solution optimization
+
+Note the emphasis on *experimentation*. This is crucial.
+
 == Preface
 
 * my products were crap, and no one was using them
@@ -214,11 +249,3 @@ image::../images/book_escaping_build_trap/pirate_metrics.png[Pirate Metrics]
 * Budgeting: Think like a VC, not a corporation (antipattern: over-promise to get budget)
 * break out of budgeting once a year. Instead, allocate funds to the product portfolio as a whole. use the product initiative reviews to determine what should be funded, based on the amount of certainty toward the outcomes.
 * Customer centricity: deeply understand your customers. 
-
-== 2hr Summary
-
-What is the build trap?
-
-What does it mean to be a 'product led' organization?
-
-The 4 layers: Role, Strategy, Process, Organization
