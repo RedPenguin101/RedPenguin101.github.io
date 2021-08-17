@@ -1,0 +1,224 @@
+= Escaping the build trap, by Melissa Perri
+
+== Content
+
+* Part 1: The build trap
+** 1. The value exchange system
+** 2. Constraints on the VES 
+** 3. Project vs. Product vs. Service
+** 4. The product-led org (Sales, Visionary, Tech and product led)
+** 5. What we know and what we don't
+* Part 2: The role of the PM
+** 6. Anti-patterns: The CEO, the Waiter, The former PM
+** 7. A Great PM
+** 8. The PM career path
+** 9. Organizing teams
+* Part 3: Strategy
+** 10. What is it?
+** 11. Gaps: Knowledge, Alignment, Effects
+** 12. A strategic framework: deployment and creation
+** 13. Company level vision and strategic intents
+** 14. Product vision and portfolio
+* Part 4: PM Process
+** 15. Product Kata
+** 16. Direction and Success Metrics
+** 17. Problem exploration
+** 18. Solution exploration
+** 19. Solution optimization
+* Part 5: The product led organization
+** 20. Outcome focused communication
+** 21. rewards and incentives
+** 22. Safety and learning
+** 23. budgeting
+** 24. Customer centricity
+** 25. Marquetly: the product led company
+
+== Terms
+
+* output
+* outcome
+* process-led
+* Build trap
+* Value exchange System
+
+== Preface
+
+* my products were crap, and no one was using them
+* I was so focused on shipping features that I didn’t think about the outcome of those features.
+* I wasn’t connecting the goals of my company or the needs of my users back to my work.
+* Lean agile: Experimentation, talking to customers. 
+* Systematic / Organizational problems: Bonus tied to features, managers upset at not shipping
+* Focus needs to be on the _org_
+* Four layers to PM in the org:
+** Role
+** Strategy
+** Process
+** Organization
+
+image::../images/book_escaping_build_trap/four_layers.png[]
+
+== Appendix: Is your org product-led? Questions for a PM
+
+* Who came up with the last feature or product idea you built? Hopefully no-one will know. Or it will be 'the team'
+* What was the last product you decided to kill? If no-one can remember, that's a bad sign. Probably:
+** Commitment to customers happens too early
+** Budgeting can't budge
+** No pushback to management 
+* When's the last time you talked with your customers? _Worst_ answer is "we're not allowed to talk to customers".  
+* What is your goal? First, _have_ one. Second, it should be _outcome_ centric, not _output_ centric. i.e. focused on the value added to the business, not on 'did we ship on deadline'
+* What are you currently working on? Passion is the telling sign
+* What are your PMs like? Are they well respected? Lack of respect can either be because they're too strong (dictators) or too weak (beaten down by stakeholders and managers).
+
+== Notes from 2hr read
+
+=== Part 1: The build trap
+
+* The build trap is when organizations become stuck measuring their success by _outputs_ rather than _outcomes_. 
+* It’s when they focus more on shipping and developing features rather than on the actual value those things produce. 
+* get out of the build trap by setting themselves up to develop intentional and robust product management practices.
+* Training PMs is not enough. They will slip into old habits if the organization isn't set up right - i.e. is not _product-led_
+* Priority not aligned. Likely have too many priorities
+* "peanut buttering your strategy". So many strategic initiatives spread over very few people.
+* PMs should be pushing back, but org has to be set up for that kind of feedback.
+* Wrong people in role - marketers and sales people are not PMs
+* This part: How the build trap emerges, signs to look out for
+* Misunderstand value. Should be _outcomes they want to create_, not _the amount of stuff you produce_.
+* Customers have problems, wants, needs. Value is realized when these are filled
+* _Every_ feature and initiative should result in outcome that is tied back to business value.
+* Understanding value is hard. But you have to do it.
+* Orgs create their own constraints. Overly rigid processes.
+* Companies operate on _project_ based dev cycle. Scoping work, deadlines, milestones. Problem is, no way to align these with the strategy. Projects are essential part of product development - but thinking only in terms of projects is damaging
+* _products_ are vehicles of value. _Repeated_ value without more work from anyone in the org. 
+* _services_ use human labor to deliver value. Value at the cost of work
+* Many companies have a mixed value model.
+* Products need to be nurtured and grown
+* _Product led_ companies optimize for business outcomes, align product strategy to these outcomes, prioritize projects that will best meet them 
+
+image::../images/book_escaping_build_trap/what_we_know.png[]
+
+* Product management is the domain of recognizing and investigating the known unknowns and of reducing the universe around the unknown unknowns. 
+* Product managers identify features and products that will solve customer problems while achieving business goals. They optimize the Value Exchange System.
+
+
+=== Part 2: the role of the PM
+
+* The product manager deeply understands both the business and the customer to identify the right opportunities to produce value. 
+* responsible for synthesizing multiple pieces of data, (analytics, feedback, market research), determining in which direction the team should move. 
+* keep the team focused on the *why*—why are we building this product, and what outcome will it produce? 
+* The chief product officer is the cornerstone of the product team in companies, helping to tie together the business outcomes to the roadmap and to represent its impact to the board. 
+* Companies need to create a standardized product management career path
+* PM anti-Patterns
+** Mini-CEO: PMs don't have authority over people. They are not people managers. They need to _influence_, not command. Mini-CEOs are tiny kings, think they're the next Steve Jobs. They will fail quickly because they don't have the trust of the team.
+** The waiter: takes orders from stakeholders/customers/managers. No goal, no vision. No decision making. This is the majority of PMs. Leads to product death cycle (see below)
+** Former Project Manager: (though you need a little Project Management skill to do the role). Projects Managers are responsible for _when_, PMs are responsible for _why_  
+
+image::../images/book_escaping_build_trap/product_death_cycle.png[Product Death Cycle]
+
+* A great PM works with a team to create the right product that balances meeting business needs with solving user problems. 
+* LOTS of understanding of the business, the market, vision and goal of the company. *Empathy for users*
+* NOT in charge of the _what_, only the _why_. They work _with_ the team on the what. Really it's the _team_ that owns the product.
+* Figuring out what to build: strategic and experimental approach
+* Must be humble enough in their approach to learn and take into account that they don’t know all of the answers.
+* Lone wolf mentality is death for a PM. The idea that they and they alone are responsible for the success of the product. Breeds arrogance.
+* not expert in either tech or marketing. Must be _tech-literate_ though
+* Start with _why_ - don't dive into solutioning too early
+* Don't skip setting success metrics and goals
+* Product _Ownership_ is just one piece of product _management_
+* Need time to do vision and research work
+* PM career path: Associate PM, PM, Senior PM, Director of PM, VP of Product, Chief Product Officer
+
+image::../images/book_escaping_build_trap/career_path.png[the PM Career Path]
+
+* Organizing product teams: *not* around technical components, features. Around business goals, _value streams_.
+
+=== Part 3: Strategy
+
+* A good strategy is not a plan; it’s a framework that helps you make decisions. 
+* Product strategy connects the vision and economic outcomes of the company back to product portfolio, individual product initiatives, and solution options for the teams. 
+* Strategy creation is the process of determining the direction of the company and developing the framework in which people make decisions. 
+* Strategies are created at each level and then deployed across the organization.
+* Focus on the whole, them zoom in on the parts
+* Too often, people think of their product strategy as a document made up of a stakeholder’s wish list of features and detailed information on how those wishes should be accomplished. And they’re peppered with a ton of buzzwords like platform or innovation.
+* Communicating the end state of a product is not a strategy (though it's not a bad thing to do - you need the vision of the end result.)
+* Bungay: Strategy is a deployable decision-making framework, enabling action to achieve desired outcomes, constrained by current capabilities, coherently aligned to the existing context.
+
+image::../images/book_escaping_build_trap/gaps.png[Gaps]
+
+* Autonomous teams: Have them. Don't lead by authority
+* Creating a strategic framework
+* "I went to my peers in the leadership team and asked them what was the most important thing we could do as a company. They all gave me different answers. It’s pretty clear we’re not aligned on what our strategy is or what we want to become as a company."
+* company strategy, two parts:
+** operational framework, or how to keep the day-to-day activities of a company moving
+** strategic framework, or how the company realizes the vision through product and service development in the market. aligns the company’s strategy and vision with the products that are developed by the teams. 
+* Strategies are interconnecting stories told throughout the organization that explain the objective and outcomes, tailored to a specific time frame. We call this act of communicating and aligning those narratives strategy deployment.
+* Strategy deployment is about setting the right level of goals and objectives throughout the organization to narrow the playing field so that teams can act.
+** Execs are on 5-year decision making cycle
+** Middle mgmt are on yearly/quarterly cycle
+** Teams are on a monthly/weekly cycle
+* Not having the right level of direction lands us in the build trap
+
+image::../images/book_escaping_build_trap/strategy_deployment.png[]
+
+* Strategy Creation: the process of figuring out which direction the company should act upon and of developing the framework in which people make decisions. Strategies are created at each level and then deployed across the organization.
+
+image::../images/book_escaping_build_trap/improvement_kata.png[]
+
+image::../images/book_escaping_build_trap/product_kata.png[The Product Kata]
+
+* Company Vision: A good mission explains why the company exists. A vision, on the other hand, explains where the company is going based on that purpose. I find that the best thing a company can do is to combine both the mission and the vision into one statement to provide the value proposition of the company
+* Strategic Intents: how you intend to reach that vision changes as your company matures and develops. Strategic intents communicate the company’s current areas of focus. The horizon is 1-several years. should be at a high level and business focused.
+* Product Initiatives translate the business goals into the problems that we will solve with our product. The product initiatives answer how? set the direction for the product teams to explore options. 
+* Product Vision: communicates why you are building something and what the value proposition is for the customer. (Amazon Press Release documents for every product vision.)
+* Product Portfolio: When you have > 1 product. Need a vision for that too
+** How do all of our products work as a system to provide value to our customers?
+** What unique value does each of the product lines offer that makes this a compelling system?
+** What overall values and guidelines should we consider when deciding on new product solutions?
+** What should we stop doing or building because it does not serve this vision?
+
+=== Part 4: PM Process
+
+* The best solutions are linked to real problems that users want solved. 
+* Product managers use a process to identify which of those problems the team can solve to further the business and achieve the strategy. 
+* Product managers can rely on the Product Kata to help them develop the right experimental mindset to fall in love with the problem rather than the solution. They continue iterating until they reach the outcome.
+* This section is all about the process of uncovering the right thing to build. 
+* Usually, when we think about processes, we focus more on the act of developing software than we do about building the right software. This is the build trap.
+* The Product Kata: The first task is to get to the product initiative. Four sub-parts
+** Understanding the direction: Setting metrics (Pirate metrics, HEART Framework)
+** Problem exploration: Talk to users, all the time
+** Solution exploration: Experimenting to learn. Concept testing
+** Solution optimization: Story mapping
+
+image::../images/book_escaping_build_trap/pirate_metrics.png[Pirate Metrics]
+
+=== Part 5: The product led organization
+
+* The product-led organization is characterized by a culture that understands and organizes around outcomes over output
+* a company cadence that revolves around evaluating its strategy in accordance to meeting outcomes. 
+* people are rewarded for learning and achieving goals. 
+* Management encourages product teams to get close to their customers, and product management is seen as a critical function that furthers the business.
+* If there is one main reason I have seen companies fail to make a transition, it’s the lack of leadership buy-in to move to an outcome-oriented company.
+* Visibility in organizations is absolutely key. The more leaders can understand where teams are, the more they will step back and let the teams execute. We need a cadence of communicating strategy that matches our strategic framework.
+** Quarterly business reviews: discussing progress toward the strategic intents and outcomes of a financial nature. 
+** Product initiative reviews: for the product development side of the house. review the progress of the options against the product initiatives and adjust our strategy accordingly.
+** Monthly Release reviews: provide the opportunity for teams to show off the hard work they have done and to talk about success metrics.
+* Roadmaps: *not* a Gantt chart.  you should view them as an explanation of strategy and the current stage of your product. _Living_ roadmaps.
+** The theme
+** Hypothesis
+** Goals and success metrics
+** Stage of development
+** Any important milestones
+* Phases: Experiment, Alpha, Beta, Generally Available
+* Product operations/ Chief Of Staff: Collect Data; report on goals, outcomes etc.; set up product analytics platform; standardize product processes; organize and run meetings; organize
+* Rewards, Incentives.Y ou should be rewarding people for moving the business forward—achieving outcomes, learning about your users, and finding the right business opportunities.
+* Safety and learning: Fail small and early, encourage it.
+* Budgeting: Think like a VC, not a corporation (antipattern: over-promise to get budget)
+* break out of budgeting once a year. Instead, allocate funds to the product portfolio as a whole. use the product initiative reviews to determine what should be funded, based on the amount of certainty toward the outcomes.
+* Customer centricity: deeply understand your customers. 
+
+== 2hr Summary
+
+What is the build trap?
+
+What does it mean to be a 'product led' organization?
+
+The 4 layers: Role, Strategy, Process, Organization
