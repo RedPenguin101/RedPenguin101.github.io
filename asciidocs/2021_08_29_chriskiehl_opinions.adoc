@@ -1,0 +1,35 @@
+= Chris Kiehls opinions
+
+Literally just a copy of https://chriskiehl.com/article/thoughts-after-6-years[this list], with some of the points removed and a bit of rewording.
+
+== Things I now believe, which past me would've squabbled with:
+
+* Typed is better for a team with a range of experience levels
+* Standups are useful for keeping an eye on the newbies.
+* Retros when you need course correction, not for ceremony
+* Design! A bad abstraction or missing layer will kill you.  
+* Clarity over cleverness.
+* Bad code can be written in any paradigm. FP is just a tool
+* "Best practices" are context dependent
+* Make it scalable when you need to scale  
+* Static analysis is useful
+* DRY only to avoid a specific problem.
+* RDBMS > NoSql
+
+Opinions I've picked up along the way
+
+* YAGNI, SOLID, DRY. In that order.
+* Pens are the best programming tools
+* Practicality over purity is usually good
+* Adding technology is usually
+* Talking directly to the customer is the best way to understand the problem
+* most 'engineering' decisions are made with no analysis, data, or numbers
+* nearly all project managers are either ineffectual or reduce efficiency.
+* interviewing is not a good way to judge candidates.
+
+Old opinions unchanged:
+
+* code style, linting rules obsessives are not helping
+* coverage does not imply quality
+* Monoliths are good in most circumstances
+* TDD purists are just the worst.
