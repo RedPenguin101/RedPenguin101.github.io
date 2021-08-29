@@ -21,7 +21,7 @@ Opinions I've picked up along the way
 * YAGNI, SOLID, DRY. In that order.
 * Pens are the best programming tools
 * Practicality over purity is usually good
-* Adding technology is usually
+* Adding technology is usually bad
 * Talking directly to the customer is the best way to understand the problem
 * most 'engineering' decisions are made with no analysis, data, or numbers
 * nearly all project managers are either ineffectual or reduce efficiency.
