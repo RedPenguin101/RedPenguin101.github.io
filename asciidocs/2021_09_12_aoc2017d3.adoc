@@ -36,9 +36,9 @@ For example, for n=4, the distances fluctuate between 8 and 4. At the corner (e.
 
 You can say that the distance fluctuates between _n_ and _2n_ with a periodicity of n (half the side length of the square). That gives a hint we're in modular arithmetic territory. Let's say we have a target number _x_, and we know it sits on shell _n_, which has a value of the bottom left corner of _c=(2n+1)^2_. The number of 'n's x is away from c is _a=(c-x) quot n_. The distance x is from that _n_ is _b=(c-x) mod n_.
 
-So from the above, 71 has _a=(81-70) quot 4=2_, and _b=(81-70) mod 4=1_. The closest _n_ is 69, and 70 is 1 away from that. We know that _d_ at 69 is _n=4_ and 71 is 1 away from that (_increasing_ the distance, since it's moving towards a corner), so it has a distance from the origin of _4+1=5_.
+So from the above, 70 has _a=(81-70) quot 4=2_, and _b=(81-70) mod 4=1_. The closest _n_ is 69. We know that _d_ at 69 is _n=4_ and 71 is 1 away from that (_increasing_ the distance, since it's moving towards a corner), so it has a distance from the origin of _4+1=5_.
 
-Also from the above, 68 has _a=(81-68) quot 4=3_, and _b=(81-68) mod 4=3_. The closest _n_ is 65, and 68 is 3 away from that. We know that _d_ at 65 (a corner) is _2n=8_ and 68 is 3 away from that (_decreasing_ the distance, since it's moving away from a corner), so it has a distance from the origin of _8-3=5_.
+Also from the above, 68 has _a=(81-68) quot 4=3_, and _b=(81-68) mod 4=3_. The closest _n_ is 65. We know that _d_ at 65 (a corner) is _2n=8_ and 68 is 3 away from that (_decreasing_ the distance, since it's moving away from a corner), so it has a distance from the origin of _8-3=5_.
 
 Note that is a is even, then _d=2n-b_, and if a is odd, then _d=n+b_.
 
