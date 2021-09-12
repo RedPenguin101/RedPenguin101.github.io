@@ -1,0 +1,67 @@
+= Advent of Code 2017 Day 3: Spiral Memory
+
+A math-y one. I struggled on paper with this for a long time, getting to the edges of the answer but never quite getting there, making it much more complicated than it needed to be.
+
+Let's draw a few 'shells' of the spiral
+
+----
+37 36 35 34 33 32 31
+38 17 16 15 14 13 30
+39 18  5  4  3 12 29
+40 19  6  1  2 11 28
+41 20  7  8  9 10 27
+42 21 22 23 24 25 26
+43 44 45 46 47 48 49
+----
+
+We'll say that each radiating square is a 'shell', n. So n=1 contains 2 3 4 5 6 7 8 9, n=2 contains 10,11,12,13...25 etc.
+
+The first thing to notice is that the bottom right corners are all square numbers: 1, 9, 25, 49 are the squares of the odd integers 1, 3, 5, 7. The bottom right corner c of shell n is _(2n+1)^2_. It shouldn't be surprising that squares are coming up, since we're dealing with...squares.
+
+The distance from the corner of a shell to the origin (in manhattan distance) is _d_max=2n_. The _minimum_ distance from a shell to the origin is _d_min=n_. The distance fluctuates between _2n_ and _n_ as you go round a shell. 
+
+For example, for n=4, the distances fluctuate between 8 and 4. At the corner (e.g. 81 or 65), the distance is 8. Closer to the middle of one of the sides, the distances are 5, 4, and 5 for 68, 69 and 70 respectively.
+
+----
+65->  8 7 6 5 4 5 6 7 8
+      7               7
+      6               6
+68->  5               5
+69->  4       1       4
+70->  5               5
+      6               6
+      7               7
+      8 7 6 5 4 5 6 7 8 <- 81
+----
+
+You can say that the distance fluctuates between _n_ and _2n_ with a periodicity of n (half the side length of the square). That gives a hint we're in modular arithmetic territory. Let's say we have a target number _x_, and we know it sits on shell _n_, which has a value of the bottom left corner of _c=(2n+1)^2_. The number of 'n's x is away from c is _a=(c-x) quot n_. The distance x is from that _n_ is _b=(c-x) mod n_.
+
+So from the above, 71 has _a=(81-70) quot 4=2_, and _b=(81-70) mod 4=1_. The closest _n_ is 69, and 70 is 1 away from that. We know that _d_ at 69 is _n=4_ and 71 is 1 away from that (_increasing_ the distance, since it's moving towards a corner), so it has a distance from the origin of _4+1=5_.
+
+Also from the above, 68 has _a=(81-68) quot 4=3_, and _b=(81-68) mod 4=3_. The closest _n_ is 65, and 68 is 3 away from that. We know that _d_ at 65 (a corner) is _2n=8_ and 68 is 3 away from that (_decreasing_ the distance, since it's moving away from a corner), so it has a distance from the origin of _8-3=5_.
+
+Note that is a is even, then _d=2n-b_, and if a is odd, then _d=n+b_.
+
+So a full description:
+
+  x is the target, our puzzle input
+  c, n = the smallest c=(2n+1)^2 ST c >= x
+  a = (c-x) quot n
+  b = (c-x) mod n
+  if a is even, d=2n-b
+  if a is odd,  d=n+b
+
+[source,clojure]
+----
+(def corners (map (juxt identity #(long (Math/pow (+ (* 2 %) 1) 2))) (range)))
+;; a lazy sequence of n and c
+
+(defn dist [x]
+  (let [[n c] (first (drop-while #(< (second %) x) corners))]
+    (if (even? (quot (- c x) n))
+      (- (* 2 n) (mod (- c x) n))
+      (+ n (mod (- c x) n)))))
+
+(dist 277678)
+;; => 475
+----

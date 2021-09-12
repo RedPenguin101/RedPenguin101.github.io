@@ -4,8 +4,8 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Working on
 
-. Course: https://classroom.udacity.com/courses/cs212[Peter Norvig's Design of Computer Programs]
-. SICP
+* Project: Bug
+* Book: Escaping the build trap
 
 == 12 books for 2021
 

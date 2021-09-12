@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>What&#8217;s on</title>
+<title>Advent of Code 2017 Day 3: Spiral Memory</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,324 +438,95 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>What&#8217;s on</h1>
+<h1>Advent of Code 2017 Day 3: Spiral Memory</h1>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
 <div class="paragraph">
-<p>A list of things I&#8217;m reading or working on, and what I have in the backlog</p>
+<p>A math-y one. I struggled on paper with this for a long time, getting to the edges of the answer but never quite getting there, making it much more complicated than it needed to be.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s draw a few 'shells' of the spiral</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>37 36 35 34 33 32 31
+38 17 16 15 14 13 30
+39 18  5  4  3 12 29
+40 19  6  1  2 11 28
+41 20  7  8  9 10 27
+42 21 22 23 24 25 26
+43 44 45 46 47 48 49</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>We&#8217;ll say that each radiating square is a 'shell', n. So n=1 contains 2 3 4 5 6 7 8 9, n=2 contains 10,11,12,13&#8230;&#8203;25 etc.</p>
 </div>
-<div class="sect1">
-<h2 id="_working_on">Working on</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Project: Bug</p>
-</li>
-<li>
-<p>Book: Escaping the build trap</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The first thing to notice is that the bottom right corners are all square numbers: 1, 9, 25, 49 are the squares of the odd integers 1, 3, 5, 7. The bottom right corner c of shell n is <em>(2n+1)^2</em>. It shouldn&#8217;t be surprising that squares are coming up, since we&#8217;re dealing with&#8230;&#8203;squares.</p>
 </div>
+<div class="paragraph">
+<p>The distance from the corner of a shell to the origin (in manhattan distance) is <em>d_max=2n</em>. The <em>minimum</em> distance from a shell to the origin is <em>d_min=n</em>. The distance fluctuates between <em>2n</em> and <em>n</em> as you go round a shell.</p>
 </div>
+<div class="paragraph">
+<p>For example, for n=4, the distances fluctuate between 8 and 4. At the corner (e.g. 81 or 65), the distance is 8. Closer to the middle of one of the sides, the distances are 5, 4, and 5 for 68, 69 and 70 respectively.</p>
 </div>
-<div class="sect1">
-<h2 id="_12_books_for_2021">12 books for 2021</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Elements of Clojure (Jan) DONE</p>
-</li>
-<li>
-<p>Introduction to general systems thinking (Feb)</p>
-</li>
-<li>
-<p>The Republic</p>
-</li>
-<li>
-<p>Naming and necessity</p>
-</li>
-<li>
-<p>Data oriented programming</p>
-</li>
-<li>
-<p>SICP</p>
-</li>
-<li>
-<p>Category Theory for Programmers</p>
-</li>
-<li>
-<p>Patterns of Software</p>
-</li>
-<li>
-<p>Software design for flexibility</p>
-</li>
-<li>
-<p>Data and reality</p>
-</li>
-<li>
-<p>Against Method</p>
-</li>
-</ol>
+<div class="listingblock">
+<div class="content">
+<pre>65-&gt;  8 7 6 5 4 5 6 7 8
+      7               7
+      6               6
+68-&gt;  5               5
+69-&gt;  4       1       4
+70-&gt;  5               5
+      6               6
+      7               7
+      8 7 6 5 4 5 6 7 8 &lt;- 81</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can say that the distance fluctuates between <em>n</em> and <em>2n</em> with a periodicity of n (half the side length of the square). That gives a hint we&#8217;re in modular arithmetic territory. Let&#8217;s say we have a target number <em>x</em>, and we know it sits on shell <em>n</em>, which has a value of the bottom left corner of <em>c=(2n+1)^2</em>. The number of 'n&#8217;s x is away from c is <em>a=(c-x) quot n</em>. The distance x is from that <em>n</em> is <em>b=(c-x) mod n</em>.</p>
 </div>
-<div class="sect1">
-<h2 id="_backlog">Backlog</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_projects">Projects</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Project: PrismSync in Clojure</p>
-</li>
-<li>
-<p>Project: Learn about FTPs</p>
-</li>
-<li>
-<p>Project: File ETL program</p>
-</li>
-<li>
-<p>Project: RestTest. Auto testing and documentation of REST apis.</p>
-</li>
-<li>
-<p>Project: A DSL/Frontend for modelling time-series</p>
-</li>
-<li>
-<p>Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)</p>
-</li>
-<li>
-<p>Project: A 'code challenge' thing with a fund theme</p>
-</li>
-<li>
-<p>Project: History generator</p>
-</li>
-<li>
-<p>Project: Chess display engine</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>So from the above, 71 has <em>a=(81-70) quot 4=2</em>, and <em>b=(81-70) mod 4=1</em>. The closest <em>n</em> is 69, and 70 is 1 away from that. We know that <em>d</em> at 69 is <em>n=4</em> and 71 is 1 away from that (<em>increasing</em> the distance, since it&#8217;s moving towards a corner), so it has a distance from the origin of <em>4+1=5</em>.</p>
+</div>
+<div class="paragraph">
+<p>Also from the above, 68 has <em>a=(81-68) quot 4=3</em>, and <em>b=(81-68) mod 4=3</em>. The closest <em>n</em> is 65, and 68 is 3 away from that. We know that <em>d</em> at 65 (a corner) is <em>2n=8</em> and 68 is 3 away from that (<em>decreasing</em> the distance, since it&#8217;s moving away from a corner), so it has a distance from the origin of <em>8-3=5</em>.</p>
+</div>
+<div class="paragraph">
+<p>Note that is a is even, then <em>d=2n-b</em>, and if a is odd, then <em>d=n+b</em>.</p>
+</div>
+<div class="paragraph">
+<p>So a full description:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>x is the target, our puzzle input
+c, n = the smallest c=(2n+1)^2 ST c &gt;= x
+a = (c-x) quot n
+b = (c-x) mod n
+if a is even, d=2n-b
+if a is odd,  d=n+b</pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_writing">Writing</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Writing: Representing Reality /</p>
-</li>
-<li>
-<p>Writing: Types - pros and cons</p>
-</li>
-<li>
-<p>Writing: Why REPL is a superpower <a href="https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html">1</a> <a href="https://clojure.org/guides/repl/introduction">2</a> <a href="https://www.youtube.com/watch?v=Ngt29DyNDRM">3</a> <a href="https://www.youtube.com/watch?v=tpcl5pjkRTQ">4</a> <a href="https://www.youtube.com/watch?v=oLvwbDUXGsc">5</a> <a href="https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/">6</a> <a href="https://www.youtube.com/watch?v=gIoadGfm5T8">7</a></p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_papers_and_talks">Papers and talks</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Tutorial: <a href="https://www.jacekschae.com/courses/learn-reitit-pro/">Jacek Schae&#8217;s Learn Reitit</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://erlang.org/download/armstrong_thesis_2003.pdf">Armstrong reliability 2003 paper</a></p>
-</li>
-<li>
-<p>Paper: <a href="http://www.laputan.org/pub/foote/mud.pdf">Foote/Yoder Big Ball of Mud</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf">Hoare, Communicating Sequential Processes</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://dl.acm.org/doi/pdf/10.5555/63445.C1104363">Hoare, Proof of Correctness of Data Representation</a></p>
-</li>
-<li>
-<p>Talk: Denotational Design</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_books_and_courses">Books and Courses</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Book: <a href="https://www.manning.com/books/data-oriented-programming">Data oriented programming</a></p>
-</li>
-<li>
-<p>Book: Mythical Man Month</p>
-</li>
-<li>
-<p>Book: Working with Legacy Code (Started 14 Feb 2021)</p>
-</li>
-<li>
-<p>Book: Refactoring: Improving the design of existing code</p>
-</li>
-<li>
-<p>Book: Naming and Necessity</p>
-</li>
-<li>
-<p>Book: Data and Reality (2nd Read)</p>
-</li>
-<li>
-<p>Book: Domain Driven Design (a second read)</p>
-</li>
-<li>
-<p>Book: Algebra-driven design</p>
-</li>
-<li>
-<p>Book: The Republic</p>
-</li>
-<li>
-<p>Book: Thinking in Systems</p>
-</li>
-<li>
-<p>Book: Design Unbound</p>
-</li>
-<li>
-<p>Book: Data and reality (a second read)</p>
-</li>
-<li>
-<p>Book: Statistical rethinking</p>
-</li>
-<li>
-<p>Book: Event Storming</p>
-</li>
-<li>
-<p>Book: SICP</p>
-</li>
-<li>
-<p>Book: Accelerate</p>
-</li>
-<li>
-<p>Book: The DevOps handbook</p>
-</li>
-<li>
-<p>Book: The managers path</p>
-</li>
-<li>
-<p>Book: DataWarehousing</p>
-</li>
-<li>
-<p>Book: The little lisper</p>
-</li>
-<li>
-<p>Book: High Output Management</p>
-</li>
-<li>
-<p>Book: The Six Sigma Way</p>
-</li>
-<li>
-<p>Book: Information: A history, a theory, a flood</p>
-</li>
-<li>
-<p>Book: Agile Conversations</p>
-</li>
-<li>
-<p>Book: Notes on the synthesis of form</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Living Documentation</p>
-</li>
-<li>
-<p>Book: An introduction to general systems thinking.</p>
-</li>
-<li>
-<p>Book: Patterns of Software, Richard Gabriel</p>
-</li>
-<li>
-<p>Book: Simulacra and Simulation</p>
-</li>
-<li>
-<p>Book: Invisible Cities</p>
-</li>
-<li>
-<p>Book: The image of the city</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Concepts, Techniques, and Models of Computer Programming</p>
-</li>
-<li>
-<p>Book: How to Design Programs, Felleisen</p>
-</li>
-<li>
-<p>Book: A Pattern Language, Christopher Alexander</p>
-</li>
-<li>
-<p>Book: Timeless ways of building, Christopher Alexander</p>
-</li>
-<li>
-<p>Book: The Oregon Experiment, Christopher Alexander</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_other">Other</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Qualification: AWS, the one after cloud practitioner</p>
-</li>
-<li>
-<p>Other: <a href="https://github.com/norvig/pytudes/blob/master/ipynb/Advent-2020.ipynb">Peter Norvigs AOC solutions</a></p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_finished">Finished</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Book: I am a strange loop</p>
-</li>
-<li>
-<p>Project: Qniform</p>
-</li>
-<li>
-<p>Book: Grokking simplicity</p>
-</li>
-<li>
-<p>Project: Allocation of trades between funds</p>
-</li>
-<li>
-<p>Book: Elements of Clojure (2020-02-12)</p>
-</li>
-<li>
-<p>Book: <a href="https://livebook.manning.com/book/rust-in-action">Rust in action</a></p>
-</li>
-<li>
-<p>Book12: Introduction to general systems thinking (March)</p>
-</li>
-<li>
-<p>Project: Get a GraalVM/Babashka CLI app working</p>
-</li>
-</ol>
-</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def corners (map (juxt identity #(long (Math/pow (+ (* 2 %) 1) 2))) (range)))
+;; a lazy sequence of n and c
+
+(defn dist [x]
+  (let [[n c] (first (drop-while #(&lt; (second %) x) corners))]
+    (if (even? (quot (- c x) n))
+      (- (* 2 n) (mod (- c x) n))
+      (+ n (mod (- c x) n)))))
+
+(dist 277678)
+;; =&gt; 475</code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-08-23 10:37:06 +0100
+Last updated 2021-09-12 14:42:25 +0100
 </div>
 </div>
 </body>
