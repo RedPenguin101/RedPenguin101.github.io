@@ -1,0 +1,12 @@
+= Chess.com Game 2021-09-13 Black vs Computer (Hans)
+
+BM: 17 (50%), E: 2, G: 8, Bk: 4, M: 1
+
+----
+1.e4 e5 2.Nc3 Nf6 3.g3 d5 4.exd5 Nxd5 5.Bg2[1] Nc6?[2] 6.Na4 Bf5 7.Bxd5 Qxd5 8.Nc3 Qxh1 9.h3 Qxg1+[3] 10.Ke2 Qxd1+ 11.Kxd1 O-O-O 12.g4 Bg6 13.Ne4 Bd6 14.b3 Bxe4 15.f3 Bxf3+ 16.Ke1 g6 17.a3 f5 18.c4 fxg4 19.c5 Bxc5 20.hxg4 Bxg4 21.a4 Rhf8 22.d3 Bh3? 23.Kd1 Rf1+[4] 24.Kc2 Nb4+ 25.Kc3 Rxd3+ 26.Kc4 b6 27.Kb5 Bd7+[5] 28.Kc4 Rd4+? 29.Kc3 Rf3+?! 30.Kb2 Rdd3 31.Ra3 Rf2+ 32.Kb1 Rd1 33.a5 Nd3 34.axb6 Rxc1# 
+----
+
+[1] Vienna game +
+[2] Hangs the knight on d5 +
+[3] Mate in 6: 9...Nd4 10.d3 Qxg1+ 11.Kd2 Qxf2+ 12.Ne2 Nf3+ 13.Kc3 Qc5+ 14.Kb3 Qb4# +
+[4] Missed mate in 2: 28...Be6+ 29.Kb5 a6#
