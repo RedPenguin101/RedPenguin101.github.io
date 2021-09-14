@@ -38,8 +38,11 @@
 * output
 * outcome
 * process-led
-* Build trap
-* Value exchange System
+* *Build trap*: The temptation to focus on output (e.g. number of features shipped), instead of output (Value delivered to customers.) Products developed in this way will inevitably be bad, containing features that their customers don't want or use.
+* *Value exchange System*: What is value? Customers have problems, wants and needs. A product or service will fulfill them, and the customer will pay for them. Products do not have inherent value. What they do for the customer has value.
+* *Product*: A vehicle of value. Delivered to customers, they repeatedly deliver value without the producer having to build something new every time. Excel, baby food, Tinder, the iPhone are all products.
+* *Service*: Also a vehicle of value, but deliver value based on the servicer putting in continuous human effort. Design firm, accounting firms etc.
+* *Project*: A discrete scope of work with a particular aim.
 
 == 2hr Summary
 
@@ -53,7 +56,7 @@ She claims this is a problem with the way the _product management_ function of t
 
 image::../images/book_escaping_build_trap/four_layers.png[]
 
-Part of being a PM is being the _Product Owner_ - but only in a sense. They are responsible for the _why_: determining and communicating why the product is being built and the outcome it will produce. They are not responsible for the _when_. They do not own (but do work with the team on) the _what_. They don't care much about the _how_.
+Part of being a Product Manager (PM) is being the _Product Owner_ - but only in a sense. They are responsible for the _why_: determining and communicating why the product is being built and the outcome it will produce. They are not responsible for the _when_. They do not own (but do work with the team on) the _what_. They don't care much about the _how_ of the technical implementation.
 
 They need to have a very deep understanding of the business and the customer, so they can identify what is valuable, and see opportunities to create value. They should talk to (and otherwise get feedback from) the customer a _lot_. Empathy for the customer is the critical attribute. Tech-literacy is a must, but tech-expertise is not.
 
@@ -76,7 +79,9 @@ The product management process (or the *Product Kata*) is how the strategy is im
 
 Note the emphasis on *experimentation*. This is crucial.
 
-== Preface
+== 2hr read notes
+
+=== Preface
 
 * my products were crap, and no one was using them
 * I was so focused on shipping features that I didn’t think about the outcome of those features.
@@ -92,7 +97,7 @@ Note the emphasis on *experimentation*. This is crucial.
 
 image::../images/book_escaping_build_trap/four_layers.png[]
 
-== Appendix: Is your org product-led? Questions for a PM
+=== Appendix: Is your org product-led? Questions for a PM
 
 * Who came up with the last feature or product idea you built? Hopefully no-one will know. Or it will be 'the team'
 * What was the last product you decided to kill? If no-one can remember, that's a bad sign. Probably:
@@ -103,8 +108,6 @@ image::../images/book_escaping_build_trap/four_layers.png[]
 * What is your goal? First, _have_ one. Second, it should be _outcome_ centric, not _output_ centric. i.e. focused on the value added to the business, not on 'did we ship on deadline'
 * What are you currently working on? Passion is the telling sign
 * What are your PMs like? Are they well respected? Lack of respect can either be because they're too strong (dictators) or too weak (beaten down by stakeholders and managers).
-
-== Notes from 2hr read
 
 === Part 1: The build trap
 
@@ -249,3 +252,65 @@ image::../images/book_escaping_build_trap/pirate_metrics.png[Pirate Metrics]
 * Budgeting: Think like a VC, not a corporation (antipattern: over-promise to get budget)
 * break out of budgeting once a year. Instead, allocate funds to the product portfolio as a whole. use the product initiative reviews to determine what should be funded, based on the amount of certainty toward the outcomes.
 * Customer centricity: deeply understand your customers. 
+
+== Quotes
+
+> A lot of it is due to having too many priorities. Everything is number one on your project list. You are peanut-buttering your strategy—meaning that you have so many strategic initiatives spread over very few people. You can’t give one team a large objective and expect them to hit major goals in a month. Those things take time and manpower. You have to build up to them. - Page 5
+
+== Questions
+
+What are the responsibilities of a product manager?
+
+. a PM is _not_ a UX designer 
+. interface with the business, tech and design depts. to harness their collective knowledge 
+. A PM doesn't have much direct authority
+. A PM is primarily responsible for the _why_ of the product, the direction of it. They are involved in the _what_ (workflows, UX etc.) and _when_, but these are owned by the team as a whole. They are barely at all involved in the _how_ - that's the devs job. 
+. They craft the product vision, communicate it, and champion it.
+. They break down the purpose of the product into known knowns (facts), known unknowns (questions, which they seek to answer), unknown knowns (intuition, which they seek to validate) and unknown unknowns (discovery, which they put processes in place to facilitate)
+. They connect the dots, taking information from various sources and sifting and analyzing it, and turning that into the product vision.
+. It comprises _product ownership_ (in the Scrum definition), of defining th backlog and creating user stories, grooming work in the backlog, and checking completed work. But that doesn't cover the whole thing
+
+What makes a good product manager?
+
+. talking to users
+. the ability to empathize with users, walk a mile in their shoes.
+. the ability to persuade and influence the team and the company that what is being built is the right thing.
+. not being too attached to your own ideas - your job is creating value, not implementing your ideas. So... 
+. listening to criticism of your ideas and creating a process for iterating them into good ideas 
+. validate your ideas by seeking out data. Evidence, not opinions
+. get problems, wants and needs from customers, not solutions.
+. They push back against managers and stakeholders when they present solutions, asking _why_.
+. Have a deep understanding of the business: what its goals are, what its strategy is, how their product relates to that strategy.
+. They are technically literate, but don't have to be a tech expert
+. They understand the market, but don't have to be a market expert.
+
+What makes a _bad_ product manager?
+
+. the mini dictator (don't be an asshole to UX and devs)
+. the waiter, taking what stakeholders ask for at face value, allowing the priority to be dictated by the most important person in the room.
+. the reformed project manager, focusing on the _when_, not they _why_.
+. A lone wold mentality - a feeling that they alone are responsible for the success of the product, and that they have to come up with it themselves without input from others.
+
+What makes a good product management function?
+
+Why do companies fall into the build trap? 
+
+. They don't understand their customers wants, needs or problems, and so they can't measure value. Because some targets are required, they create proxies that they _can_ measure, but don't represent value: features shipped etc. 
+. They face unthinking pressure to fast-follow competitors, superficially copying their features without understanding whether those features are valuable.
+. They over-promise during sales pitches, leading to one-off features that were not worth the investment because they are not widely useful. Where the strategy is driven by the contracts the company can get, the company is a _sales led_ organization.
+. the _product death cycle_ They do not find out what their customers problems are, they just ask them what features are missing and build those features without validating them.
+
+== Misc
+
+* known knowns: Facts
+* known unknowns: questions
+* unknown knowns: intuition
+* unknown unknowns: discovery
+
+Why questions
+
+* Why even do this project?
+* What's the desired result that we hope to achieve here?
+* What does success look like?
+* What are the risks?
+* How are we mitigating those risks?
