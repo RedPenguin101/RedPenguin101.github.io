@@ -38,13 +38,22 @@
 * output
 * outcome
 * process-led
+* Product Owner:
 * *Build trap*: The temptation to focus on output (e.g. number of features shipped), instead of output (Value delivered to customers.) Products developed in this way will inevitably be bad, containing features that their customers don't want or use.
 * *Value exchange System*: What is value? Customers have problems, wants and needs. A product or service will fulfill them, and the customer will pay for them. Products do not have inherent value. What they do for the customer has value.
 * *Product*: A vehicle of value. Delivered to customers, they repeatedly deliver value without the producer having to build something new every time. Excel, baby food, Tinder, the iPhone are all products.
 * *Service*: Also a vehicle of value, but deliver value based on the servicer putting in continuous human effort. Design firm, accounting firms etc.
 * *Project*: A discrete scope of work with a particular aim.
+* *Company Strategy*: a deployable decision-making framework, enabling action to achieve desired outcomes, comprised of the _operational framework_ and _strategic framework_
+** *Strategic framework*: How the company realizes the vision through product and service development in the market. It connects company vision with product visions.
+** *Strategy creation*: The process of figuring out which direction the company should go and developing the strategic framework.
+** *Strategy Deployment*: The act of propagating goals and narratives through the layers of the organization, making sure at each layer that they further the goals of the parent node, and scoped in time and space as appropriate to the layer. Examples: OKRs Hoshin Kanri, mission command.
+** *Strategic Intent* What are the challenges that stand in the way of reaching the company vision? 
 
-== 2hr Summary
+
+== Summary of Ideas
+
+=== What is the build trap?
 
 The Build Trap is the authors term for the common pattern in technology teams of building the wrong thing, and so ending up with products that no-one wants.
 
@@ -52,9 +61,72 @@ Her hypothesis is that the major cause of the build trap is that the organizatio
 
 This problem starts at the top: The organization as a whole should be *product-led* - that is, optimizing for business outcomes. Every change to a product should tie back to producing value to the customer.  
 
-She claims this is a problem with the way the _product management_ function of the technology organization, and the solution is to set up robust product management practices. There are four interconnected areas which comprise these practices. Interconnected because, for example, if the organization is not product-led, the PM function will not be incentivized to create practices that focus on outcomes.
+She claims this is a problem with the _product management_ function of the technology organization, and the solution is to set up robust product management practices. There are four interconnected areas which comprise these practices. Interconnected because, for example, if the organization is not product-led, the PM function will not be incentivized to create practices that focus on outcomes.
 
-image::../images/book_escaping_build_trap/four_layers.png[]
+* Strategy
+* PM Role
+* PM Process
+* Organization
+
+=== The Company and the strategy
+
+Sorry in advance for corporate bullshit terms - not my fault.
+
+==== Company Vision
+
+Your business has a _vision_ footnote:[I've left out the distinction between vision and mission that's in the text, I don't think it adds much] Why does the company exist? Where is it going based on that mission? You want a vision to act as an anchor point which you can always fall back on when you're thinking about what you should do.
+
+The vision should be short and clear. Not _too_ broadly focused. "Being the market leader in X" is too broad. There should be something in there that narrows the scope a bit.
+
+> To offer designer eyewear at a revolutionary price, while leading the way for socially conscious businesses.
+
+> Becoming the best global entertainment distribution service, licensing entertainment content around the world, creating markets that are accessible to film makers, and helping content creators around the world to find a global audience.
+
+==== Strategic Intents
+
+From your company vision, you create *strategic intents*. These are the current areas of focus to move your company towards the vision. The time-scope is usually a year or two. You shouldn't not have too many of them: just a few key things.
+
+The trap that the C-suite fall into, and that strategic intents are trying to avoid, is going into your yearly planning cycle you are just coming up with a laundry list of ideas for goals, features or desires. The problem is not that the ideas are _bad_, it's that they are usually not aligned to any broader strategy, pushing the business in particular direction. It's just sort of aimless.
+
+Strategic intents should be high level and business focused. They should be stated at the level of new markets, new revenue streams, or focusing on a particular area with an associated revenue goal.
+
+Here are the two strategic intents for the example company in the book, with associated goals.
+
+> Expand into the enterprise business:
+	Increase revenue from currently $5 million a year to $60 million a year in three years.
+
+> Double revenue growth from individual users:
+	Increase revenue growth from 15% YoY to 30% YoY from individual users.
+
+Strategic intents can involve the whole business: product development, marketing, content creation etc. Obviously we're only looking at the product development piece here.
+
+So what to do with these strategic intents? This is where we get out of the Company level and into the product level. 
+
+=== The product and product management
+
+A product is a vehicle for delivering value. You sell it (or rent it) to the customer, and you collect the revenue from it. You also _improve_ the product over time, so it delivers more value. footnote:[Note this is different from a _service_, which requires you to put in time and effort for every 'unit' of value that's delivered to the customer.]
+
+Product management is this process of determining why, how and when to improve the product.footnote:[If your company has more than one product, then it is said to have a _product portfolio_. This introduces a further layer in the strategy-to-product journey, so we'll ignore it for now and assume that there's a single product.] 
+
+==== Product initiatives
+
+We left the company strategy process at the point where we'd got to some _strategic intents_. These are business goals about expanding into new markets or growing an existing revenue stream. For example: _Increase revenue growth from 15% YoY to 30% YoY from individual users._
+
+Next we need to turn these into *product initiatives*. These translate the challenge laid down by the strategic intent into *problems* that we will solve with our product. _How_ can we reach the business goals by changing the product.
+
+Notice that this the focus is on _problem_ identification and exploration, not on _solution_ development - that comes later. Premature solution fixation is one of the biggest traps to fall into in this stage.
+
+For example, there are 3 paths to increasing revenue:
+
+* acquire more individual users
+* retain existing users better
+* create new revenue streams from existing users 
+
+The third is slightly different, but the first two we can dive into exploration.
+
+First we should look to verify and quantify: What is the conversion rate? What is the retention rate? Then we have to figure out _why_ users are not converting, and why they are leaving. This is where user feedback, talking to the users, starts to become critical. This is where we start to find the problems.
+
+=== What is product management, and what makes a good product manager?
 
 Part of being a Product Manager (PM) is being the _Product Owner_ - but only in a sense. They are responsible for the _why_: determining and communicating why the product is being built and the outcome it will produce. They are not responsible for the _when_. They do not own (but do work with the team on) the _what_. They don't care much about the _how_ of the technical implementation.
 
@@ -64,20 +136,7 @@ They should not be a mini-dictator, lording it over the team; a waiter, mindless
 
 The _why_ is the *product vision*. The PM needs to have the vision and to effectively communicate it. They need to determine metrics and goals for the product. They need to be given the time and space to do vision and research work.
 
-What product to build though? And what should they do? To make these decisions, you need a *strategy*. 
-
-A Strategy is _not_ a plan, nor a stakeholder's wishlist of features. It's not the vision for the end state of the product (though you should have this). It's a *framework for making decisions* about products. It has to start at the top with the vision and desired economic outcomes of the company: the *Company Strategy*.
-
-Strategies are interconnecting stories told throughout the organization that explain the objective and outcomes, tailored to a specific time frame. We call this act of communicating and aligning those narratives strategy deployment. Time frames at the executive level are several years (setting *Company Vision*, *Strategic Intentions*). At the middle management, they are quarterly or yearly (setting *product initiatives*). At the team level they are monthly or weekly.
-
-The product management process (or the *Product Kata*) is how the strategy is implemented. It has four steps, that span the entire product management function:
-
-. Understanding the direction: to get from the Company Strategy to the Product Initiative. 
-. Analyze the current state of the initiative/product
-. Set the next goal: go from Product Initiative to *Option Goal*.
-. Execute on the Option Goal: Problem exploration, Solution experimentation, Solution optimization
-
-Note the emphasis on *experimentation*. This is crucial.
+=== Tactical product management
 
 == 2hr read notes
 
@@ -136,7 +195,6 @@ image::../images/book_escaping_build_trap/what_we_know.png[]
 
 * Product management is the domain of recognizing and investigating the known unknowns and of reducing the universe around the unknown unknowns. 
 * Product managers identify features and products that will solve customer problems while achieving business goals. They optimize the Value Exchange System.
-
 
 === Part 2: the role of the PM
 
@@ -256,6 +314,8 @@ image::../images/book_escaping_build_trap/pirate_metrics.png[Pirate Metrics]
 == Quotes
 
 > A lot of it is due to having too many priorities. Everything is number one on your project list. You are peanut-buttering your strategy—meaning that you have so many strategic initiatives spread over very few people. You can’t give one team a large objective and expect them to hit major goals in a month. Those things take time and manpower. You have to build up to them. - Page 5
+
+> Strategy is a deployable decision-making framework, enabling action to achieve desired outcomes, constrained by current capabilities, coherently aligned to the existing context. - Page 62
 
 == Questions
 
