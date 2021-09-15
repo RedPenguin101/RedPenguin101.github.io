@@ -1,0 +1,28 @@
+= Thoughts on Clojure UI framework
+
+https://tonsky.me/blog/clojure-ui/[link]
+
+This post covers Tonsky's thoughts on the design and features of a modern UI framework.
+
+* It should be cross platform
+* Should not try to support apps that are mobile+desktop - they are too different
+* Browser APIs are often not low level enough to give you the flexibility you want
+* 'Native-wrapping' frameworks (QT etc.) are not good enough. The framework should draw all its own stuff
+* The React VDOM is rightly ascendent right now. It's declarative and works great with immutable/data-oriented programming paradigms. Flutter, Compose and SwiftUI are also jumping on that bandwagon.
+* For Clojure, we're limited to what Java has: Swing/AWT or JavaFX. Both have their problems, the primary one being that neither are declarative.
+* The web approach is 'tweak and reuse'. You might have a button that has hundreds of properties, but possibly not the ones you want.
+* An alternative is 'composable internals'. Something like `button(text) = Hoverable{Clickable{RoundedRectangle...Text(text)...}}`
+* Compose has in the authors view made a misstep: you're not passing around components, but calling side-effecty functions. This is a step back from the component based approach React has, where components return values which can be inspected and modified
+* 3 inspirations, each too detailed to go into here:
+** https://www.youtube.com/watch?v=UUfXWzp0-DU[Flutter's one-pass layout algorithm]
+** https://subformapp.com/articles/why-not-flexbox/[Subform layout]
+** Parents should position their children, and https://mxstbr.com/thoughts/margin[margins are a bad idea]
+
+
+> I imagine everything will come together as some sort of Electron but for JVM.
+>
+> The goal is this: write your app in Clojure, package and distribute it as any other native desktop app.
+>
+> Definition of done: nobody can tell the app is written in Clojure.
+
+The bottom of the page has a bunch of interesting links to other papers/blogs/talks.
