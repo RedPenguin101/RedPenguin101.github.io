@@ -1,0 +1,123 @@
+= A new spreadsheet
+
+== The spreadsheet
+
+Spreadsheets are great. In an environment where data dominates and processing is relatively simple, spreadsheets are the only environment where your data is right in front of you _all the time_. It can be examined, analyzed, touched, copied. It can be richly formatted to enhance communication, with formatting and comments. It can be modified, with the impact of the modification being immediately observed. The transparency is immense, far ahead of other programming environments.  
+
+When you want to solve a problem of a certain kind, spreadsheets are _by far_ the quickest and most effective way to get that work done. If I have some tabular data that is of reasonable size (less than 1m rows, less than 250 columns) and I want to examine and manipulate it on a one-off basis, there is no question that I will reach for a spreadsheet rather than an IDE or a notebook. Even if the data is larger than that, I'd likely use an IDE or notebook to clean and filter it, then output it to a spreadsheet for examination and further manipulation.
+
+== The financial model
+
+Another use case where the spreadsheet dominates is the ersatz program that is the 'financial model'. In the asset management industry when you want to make a decision about whether or not to buy or sell something, predict the financial impact of scenario or determine the value of an asset, you reach for a spreadsheet and create a program that takes various input data (revenues, credit card default rates, mining output), layers in predictions about the future (growth rates, interest rates) and combine them to create a prediction of the future. In your first few years as a junior analyst at an investment bank, you will do this so many times you will dream in spreadsheets. Or you would if you were allowed to sleep.
+
+These models can get extremely large and complex, and many conventions have emerged to make this easier to deal with:
+
+* There is a 'control panel' tab, where the various input assumptions are placed and can be changed, with the impact of these changes flowing through the model
+* There is an output summary tab, where the high level aggregate results and visualizations are displayed
+* There are several 'time series' tabs, with categories on the Y axis and periods (months, quarters, years) on the x-axis. Historical periods are based on historical data, future periods are based on historical data combined with assumptions. e.g. revenue in period t+1 = revenue in period t * revenue-growth-rate. This is trivially simple for illustration, but the actual logic can get fiercely messy 
+* At the top of the time series tabs there are often controls for that particular tab.
+* Time series tabs often flow into each other. For example you might have a time series tab with local currency numbers, and a second tab that is identical in form but translates all numbers from the former to USD
+* [add more here]
+
+== Long-lived, complex spreadsheets
+
+With the financial model case, we start to see some divergence from the 'one and done' scenario that preceded it. First, the model is likely much more complex. They can takes months to prepare and debug. Second, and because of that complexity, they tend to be more structured. Lastly, and most importantly for our purposes, they tend to be maintained and changed over time. The predictive data gets replaced with historical data. The assumptions are updated. The _structure_ of the model is changed, with new elements being added.  
+
+Weaknesses in spreadsheets start to emerge under these conditions. The following are some of those weaknesses, either of spreadsheets generally or of Microsoft Excel, the dominant spreadsheets flavor.
+
+. Change control for spreadsheets is very weak. The most common method is copying and naming versions: `my_spreadsheet_20210706_v1.xlsx` etc.
+. Comparability between versions is very poor. Quickly comprehending the difference between `my_spreadsheet_20210706_v1.xlsx` and `my_spreadsheet_20210706_v2.xlsx` is a case of opening both copies and looking at them.
+. Spreadsheets have very weak support for abstraction and detail hiding (there are Excel 'tables' for example)
+. As the spreadsheet grows, the structure of the sheet can often get in the way of the intent of the programmer - think, when you have several tables on a tab, and you want to grow one table, but another is in the way
+. Spreadsheets are excellent for tabular and array data, but not so great for other types of data collections, like nested data structures, trees etc.
+. Types are incredibly weak
+. The programmatic functions, while comprehensive, are not extensible, at least until recently. (they are _pure_ though, which is great).
+. Visibility of the graph of connections between elements in the spreadsheet is very opaque
+. It is very easy to make a giant mess - not unique to spreadsheets of course, but it lacks many of the features of other coding environments to avoid it
+. Weak support for debugging.
+. Complex data processing / conditional dispatch / pipeline gets very clunky
+
+== Traditional programming?
+
+All of these weaknesses are at least partially addressed by moving into the domain of creating actual programs in programming languages. Source Version Control tools provides change management and comparability. Abstraction and detail hiding are the core feature of any modern programming language. They can deal with nested data better (though tabular data is generally much less idiomatic outside of array languages like APL and R). Data can not only be strongly typed but statically checked, though this has tradeoffs of its own. Functions are infinitely plastic. There are tools for debugging, data pipelines, call graphs etc.
+
+So for financial modelling in particular, is moving to a more traditional program once you hit a certain level of complexity the right answer? Doing so does mitigate some of the issues mentioned above, but there are certainly tradeoffs. The most obvious is that you now need a specialized programmer to write the program. But there are others as well.
+
+The one that dwarfs all others in my view is the data transparency you lose in a programming environment that I was so keen on before. Even as the complexity of the processing and connectivity of the model increases, the data still dominates the semantics of any model. 
+
+The always-visible-data, the ability to trivially look at, touch, markup, comment on, modify, and point to the data the model is operating on is too high a price to pay for almost any benefits you get from mitigation of the above weaknesses. Any solution in this space must maintain this feature.
+
+== Matching problems to solutions
+
+It's instructive to look at the mindsets that people use for programs and spreadsheets. What problems are suitable for each? I think it is captured by the relative prominence of data and the the processing of data inherent in the problem. 
+
+If you're given a (relatively small) data set and the problem is to gain *and communicate* some insight by manipulating and aggregating that data set, the processing you'll need to do will be fairly simple in the sense that it will use a fairly standard set of tools and probably won't have a huge amount of conditionality in the transformations. It is much more important to be able to see all the data, from initial through intermediate to final, to be able to point to it or highlight it, to be able to trace back from a calculation to see the data that originated it.
+
+If, following the one-off analysis problem from above, you are tasked with maintaining a long-running spreadsheet, updating data and tweaking the model to meet emerging needs, then that need for data examineability is still there. But repeatability starts to become a goal. The 'flow' of how data is transformed from the input to the output is formalized and clarified, both because when you or someone else comes to update the workbook you want to spend as little time as possible having to 'relearn' the flow, and because it makes debugging easier when you plug in the new data and it doesn't work. It is clear that here is where all of the weaknesses outlined above start to become apparent.
+
+
+
+== The Notebook?
+
+== nuSheet
+
+Can we posit a solution that maintains the core features of the spreadsheet while mitigating some of the weaknesses outlined above?
+
+Before starting, there is one problem outlined above that we will _not_ be trying to solve: Nested data. We will stick to the principle of the 2 dimensional grid as the primitive around which we base our models. The reason for this is that, in practice, this tends not to be an issue. It is a fact that the data we tend to deal with in this space tends to be tabular.
+
+=== Goals of the solution
+
+What, then, are the goals of our solution?
+
+First, and most importantly, we must maintain the primacy of the always-visible, rich data-table. There must not be any circumstance where the data is not immediately accessible to the user, where the user cannot modify the content or format of the data. The data table must be richly presented, in that the user can format for clarity and can comment on it.
+
+The other primary goals are as follows:
+
+* The user must be able to create tables that reference other tables
+* The user must be able to write arbitrary functions
+* There must be a rich core library of functions for common use cases similar to Excel
+* Functions must be composable, and act as a means of abstraction. That is, the user must be able to write functions using other functions as primitives, name those functions, and reuse them as though they were primitives
+* The purity of function must be maintained. That is, a function must output data, and the content of that data must strictly depend on the inputs to that function. A function can not have side effects outside of the data output by that function.
+* Tables must be able to be used as abstractions. That is, they can be named and referenced as units.
+* Data and metadata must be separated and programmatically accessible.  
+* Exportability to Excel must be possible at any point
+* Tables must be able to be 'grouped', in the same way that an Excel tab can contain multiple tables  
+* Connections between tables must be highly visible
+* Tables can be marked as public or private to facilitate program organization and detail hiding.
+* Workbooks must be source-controllable, in that instances of the workbook can be easily compared to each other and the changes in structure and content easily discernable.
+
+=== Rethinking the sheet
+
+Traditional spreadsheets operate on the basis of the 'sheet'. This is a effectively infinite 2d grid of rows and columns in which the user can put whatever they want. The 'metaphor' underlying this has its origins in the physical grid-lined piece of paper. Analysts would grab a large sheet of this paper, and physically write in the numbers.
+
+Like most software implementations that have analogies based in physical predecessors, the "Spread Sheet" metaphor was surely very useful in adoption, and in introducing people to the concept. But it comes with baggage where the analogy can hold back the software. 
+
+For example, when you had a physical spreadsheet, you wrote in your data, but without a craft knife and sellotape you couldn't add in another column. The birth of the electronic spreadsheet provided much more plasticity to the data tables you were creating, but there were limits imposed by considering the sheet as a single 2d grid. The data tables can run into each-other. It can be hard to modify one table without bumping into or impacting another. Particularly when you have multiple linked tabs, (not possible with a physical piece of paper) moving things around becomes a prime source of bugs.
+
+In short, the spreadsheet now has many capabilities not possible with physical paper, such as the ability to change the canvas and link things together. The remaining parts of the analogy to the physical paper conflicts with these new capabilities.  
+
+The first change we will make in nuSheet is to ditch the concept of the sheet as an infinite 2d canvas on which you write. A sheet will contain a single data table, which can grow infinitely as more data is added. In most other respects, however, it retains the features of an Excel worksheet. You can write arbitrary data or functions into the sheet. You can comment, highlight, bold, color, conditional format and do all the other things that you can in Excel.
+
+One other change to make is to separate the data from the meta data. Sheets in Excel are often formatted to have headers and footers. This will still be possible in nuSheet, but it will be separated from the actual data-table itself.
+
+=== Table Organization
+
+One of the useful implications of the 2d canvas is that you can organize different elements into 'screens', where several elements are visible at once. The downside is that the mobility of these is limited - the overlapping problem again.
+
+nuSheet should have a similar ability to create 'screens' of several tables, but it will do it by creating a canvas onto which tables can be dropped. Thus you can get the 'screen' effect but you have no constraints on growth, since the change in one table on the canvas by adding cells or columns or rows will have no effect on any others.
+
+=== Misc
+
+* Tables are the core, not sheets
+* Tables can be large or small
+* Table as abstractions
+* Row instances forms (A la Airtable)
+* Tables are connectable
+* Purpose is building large models, replacement for Excel
+* Expert users
+* Table growth without constraint of other tables (crashing into eachother)  
+* Export to Excel
+* Tab = show connections between tables
+* Each table is like a tiny tab
+* Table groups, public and private tables (Narrow interface deep implementation)
+* nuSheet?

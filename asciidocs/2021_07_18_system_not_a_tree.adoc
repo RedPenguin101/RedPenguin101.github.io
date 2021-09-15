@@ -1,0 +1,20 @@
+= A system is not a tree
+Kevlin Henney at DevWeek2015
+
+https://www.youtube.com/watch?v=ARkLVvtxUZI[link]
+
+* Talk about structure
+* Software is organized thought, executable fiction
+* Structure of software is supposed to be reflection of the thought-stuff
+* Architecture we think of as the large. Then we break it down into the programming
+* Programming: not just coding, all that goes with it: the thought, the architecture, understanding requirements, working with other people
+* All these connect to create a structure
+* Brookes in MMM: Distinction between _essence_ - difficulties inherent in the nature of the domain - and _accidents_ - difficulties that today attend its production in software. How much of what programmers do is accidental as opposed to essential?
+* Michael Jackson: Software Requirements and Specifications. "Arboricide is the murder of trees. The victims of arboricide are the descriptive tree structures that are so often found in software, holding together many individual elements in one coherent and immediately understandable harmony... Arboricide, then, is using a smaller description span when a larger one would be better"
+* "Software development should not be a trade of constructing difficulty from simplicity"
+* Common source of trees: Structured Programming: decompose a system into a tree. Main program / subroutine kind of approach. 
+* Infra -> Services -> Domain. The problem with that: It's not the way we program. The tree becomes a DAG. 
+** We want to fan in as well as fan out. This is the relationship you get from any kind of reuse, for example. 
+** We mix levels and recurse very naturally - describe something in terms of itself
+* No longer a tree, but it is a better reflection of the thought-stuff
+* OOP: "Concept Hierarchies: The construction principle involved is best called _abstraction_; we concentrate on features common to many phenomena, and we abstract _away_ features too far removed from the conceptual level at which we are working." - Ole-Johan Dahl and C A R Hoare in Hierarchical Program Structures

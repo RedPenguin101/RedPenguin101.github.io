@@ -1,0 +1,145 @@
+= How Unix Works
+
+https://tldp.org/HOWTO/html_single/Unix-and-Internet-Fundamentals-HOWTO/
+
+== Anatomy of your computer
+
+* Processor chip does the computing
+* Internal Memory (RAM/Core)
+* Both live on Motherboard
+* Screen, keyboard, hard drives etc.
+* These have controllers - either cards that plug into the MB, or chips directly on the MB
+* All of these are plugged into the Bus: the data highway between processor, screen, everything
+* Your processor has to communicate with everything else via the bus - except core, which it can access directly
+* Programs must be in core to run
+* eg if your processor wants to read from disk, it sends a request via the bus to the disk controller. The disk controller will signal via the bus that it's loaded the data to core
+
+== What happens when you switch on your computer
+
+* Loading the operating system (booting)
+
+=== Run level 1
+
+* instructions for booting are in BIOS
+* BIOS tells computer to look in location for the _boot loader_
+* boot loader pulled into memory and started
+* boot loader looks for _kernel_, loads into memory starts it
+* kernel looks around for other hardware by _autoprobing_ at _IO ports_ - special bus addresses.
+
+=== Run level 2
+
+* kernel hands control to process called *init* (or sometimes *upstart*), which spawns housekeeping processes
+* init checks your disks to make sure they're OK.
+* init starts several _daemons_ - programs that run constantly in the background waiting for things to do.
+* init starts *getty*, which watches your screen and keyboard (actually usually 7-8 getty instances, one per virtual console)
+* init starts daemons for networking and other services
+* most importantly X Server, which manages graphical display
+* X server takes over hardware from whatever virtual console that was previously in control
+* You'll see graphical login screen, called a _display manager_
+
+== What happens when you log in.
+
+* in a getty instance watching a console, the program *login* is called
+* identify yourself with a login name and password, which is looked up in `/etc/passwrd` which descibes a *user account*
+* the password is encrypted (and sometimes kept in a separate file `/etc/shadow`)
+* Once logged in you get the privileges associated with that account
+* a user can also be part of one or more _groups_ - a collections of users set up by the administrator. Mappings of users to groups is in `/etc/group/`
+* user account has location of their _home directory_
+* user account has your *shell* - the command interpreter that login will start to accept your commands
+
+== What happens when you run programs after boot?
+
+* your computer is a zoo of processes waiting for *events*. Mouse moves, keyboard presses, data packets over the network
+* The kernel is a special process. 
+* It is the only process with direct access to hardware
+* it controls when *user processes* can run
+* every user process has to request from the kernel whenever they want to do anything - get keyboard input, write to screen, read from disk. These are *system calls*
+* It's set up like this so the kernel can coordinate things and stop processes stepping on eachother.
+* the *shell* is called that because it wraps around the kernel. It's just a user process, so the shell and kernel communicate through system calls.
+* the shell waits for keystrokes. Or actually the kernel sees your keystrokes and echos them to your console/terminal emulator. 
+* When the kernel sees 'Enter', it passes the line of text to your shell, which will try to interpret them as a command
+* when you pass `ls`, the shell will figure out you want to run the file `/bin/ls`. It makes a system call to kernel asking it to start `/bin/ls` as a child process. Then the shell goes to sleep and waits for `ls` to finish. When `ls` is finished it does an `exit` system call to kernel. Kernel wakes up the shell, ready for the next command
+* X Server is slightly different, since it doesn't sleep while the client program is running, it continues to pass mouse clicks etc.
+
+== Input and output devices
+
+* When you hit a key, a *hardware interrupt* event is sent up the keyboard cable
+* the OS is watching for interrupts, and has an *interrupt handler* for every type.
+* The handler stashes away the event until it can be processed - in the case of keyboard, into a part of memory called the _system area_, where it's available for inspection.
+* more complex input devices (disk, network cards) work in a similar way.
+* when a disk request has been fulfilled, the disk controller raises an interrupt. The disk interrupt handler copies the retrieved data into memory
+* interrupts have *priority levels*. clock ticks, disk events are higher priority than keyboard events.
+* *IRQ* is short for interrupt request - which is identified by a number. At startup, the OS needs to know which number each hardware device will use so it can identify the source of the interrupt.
+
+== How does my computer do several things at once?
+
+* it doesn't.
+* it *multitasks*: switches between tasks very quickly, making it look like it's doing several things at once
+* the kernel manages this *timesharing* through it's *scheduler*, switching between processes every 1/60th of a second (on a *clock interrupt*)
+
+== How does my computer keep processes from stepping on each other?
+
+* The kernel manages the memory which is assigned to each process.
+* To each it provides a read-only *code segment* (which can be shared between processes), and a writeable *data segment* (which can't)
+
+=== Virtual memory
+
+* There are 5 different types of memory which different performance characteristics. In increasing order of access time:
+** processor registers
+** internal / on-chip cache
+** external / off-chip cache
+** main memory
+** disk
+* *Virtual Memory* is a technique where the OS behaves like it has much more main memory that it does. The _real_ main memory is a set of caches on a larger "virtual" memory, mostly stored on disk in a special _swap space_ location.
+* the way the OS decides to move things around these locations is the _LRU_, or least recently used algorithm
+
+=== The memory management unit
+
+* the *memory manager* is responsible for assigning memory locations to processes, and ensures that processes can only access their assigned memory.
+* It keeps a table of data and code segments, which gets updates as processes request more memory or releases it (usually when it exits)
+* The table is used to pass pass commands to a hardware component built into the processor called the *memory management component*, or MMU, which will refuse memory access requests that are out of bounds.
+* _Segmentation Fault_ and _Core Dumped_ error messages occur when such a request happens
+
+== How does my computer store things in memory
+
+* everything in a computer is stored as bits - 0s and 1s.
+* The *word size* is the computer's preferred size in bits for moving data around. Most computers are now 64bits
+* the computer views memory as a numbered sequence of 'words' from 0 to a large number.
+
+=== Numbers 
+
+* integers are represented as words or pairs of words. 64 bit is the most common
+
+
+== How does the internet work?
+
+* an address of `http://www.tldp.org/HOWTO/Unix-and-Internet-Fundamentals-HOWTO/index.html` means the page lives in the file `HOWTO/Unix-and-Internet-Fundamentals-HOWTO/index.html` under the WWW export directory of the *host* `www.tldp.org`
+
+=== Names and locations
+
+* the browser needs to establish a network connection to the machine where the document lives
+* First it has to find the network location of the host
+* the location is actually a number called the *IP address*
+* to connect the two your browser queries a program called a *name server*, which is likely on a machine run by your ISP
+* Name servers talk to each other, and between them resolve the hostname to an IP
+
+=== Domain Name System
+
+* The network of programs and databases that cooperate to resolve hostnames to IPs is called Domain Name System, or DNS  
+* A DNS server is another name for a name server
+* A *domain* is a collection of machines that share a common name suffix.
+* domains can be nested. www.tldp.org lives in the .tldp.org subdomain of .org
+* Each domain has an _authoritative name server_ that knows the IP addresses of the other machines in the domain.
+* The nameservers for a domain don't need to know everything about other domains - only about that domains name server
+* So it's like an inverted tree: the `.org` name server knows the name servers of all the domains in it, like `tldp.org`, but not about any subdomains of `tldp.org`. Only the name server of `tldp.org` has those.
+
+=== Packets and routers
+
+* the browser want to send a command to `www.tldp.org` that looks like `GET /LDP/HOWTO/Fundamentals.html HTTP/1.0`
+* The command is made into a *packet* - a block of bits with the command, plus the _source address_ (your IP), the destination IP, and service/port number
+* The packet is shipped down the wire, and gets picked up by the *router*, which has a map of the internet in it's memory
+* when it gets to the destination machine, the machine feeds the packet to the right service
+
+=== TCP and IP
+
+a

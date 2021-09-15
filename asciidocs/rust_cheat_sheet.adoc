@@ -95,3 +95,9 @@ filename.push_str("input.txt");
 struct Password(u8, u8, char, String);
 let Password(low, high, ch, pw) = pp;
 ----
+
+== println! macro
+
+* `println!({}, a);` prints `a` in format specified by type `fmt` method of `a => std::fmt::Display` 
+* `println!({:?}, a);` prints `a` in format specified by type `fmt` method `a => std::fmt::Debug` 
+* `println!({:032b}, a);` print binary format with 32 left padded zeros. `a => std::fmt::Binary` 

@@ -1,0 +1,142 @@
+= Denotational Design: from meanings to programs
+https://www.youtube.com/watch?v=bmKYiUOEo2A[Conal Elliott talk from LamdaJam 2015]
+
+== Abstraction
+
+The main job of a software designer is to build abstractions. That's where the value, the reuse, the power is, less than in the actual tools that implement them.
+
+[quote,Edsger Dijkstra]
+The purpose of abstraction is not to be vague, but to create a new semantic level in which one can be absolutely precise.
+
+Being precise while being low level quickly gets complicated- we reach our cognitive limits quickly. Abstraction helps us get around that limit.
+
+== Goals of software project
+
+. Build Abstractions: precise, elegant, reusable
+. Implementations of those Abstractions: correct, efficient, maintainable
+. Documentation on how to use those abstractions well: clear, simple, accurate (it's easy to make something simple by making it inaccurate)
+
+== Precision and specification
+
+Precision: not an end unto itself. It's so easy to fool ourselves, precision saves us from that.
+
+Conventional programming is precise about how, but not about what. Our computer tool is only a tool for how - it imposes a requirement of precision in the how. But not on the what.
+
+[quote,Wolfgang Pauli]
+It is not only not right, it is not even wrong
+
+Can be applied to much of the software we build. It's not even wrong because there's no clear definition of what it is to be right. In other words, a program without a specification is an answer without a question.
+
+[quote,Bertrand Russell]
+Everything is vague to a degree you do not realize till you have tried to make it precise.
+
+And he should know. He also should know how resistent people are to this being pointed out.
+
+Maybe you don't write a precise specification because you feel comfortable. "I know what I'm doing, basically. Let's go to the implementation". You are probably wrong. The imprecisions don't come to the surface until you try to make them precise.
+
+== Denotative programming
+
+"Denotative" as a replacement for the ill-defined "Functional" and "Declarative". (coined by Peter Landin)
+
+* nested expression structure
+* each expression _denotes_ something - not just syntax, it has to _mean_ something
+* each expression depends only on the denotations of it's sub-expressions
+
+== Denotational design
+
+The pitch:
+
+* Precise, simple, compelling specification
+* Denotations informs _use_ of a language, what it means, completely separately from implementation 
+* But also does specify a correct implementation does, in terms of outcomes, without entangling it with meaning (i.e. outcome is correct iff the outcome agrees with the denotation). Implementations do, denotations just are.
+* Standard algebraic abstractions - functor, monoid, foldable, traversable, etc.
+* Free of abstraction leaks as a consequence of adhering to the laws of the abstractions.
+* Laws for free
+* Will allow you to derive a correct (though not necessarily efficient) implementation
+
+(A nice fit for 'genuinely functional' programming).
+
+== Outline of the talk
+
+. Informal example
+. Pretty pictures
+. Principles
+. More examples
+. Reflection
+
+== Image synthesis/manipulation examples
+
+=== How/Where to start?
+
+We're a product development team. So what first?
+
+
+
+=== What is success?
+
+=== Functionality
+
+What kind of operations?
+
+* import/export
+* Spatial transforms (Affine, Non-affine)
+* Cropping
+* Monochrome
+* Overlay
+* Blend
+* Blur / Sharpen
+* Gradients
+
+=== API first pass
+
+In imperative we would have something like: Initialize state then side-effect effect it.
+
+A function API won't have that.
+
+What types will be involved? We don't have to know what they mean yet.
+
+----
+type Image
+over        :: Image -> Image -> Image
+transform   :: Transform -> Image -> Image
+crop        :: Region -> Image -> Image
+monochrome  :: Color -> Image
+fromBitmap  :: Bitmap -> Image
+toBitmap    :: Image -> Bitmap
+----
+
+=== How to implement?
+
+No! Wrong first question!
+
+Not a good question, because not a well defined question. How to implement what? The above API? We don't even know what this means yet.
+
+What does these operations mean? More centrally, what do these types mean?
+
+=== What is an image?
+
+Before that, specification goals:
+
+* Adequate
+* Simple
+* Precise
+
+What is an image - an assignment of colors to 2d locations
+
+How to make this precise? (and maybe find the limitations of it)
+
+The denotational form - mu is a meaning function
+----
+mu:: Image -> (Loc -> Color)
+----
+
+We want to say what an image means as a mapping. Meaning is a mapping of image to ... something. Here to 'function from location to color'. Function in the mathematical sense. Doesn't have to be implementable.
+
+Regions:
+----
+mu :: Region -> (Loc -> Bool)
+----
+
+(Note: function of something to boolean is isomorphic to a set of functions, so you could also say a Region is a set of locations)
+
+Now we can go back to the 

@@ -1,0 +1,14 @@
+= The spreadsheet will never die
+
+We are cursed, it seems, with backward, clueless business people, who cling to their spreadsheets for all their work, no matter how much we sniff contemptuously, complain how problematic they are, how messy they make things, how slow they are. Surely it can only be their blinkered stubbornness that despite the applications we magnanimously offer to build them, despite the exciting new world of R and Python notebooks we dangle temptingly before them, the Luddites cling to their 1980's technology. It is simply not possible that the users, who have been working in this domain for decades, have a better sense of what will solve their problem then we do.
+
+So drones the chorus in the background of every tech-drama. There are elements that ring true - it is certainly the case that people use spreadsheets for things that that spreadsheets should not be used for (when you're holding a hammer, everything looks like a nail). It's also true that there are some truly awful spreadsheets out there, in all their multi-coloured, circular-referenced, cross-workbook-linked glory. However, it must be acknowledged that, on the assumption that the person making it knows their stuff, there is a class of problem that a spreadsheet is not only better suited to than a Notebook (on the pattern of Jupyter) or a fully fledged programming IDE, but where these alternatives don't even come close. 
+
+In particular there is one feature that spreadsheets have that is so indispensible that no other solution for problems in this space should even be considered if it doesn't also have this feature. That is the ultimate primacy of data. Specifically with a spreadsheet:
+
+* The data is in front of you, all the time. It is never hidden from the person using it.
+* The data can be modified with incredible ease, just by typing. I don't care how good at Pandas you are, the spreadsheet is a hundred times better for data manipulation, at a tenth of the cognitive load.
+* The data is rich, in the sense that you add comments to it, highlight it or format it.
+
+What is the problem space where these attributes become essential? It is the set of programs where the _data_ dominates the mind space, and the processing is relatively simple. (though to caveat slightly, where the _volume_ of data is not above a certain level, say several million observations on thousands of attributes). For these types of problems, the ability to examine, easily manipulate and 'mark up' the data is the most important thing. The power and flexibility of the processing is secondary, by quite a long way.
+

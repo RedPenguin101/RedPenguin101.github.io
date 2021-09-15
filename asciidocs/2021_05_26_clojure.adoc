@@ -1,0 +1,62 @@
+= Clojure
+
+== How to follow along with this guide
+
+* install java dev kit
+* install clojure-tools
+* install vscode and Calva
+* create a deps file
+* create an empty clj file
+* start the repl
+
+As an piece of code is presented here, type it in the clj file and hit `alt enter` to run that piece of code.
+
+Everything is an expression. An expression is enclosed in parentheses:
+
+`(operator operand1 operand2)`
+
+Each expression is evaluated, which means the operator (a function) is applied to the operands (the arguments to the function).
+
+The number of arguments a function can take is called the functions _arity_.
+
+The add function, `+`, can be used like this:
+
+`(+ 1 2)`
+
+Put that in your clj file and, on the same line, hit `Alt Enter` to evaluate the expression.
+
+`+` can be used with several arguments: `(+ 1 2 3 4)`. This will add together all the arguments.
+
+`+` above was used with integer arguments. Floating arguments can also be used: `(+ 1.5 2.4 2.6)`.
+
+You can define your own functions with `defn`:
+
+[source,clojure]
+----
+(defn square [x]
+  (* x x))
+----
+
+This function can then be used as an operator in the same way as `+` can:
+
+`(square 5)`
+
+Your function can also be used in other functions:
+
+[source,clojure]
+----
+(defn sum-of-squares [x y]
+  (+ (square x) (square y)))
+----
+
+You can see what will happen when a function is run by _substitution_:
+
+[source,clojure]
+----
+(sum-of-squares 3 4)
+(+ (square 3) (square 4))
+(+ (* 3 3) (* 4 4))
+(+ 9 16)
+25
+----
+

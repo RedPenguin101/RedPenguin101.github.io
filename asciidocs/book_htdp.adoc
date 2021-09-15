@@ -1,0 +1,80 @@
+= How to design programs
+
+== Content
+
+. Fixed size data
+. Arbitrarily large (compound) data
+. Abstraction
+. Intertwined data
+. Generative recursion
+. Accumulators
+
+== Preface
+
+. "Tinker until it works" is the antithesis of this book
+. "Good programing": Systematic thought, planning, understanding
+. Systematic program design: design recipes + iterative refinement.
+. Basic steps of function design recipe
+.. Problem analysis -> data definitions
+.. Signature, purpose statement: what it computes
+.. Examples
+.. Template
+.. Fill in the gaps
+.. Testing
+
+== Fixed Size Data
+
+. Arithmetic (numbers, strings, images, booleans, predicates)
+. Functions and programs (composition)
+. Designing programs
+. Intervals, enumerations, itemizations
+. Structure
+. Itemizations and structures
+
+Arithmetic: combination of atomic data with operations.
+
+== Arithmetic
+
+* Atomics in BSL: numbers, strings, bools
+* numbers
+** nat, int, rat, real, complex
+** precision: distinguishes exact, inexact (`#i` prefix)
+* strings
+** `1String` ~ char ~ string of length 1
+* booleans: or, and, not
+
+== BSL
+
+* Language
+** `require`
+** `(define (fn-name params) body)`
+* Control
+** `(cond [p1 e1] [p2 e2] ...)`
+* Strings
+** `string-append`
+** `string-length`
+** `string->number`
+** `number->string`
+** `string=?`, `string<=?`,`string>=?`
+** `string-ith`
+** `(substring s start [end->last])`
+* images
+** `(require 2htdp/image)`
+** `image-width`
+** `image-height`
+** `(empty-scene x y)`
+** `(circle rad fill col)`
+** `(rectangle width height fill col)`
+** ellipse, line, text, triangle, star
+** `(overlay img1 img2)`, `underlay`, `overlay/xy`, `overlay/align`
+** `(place-image img1 x y img2)`
+* numbers - lots of built ins
+** add1, 
+** ceiling, floor
+** expt, log, sqr, sqrt
+** gcd
+** sin cos tan
+** min max
+** random
+** numerator, denominator
+** quotient, remainder

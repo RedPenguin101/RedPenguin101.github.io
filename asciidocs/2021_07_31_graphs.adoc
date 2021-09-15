@@ -146,6 +146,26 @@ Finally, we'll generalize the model a bit to allow for _non_-directed-edges. To 
 
 That's all we need for now, let's look at some more interesting questions.
 
+== Breadth First Search
+
+https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/the-breadth-first-search-algorithm[Link]
+
+BFS assigns 2 values to each node:
+
+* a distance - number of edges (or distance?) from the source v
+* the predecessor node v (null indicating there is no predecessor)
+
+[d,p]
+
+You'll also need to maintain a set of visited nodes
+
+Algorithm:
+
+. Pick a starting node v0 and give it values [0,null]
+. Visit all neighbours of v0 and give them values [1,v0]
+. Find all neighbours of nodes where d=1, and have not been visited, and assign them [2,vx] 
+. Find all neighbours of nodes where d=2, etc., until you have no mode nodes
+
 == Shortest Path
 
 The use-cases for finding the shortest path between two nodes are many and obvious. For a road network the shortest path between two geographical points (nodes) can be used to determine a route for a GPS. For a computer network, the shortest path between two computers can be used to route network traffic.

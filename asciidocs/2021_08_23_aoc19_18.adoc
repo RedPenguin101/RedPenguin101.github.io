@@ -1,0 +1,119 @@
+= Advent of code 2019 day 18
+
+https://adventofcode.com/2019/day/18[the puzzle]
+
+I _could not_ get this to work, even part one, even the _simple example_, in a performant way.
+
+My solution took more than 3 minutes to solve the second sample input. Possibly much longer, I never stuck around to find out.
+
+----
+#################
+#i.G..c...e..H.p#
+########.########
+#j.A..b...f..D.o#
+########@########
+#k.E..a...g..B.n#
+########.########
+#l.F..d...h..C.m#
+#################
+----
+
+My solution was pretty standard:
+
+. parse the input into a grid
+. write a function that, given the grid, a starting location and the keys you hold, will return a 3tuple [key, coord, distance] of the reachable keys
+. write a simple search/paths algorithm that took the first path off a list of paths, determined the possible next steps (via a shortest path algorithm), added those new paths to the end of the list of paths, and recurred until a path contained all the keys.
+
+I tried very little in terms of optimization: the paths list was sorted on every iteration, and repeat states were eliminated (keeping track of location and collected keys of a 'visited' path, and disqualify any new path which has those same values in a longer total distance).
+
+I could've done some analysis on where the holdups were - I suspect a priority queue would've helped, and my repeat elimination method was maybe poor. But I figured I was missing some essential theory (probably graph algorithm related) that I needed to make this right. So I looked around for other peoples solutions.
+
+== Prscoelho's solution
+
+https://www.reddit.com/r/adventofcode/comments/ec8090/2019_day_18_solutions/fhiwgh4?utm_source=share&utm_medium=web2x&context=3[Reddit Comment]
+
+https://github.com/prscoelho/aoc2019/blob/master/src/aoc18/mod.rs[Rust code repo]
+
+Prscoelho summarizes his solution like this:
+
+* Read input, turn it into a grid and then into a graph. 
+* Search for reachable new keys from current node and add every possible branch to priority queue, 
+* keep track of current node, keys and steps for each state.
+* we can check if there's already another state which is at the same spot, same keys, but has less steps taken and only add state otherwise. 
+
+i.e. Theoretically exactly the same solution as me! This solves the first part in around half a second. This suggests to me something is wrong in my code.
+
+Let's look at their code, which is in Rust and is about 250 lines for part 1.
+
+=== Structures and functions
+
+* `solve_first :: str -> usize` is the top level for part 1. After parsing the input and turning it into a graph, it runs `search` on it.
+* `Coordinate` is a named tuple of `i32`
+* `neighbours` is a method of coordinate which returns a `[Coordinate;4]`
+* `Tile` is a enum of `Wall`, `Empty`, `Node(char)`
+* `parse_grid :: str -> HashMap<Coordinate,Tile>` is what it sounds like
+* `graph :: HashMap<Coordinate,Tile> -> HashMap<char, HashMap<char,usize>>` builds a graph from a grid
+
+----
+{:a {:b 6 :c 6,,,}
+ :b {:a 6 :c 6,,,}
+ ,,,}
+----
+
+* `reachable-from :: grid, coord -> Hashmap<char, size>` is pretty self explanatory
+* A `DijkstraState` has a `cost` and `current: char`
+* `search_keys :: graph, keys, start -> Vec<(char,usize)>` finds all the reachable nodes from a start node (similar to `reachable_from`, but factors in the current keys). This uses `DijkstraState` to find the shortest path 
+* `State` is a struct with steps, node and keys (a BTreeSet of chars). A State can be ordered against other states by the steps and as a tiebreak the number of keys
+* A `search :: graph, start-char -> usize` which uses as BinaryHeap as a priority queue, and a `Hashmap<(char,set), (char,usize)>` as a 'visited' cache. Then it does a basic Dijkstra on the priority queue.
+
+=== Execution
+
+Top of the pile is `search :: graph, char`. This creates: 
+
+* a cache of 'reachable keys', based on a given location/collected-keys. This is intended to prevent recalculation of the 'reachables'
+* A 'Best Distances' - a map of location/collected-keys to the shortest distance to that same state
+* a priority-queue (BinaryHeap).
+
+The search algorithm pops the PQ and: 
+
+* checks if all the keys are collected. If they are, you're obviously done
+* checks 'best distances' to see if you can get to this location/keys state with a shorter path
+* Calculate the next states by finding the reachables using `search_keys` (leveraging / updating the cache as you go) and pushing them to the PQ.
+
+That's it. It _seems_ like the same implementation as me. The main difference seems to be the cache on `search-keys`. I have no idea why this is SO much faster than my implementation.
+
+I did some profiling, and unsurprisingly the bottleneck was on the 'shortest-paths' algorithm, checking whether doors as passable or not, and updating the PQ. 
+
+I made a couple of improvements, mainly the replacement of my ghetto PQ with a priority map (which took the example above down to ~1m).
+
+The problem is there's still 4m checks of whether a doors is passable, and 3.7m calls to update the PQ (caching, on the example at least, is useless - there are no cache hits). The individual execution time of these is small: a few microseconds each. But 4m of those is about 20 seconds.
+
+* 35k calls to `reachable`
+* 262k calls to `shortest-path` (implying about 7.5 available targets per call to reachable)
+* ~4m calls to update the PQ in shortest path and to test whether a doors is passable, so average 15 steps to find a given shortest path.
+
+Can the number of calls be cut down? I don't see how.
+
+
+
+
+
+== Werner Altewischer's solution
+
+https://medium.com/@werner.altewischer/advent-of-code-day-18-2019-the-real-challenge-aea3d4e96708[link]
+
+Werner says that given an 80x80 grid with 26 keys, there are 2^26*80*80=429,496,729,600 solutions.
+
+I'm not sure I follow why. Let's ignore the doors thing for a moment (which is a _constraint_ which reduces the number of possible combinations).
+
+Given 2 keys `a` and `b`, there are 2 ways to collect them: `ab` and `ba`
+
+Given 3 keys `abc`, there are 6 ways to collect them: `abc`,`acb`,`bac`,`bca`,`cab`,`cba`. Or put another way, there are 3 ways to 2 keys.
+
+Given 4 keys there are 4 ways to collect 3 keys, or 4*3*2, 24.
+
+Obviously this is a factorial (or 26P26), so the number of ways you can collect 26 keys absent a door constraint is 26!, or 4*10^26. A very very large number indeed.
+
+So where does Werner come up with his `2^26*80*80` number?
+
+https://github.com/rjray/advent-2019-clojure/blob/master/src/advent_2019/day18.clj[Clojure solution]

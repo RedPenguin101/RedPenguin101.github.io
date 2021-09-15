@@ -1,0 +1,123 @@
+= Representing grid-based structures as data
+
+Inspired by https://www.youtube.com/watch?v=d6qOzPQ9NUk[this talk].
+
+The https://github.com/zero-one-group/fxl[FXL] Clojure library is used to create structured spreadsheets - that is, spreadsheets that have a structure beyond the presentation of dataframes and two dimensional tables. They have structure in the sense that they have conceptual 'groups' of cells that form a more abstract concept of a thing. For example a signature block is a named construct that is the composition of two 'label' cells, one for name, one for signature, and two empty spaces for someone to write their name and sign it. This construct can then be composed with others - for example with a table that contains a set of expenses that are being approved - to form a document (or sheet) called an 'Expense Approval Report'.
+
+A spreadsheet does very little to help the user maintain this structure. With some limited exceptions like being able to define and name a 'table', and name specific ranges, all of this structure is lost in the spreadsheet itself, and everything is degenerated to cells. The abstractions then exist only in the eye of the user. One of a consequences of this for FXL, which strives to provide a grammar for describing spreadsheets as these composed structures, _writing_ a spreadsheet is simple. But because the structure is lost on writing, _reading_ a spreadsheet is very difficult.
+
+FXL provides an API for composition of structures using functions, which is quite similar to the Henderson image composition ideas in https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_sec_2.2.4[SICP]. It might be noted that the description of a spreadsheet as a composition of structures, with the atomic construct being the cell, is similar to the DOM of a webpage. In Clojure, a DOM structure is usually represented using the https://github.com/weavejester/hiccup[Hiccup] DSL. This is a more data-oriented approach to a similar task.
+
+The purpose of this article is to explore two ideas.
+
+* Can the structure of spreadsheets be usefully described using a data-oriented approach, analogous to Hiccup?
+* Can we use spreadsheets in such a way that the structure we use in the descriptive language is preserved?
+
+== A data-oriented language for describing structured spreadsheets
+
+In some sense we have a leg up in describing spreadsheets, as opposed to documents more generally, in that we have a clearer abstraction for an atomic entity: the Cell. There isn't any analogous idea in a general document description, there is no natural 'bottom' to the structure, except perhaps the pixel, which is many degrees below the lowest level thing which is described in document languages.
+
+=== The Cell
+
+We'll start by describing the Cell. This is relatively well trodden ground, and we can describe it simply as a record.
+
+----
+{:value "5"
+ :type number
+ :style {:background-color :red}}
+----
+
+Note that for the moment we have not included any reference to the position - the row and column of the cell. This is because we are likely to want the position to be _relative_ rather than absolute, determined by the context of the higher constructs to which it belongs. The concrete position of the cell will be determined only at the time the spreadsheet is written.  
+
+The composition of these cells into higher level structures, which we'll call Blocks, can be done by stating the relation of them to eachother. FXL does this with a composition API:
+
+[source,clojure]
+----
+(def costs
+  [{:item "Rent" :cost 1000}
+   {:item "Gas"  :cost 100}
+   {:item "Food" :cost 300}
+   {:item "Gym"  :cost 50}])
+
+(def header-cells (fxl/row->cells ["Item" "Cost"]))
+
+(def body-cells
+  (fxl/records->cells [:item :cost] costs))
+
+(def total-cells
+  (let [total-cost (apply + (map :cost costs))]
+    (fxl/row->cells ["Total" total-cost])))
+
+(fxl/write-xlsx!
+  (fxl/concat-below header-cells
+                    (fxl/pad-below body-cells)
+                    total-cells)
+  "examples/spreadsheets/write_to_plain_excel_with_helpers.xlsx")
+----
+
+What would an equivalent structure look like in terms of pure data?
+
+[source,clojure]
+----
+;; header cells
+[:h-block
+  {:value "Item"} {:value "Cost"}]
+
+;; body cells
+[:v-block
+  [:h-block {:value "Rent"} {:value 1000}]
+  [:h-block {:value "Gas"} {:value 100}]
+  [:h-block {:value "Food"} {:value 300}]
+  [:h-block {:value "Gym"} {:value 50}]]
+
+;; total cells
+[:h-block {:value "TOTAL"} {:value 1450}]
+
+[:sheet
+  [:v-block
+    header-cells
+    [:pad-below body-cells]
+    total-cells]]
+----
+
+Similarly to reagent, the user can write 'components' which generate data
+
+[source]
+----
+(defn table-component [rows]
+  [:v-block 
+    (for [[label amount] in rows]
+      [:h-block {:value label} {:value amount}]))
+
+[:sheet
+  [:v-block
+    header-cells
+    [:pad-below [table-component costs]]
+    total-cells]]
+----
+
+Once we have this data description, it can be interpreted into a simple set of cells
+
+[source,clojure]
+----
+(interpret
+ [:sheet
+  [:v-block
+    header-cells
+    [:pad-below [table-component costs]]
+    total-cells]])
+;;=>
+#{{:value "Item" :row 1 :column 1} {:value "Cost" :row 1 :column 2}
+  {:value "Rent" :row 2 :column 1} {:value 1000 :row 2 :column 2}
+  {:value "Gas" :row 3 :column 1} {:value 100 :row 3 :column 2}
+  {:value "Food" :row 4 :column 1} {:value 300 :row 4 :column 2}
+  {:value "Gym" :row 5 :column 1} {:value 50 :row 5 :column 2}
+  {:value "" :row 6 :column 1} {:value "" :row 6 :column 2}
+  {:value "TOTAL" :row 7 :column 1} {:value 1450 :row 7 :column 2}}
+----
+
+These cells can then be used to write to the spreadsheet via an API. Note, however, that in doing this we have lost the structure.
+
+Note as well that this works reasonably (for simple cases) where the spreadsheet contains purely values. It is rather more difficult in the case where there are formula (i.e. references to other parts of the spreadsheet) involved. This is something for further exploration.
+
+

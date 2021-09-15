@@ -1,0 +1,23 @@
+= Grokking Simplicity
+
+== Contents
+
+* Chapter 1: Welcome
+* Chapter 2: Functional thinking
+* Chapter 3: Actions, calculations, data
+* Chapter 4: Extracting calculations from action
+* Chapter 5: improving actions
+* Chapter 6: immutability 1
+* Chapter 7: immutability 2
+* Chapter 8: stratified design 1
+* Chapter 9: stratified design 2
+* Chapter 10: first class functions 1
+* Chapter 11: first class functions 2
+* Chapter 12: iteration
+* Chapter 13: chaining
+* Chapter 14: nested data
+* Chapter 15: isolating timelines
+* Chapter 16: sharing resources
+* Chapter 17: coordinating timelines 
+* Chapter 18: reactive and onion architectures
+* Chapter 19: journey ahead

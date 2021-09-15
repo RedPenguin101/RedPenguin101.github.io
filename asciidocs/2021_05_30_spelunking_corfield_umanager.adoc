@@ -1,0 +1,369 @@
+= Saturday Spelunking: Sean Corfield's usermanager-example
+
+NOTE:: The programs I review are without exception written by people who know what they are doing more than I do. Any critical comments I make are at best tentative and at worst uninformed.
+
+In Saturday Spelunking, I take a look at a program and try to understand what it does, how it works, and the design that the programmer had in mind.
+
+Today, a program that is explicitly intended to be an example application to illustrate a typical Clojure program: Sean Corfield's `usermanager-example` https://github.com/seancorfield/usermanager-example[Link].
+
+According to `cloc`, there are 347 lines of client code and 57 lines of tests. So this is a very small program.
+
+There is a lot of explanatory comments in the code - as you'd expect given its purpose - though I'll mostly avoid reading it.
+
+== Readme
+
+> This is a simple web application using Component, Ring, Compojure, and Selmer connected to a local SQLite database.
+
+It also has instructions on how to run the app.
+
+== Dependencies and namespace structure
+
+The list of libraries in the `deps.edn` file is:
+
+* next.jdbc (a SQL interop library)
+* component (a library for managing application state)
+* compojure, ring and ring-defaults (a routing library and webserver libraries respectively)
+* selmer (html templating)
+* sqlite-jdbc (a driver for SQLite databases)
+
+So pretty much what the readme said!
+
+Looking at the src folder, we have three namespaces:
+
+----
+                     main
+                    /    \
+    controllers.user      \
+                    \------model.user-manager
+----
+
+
+Main requires both the other namespaces, the controller requires the model.
+
+Main also requires ring, compojure and component, but none of the db libraries. Clearly this is where the webserver code is.
+
+The Controller has Selmer, so presumably is responsible for returning some HTML. It also has specifically the Ring response function referred, so likely it is returning Ring responses to main when called.
+
+The Model requires Component and the SQL libs. In the namespace comment it's mentioned that 
+
+> in a larger application, this would probably contain just the business logic and the persistence would be in a separate namespace
+
+One question I had was: why does main depend on model? The answer is that is only depends on model because that contains the instructions for setting up the database. There's no business logic dependency. If the persistance was separated out, there would be no dependency on the model ns.
+
+If we look at the resources folder, we have some html templates with Selmer syntax, including 3 views: default, form, list.
+
+We'll start with main
+
+== Main
+
+=== `-main : & [port]`
+
+This contains the following functions
+
+* `-main`
+* `new-system`
+* `web-server`
+* `my-handler`
+* `middleware-stack`
+* `add-app-component`
+* `my-middleware`
+* `my-application`
+
+There are also two records defined: `Application` and `Webserver`, each implementing the `component/Lifecycle` protocol.
+
+Finally there's a a private var `repl-system` - an atom.
+
+Main starts the application on the port provided as a command line argument, or failing that, the `PORT` environment variable, or failing that port 8080.
+
+[source,clojure]
+----
+(-> (component/start (new-system port false))
+    (->> (reset! repl-system))
+    :web-server 
+    :shutdown 
+    deref)
+----
+
+The double thread I found a bit confusing. The first couple of lines here expand to `(reset! repl-system (component/start (new-system port false)))`
+
+`component/start` returns a component, so this just stores the component (the system) in the `repl-system` atom, so the programmer can access it from the repl.
+
+The `:web-server :shutdown deref` bit I don't get yet. The comment says "then wait 'forever' on the promise created." More to come.
+
+The main thing here is `new-system`, so let's look at that.
+
+=== `new-system`
+
+[source,clojure]
+----
+([port repl]
+   (component/system-map :application (my-application {:repl repl})
+                         :database    (model/setup-database)
+                         :web-server  (web-server #'my-handler port)))
+----
+
+Takes a port and a boolean `repl` and starts the 3 components which make up this program: the application, the database, and the web-server.
+
+The only bit that I don't understand really is the `#'my-hander` in webserver, but we'll get to it.
+
+Now seems like a good time to start the system by running `-main` in a comment block. This puts the following as repl output:
+
+----
+Starting up on port 8080
+Created database and addressbook table!
+Populated database with initial data!
+----
+
+It also blocks the repl! which is no good, since I can't evaluate anything now.
+
+I restarted the repl and deleted the `usermanager_db` file (the database). Instead of running main I ran `(def spelunk-system (atom (component/start (new-system 8080 false))))`. Derefing the spulunk-system gives
+
+[source,clojure]
+----
+{:application
+ {:config {:repl false},
+  :database
+  {:db-spec {:dbtype "sqlite", :dbname "usermanager_db"},
+   :datasource #object[next.jdbc.connection$url_PLUS_etc$reify__12655 0x51b6f474 "jdbc:sqlite:usermanager_db"]},
+  :state "Running"},
+ :database
+ {:db-spec {:dbtype "sqlite", :dbname "usermanager_db"},
+  :datasource #object[next.jdbc.connection$url_PLUS_etc$reify__12655 0x51b6f474 "jdbc:sqlite:usermanager_db"]},
+ :web-server
+ {:handler-fn #'usermanager.main/my-handler,
+  :server nil,
+  :port 8080,
+  :application
+  {:config {:repl false},
+   :database
+   {:db-spec {:dbtype "sqlite", :dbname "usermanager_db"},
+    :datasource #object[next.jdbc.connection$url_PLUS_etc$reify__12655 0x51b6f474 "jdbc:sqlite:usermanager_db"]},
+   :state "Running"},
+  :http-server #object[org.eclipse.jetty.server.Server 0x153d564b "Server@153d564b{STARTED}[9.4.38.v20210224]"],
+  :shutdown #<Promise@7402cf50: :not-delivered>}}
+----
+
+Going to localhost:8080 gives a nice screen, so I guess everything is working.
+
+I don't want to get bogged down in the details of how Component works, I might come back to it later. Let's take a quick look at the routes (in the `my-handler` function) before diving into the business logic.
+
+`my-handler` starts by binding `wrap (middleware-stack application #'my-middleware)`. Each handler in the routing table then calls `(wrap var)`, where var is a reference to a handler function in the user controller ns (`user-ctl`)
+
+* GET "/" -> `default`
+* GET "/user/delete/:id{[0-9]+}" -> `delete-by-id` (Sean notes that this is "horrible" and should be a POST)
+* GET "/user/form" -> `edit`
+* GET "/user/form/:id{[0-9]+}" -> `edit`
+* GET "/user/list" -> `get-users`
+* POST "/user/save" -> `save`
+* GET "/reset" -> `reset-changes` ("just resets the change tracker" "should be a POST")
+
+Pretty standard CRUD stuff.
+
+Interesting that what is used is the _var_ of the handler, and the handler isn't directly called.
+
+For now let's skip over the controller and go straight to the business logic in `model`
+
+== Model.user-manager
+
+This namespace contains the vars: `my-db` (containing the database name), `departments` (a list of departments the user can belong to) and `initial user data` containing seed data. From this we can see what the model of a user looks like:
+
+[source,clojure]
+----
+{:first_name "Sean" :last_name "Corfield"
+ :email "sean@worldsingles.com" :department_id 4}
+----
+
+There is one record, `Database`, which implements `component/Lifecycle`
+
+The functions in the ns are
+
+* `populate`, which seeds the database
+* `setup-database`
+* `get-department-by-id`
+* `get-departments`
+* `get-user-by-id`
+* `get-users`
+* `save-user`
+* `delete-user-by-id`
+
+All of these take a `db` and in some cases an `id` and executes sql. `save-user` takes a user.
+
+Clearly this is all persistance, with nothing really in the way of business logic, since this is a simple CRUD application. So in this case I think it's justified that the model and persistence functionality are combined here - otherwise the model would be basically empty!
+
+I don't think there's much we need to get into at this point, since the API is very clear, and none of these are pure functions that we should be running or testing.
+
+== usermanager.controllers-user
+
+This has the functions:
+
+* render-page
+* reset-changes
+* default
+* delete-by-id
+* edit
+* get-users
+* save
+
+The last 4 are clear wrappers around the model functionality, taking a Ring request, executing a model function, then updating the request.
+
+For example `get-users` is
+
+[source,clojure]
+----
+(defn get-users
+  "Render the list view with all the users in the addressbook."
+  [req]
+  (let [users (model/get-users (-> req :application/component :database))]
+    (-> req
+        (assoc-in [:params :users] users)
+        (assoc :application/view "list"))))
+----
+
+Interesting to note that some of them just adds to the request, rather than returning something wholly new.
+
+The `render-page`, which is included as part of the middleware stack in main, is worth digging into:
+
+[source,clojure]
+----
+(defn render-page
+  "Each handler function here adds :application/view to the request
+  data to indicate which view file they want displayed. This allows
+  us to put the rendering logic in one place instead of repeating it
+  for every handler."
+  [req]
+  (let [data (assoc (:params req) :changes @changes)
+        view (:application/view req "default")
+        html (tmpl/render-file (str "views/user/" view ".html") data)]
+    (-> (resp/response (tmpl/render-file "layouts/default.html"
+                                         (assoc data :body [:safe html])))
+        (resp/content-type "text/html"))))
+----
+
+It takes the request, extracts the `application/view` (when does this get put in?) and renders the html from that data and view.
+
+I start to get a bit confused here. I find the contents of this ns hard to understand without having a pretty good grasp on how the middleware works. It seems to me that it would be preferable for these things to be more independently understandable.
+
+So let's dig into the middleware a bit (in main).
+
+The entry point is in the routes, where every handler in the routing table is constructed like this:
+
+`((middleware-stack application #'my-middleware) #'user-ctl/delete-by-id)`
+
+A brief note: the reason for using vars is given as follows:
+
+> Note that Vars are used -- the #' notation -- instead of bare symbols to make REPL-driven development easier. See the following for details: https://clojure.org/guides/repl/enhancing_your_repl_workflow#writing-repl-friendly-programs
+
+This seems to be relevant part of the linked doc:
+
+> REPL-friendly code can be re-defined. Code is more easily redefined when it is called via a Var (defined e.g via (def …​) or (defn …​)), because a Var can be redefined without touching the code that calls it. 
+
+With this example
+
+[source,clojure]
+----
+;;;; 3. NOT REPL-friendly
+;; Unlike the above example, the loop can't be altered by re-defining print-number-and-wait,
+;; because the loop uses the value of print-number-and-wait, not the #'print-number-and-wait Var.
+(defn print-number-and-wait
+  [i]
+  (println i "green bottles, standing on the wall. ♫")
+  (Thread/sleep 1000))
+
+(future
+  (run!
+    print-number-and-wait
+    (range)))
+
+;;;; 4. REPL-friendly
+;; The following works because a Clojure Var is (conveniently) also a function,
+;; which consist of looking up its value (presumably a function) and calling it.
+(defn print-number-and-wait
+  [i]
+  (println i "green bottles, standing on the wall. ♫")
+  (Thread/sleep 1000))
+
+(future
+  (run!
+    #'print-number-and-wait ;; mind the #' - the expression evaluates to the #'print-number-and-wait Var, not its value.
+    (range)))
+----
+
+I get it, but it makes the code pretty ugly in my opinion.
+
+Back to `((middleware-stack application #'my-middleware) #'user-ctl/delete-by-id)`
+
+Here are the relevant functions:
+
+[source,clojure]
+----
+(defn my-middleware
+  "This middleware runs for every request and can execute before/after logic.
+
+  If the handler returns an HTTP response (like a redirect), we're done.
+  Else we use the result of the handler to render an HTML page."
+  [handler]
+  (fn [req]
+    (let [resp (handler req)]
+      (if (resp/response? resp)
+        resp
+        (user-ctl/render-page resp)))))
+
+;; Helper for building the middleware:
+(defn- add-app-component
+  "Middleware to add your application component into the request. Use
+  the same qualified keyword in your controller to retrieve it."
+  [handler application]
+  (fn [req]
+    (handler (assoc req :application/component application))))
+
+;; This is Ring-specific, the specific stack of middleware you need for your
+;; application. This example uses a fairly standard stack of Ring middleware
+;; with some tweaks for convenience
+(defn middleware-stack
+  "Given the application component and middleware, return a standard stack of
+  Ring middleware for a web application."
+  [app-component app-middleware]
+  (fn [handler]
+    (-> handler
+        (app-middleware)
+        (add-app-component app-component)
+        (ring-defaults/wrap-defaults (-> ring-defaults/site-defaults
+                                         ;; disable XSRF for now
+                                         (assoc-in [:security :anti-forgery] false)
+                                         ;; support load balancers
+                                         (assoc-in [:proxy] true))))))
+----
+
+Starting with the middleware stack, which is called with the application and the middleware fn: it returns a function/callback which takes the handler (in our example `delete-by-id`), then calls (app-middleware handler), which returns a function that 
+
+. takes a ring request
+. applies the handler to the request
+. if the response is already a valid Ring response, just return the response
+. Otherwise it will still be a request - see the `get-users` handler above. In which case call `render-page` on it.
+
+So what we have after `(app-middleware handler)` is a fn that generates a Ring response. So still a handler, and in a sense a truer handler, since now it will always return a Ring response, whereas some of the naked handlers return requests.
+
+Then `(add-app-component handler app-component)` wraps the handler, putting the application in the `:application/component` key of the request before calling it. This is needed for the database state the handler contains.
+
+Finally the last middleware wraps in some defaults, which I won't talk about.
+
+So at the end of all that, you have a handler that takes a request and returns a response.
+
+I think `render-page` is clearer now. It is applied to the 'enhanced-request' that some, but not all, handlers return. For example the `get-users` handler:
+
+[source,clojure]
+----
+(defn get-users
+  "Render the list view with all the users in the addressbook."
+  [req]
+  (let [users (model/get-users (-> req :application/component :database))]
+    (-> req
+        (assoc-in [:params :users] users)
+        (assoc :application/view "list"))))
+----
+
+And there we see where `:application/view` comes from.
+
+The design is still a bit confusing to me, but I'm guessing this is a pretty standard pattern to use with Ring that I'm just not very familiar with.
+
+

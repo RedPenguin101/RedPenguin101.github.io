@@ -1,0 +1,121 @@
+= Are we there yet? A deconstruction of Object Oriented time
+A Rich Hickey talk
+
+
+
+* are we being well served by OO languages?
+* are we sure OO is the best way? On what evidence?
+* are we just locked in?
+
+The dominant paradigm: single-dispatch, stateful, OO. Classes, inheritance, fields, methods, GC. All the languages are superficially different, not fundamentally different. Interfaces vs. Mixins, Static vs. Dynamic, curly-braces vs. whitespace. These are not differences in principles. *Different cars, same road*.
+
+What are we missing? What will drive us towards change?
+
+Critical ideas to talk about:
+
+* Incidental complexity
+* Time/Process
+* Functions/Value/Identity/State
+* Action/perception
+
+[quote,Alfred North Whitehead]
+Seek simplicity, and distrust it.
+
+We know the problems we're trying to solve are complex and growing more so. That's essential complexity. Incidental complexity is in the tools we use. This is at its worst when making things _appear_ simple, when in fact bringing a lot of complexity but _hiding_ it.
+
+Example: C++. `Foo *bar(..)`: returning pointers. Simple constructs for dynamic memory. But it doesn't distinguish between heap and non heap things. Even worse - what can you do with the thing you get back? What are you responsibilities? The language doesn't answer these questions for you. In other words: you have manual memory management. This is incidental complexity. The move to Java was driven by the elimination of this incidental complexity.
+
+So Java: `Date foo(..)`. Simple: everything is a ref to memory. Incidental Complexity: you have the same syntax for mutable and immutable things. You can never know, when given an object, whether you can rely on it having a consistent value. In other words: _no standard, automatic time management_. 
+
+We are blind to complexity we are familiar with. We end up making tool decisions on superficial things. Meanwhile large programs become incomprehensible. Concurrency is the straw that breaks the camels back.
+
+[quote,Alfred North Whitehead]
+Civilization advances by extending the number of important operations which we can perform without thinking about them.
+
+With each new language we get higher-level. We abstract, encapsulate and hide more. We build on top of it. Someone who is building a house from bricks does not need to worry about the inside of bricks. They rely on the expectations of the properties of the bricks. This is the selling point of OO - objects are bricks. We can combine them to make programs that are easy to reason about. We understand the pieces and we put the pieces together into something we also understand.
+
+But objects are not the best unit for that. Pure functions are the best thing for that. They are worry-free:
+
+* They take and return _values_
+* Never effects the world outside of the value it returns
+* Still provides indirection because implementation is irrelevant: only the signature matters
+* Guaranteed that you get the same result from the same arguments
+* Can be understood in isolation
+* Can be _tested_ in isolation
+* Can be composed
+* _It has no notion of time: It is not impacted "when"._
+
+Objects (with methods) are not worry free. We'll see why.
+
+Most programs are not pure function. Compilers are an exception. But other than that a program without reliance on or impact on the outside world are only useful in that they can be components in a larger system that is. Google is not a function. Call this a _process_: a participant in the world, not timeless, has observable behaviour over time, gets inputs over time.
+
+[quote,Alfred North Whitehead]
+That 'all things flow' is the first vague generalization which the unsystematized, barely analysed, intuition of men has produced.
+
+That, perhaps, is the driver of objects: In the real world we have a mental model of these things that change over time. OO is a mapping onto that model. We see (or think we see) entities in the real world that are doing things, and change, we think we should have entities in our programming language that do things and change.
+
+== OO and change
+
+So we have this model, using the object paradigm. First recognize that this, like all models, will be simplistic. But here is where the 'beware simplicity' comes in. The simplicity is _within the model_, not within the thing being modelled. Is it _too_ simple to do the job?
+
+With OO we talk about 'behavior' associated with data _incredibly_ loosely, to the point where it's meaningless.
+
+The concept of an object, which is changed by the behavior of itself and the things around it, has an implicit assumption that it sits in a timeline. But there is no actual notion of time within objects. This mismatch is extremely hard to manage.
+
+(Functions also have no way to deal with time, but they also are not premised on the idea that they exist in a timeline.)
+
+Generally OO languages presume a single universal shared timeline, where the program is running in a thread, and the order of things happening in that thread is the only concept of time. This is a legacy of the environment in which these languages were born: when your program ruled the computer, and there was a single monotonic execution flow. Concurrency (in every sense of the term) breaks that, badly. Locking is an attempt to restore that timeline. 
+
+Even with locking we still don't have a good concrete representation we can use for perception ("Can I look at that") or memory ("Can I remember that"). Objects are live. They are timebombs. The OO model has gotten time wrong.
+
+By
+
+* creating objects that can change in place
+* ... objects we could 'see' change
+* left out time _and_ left ourselves without values
+* The biggest problem: we conflated symbolic reference (identity) with actual entities. The idea that I attach to this thing that lasts over time, _is_ the thing that lasts over time. That is not true
+
+Whitehead: Time must be atomic, and move in chunks. Time isn't something you touch, it's something you derive from seeing transitions.
+
+[quote,Heraclitus]
+No man can cross the same river twice
+
+What's a river? We love the idea of objects - "There's this thing that changes" - But there is no river. There's water here at this point in time, and later there's different water there. 'River' is all in your head.
+
+How did we make this mistake? It looked like we could do this! It looked like we could see it. But there was nothing about the values we were putting in memory that had any correlation to time. In distributed systems that's even more plain. We have one version over here, and another over here.
+
+There are no changing values, there are values at points in time that you can perceive, and that's all you get. And values don't change. *There is no such thing as a mutable object*. We invented them, we need to uninvent them. 
+
+Per Whitehead: There's this immutable thing, then there's a process in the universe which creates the next immutable thing. 'Entities' that we see as continuous are a superimposition we place on perceiving this sequence of values that are causally related. "That's a river", or "That's a Cloud"
+
+The rules:
+
+* Actual entities are atomic, immutable values
+* The future is a function of the past, it doesn't _change_ it
+* We associate identities with a series of causally related values. This is very useful, but not _real_ and you have to remember that.
+* Time is atomic, epochal succession of, a deriving from, process events
+
+[quote,Whitehead]
+There is a becoming of continuity, but no continuity of becoming
+
+Terms:
+
+* Value: an immutable magnitude, quantity, number, or immutable composition thereof
+* Identity: A putative entity we associate with a series or causally related values over time
+* State: Value of identity at a moment in time
+* Time: *Relative* before/after ordering of causal values. All time can tell you is "this thing happens before this thing (or at the same point)". Not a measurable thing, it doesn't have dimension
+
+Why should we care? We're trying to make programs that make decisions. Decision means operating on stable values. Stable values must be perceived and remembered. We _do_ need identity to model things in a similar way to how we thing about them.
+
+Pull that mumbo jumbo down to something we can use to write programs.
+
+We don't make decisions by direct cognition: we don't take our brains and rub them on things. There's a disconnect. It's not 'live'. Perception put itself in the way.
+
+Nor do we stop the world when we want to look around. We do that in our programs all the time with locking. Otherwise a baseball game would not be much fun. 
+
+How does perception actually work? It's massively parallel and requires no coordination. It is _not message passing_.
+
+How do we do it? We are always perceiving the (unchanging!) past. Our sensory/neural system is oriented around: discrete events (which is where the disconnect with the very continuous world arises) and simultaneity detection. *We like snapshots*. And snapshots are like values.
+
+Methods: the same idea for both perceiving and action. These things don't belong together.  
+

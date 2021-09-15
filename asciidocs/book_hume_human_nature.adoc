@@ -180,3 +180,13 @@ Unfortunately, no. All 'mixed mathematics' (that is, mathematics which involves 
 For example, it is a law of motion, discovered by experience, that the force of any body in motion is dependent on its mass and velocity. A small force may raise the greatest weight if we increase the velocity of that force. Geometry _assists_ us in the application of this law by giving the dimensions of all parts involved. But the discovery of the law itself is entirely dependent on experience.
 
 === Part II
+
+(28) Back to the original question: "What is the nature of the evidence which causes us to declare a matter of fact that is not based on direct impression?"
+
+Our answer so far is that "They are founded on the relation of cause to effect". The next natural question is "What causes us to conclude that a particular effect follows from a particular cause?". To that we answered one word: Experience.
+
+The question then becomes "What is the foundation of all conclusions from experience?". That is, if we see one event happen, and then see another event happen, what is it that leads us to conclude in some cases (but not others) that event one caused event two? This is a much harder question to answer.
+
+We'll propose a negative answer: that our inference of a causal relationship is _not_ based on reasoning, or any process of the understanding. I'll spend the rest of this section explaining and defending this answer.
+
+(29) 

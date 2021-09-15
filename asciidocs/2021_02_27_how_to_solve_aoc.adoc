@@ -1,0 +1,33 @@
+= How to solve advent of code problems
+
+== On algorithms and general number theories
+
+Often you will run into problems that require a specific theorem or algorithm to solve. If you do not know about the existence of the Chinese Remainder Theorem, or the kth nearest neighbour algorithm, you will not recognize that the problem you are reading is a specific case of the general problem that this algorithm addresses. In this case, you have two options: you can take a course on algorithms, or you can read what other people are writing about the problem, see that this general idea is being discussed, and read up on that area of computer science or mathematics. As your knowledge expands over time, you will build up a mental library of these solutions, and become adept at recognizing when a problem is a specific case of a general problem.
+
+== The general approach
+
+. Look at the puzzle input briefly, noting the overall structure
+. Read the problem in its entirety, writing nothing.
+. Read the problem again.
+. Note in particular the part of the problem that states the desired output, and how that output is to be formatted. This is in bold an usually a single sentence, so is easy to pick out. If the format of the answer is more complicated than just a number, write out a few random examples that meet the criteria.
+. Look at the puzzle input again, and try to deconstruct it into a general type or types. Often, the input will be a sequence of lines of common type. Try not to overly interpret the type: state it in terms of a product type of primitives: numbers, strings, characters, as seems appropriate. Do not at this point put too much weight on interpreting the input in the context of the problem. Locking ourselves in to a concrete interpretation of the input data might cause issues later. The interpretation of the input will often change from part 1 to part 2.
+. Take notes on the problem, pulling out the essentials. Try to identify key terms or objects the in the problem description. Look for nouns (in https://adventofcode.com/2018/day/13[2018-13], cart[location, facing], track[straight, curve, intersection]) and verbs (tick, move, collide). The problem helps you by stating key terms in bold. We will be writing our solution in the terms of the problem at the highest level, and below that in more general terms of general mathematical operations.
+. Run through any examples provided, by hand. Try to use the terms you have identified to describe the behaviour.
+. Go drink a cup of coffee and do something else for a while.
+. See if there are any obvious general data structures, theorems or algorithms that jump out at you. Don't look too hard for them. If it's not at the instinctive level of "this is obviously a DAG", or "I'm being asked to find the kth nearest neighbours", then don't overreach. It might not be that sort of problem.
+. Look for simple abstractions that the problem suggests. Typical are: grids/matrices, arrays, sets, sequences.
+
+== Misc
+
+* If your problem has some sort of coordinate space, should you represent with a complete (typically an array or matrix where index implies position), or a sparse representation (an associative structure of `[x,y]->attributes`? If the problem space is theoretically unbounded, or has the potential for infinite expansion, consider the latter. Also if there is a clear conception of an 'empty' or uninteresting position, where the only attribute that is has is that it has no attributes, consider using the latter. A 'Conways Game of Life', or cellular automata type problem would lend itself to the sparse representation.
+
+== After solving the problem
+
+. See if Peter Norvig has solved this problem, and look at his solution and note the ways in which it's better than yours. Try to recreate his implementation in your own language. 
+
+== General patterns and structures that are disguised in specific problems
+
+* Graphs, particularly directed acyclic graphs (DAGs) and trees. Topological sort, graph-walking, searching.
+* Number theory, particularly modulo arithmetic
+* Finding points of equilibria or regression to predictable behavior of an infinite process. For example, an iterative process that produces seemingly random results for the first several iterations will settle on a linearly increasing results after a large number of iterations.
+* Cellular Automata, Conways Game of Life.

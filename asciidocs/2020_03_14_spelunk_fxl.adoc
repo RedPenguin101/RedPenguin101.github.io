@@ -1,0 +1,146 @@
+= Sunday Spelunking: FXL
+
+Today I'm looking at the Clojure library https://github.com/zero-one-group/fxl[fxl]: A Clojure library for manipulating spreadsheets. From the Readme:
+
+> The goal of the project is to provide a composable data-oriented spreadsheet interface for Clojure...What fxl attempts to do differently to docjure and excel-clj is to represent spreadsheets as an unordered collection of maps, instead of relying on tabular formats. 
+
+The basic atom seems to be the _cell_:
+
+[source,clojure]
+----
+{:value -2.2
+ :coord {:row 4 :col 3 :sheet "Growth"}
+ :style {:data-format "0.00%" :background-colour :yellow}}
+----
+
+The library contains various helper functions for combining and composing cells.
+
+== Dependencies
+
+The library has a dep for `org.apache.poi/poi-ooxml` - a Java library for creating spreadsheets. It also has several google api client libraries.
+
+== Namespaces
+
+* `core`
+* `read_xlsx`
+* `write_xlsx`
+* several namespaces which provide datastructures for formatting, and no functions: alignments, borders, colors, data-formats, defaults.
+* `google-sheets`, providing functions for interacting with the google sheets API - though for now it seems to be _reading_ but not writing.
+* `specs`
+
+Let's look at specs first to get a handle on the types.
+
+== Specs
+
+Unsurprisingly, the file culminates with the `::cell` spec, which is pretty simple:
+
+[source,clojure]
+----
+(s/def ::cell
+  (s/keys :req-un [::value ::coord]
+          :opt-un [::style ::formula]))
+----
+
+A value is an atom of `nil | string | number | boolean`. A coord has a row and column (nat-ints) and optionally a sheet (string) - in practice not optional - the default sheet of "Sheet1" is applied if none is provided. Formula is nilable string.
+
+Style is a bit more complicated, consisting of font, alignment, border information, as well as data format, color and size information.
+
+[source,clojure]
+----
+(s/valid? ::cell {:value 5 :coord {:row 5 :col 3}
+                  :formula "=sum(A1:A5)"
+                  :style {:bold true
+                          :font-colour :yellow
+                          :alignment-style  {:horizontal :justify
+                                             :vertical :top}
+                          :col-size 10
+                          :border-style {:border/left-border {:border/style :hair
+                                                              :border/color :red}}}})
+----
+
+=== write-xlsx
+
+At the top of this namespace is `(write-xlsx! cells path)`, which is passed a collection of cells and a filepath and writes the workbook.
+
+This namespace is where the interface with apache poi happens. POI encapsulates an OO paradigm for working with spreadsheets, where you create a workbook object (`XSSFWorkbook.`), then get and set sheets, rows, and cells. Another class is the `CellStyle`, which is applied to a cell with `.setCellStyle`. Finally, `workbook.write` is called with a FileOutputStream to scratch to disk.
+
+The styling of cells, rather than what is in them, is where most of the code goes. 
+
+The library contains the low level functions `get-or-create-sheet!`, with sibling functions for row and cell, each being passed a cell and the parent object (workbook, sheet and row). For example
+
+[source,clojure]
+----
+(defn- get-or-create-row! [cell xl-sheet]
+  (let [row-index (-> cell :coord :row)]
+    (or (.getRow xl-sheet row-index)
+        (.createRow xl-sheet row-index))))
+----
+
+Right at the top, `write-xlsx!` conforms the cells to the cell spec(!), and calls the slightly lower level `throwable-write-xlsx!`, which glues everything together - creating the workbook, applying cell values and style, then writing to and closing the workbook. All pretty neat and tidy.
+
+[source,clojure]
+----
+(defn- throwable-write-xlsx! [cells path]
+  (let [workbook      (XSSFWorkbook.)
+        output-stream (FileOutputStream. path)
+        context       (build-context! workbook cells)]
+    (doall (for [cell cells]
+             (set-cell-value-and-style! context workbook cell)))
+    (doall (for [[coord row-size] (:min-row-sizes context)]
+             (set-row-height! workbook coord row-size)))
+    (doall (for [[coord col-size] (:min-col-sizes context)]
+             (set-col-width! workbook coord col-size)))
+    (.write workbook output-stream)
+    (.close workbook)
+    {:workbook workbook :output-stream output-stream}))
+----
+
+The 'context' here is a map of `min-row-sizes`, `min-col-sizes`, and `cell-styles.`
+
+'Min row sizes' is a bit confusing here - `(grouped-min-size :row cells)` actually returns the _largest_ size of each cell in a row:
+
+[source,clojure]
+----
+(comment
+  (def temp-cells #{{:coord {:row 11 :col 16} :style {:row-size 23 :col-size 15}}
+                    {:coord {:row 11 :col 17} :style {:row-size 8 :col-size 24}}
+                    {:coord {:row 10 :col 16} :style {:row-size 15 :col-size 12}} 
+                    {:coord {:row 10 :col 14} :style {:row-size 20} :col-size 18}})
+  
+  (partial-coord :row (first temp-cells)) ;; => {:sheet "Sheet1", :row 10}
+
+  (group-by #(partial-coord :row %) temp-cells)
+  ;; => {{:sheet "Sheet1", :row 10}
+  ;;     [{:coord {:row 10, :col 16}, :style {:row-size 15, :col-size 12}}
+  ;;      {:coord {:row 10, :col 14}, :style {:row-size 20}, :col-size 18}],
+  ;;     {:sheet "Sheet1", :row 11}
+  ;;     [{:coord {:row 11, :col 16}, :style {:row-size 23, :col-size 15}}
+  ;;      {:coord {:row 11, :col 17}, :style {:row-size 8, :col-size 24}}]}
+
+  (min-size :row temp-cells) ;; => 23 - the largest row size in the input
+  (min-size :col temp-cells) ;; => 24 - the largest col size in the input
+ 
+  (grouped-min-size :row temp-cells)
+  ;; => {{:sheet "Sheet1", :row 11} 23, {:sheet "Sheet1", :row 10} 20}
+  ;;   
+  (grouped-min-size :col temp-cells)
+  ;; => {{:sheet "Sheet1", :col 16} 15, {:sheet "Sheet1", :col 17} 24}
+)
+----
+
+The 'minimum' here can be interpreted here as 'the minimum size this row can be made before it starts to crop some of the content in the cells in that row.'
+
+`(accumulate-style-cache! workbook current-cache cell)` Creates (by reducing over a collection of cells) a cache of style-map->XSSFCellStyle.
+
+[source,clojure]
+----
+{{:bold true,
+  :font-colour :yellow,
+  :alignment-style {:horizontal :justify, :vertical :top},
+  :col-size 10,
+  :border-style #:border{:left-border #:border{:style :hair, :color :red}}}
+ #object[org.apache.poi.xssf.usermodel.XSSFCellStyle 0x68b2bf3d "org.apache.poi.xssf.usermodel.XSSFCellStyle@858b3ab3"]}
+----
+
+As we saw above, the write function is then calling `(set-cell-value-and-style! context workbook cell)`, `(set-row-height! workbook coord row-size)` (where row-size is from the `min-row-sizes` in the context) and `(set-col-width! workbook coord col-size)`. The latter two applies to each cell the maximum row and column sizes for the respective rows and columns.
+

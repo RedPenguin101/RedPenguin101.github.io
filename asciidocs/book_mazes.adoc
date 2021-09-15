@@ -1,0 +1,24 @@
+= Mazes for programmers, by Jamis Buck
+
+== Content
+
+* Part 1: Basics
+** 1. Random mazes, Binary Tree and Sidewinder theory
+** 2. Implementing the binary tree and sidewinder
+** 3. Solutions: Dijsktra's shortest path
+** 4. Biases, Aldous Broder, Wilson's algorithm
+** 5. Constraints, Hunt-Kill, Backtracker algorithm
+* Part 2: Next steps
+** 6. Mazes in shapes, masking
+** 7. Polar grids
+** 8. Other grids
+** 9. Braiding and weaving
+* Part 3: More algorithms
+** 10. More weaving: Kruskal
+** 11. Growing, Prims
+** 12. Combining and dividing, Eller and Recursive division
+* Part 4: Shapes and surfaces
+** 13. Higher dimension
+** 14. Other 3d shapes 
+
+== Chapter 1

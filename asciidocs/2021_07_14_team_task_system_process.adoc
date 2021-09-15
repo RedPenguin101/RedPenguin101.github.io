@@ -1,0 +1,56 @@
+= Team, Task, System, Process, and the three body problem
+
+As the leader of a software engineering team in an enterprise, there are four things you need to care about:
+
+* The *Team*: who is on it, what are their skills, what is the dynamic of interaction, how they are feeling today
+* The *Task*: what the team is currently trying to achieve, what is the problem they are trying to solve, and how will you solve it
+* The *System*: What is the topology of the enterprise? How is it divided into subsystems? How does information flow through the system? What are the goals and methods of the system and and of the subsystems?
+* The *Process*: What are the methods the team uses to organize itself in order to comprehend the system, to deconstruct the problem they tasked with, solve the parts and integrate them
+
+None of these things are static. They change constantly. People leave or join the team. The task shifts as more is learned about it or as priorities change. The system changes as the personnel or business environment changes. The process changes as the team decides to change it or changes are imposed by management.
+
+Think of these four elements as a system of four planets orbiting each other in space. Each traces a path relative to the other planets.
+
+As a team leader you have different degrees of control over the courses of four planets. Also, each is subject to forces outside of your control to different degrees (think of asteroids impacting the surface of the planets, changing it's course). The system you probably have little control over. The task, you have some control over but largely this is dictated by the needs of the enterprise. The team you have a fair degree of control over, either by hiring and firing or by more subtle influence on its members, but there are also things outside of your control, since the people on it have their own free will, and can leave, or can change their behaviour in ways which impact the team dynamic.
+
+Process is the planet over which you have the most control. There are external influences - management can dictate certain methods of operating - but in general as team leader you can determine this. This planet has a set of rocket motors attached to it which you can fire to change its course.
+
+In addition to having external forces acting on them, the four planets have a gravitational pull on each other. The change in the course of one planet changes the course of all the others. The analogy is apt, because, like a physical system, when you have more than two bodies exerting gravitational influence on each other, you start to run into the https://en.wikipedia.org/wiki/Three-body_problem[Three Body Problem]
+
+> The three-body problem is a special case of the n-body problem. Unlike two-body problems, no general closed-form solution exists, as the resulting dynamical system is chaotic for most initial conditions
+
+In our case, we have the same problem that the paths the four bodies will take are extremely unpredictable, particularly early on in their life.
+
+Here are a few examples of how the four bodies can affect each other:
+
+* *task->team*: If the team is focused on a task that they find interesting and engaging, but then the task changes to one that they find tedious, the team dynamic will change, or people might even leave.
+* *team->task*: If the team loses its developer that had all the expertise in, and was the main advocate for, a particular technology, the design for solving the problem might change to exclude that technology
+* *system->task*: If the system changes as result of a decrease in profitability of a particular product line, the priorities of the tasks in-queue will likely change to reflect that.
+* *system->team*: If the system changes its definitions of its value streams, the team might have to be reshuffled to align domain expertise 
+* *task->system*: The problem being solved might result in a process or product being produced which changes the communication patterns of the business, implicitly changing its subsystems
+* *team->system*: Conway's law says that a design organization is constrained to producing a system which follows its communication structure. Since the software engineering team is producing software that is used in the system, it follows this law.    
+
+There are a couple of things to intuit from this list. First, not all the planets are the same size. The system is Jupiter. Its pull on the other planets is large, and influence the other planets have on it is minor (but noticeable).
+
+The second thing to notice is that I haven't included how process is impacted by the other planets, and how it impacts them. This is because process is Mercury: _Everything_ effects a lot, and unless the change in its course is significant, the impact it can have on the planets is relatively small.
+
+Your goal is to create and manage that process by firing your rocket motors, and through the process change the course of the other planets: achieving the task, improving the system, making sure the team is fit for purpose and happy. The analogy I've outline suggests several problems with that:
+
+* The pull your process planet exerts on the others is relatively small, to the extent that it is hard to see the effects that you are having
+* The mathematics of how the course changes you will make on a _single_ planet are pretty complex
+* Since any movement you make will influence all other planets, if you are trying to change process to influence one of the other bodies, you have to take into account the side effects that will have on the others.
+* Since the system is circular, changes you make to the process course will impact the courses of the other planets, which will in turn influence the process plant, which will influence the other planets, and potentially consequences you didn't plan for
+* Since the Three-Body-Problem rules are in effect, the consequences of any single change you make are very hard to predict, particularly early on in its life.
+* All the other planets will have external forces changing their course, which not only throw off your calculations in unpredictable ways, but also change the course of the process planet.
+
+What are the implications of this for how you should shape the process? Here are a few thoughts:
+
+The path of the system is slow changing due to its size, so sharp changes in direction are rare, but any changes to it will have a large effect on everything else. Changes to its path are driven mostly by market forces, but the business leaders generally have an informed prediction of how it will change, as well as a degree of control over the that change. As a team leader you need to have a solid understanding of how the _whole_ system works, what the goals are, what the sub-systems are, how information flows through it, and how the course is expected to change over the medium term (while appreciating that those expectations might be wrong).
+
+You have little direct control over the task, but you should advocate as strongly as possible to the business leaders _against_ rapid, repeated, jarring changes to the path of task. If you have a new silver-bullet task every month, and no period to smoothly transition from one task to another, the task planet's path will look like the route of a pinball, and the effect on the process, team, and even the system over the long term will be devastating.
+
+The team has great influence in the path of the process, and can very easily destabilize it from your intended course. That is, if the path of the process you determine is not coordinated with the path of the team, the path of the process will deviate from the one you intended. The process must be designed with the path of the team in mind. The best way to do this is to explicitly involve the team in the design of the process, and on the ongoing shaping of that process over time.
+
+The biggest implication is this: You should not spend months or years trying to calculate precisely the course of the planets over the long term, and how you should fire your rocket motors to achieve a specific influence. For an n-body system, there is no closed-form solution, so it's an incredibly difficult calculation to do. Since small changes in initial conditions can have large and chaotic effects on the outcomes, any small misjudgments you make in the initial positions of the planets will render your results meaningless - and the likelihood of you properly judging the positions exactly is basically zero. Even producing plans on a _range_ of initial conditions over the long term is not productive: since the system is chaotic, (in the scientific sense of the word), the resultant ranges will be too broad to be useful. Finally, the fact that there are unpredictable external forces acting on all the bodies, and spending too much time attempting detailed predictions of the planets path.
+
+This is not to imply that you shouldn't plan, and _definitely_ not to imply that you shouldn't be doing some upfront designing of your system. It is only to say that spending a lot of time calculating the paths is a case of spurious accuracy, and gives a bad return on the investment of your time. 

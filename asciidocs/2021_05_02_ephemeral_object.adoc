@@ -1,0 +1,92 @@
+= Ephemeral object
+
+== Reality, object and mind
+
+Reality is a continuum of particles with concentrations which vary over the four dimensions of space and time. 
+
+To create an object is to perceive these concentrations in the space of reality, and to draw a line around a part of that concentration. To create the object in time and space is to perceive objects in space, and to link the objects in space together, like beads on a thread. The thread is the identity of the object.
+
+The mind is where the object lives, not in reality. Reality has no lines or edges, only concentrations across dimensions. There is no river, except in the mind.
+
+Objects are not objective. The space perceived can be perceived differently. It depends where you are standing.
+
+Perception is the connection of mind to reality. To conceive is to imagine perception. Through conception, objects can be created by first creating a reality. 
+
+== Similarity, category and second-mind
+
+You perceive an object. The object has a red cover, and pages, and the words "Plato Republic Trans. Reeve Hackett" embossed in gold on the spine. 
+
+You perceive a second object. This object has a red cover, and pages, and the words "Plato Republic Trans. Reeve Hackett" embossed in gold on the spine. You recognise that these are not the same object, because they do not occupy the same perceived space at the same perceived time.
+
+There is a proximity between them that has nothing to do with how they occupy space and time. They are close by a similarity.
+
+You perceive a third object, with a _blue_ cover, and pages, and the words "Plato Republic Trans. Reeve Hackett" embossed in gold on the spine. This object is less close to the first two objects than they are to each other. 
+
+A forth object, with a red cover, and pages, and the words "Plato Republic Trans. Reeve Hackett" embossed in gold on the spine, with some _individual, non-contiguous pages torn out_, is further from the first two objects than they are from each other. As more pages are torn out the object will drift further away.
+
+A fifth mind-object, with a red cover, and pages, and the words "Plato Republic Trans. _Lee Penguin_", is further away from the first two objects than they are from each other. 
+
+Objects three, four and five are all further away from the first two than the first two are from each other. But all on different axis. 
+
+Similarity is to the object as reality is to the particle. Similarity is an undifferentiated continuum of objects in concentrations which vary over infinite dimensions.
+
+To create a category is to "perceive" these concentrations in similarity, in one or more dimensions, and to draw a line around a part of that concentration. 
+
+Similarity is not in reality, but neither is it in the mind. It occupies the space between two minds: the first-mind of objects and the second-mind of categories. 
+
+The second-mind is where the category lives, not in similarity. Similarity has no lines or edges, only concentrations. There is no "The Republic" except in the mind.
+
+Categories are not objective. The similarity perceived can be perceived differently. It depends where you are standing.
+
+Surception is the connection of the second-mind to similarity. To con-surceive is to imagine surception. Through con-surception, categories can be created by creating objects through conception and surceiving their similarity. The dragon category. The audiobook of The Republic category.
+
+== Object as information
+
+The object in the mind is a collection of information and identity.
+
+Information is a quality, an attribute that is perceived. The book has the colour red. The jacket has two pockets.
+
+The identity is the thread of commonality which persists as the object moves through space and time, and the information changes. The jacket gains a new attribute: a hole in the left elbow. It remains the same jacket nonetheless. Every cell in the human body is replaced every seven years. You remain yourself.
+
+Identity can change, often subtly. A cell splits in two, and there are two objects where there was one. Which, if any, holds the identity of the original? You get up in the middle of the night, and are shocked to see a hooded figure in the corner of your room! Yet when you switch on the light, there is only a coat hanging on a door frame. Though only the contents of the space has changed, with the addition of light, an object with one identity has disappeared, and another, totally different, has taken its place.
+
+Category is the selection of axes of similarity between objects, from the infinity of available dimensions. Put another way, it is the selection of attributes. In the example above, we saw some objects from which we could create a category "Plato's Republic". The axes of similarity, the attributes we observed, were
+
+* The colour of the cover
+* The translator
+* The publisher
+* The pages. Or perhaps the content of the pages.
+
+Each of the objects could be (and were) described with these attributes. The second and the third attributes are connected in ways we can't say. The forth is much more complicated than the others.  
+
+I said as well that a category involves the distinction of a boundary, defining a group of objects which are in the category from those that are out of it. I said that an object with a number of pages below a certain threshold would be out of the category - though that number may be zero. 
+
+A part of the description of the objects was not included: the title of "The Republic". Since there was no variance in the similarity between the objects, there was little value in including it in our chosen axes. The material of the cover was not described, though I could have described it, and not included in the chosen axes. It didn't seem valuable to me.
+
+Consider, though, if we include non-English object? Is "La Republica" part of our category? Why is it that I didn't consider the material of the cover important? *Usefulness* 
+
+== Analogy
+
+== System and Model
+
+Objects and categories you create are not in isolation. They exist in a system, a model. 
+
+== Relation
+
+== Model in motion
+
+== Plasticity and Fixity
+
+While in the mind the system is semi-plastic. The mind is a method of imposing a structure and a causality on reality, but within the mind the model retains flexibility. Categorizations are not rigid. Exceptions to rules can exist. Apparent contradictions and opposing ideas do not cause the system to break. This is powerful. It broadens the applicability of the model, allows the mind to apply it to a broad range of situations. Models are subconsciously developed over time as new situations are encountered.
+
+Such nuance is by nature difficult to communicate. To communicate the system you have created demands simplification, removal of contradiction. In doing so much of the power is removed. This is the tradeoff of formalization: the fixed model can be communicated quickly to people and to robots, but at the expense of most of its usefulness.
+
+
+
+== For more thought
+
+Hofstadter: Analogy = perception of common essence between two things.
+Object is information
+Model: bringing objects from mind back to reality
+Relation: association, composition, inheritance, usage
+Usefulness of model.

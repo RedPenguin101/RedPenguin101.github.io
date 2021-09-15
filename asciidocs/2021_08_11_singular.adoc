@@ -1,0 +1,33 @@
+= Singular Software
+
+Singular Software has a very narrow scope, and a very few explicit goals. It has _one way, one process_ to accomplish those goals, and the application will only ever allow you down that one process path. There are no features that do not directly accomplish the goals of the program.
+
+There are no option or settings screens. There are no themes. There are no 'bits' to fiddle with. There is no manual navigation between elements. The application knows which screen you need to be on.
+
+The program aims to get you _out_ of the app after finishing your task as quickly as possible, not to keep you in it. Anything that can be automated is automated.
+
+Training is minimal because the application is so simple.
+
+UIs are ascetically simple. They are black and white, except where color is critical to comprehension. There is no styling that is unnecessary. No shadows, no animations, no 'Material'.
+
+A screen's content should fit on a standard phone screen and still be comfortably readable.
+
+== Bug
+
+Bug is a personal budgeting program. The goals of the program are:
+
+* Help users maximize their savings by minimizing unnecessary spending.
+
+That's it.
+
+The path through a Bug application for a first time user looks like this:
+
+. User opens the app and signs up
+. User is prompted to create a new budget, picking the month, starting balance and amounts assigned to the 5 fixed categories
+. User is prompted to connect their bank accounts to the application
+. Application downloads transactions
+. user runs through, assigning a category to each, and a 'recognition pattern' to each payee so that they will be recognized automatically in the future.
+. At the end of the month, user is presented with the results of the month (underspends, overspends), asked to 'close' the budget. 
+. Balances are carried forward and user is asked to assign amounts to each of the 5 budget categories.
+
+The user has no ability to select what screen they are on.

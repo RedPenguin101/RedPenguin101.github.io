@@ -1,0 +1,47 @@
+= F# Notes and Cheat Sheet
+
+== Get started
+
+Install .net SDK (https://dotnet.microsoft.com/download[link]).
+
+[source,bash]
+----
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+sudo apt-get update; \
+  sudo apt-get install -y apt-transport-https && \
+  sudo apt-get update && \
+  sudo apt-get install -y dotnet-sdk-5.0
+----
+
+Install Ionide F# extension for vscode
+
+Create an ionide project from the command line
+
+`dotnet new console -lang "F#" -o FirstIonideProject`
+
+create a new file _MyFirstScript.fsx_
+
+[source,f-sharp]
+----
+let toPigLatin (word: string) =
+    let isVowel (c: char) =
+        match c with
+        | 'a' | 'e' | 'i' |'o' |'u'
+        | 'A' | 'E' | 'I' | 'O' | 'U' -> true
+        |_ -> false
+    
+    if isVowel word.[0] then
+        word + "yay"
+    else
+        word.[1..] + string(word.[0]) + "ay"
+----
+
+Open an F# Interactive Shell (in the terminal window)
+
+Highlight the source code and hit `Alt+Enter` to send it to the shell
+
+type `toPigLatin "banana";;` into shell.
+
