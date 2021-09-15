@@ -1,0 +1,16 @@
+= Managing technical debt
+
+https://medium.com/slalom-build/managing-technical-debt-8594f03f1099[link to article]
+
+Definition of TD: Potential future rework created by design decisions.
+
+TD is a necessary evil, but there are ways to leverage it to your advantage.
+
+. Be explicit about the TD you are incurring. Discuss the decision to incur it and the tradeoffs you are making
+. Document it: record the problem _specifically_. In code comments, tickets. Why is it a problem? What are the consequences of not fixing it?
+. Estimate the size of the debt. Be concious that TD incurs interest which rolls over - it gets bigger over time.
+. Prioritize it: Fix ASAP, before next release, any time, gold plating
+. Plan: Establish a schedule independent of feature work to pay down your TD
+. Budget: Set aside time each sprint to pay down TD. Start with 15%. Make it a habit to work on it every sprint, not on 'hardening' sprints
+. Monitor: Track your levels of TD over time, make sure you're paying it down.
+. Review: looks at the TD 'backlog', it _will_ change over time
