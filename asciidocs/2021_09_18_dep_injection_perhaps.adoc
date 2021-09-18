@@ -1,0 +1,59 @@
+= Dependency Injection, Perhaps
+
+== Part 1: Components for State Management and Encapsulation
+
+https://slipset.github.io/posts/dependency-injection-perhaps[Link to part 1]
+
+* Patterns around the use of Sierra's https://github.com/stuartsierra/component[Component library]
+* Component is "a tiny Clojure framework for managing the lifecycle and dependencies of software components which have runtime state."
+* Things with runtime state are db connections: need to be opened, need to be closed, and may be needed to be 'started' before other components (e.g. your backend application)
+* Ardoq had 116 components.
+* Most of these components don't actually manage lifecycles and dependencies. They encapsulate system components. 
+* You can pass the entire 'system state' from subsystem A to subsystem B, without A needing to know what B needs. It just passes the whole thing.
+
+[source,clojure]
+----
+(defn handle-request [{:keys [system params]}]
+  (service-b/do-something system params))
+----
+
+* This has benefits (A doesn't need to know what B is doing) and downsides (A doesn't know what B is doing!)
+* It can be improved somewhat by limiting what A passes to B
+
+[source,clojure]
+----
+(defn handle-request [{:keys [system params]}]
+  (service-b/do-something (:some-service system) params))
+----
+
+* But this is still using components for encapsulation, not state management. This introduces some problems
+
+== Part 2: Components for configuration
+
+https://slipset.github.io/posts/config[Link to part 2]
+
+* External config: provided from the environment
+* Internal config: global constants etc.
+* Externalizing config is generally good. But more configurability = more complexity for the dev.
+* Internal config: where do you put it? Tempting to use a map.
+* Maybe use Components for internal and external config?
+
+[source,clojure]
+----
+(defrecord MyService [config])
+
+(defn do-something [{:keys [config]} & args]
+  (let [some-value  (get-in config some-path)]
+     ...))
+
+(do-something my-service some other params)
+----
+
+* Problem here: understanding 'some-value' requires a lot of digging. It's definition is not proximate to its use.
+* for internal config: just use a map. You get the proximity, and without giving up much in trade-offs
+* An argument for putting _external_ config in Components is reloadability. You can reload the new config without restarting the system. 
+* However this is anachronistic. Avoiding restarts isn't a goal in a modern CICD, load-balancing environment.
+
+== Part 3: Component and Data Access Objects
+
+https://slipset.github.io/posts/all-your-base[Link to part 3]

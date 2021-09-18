@@ -43,6 +43,7 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 === Papers and talks
 
+. https://fsharpforfunandprofit.com/rop/[Railyway Oriented Programming], https://fsharpforfunandprofit.com/posts/recipe-part2/[(and this)]
 . Clojure Zippers: https://grishaev.me/en/clojure-zippers/
 . Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit] 
 . Paper: https://erlang.org/download/armstrong_thesis_2003.pdf[Armstrong reliability 2003 paper]

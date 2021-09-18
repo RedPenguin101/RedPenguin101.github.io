@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>What&#8217;s on</title>
+<title>Never Monads</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,330 +438,50 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>What&#8217;s on</h1>
+<h1>Never Monads</h1>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
 <div class="paragraph">
-<p>A list of things I&#8217;m reading or working on, and what I have in the backlog</p>
+<p><a href="https://grishaev.me/en/no-monads/">Original Post</a></p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_working_on">Working on</h2>
-<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>Project: Bug</p>
+<p>Don&#8217;t use Monads in Clojure</p>
 </li>
 <li>
-<p>Book: Escaping the build trap</p>
+<p>Nobody else does.</p>
+</li>
+<li>
+<p><a href="https://fsharpforfunandprofit.com/rop/">Railway Oriented Programing</a> looks great in theory, doesn&#8217;t work in practice.</p>
+</li>
+<li>
+<p>Monads are non-idiomatic in Clojure. The standard functions - <code>let</code>, <code>cond</code>, <code>when</code> etc. - don&#8217;t work well with them.</p>
+</li>
+<li>
+<p>Monadic railways are taking actions that each have a happy and sad path, and being able to compose them together into a compound action that connects the 'routes'.</p>
+</li>
+<li>
+<p><em>Just wrap everything in a try-catch</em> dummy. And have the individual actions throw on failure.</p>
+</li>
+<li>
+<p>That&#8217;s the whole value proposition of the exceptions model</p>
+</li>
+<li>
+<p>Monads might be <em>necessary</em> for strict types. But Clojure is dynamic, so you don&#8217;t need them.</p>
+</li>
+<li>
+<p>They are also necessary when you don&#8217;t have empty types - nil, Null, None etc. But Clojure has nil. So use that.</p>
+</li>
+<li>
+<p>nil-threading is fine. If you think something might return nil, you can handle it with <code>when</code>. Then the nil will propagate outwards.</p>
 </li>
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_12_books_for_2021">12 books for 2021</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Elements of Clojure (Jan) DONE</p>
-</li>
-<li>
-<p>Introduction to general systems thinking (Feb)</p>
-</li>
-<li>
-<p>The Republic</p>
-</li>
-<li>
-<p>Naming and necessity</p>
-</li>
-<li>
-<p>Data oriented programming</p>
-</li>
-<li>
-<p>SICP</p>
-</li>
-<li>
-<p>Category Theory for Programmers</p>
-</li>
-<li>
-<p>Patterns of Software</p>
-</li>
-<li>
-<p>Software design for flexibility</p>
-</li>
-<li>
-<p>Data and reality</p>
-</li>
-<li>
-<p>Against Method</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_backlog">Backlog</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_projects">Projects</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Project: PrismSync in Clojure</p>
-</li>
-<li>
-<p>Project: Learn about FTPs</p>
-</li>
-<li>
-<p>Project: File ETL program</p>
-</li>
-<li>
-<p>Project: RestTest. Auto testing and documentation of REST apis.</p>
-</li>
-<li>
-<p>Project: A DSL/Frontend for modelling time-series</p>
-</li>
-<li>
-<p>Project: Zettelcasten note taking system. Web UI. Explicit card interface. Roam style linking. (Started 2021-01-31, 2 month timebox)</p>
-</li>
-<li>
-<p>Project: A 'code challenge' thing with a fund theme</p>
-</li>
-<li>
-<p>Project: History generator</p>
-</li>
-<li>
-<p>Project: Chess display engine</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_writing">Writing</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Writing: Representing Reality /</p>
-</li>
-<li>
-<p>Writing: Types - pros and cons</p>
-</li>
-<li>
-<p>Writing: Why REPL is a superpower <a href="https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html">1</a> <a href="https://clojure.org/guides/repl/introduction">2</a> <a href="https://www.youtube.com/watch?v=Ngt29DyNDRM">3</a> <a href="https://www.youtube.com/watch?v=tpcl5pjkRTQ">4</a> <a href="https://www.youtube.com/watch?v=oLvwbDUXGsc">5</a> <a href="https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/">6</a> <a href="https://www.youtube.com/watch?v=gIoadGfm5T8">7</a></p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_papers_and_talks">Papers and talks</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><a href="https://fsharpforfunandprofit.com/rop/">Railyway Oriented Programming</a>, <a href="https://fsharpforfunandprofit.com/posts/recipe-part2/">(and this)</a></p>
-</li>
-<li>
-<p>Clojure Zippers: <a href="https://grishaev.me/en/clojure-zippers/" class="bare">https://grishaev.me/en/clojure-zippers/</a></p>
-</li>
-<li>
-<p>Tutorial: <a href="https://www.jacekschae.com/courses/learn-reitit-pro/">Jacek Schae&#8217;s Learn Reitit</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://erlang.org/download/armstrong_thesis_2003.pdf">Armstrong reliability 2003 paper</a></p>
-</li>
-<li>
-<p>Paper: <a href="http://www.laputan.org/pub/foote/mud.pdf">Foote/Yoder Big Ball of Mud</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf">Hoare, Communicating Sequential Processes</a></p>
-</li>
-<li>
-<p>Paper: <a href="https://dl.acm.org/doi/pdf/10.5555/63445.C1104363">Hoare, Proof of Correctness of Data Representation</a></p>
-</li>
-<li>
-<p>Talk: Denotational Design</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_books_and_courses">Books and Courses</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Book: <a href="https://www.manning.com/books/data-oriented-programming">Data oriented programming</a></p>
-</li>
-<li>
-<p>Book: Mythical Man Month</p>
-</li>
-<li>
-<p>Book: Working with Legacy Code (Started 14 Feb 2021)</p>
-</li>
-<li>
-<p>Book: Refactoring: Improving the design of existing code</p>
-</li>
-<li>
-<p>Book: Naming and Necessity</p>
-</li>
-<li>
-<p>Book: Data and Reality (2nd Read)</p>
-</li>
-<li>
-<p>Book: Domain Driven Design (a second read)</p>
-</li>
-<li>
-<p>Book: Algebra-driven design</p>
-</li>
-<li>
-<p>Book: The Republic</p>
-</li>
-<li>
-<p>Book: Thinking in Systems</p>
-</li>
-<li>
-<p>Book: Design Unbound</p>
-</li>
-<li>
-<p>Book: Data and reality (a second read)</p>
-</li>
-<li>
-<p>Book: Statistical rethinking</p>
-</li>
-<li>
-<p>Book: Event Storming</p>
-</li>
-<li>
-<p>Book: SICP</p>
-</li>
-<li>
-<p>Book: Accelerate</p>
-</li>
-<li>
-<p>Book: The DevOps handbook</p>
-</li>
-<li>
-<p>Book: The managers path</p>
-</li>
-<li>
-<p>Book: DataWarehousing</p>
-</li>
-<li>
-<p>Book: The little lisper</p>
-</li>
-<li>
-<p>Book: High Output Management</p>
-</li>
-<li>
-<p>Book: The Six Sigma Way</p>
-</li>
-<li>
-<p>Book: Information: A history, a theory, a flood</p>
-</li>
-<li>
-<p>Book: Agile Conversations</p>
-</li>
-<li>
-<p>Book: Notes on the synthesis of form</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Living Documentation</p>
-</li>
-<li>
-<p>Book: An introduction to general systems thinking.</p>
-</li>
-<li>
-<p>Book: Patterns of Software, Richard Gabriel</p>
-</li>
-<li>
-<p>Book: Simulacra and Simulation</p>
-</li>
-<li>
-<p>Book: Invisible Cities</p>
-</li>
-<li>
-<p>Book: The image of the city</p>
-</li>
-<li>
-<p>Book: Against Method</p>
-</li>
-<li>
-<p>Book: Concepts, Techniques, and Models of Computer Programming</p>
-</li>
-<li>
-<p>Book: How to Design Programs, Felleisen</p>
-</li>
-<li>
-<p>Book: A Pattern Language, Christopher Alexander</p>
-</li>
-<li>
-<p>Book: Timeless ways of building, Christopher Alexander</p>
-</li>
-<li>
-<p>Book: The Oregon Experiment, Christopher Alexander</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_other">Other</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Qualification: AWS, the one after cloud practitioner</p>
-</li>
-<li>
-<p>Other: <a href="https://github.com/norvig/pytudes/blob/master/ipynb/Advent-2020.ipynb">Peter Norvigs AOC solutions</a></p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_finished">Finished</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Book: I am a strange loop</p>
-</li>
-<li>
-<p>Project: Qniform</p>
-</li>
-<li>
-<p>Book: Grokking simplicity</p>
-</li>
-<li>
-<p>Project: Allocation of trades between funds</p>
-</li>
-<li>
-<p>Book: Elements of Clojure (2020-02-12)</p>
-</li>
-<li>
-<p>Book: <a href="https://livebook.manning.com/book/rust-in-action">Rust in action</a></p>
-</li>
-<li>
-<p>Book12: Introduction to general systems thinking (March)</p>
-</li>
-<li>
-<p>Project: Get a GraalVM/Babashka CLI app working</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-18 15:10:06 +0100
+Last updated 2021-09-18 15:09:04 +0100
 </div>
 </div>
 </body>

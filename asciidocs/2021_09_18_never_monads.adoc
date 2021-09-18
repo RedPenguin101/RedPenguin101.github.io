@@ -1,0 +1,14 @@
+= Never Monads
+
+https://grishaev.me/en/no-monads/[Original Post]
+
+* Don't use Monads in Clojure
+* Nobody else does.
+* https://fsharpforfunandprofit.com/rop/[Railway Oriented Programing] looks great in theory, doesn't work in practice.
+* Monads are non-idiomatic in Clojure. The standard functions - `let`, `cond`, `when` etc. - don't work well with them. 
+* Monadic railways are taking actions that each have a happy and sad path, and being able to compose them together into a compound action that connects the 'routes'. 
+* _Just wrap everything in a try-catch_ dummy. And have the individual actions throw on failure.
+* That's the whole value proposition of the exceptions model
+* Monads might be _necessary_ for strict types. But Clojure is dynamic, so you don't need them.
+* They are also necessary when you don't have empty types - nil, Null, None etc. But Clojure has nil. So use that.
+* nil-threading is fine. If you think something might return nil, you can handle it with `when`. Then the nil will propagate outwards.

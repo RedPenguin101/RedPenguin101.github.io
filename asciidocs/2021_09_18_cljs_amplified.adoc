@@ -1,0 +1,27 @@
+= Clojurescript, Amplified
+
+https://davidvujic.blogspot.com/2021/09/clojurescript-amplified.html[link]
+
+https://github.com/DavidVujic/clojurescript-amplified[repo]
+
+* A pattern for a web-app with storage and authentication
+* Material-UI, Storybook, AWS Amplify
+* For Amplify you need the Amplify CLI
+* Amplify project setup will generate 'aws-exports', `aws-amplify`. Pull them into main:
+
+[source,clojure]
+----
+(ns app.amplified.core
+  (:require ["/aws-exports" :default ^js aws-exports]
+            ["aws-amplify" :default Amplify]))
+
+(defn init []
+  (-> Amplify (.configure aws-exports)))
+----
+
+* Amplify can do authentication OOB. There's a react component `withAuthenticator` in Amplify UI lib that'll handle login and signup. (You'll need to use reagent's `reactify-component` and `as-element` to do some cljs/js conversion)
+* Add an Amplify API with `amplify add api` from CLI. If you choose GraphQL, which will make AWS AppSync endpoints DynamoDB tables for you
+* Define CICD build steps in _amplify.yml_. 
+* This is setup done, now build the UI.
+* Cljs library https://github.com/arttuka/reagent-material-ui/#reagent-material-ui[reagent-material-ui] which wraps material UI 
+* Storybook for experimenting with components
