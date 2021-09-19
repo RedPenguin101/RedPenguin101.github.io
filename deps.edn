@@ -1,5 +1,0 @@
-{:deps {criterium/criterium {:mvn/version "0.4.6"}
-        org.clojure/core.match {:mvn/version "1.0.0"}
-        org.clojure/math.combinatorics {:mvn/version "0.1.6"}
-        com.taoensso/tufte {:mvn/version "2.2.0"}
-        org.clojure/data.priority-map {:mvn/version "1.0.0"}}}
