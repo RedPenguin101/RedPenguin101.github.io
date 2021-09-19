@@ -456,7 +456,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>This is a simplification in a couple of ways.</p>
 </div>
 <div class="paragraph">
-<p>The "investment funds" that investors put their cash into ("<em>ABC Opportunity Fund 3</em>") are a fairly abstract concept - they don&#8217;t 'exist' in a very concrete way. The 'real world' implementation of these funds is via incorporated entities or partnerships - referred to here as <strong>fund entities</strong>. One "investment fund" may be implemented with multiple entities: Master/Feeder structures, blockers, as well as GPs etc. These are largely irrelevant to the investors and to the high level management of the asset manager, but the details are crucial to the actual operation of the funds, since the entities, financial instruments and transactions, as well as the accounting for all of these, are all at the level of the entity. Thus, when and Investor invests in <em>ABC Opportunity Fund 3</em>, they are signing a contract with "<em>ABC OpFund 3 Feeder C LP</em>", and they are paying their money into that entity, which itself subscribes to Class C shares of "<em>ABC OpFund 3 Master Fund Cayman Ltd</em>".</p>
+<p>The "investment funds" that investors put their cash into ("<em>ABC Opportunity Fund 3</em>") are a fairly abstract concept - they don&#8217;t 'exist' in a very concrete way. The 'real world' implementation of these funds is via incorporated entities or partnerships - referred to here as <strong>fund entities</strong>. One "investment fund" may be implemented with multiple entities: Master/Feeder structures, blockers, as well as GPs etc. These are largely irrelevant to the investors and to the high level management of the asset manager, but the details are crucial to the actual operation of the funds, since the entities, financial instruments and transactions, as well as the accounting for all of these, are all at the level of the entity. Thus, when an Investor invests in <em>ABC Opportunity Fund 3</em>, they are signing a contract with <em>ABC OpFund 3 Feeder C LP</em>, and they are paying their money into that entity, which itself subscribes to Class C shares of <em>ABC OpFund 3 Master Fund Cayman Ltd</em>.</p>
 </div>
 <div class="paragraph">
 <p>When <em>ABC Opportunity Fund 3</em> is said to invest its capital, this is another simplification. It is a legal entity like <em>ABC OpFund 3 Master Fund Cayman Ltd.</em> which is holding the shares of the investee company.</p>
@@ -467,7 +467,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>It may be the case that a fund entity holds shares (or other financial instruments) issued by the investee directly, but more generally there is some other, intermediate entities, between the fund entity and the investee. That is, <em>ABC OpFund 3 Master Fund Cayman Ltd.</em> will hold shares in <em>ABC Blocker 16 Ltd.</em> which will hold shares in the investee company. This is the simplest possible form of such a investment structure, but they can get very large indeed, with a dozen or more entities in a single structure.</p>
+<p>It may be the case that a fund entity holds shares (or other financial instruments) issued by the investee directly, but more commonly there are other, intermediate entities, between the fund entity and the investee. That is, <em>ABC OpFund 3 Master Fund Cayman Ltd.</em> will hold shares in <em>ABC Blocker 16 Ltd.</em> which will hold shares in the investee company. This is the simplest possible form of such a investment structure, but they can get very large indeed, with a dozen or more entities in a single structure.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -486,7 +486,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>to ring fence parts of the investment to different investors, including joint venture partners and co-investors</p>
 </li>
 <li>
-<p>to 'securitise' or otherwise structure the returns on an investment (trancheing etc.)</p>
+<p>to 'securitise' or otherwise structure the returns on an investment (tranche-ing etc.)</p>
 </li>
 <li>
 <p>to utilize the tax benefits that some types of entities offer</p>
@@ -581,6 +581,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p>This implies the existence of <strong>rules</strong>, which can exist at the level of the structure, the entity or the instrument. The application of and interaction between these rules is where I expect most of the complexity of this program to be.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_goals_of_the_program">Goals of the program</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The creation and manipulation of objects representing the investment structures described above, comprised of entities, financial instruments and positions.</p>
+</li>
+<li>
+<p>Given a structure and a goal, the generation of a sequence of transactions representing flows of cash on financial instruments which will achieve that goal.</p>
+</li>
+<li>
+<p>The application of transactions to structures to provide the subsequent state of the structure.</p>
+</li>
+<li>
+<p>The transactions generated are emitted and available for downstream processes to use for administration (instruction of payments, preparation of legal documents).</p>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -605,22 +629,51 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlight"><code class="language-clojure" data-lang="clojure">(add-position structure from-entity to-entity instrument) ;;=&gt; structure</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>We will need a function which applies transactions to a structure.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(apply-transactions structure transactions) ;;=&gt; structure</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_layers_of_the_system_and_a_model_for_transactions">Layers of the system and a model for transactions</h2>
+<h2 id="_domain_explorations_and_layers_of_the_system">Domain explorations and Layers of the system</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The program has the following layers of abstraction, from highest to lowest:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Level 1 is interested in the interaction of goals, structures and rules, and the generation of transactions. This layer represents the business logic of the program.</p>
+</li>
+<li>
+<p>Level 2 is interested in the structures as a whole.</p>
+</li>
+<li>
+<p>Level 3 is interested in the representation and manipulation of our core elements: entities, instruments, positions and transactions. This will provide the language in which levels 1 and 2 are expressed. This is core domain logic. It has a clear real-world corollary (the international language of financial legal agreements). It will be slow-changing.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_a_model_for_financial_instruments">A model for financial instruments</h3>
 <div class="paragraph">
 <p>The slow-changing core of the system we are building is around entities, instruments, positions and transactions. Let&#8217;s spend some time exploring and defining this model.</p>
 </div>
 <div class="paragraph">
-<p>An <strong>entity</strong> is a legal entity - a corporation or limited partnership. It is an independent entity which has ownership, can enter into contracts, can issue financial instruments and can hold positions in financial instruments issued by other entities.</p>
+<p>An <strong>entity</strong> is a legal entity - a corporation or limited partnership. It is an independent entity which has ownership, can enter into contracts, can issue financial instruments and can hold positions in financial instruments issued by other entities. Entities can have many attributes, but we will limit ourselves to those relevant to the goals of the program (for instance we will not be interested in the board of directors of a company).</p>
 </div>
 <div class="paragraph">
 <p>An <strong>instrument</strong> is a legal contract that promises the exchange of cash at a future date. It can be <strong>securitized</strong>, meaning it is unitized into securities representing fractional units of that instrument (examples are shares or bonds), or <strong>principal-based</strong>, meaning that the whole of the instrument is represented by a monetary amount, with holders of that instrument owning fractions of that principal (e.g. a loan, a limited partnership interest). The unit of these types of instrument can be thought of as one unit of the monetary amount. All instruments are <strong>issued</strong> by an entity.</p>
 </div>
 <div class="paragraph">
-<p>A <strong>position</strong> is a fractional holding that one entity has in an instrument, denominated in units of that instrument - a number of securities for securitised instruments, or a principal amount for a principal-based instrument. Entity A can have a position of 100 shares of an instrument issued by entity B</p>
+<p>A <strong>position</strong> is a fractional holding that one entity has in an instrument, denominated in units of that instrument - a number of securities for securitised instruments, or a principal amount for a principal-based instrument. Entity A can have a position of 100 shares of an instrument issued by entity B.</p>
+</div>
+<div class="paragraph">
+<p>To formalize the language, we will say an entity (the <em>issuer</em>) <strong>issues</strong> a <strong>financial instrument</strong>, then another entity (the <em>holder</em>) can <strong>hold</strong> a <strong>position</strong> in that financial instrument.</p>
 </div>
 <div class="paragraph">
 <p>A <strong>transaction</strong> is a notional or real exchange of value between the issuer and holder of an instrument. When Entity B pays a dividend on an instrument to Entity A which holds a position in that instrument, that is a transaction, whereby an obligation is extinguished by the payment of cash. A drawdown on a loan facility is a transaction whereby Entity A pays cash to Entity B in exchange for the promise of future cash flows from B to A, represented by an increase in the principal balance of the instrument.</p>
@@ -637,7 +690,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>For example, the application of a drawdown transaction on an instrument issued by Entity A, in which Entities B and C have positions, would have the following effects on the state of the structure:</p>
+<p>For example, the application of a loan drawdown transaction on an instrument issued by Entity A, in which Entities B and C have positions, would have the following effects on the state of the structure:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -664,12 +717,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 {:entities    [{:name "Entity A" :cash-position 0}
                {:name "Entity B" :cash-position 500}
                {:name "Entity C" :cash-position 200}]
- :instruments [{:name "Entity A Term Loan" :principal 100}
+ :instruments [{:name "Entity A Term Loan" :principal 100}]
  :positions   [{:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity B" :amount 75}
                {:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity C" :amount 25}]]}
 
 ;; transaction
-{:instrument "Entity B Term Loan"
+{:instrument "Entity A Term Loan"
  :action     :loan-drawdown
  :amount     100}
 
@@ -677,18 +730,37 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 {:entities    [{:name "Entity A" :cash-position 100} ;; cash increase 100
                {:name "Entity B" :cash-position 425} ;; cash decrease 75
                {:name "Entity C" :cash-position 175}] ;; cash decrease 25
- :instruments [{:name "Entity A Term Loan" :principal 200} ;; principal increase 100
+ :instruments [{:name "Entity A Term Loan" :principal 200}] ;; principal increase 100
  :positions   [{:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity B" :amount 150} ;; amount increase 75
-               {:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity C" :amount 50} ;; amount increase 25
-               ]]}</code></pre>
+               {:instrument "Entity A Term Loan" :issuer "Entity A" :holder "Entity C" :amount 50}]]} ;; amount increase 25</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>We can see that a single transaction can impact entities, instruments and positions. Notice as well that there was some implicit logic in the application: the transaction states that the drawdown amount is 100, and the application process figured out that 75 of that should come from Entity B and 25 from Entity C. We probably want to avoid that in favour of having this fact explicitly stated in the transaction.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;; transaction
+{:instrument "Entity A Term Loan"
+ :action     :loan-drawdown
+ :amount     100
+ :holders {"Entity B" 75 "Entity C" 25}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For an API we&#8217;ll stick with the simple <code>(apply-transaction x transaction)</code>, where x is the entity, instrument or position.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structures">Structures</h3>
+
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-06-17 14:02:46 +0100
+Last updated 2021-06-27 11:14:09 +0100
 </div>
 </div>
 </body>
