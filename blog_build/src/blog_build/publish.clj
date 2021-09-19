@@ -1,5 +1,6 @@
 (ns blog-build.publish
   (:require [hiccup.core :refer [html]]
+            [clojure.java.io :as io]
             [clojure.java.shell :refer [sh]]
             [clojure.string :as str]))
 
@@ -10,13 +11,12 @@
 ;; file operations
 ;;;;;;;;;;;;;;;;;;;;
 
-(defn get-file-names [path]
-  (str/split-lines (:out (sh "ls" path))))
-
 (defn get-file-paths [path]
   (mapv #(str path %) (str/split-lines (:out (sh "ls" path)))))
 
-(get-file-paths adoc-post-path)
+(defn file-first-line [path]
+  (with-open [rdr (io/reader path)]
+    (first (line-seq rdr))))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Post publishing
@@ -32,18 +32,36 @@
 (defn publish! []
   (->> (get-file-paths adoc-post-path)
        (map publish-post)
-       (map #(move-file % html-post-path))))
-
-(publish!)
+       (map #(move-file % html-post-path))
+       doall))
 
 (comment
-  (publish-post (first (get-file-paths "../asciidocs/posts/")))
-  (sh "mv" "../asciidocs/posts/2020_02_16_coord_systems_clojure.html" "./")
-  (move-html-files "../asciidocs/posts/" "../posts"))
+  (->> (get-file-paths adoc-post-path)
+       (take-last 10)
+       (map publish-post)
+       (map #(move-file % html-post-path)))
+
+  (publish!)
+
+  (->> (publish!)
+       (remove #(= 0 (:exit %)))))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Index building
 ;;;;;;;;;;;;;;;;;;;;
+
+(defn post-title [adoc-file-path]
+  (subs (file-first-line adoc-file-path) 2))
+
+(defn adoc-path-from-html [file-path]
+  (str adoc-post-path (str/replace (last (str/split file-path #"/")) ".html" ".adoc")))
+
+(defn entry-from-file [file-path]
+  (let [filename (last (str/split file-path #"/"))
+        [y m d] (re-seq #"\d+" filename)]
+    {:date (str/join "-" [y m d])
+     :filename filename
+     :title (post-title (adoc-path-from-html file-path))}))
 
 (defn build-index [entries]
   [:div
@@ -56,12 +74,16 @@
        [:td [:a {:href (str "./posts/" (:filename entry))}
              (:title entry)]]])]])
 
-(comment
-  (html (build-index (read-entries! ds))))
-
-(defn create-index! [filepath]
-  (spit filepath (html (build-index (read-entries! ds)))))
+(defn create-index! []
+  (->> (get-file-paths html-post-path)
+       (map entry-from-file)
+       build-index
+       html
+       (spit "../index.html")))
 
 (defn -main []
-  (create-index! "../index.html"))
+  (publish!)
+  (create-index!))
 
+(comment
+  (-main))
