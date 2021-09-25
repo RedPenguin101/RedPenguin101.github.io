@@ -1,0 +1,336 @@
+= Mathematics for Machine Learning Part 1: Solving systems of linear equations
+:stem:
+
+https://mml-book.github.io/book/mml-book.pdf[The book]
+
+This post covers sections 2.1 to 2.3 of the book
+
+== Matrices
+
+* A matrix has _m_ rows and _n_ columns, where stem:[m,n in NN]
+* An _(m,n)_ matrix _A_ is said to be in the set of stem:[RR^(m xx n)]
+* Matrices in stem:[RR^(1 xx n)] and stem:[RR^(m xx 1)] are said to be row and column vectors respectively
+* Matrix addition of stem:[A,B in RR^(m xx n)] is element-wise sum. (Note dimensions must match)
+
+[stem]
+++++
+A + B := [[a_11 + b_11 ,...,a_(1n) + b_(1n)],[vdots,,vdots],[a_(m1)+b_(m1),...,a_(mn)+b_(mn)]] in RR^(m xx n)
+++++
+
+* Matrix multiplication of stem:[A in RR^(m xx n), B in RR^(n xx k)] yields stem:[C in RR^(m xx k)], where the elements of C are stem:[c_(ij)=sum_(l=1)^N a_(il) b_(lj)]
+* In other words, each element stem:[c_(ij)] is the summed element-wise product of the ith row of A and the jth column of B. This is called the *dot product* of the two vectors.
+* note that the dot product is not commutative.
+* associativity: stem:[forall A in RR^(m xx n),B in RR^(n xx p),C in RR^(p xx q):(AB)C = A(BC)]
+* distributivity: stem:[forall A,B in RR^(m xx n),C,D in RR^(n xx p),C in RR^(p xx q):(A+B)C = AC + BC, A(C+D)=AC + AD]
+
+=== Matrix operations in code
+
+[source,clojure]
+----
+(defn matrix [[m n] elements]
+  (if (not= (* m n) (count elements))
+    (throw (ex-info "Incorrect number of elements" {}))
+    [[m n] elements]))
+
+(defn elements [m] (second m))
+(defn dims [m] (first m))
+(defn m-dim [m] (ffirst m)) ;; number of rows
+(defn n-dim [m] (second (first m))) ;; number of columns
+(defn rows [m] (partition (n-dim m) (elements m)))
+(defn columns [m] (apply map vector (rows m)))
+
+(defn m+ [m1 m2]
+  (if (not= (dims m1) (dims m2))
+    (throw (ex-info "Dimensions do not match" {}))
+    (matrix (dims m1) (apply + (elements m1) (elements m2)))))
+
+(defn dot-product [v1 v2] (apply + (map * v1 v2)))
+
+(defn m* [m1 m2]
+  (if (not= (n-dim m1) (m-dim m2))
+    (throw (ex-info "Neighbouring dimensions do not match" {}))
+    (matrix [(m-dim m1) (n-dim m2)]
+            (for [row (rows m1) col (columns m2)]
+              (dot-product row col)))))
+
+(comment
+  (m* (matrix [2 3] [1 2 3 3 2 1]) (matrix [3 2] [0 2 1 -1 0 1]))
+  ;; => [[2 2] (2 3 2 5)]
+
+  (m* (matrix [3 2] [0 2 1 -1 0 1]) (matrix [2 3] [1 2 3 3 2 1]))
+  ;; => [[3 3] (6 4 2 -2 0 2 3 2 1)]
+  )
+----
+
+* The Identity matrix
+
+[stem]
+++++
+I_n := [[1,0,...,0,...,0],[0,1,...,0,...,0],[vdots,vdots,ddots,vdots,ddots,vdots],[0,0,...,1,...,0],[vdots,vdots,ddots,vdots,ddots,vdots],[0,0,...,0,...,1]] in RR^(n xx n)
+++++
+
+* stem:[forall A in RR^(m xx n): I_mA = A I_n = A]
+* stem:[A^(-1) in RR^(n xx n)] is the *Inverse* of stem:[A in RR^(n xx n)], where stem:[AA^(-1) = I_n = A^(-1)A]
+* not every matrix A has an inverse
+* An A which does have an inverse is called *regular* or *invertable*
+* if stem:[A in RR^(m xx n)] The *transpose* is the matrix stem:[A^top in RR^(n xx m)] where stem:[a_(ij)=a_(ji)^top]
+* A matrix is *symmetric* if stem:[A^top = A]
+* stem:[AA^(-1) = I_n = A^(-1)A]
+* stem:[(AB)^(-1) = B^(-1)A^(-1)]
+* stem:[(A^top)^top = A]
+* stem:[(A+B)^top= A^top+B^top ]
+* stem:[(AB)^top= B^topA^top ]
+* If stem:[A] is invertable, so is stem:[A^top]
+* The sum of two symmetric matrices is also symmetric, but their product may not be.
+* Scalar multiplication:
+
+[stem]
+++++
+lambda in RR, A in RR^(m xx n) : lambda A = K, " where " k_(ij) = lambda a_(ij)
+++++
+
+* associativity: stem:[(lambda psi)C = lambda(psi C)]
+* associativity2: stem:[(lambda)BC = (lambda B)C = B(lambda C) = (BC)lambda ]
+* distributivity: stem:[(lambda C)^top = lambda C^top]
+* distributivity2: stem:[(lambda + psi)C = lambda C + psi C ]
+* distributivity3: stem:[lambda(B+C) = lambda B + lambda C ]
+
+[source,clojure]
+----
+(defn id-matrix [n]
+  (matrix [n n] (mapcat #(assoc (vec (repeat n 0)) % 1) (range n))))
+
+(defn transpose [m]
+  (matrix (reverse (dims m)) (apply concat (columns m))))
+
+(defn scalar* [s m]
+  (matrix (dims m) (map #(* s %) (elements m))))
+----
+
+== What is a system of linear equations?
+
+A system of linear equations is a problem stated in the algebraic form
+
+[stem]
+++++
+a_11 x_1 + ... + a_(1n) x_n = b_1\
+vdots\
+a_(m1) x_1 + ... + a_(mn) x_n = b_m
+++++
+
+Where stem:[a_(ij), b_i in RR]
+
+This can be more succinctly denoted using matrix notation:
+
+[stem]
+++++
+[[a_11,...,a_(1n)],[vdots,,vdots],[a_(m1),...,a_(mn)]] [[x_1],[vdots],[x_(n)]] = [[b_1],[vdots],[b_(n)]]
+++++
+
+Or stem:[Ax=b " where " A in RR^(m,n), x in RR^n,b in RR^m]
+
+Even more compact is the _augmented matrix_ format
+
+[stem]
+++++
+[[a_11,...,a_(1n),|,b_1],
+ [vdots,,vdots,|,vdots],
+ [a_(m1),...,a_(mn),|,b_n]]
+++++
+
+== Solving systems of linear equations
+
+The general approach we will follow is:
+
+. Find a particular solution to _Ax=b_
+. Find all solutions to _Ax=0_
+. Combine these to find the general solution
+
+Consider the SOLE:
+
+[stem]
+++++
+[[1,0,8,-4],[0,1,2,12]][[x_1],[x_2],[x_3],[x_4]]=[[b_1],[b_2]]
+++++
+
+Since there are two equations and four unknowns, we can expect infinitely many solutions.
+
+This example is easy to find a _particular solution_ for by sight because of the 1 0 0 1 pattern that starts the matrix. We can set some x values to zero to get them out of the way. One can see that if stem:[x=[42,8,0,0]], the equation is solved
+
+[source,clojure]
+----
+(m* (matrix [2 4] [1 0 8 -4 0 1 2 12])
+    (matrix [4 1] [42 8 0 0]))
+  ;; => [[2 1] (42 8)]
+----
+
+To find solutions to _Ax=0_, we again take advantage of the 1001 pattern. Setting x4 to 0 to get it out of the way, the third column is [8,2], so if we set x3 to -1, we can just set x1 to 8 and x2 to 2 to set both matrix rows equaling zero. By setting x3 to -1 we can force it to cancel out anything in x1 and x2. In fact this works for any multiple of [8,2,-1,0]
+
+Likewise the 4th column is [-4,12]. Setting x3 to 0 and x4 to -1, we can call x1 and x2 -4 and 12 respectively.
+
+Glueing these together we can get the _general solution_, which is all vectors in an infinite set:
+
+[stem]
+++++
+x in RR^4: x=[[42],[8],[0],[0]]+lambda_1 [[8],[2],[-1],[0]]+lambda_2 [[-4],[12],[0],[-1]], lambda_1,lambda_2 in RR
+++++
+
+=== Row-Echelon Form
+
+Notice that what made this easy was the fact that the first part of the matrix A was in a convenient form. This has a name: Row-echelon form (REF). A matrix is in REF if
+
+* all rows with only zeros are at the bottom
+* for nonzero rows, the first nonzero number (the _pivot_) is always to the right of the pivot of the row above it.
+
+Having a SOLE in REF will allow us to find the particular solution (but not necessarily the general one)
+
+=== Elementary transformations
+
+Obviously not all SOLEs will be in REF, but we can tranform SOLEs to _get_ them into REF
+
+There are 3 elementary transformations of SOLEs
+
+. Exchange of two equations (swapping rows in the matrix)
+. Multiplication of a row with a constant
+. addition of two rows
+
+[source,clojure]
+----
+(defn swap-rows [m r1 r2]
+  (matrix (dims m) (apply concat (let [rs (rows m)] (-> rs (assoc r1 (rs r2)) (assoc r2 (rs r1)))))))
+
+(defn row-mult [m r s]
+  (matrix (dims m) (apply concat (update (rows m) r vector-scalar* s))))
+
+(defn row-addition [m change-row scalar with-row]
+  (let [r (vector-scalar* ((rows m) with-row) scalar)]
+    (matrix (dims m) (apply concat (update (rows m) change-row (partial map +) r)))))
+----
+
+Consider
+
+[stem]
+++++
+[[-2,4,-2,-1,4,|,-3],
+ [4,-8,3,-3,1,|,2],
+ [1,-2,0,-1,1,|,0],
+ [1,-2,0,-3,4,|,-1]]
+++++
+
+[source,clojure]
+----
+  (-> (matrix [4 6] [-2 4 -2 -1 4 -3
+                     4 -8 3 -3 1 2
+                     1 -2 1 -1 1 0
+                     1 -2 0 -3 4 -1])
+      (swap-rows 0 2)
+      (row-addition 1 -4 0)
+      (row-addition 2 2 0)
+      (row-addition 3 -1 0)
+      (row-addition 3 -1 1)
+      (row-addition 3 -1 2)
+      (row-mult 1 -1)
+      (row-mult 2 -1/3)
+      (rows))
+  ;; => [(1 -2 1 -1 1 0) 
+  ;;     (0 0 1 -1 3 -2) 
+  ;;     (0 0 0 1 -2 1) 
+  ;;     (0 0 0 0 0 0)]
+----
+
+Using elementary transformations, this becomes:
+
+[stem]
+++++
+[[1,-2,1,-1,1,|,0],
+ [0,0,1,-1,3,|,-2],
+ [0,0,0,1,-2,|,1],
+ [0,0,0,0,0,|,0]]
+++++
+
+=== Basic and Free variables
+
+Notice the following about this REF:
+
+* The REF follows a 'staircase' structure.
+* The 'pivots' are in columns 1,3 and 4. The corresponding variables stem:[x_1,x_3,x_4] are *basic variables*
+* variables not corresponding to a pivot (stem:[x_2,x_5]) are *free variables*.
+
+To find the particular solution, set the free variables to 0, and solve. This works for all SOLEs that can be reduced to REF
+
+[stem]
+++++
+[[1,1,-1,|,0],
+ [0,1,-1,|,-2],
+ [0,0,1,|,1],
+ [0,0,0,|,0]]
+
+"where " [[x_1],[x_3],[x_4]]
+++++
+
+Working upwards, stem:[x_4=1,x_3=-1,x_1=2], so the particular solutions is [2,0,-1,1,0]
+
+=== Reduced Row Echelon Form (RREF)
+
+A matrix is in RREF when
+
+* It's in REF
+* Every pivot is 1
+* The pivot is the only nonzero entry in its column
+
+With REF we can find the particular solution. With RREF we can also find the general solution.
+
+From the REF we apply some transformations:
+
+[stem]
+++++
+[[1,-2,1,-1,1,|,0],
+ [0,0,1,-1,3,|,-2],
+ [0,0,0,1,-2,|,1],
+ [0,0,0,0,0,|,0]]
+++++
+
+[source,clojure]
+----
+  (-> (matrix [4 6] '(1 -2 1 -1 1 0 
+                      0 0 1 -1 3 -2 
+                      0 0 0 1 -2 1 
+                      0 0 0 0 0 0))
+      (row-addition 0 1 2)
+      (row-addition 1 1 2)
+      (row-addition 0 -1 1)
+      rows)
+  ;; => [(1 -2 0 0 -2  2) 
+  ;;     (0  0 1 0  1 -1) 
+  ;;     (0  0 0 1 -2  1) 
+  ;;     (0  0 0 0  0  0)]
+----
+
+[stem]
+++++
+[[1,-2,0,0,-2,|,2],
+ [0,0,1,0,1,|,-1],
+ [0,0,0,1,-2,|,1],
+ [0,0,0,0,0,|,0]]
+++++
+
+To find the solutions to _Ax=0_ we want to express the _non-pivot_ columns in terms of the pivot columns. Since the pivot columns have 1 in only one position, this is very easy:
+
+[stem]
+++++
+[[1,-2,0,0,-2],
+ [0,0,1,0,1],
+ [0,0,0,1,-2],
+ [0,0,0,0,0]]
+
+c_2=-2c_1 => 2c_1+c_2=0
+
+c_5=-2c_1+c_3-2c_4 => 2c_1-c_3+2c_4+c_5=0
+++++
+
+So the solutions are _[2 1 0 0 0]_ and _[2 0 -1 2 1]_, giving the general solution
+
+[stem]
+++++
+x in RR^5: x=[[2],[0],[-1],[1],[0]]+lambda_1 [[2],[1],[0],[0],[0]]+lambda_2 [[2],[0],[-1],[2],[1]], lambda_1,lambda_2 in RR
+++++
