@@ -70,12 +70,11 @@ I_n := [[1,0,...,0,...,0],[0,1,...,0,...,0],[vdots,vdots,ddots,vdots,ddots,vdots
 ++++
 
 * stem:[forall A in RR^(m xx n): I_mA = A I_n = A]
-* stem:[A^(-1) in RR^(n xx n)] is the *Inverse* of stem:[A in RR^(n xx n)], where stem:[AA^(-1) = I_n = A^(-1)A]
+* stem:[A^(-1) in RR^(n xx n)] is the *Inverse* of stem:[A in RR^(n xx n)], where stem:[A A^(-1) = I_n = A^(-1)A]
 * not every matrix A has an inverse
 * An A which does have an inverse is called *regular* or *invertable*
 * if stem:[A in RR^(m xx n)] The *transpose* is the matrix stem:[A^top in RR^(n xx m)] where stem:[a_(ij)=a_(ji)^top]
 * A matrix is *symmetric* if stem:[A^top = A]
-* stem:[AA^(-1) = I_n = A^(-1)A]
 * stem:[(AB)^(-1) = B^(-1)A^(-1)]
 * stem:[(A^top)^top = A]
 * stem:[(A+B)^top= A^top+B^top ]
@@ -155,7 +154,7 @@ Consider the SOLE:
 
 Since there are two equations and four unknowns, we can expect infinitely many solutions.
 
-This example is easy to find a _particular solution_ for by sight because of the 1 0 0 1 pattern that starts the matrix. We can set some x values to zero to get them out of the way. One can see that if stem:[x=[42,8,0,0]], the equation is solved
+This example is easy to find a _particular solution_ for by sight because of the 1 0 0 1 pattern that starts the matrix. We can set some x values to zero to get them out of the way. One can see that if stem:[x=[42,8,0,0\]], the equation is solved
 
 [source,clojure]
 ----
@@ -164,7 +163,7 @@ This example is easy to find a _particular solution_ for by sight because of the
   ;; => [[2 1] (42 8)]
 ----
 
-To find solutions to _Ax=0_, we again take advantage of the 1001 pattern. Setting x4 to 0 to get it out of the way, the third column is [8,2], so if we set x3 to -1, we can just set x1 to 8 and x2 to 2 to set both matrix rows equaling zero. By setting x3 to -1 we can force it to cancel out anything in x1 and x2. In fact this works for any multiple of [8,2,-1,0]
+To find solutions to _Ax=0_, we again take advantage of the 1 0 0 1 pattern. Setting x4 to 0 to get it out of the way, the third column is [8,2], so if we set x3 to -1, we can just set x1 to 8 and x2 to 2 to set both matrix rows equaling zero. By setting x3 to -1 we can force it to cancel out anything in x1 and x2. In fact this works for any multiple of [8,2,-1,0]
 
 Likewise the 4th column is [-4,12]. Setting x3 to 0 and x4 to -1, we can call x1 and x2 -4 and 12 respectively.
 

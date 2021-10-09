@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Mathematics for Machine Learning Part 1: Solving systems of linear equations</title>
+<title>Notes on the life and character of Eisenhower Part 1: World War 2</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,531 +438,94 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Mathematics for Machine Learning Part 1: Solving systems of linear equations</h1>
+<h1>Notes on the life and character of Eisenhower Part 1: World War 2</h1>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_phase_1_to_the_end_of_wwi_innovation_friendships">Phase 1: To the end of WWI - innovation, friendships</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://mml-book.github.io/book/mml-book.pdf">The book</a></p>
+<p>The early career narrative of Eisenhower is one of rapid advancement without spectacular events. He was always impressed, but at this phase in his career did not uniformly recieve 'Superior' ratings like he would in the next phase.</p>
 </div>
 <div class="paragraph">
-<p>This post covers sections 2.1 to 2.3 of the book</p>
+<p>His early relationship with Patton was notable, and he was notable in his early interest in tank warfare and its opportunities - though not the same extent Patton was.</p>
+</div>
+<div class="paragraph">
+<p>He was notable in his personal relations for always getting along with people. His fiery temper is not often on full display as it would be later.</p>
+</div>
+<div class="paragraph">
+<p>He was for the most part in junior but responsible positions.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_matrices">Matrices</h2>
+<h2 id="_phase_2_to_the_start_of_wwii_pershing_conner_macarthur_luck">Phase 2: To the start of WWII - Pershing, Conner, MacArthur, luck</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>A matrix has <em>m</em> rows and <em>n</em> columns, where \$m,n in NN\$</p>
-</li>
-<li>
-<p>An <em>(m,n)</em> matrix <em>A</em> is said to be in the set of \$RR^(m xx n)\$</p>
-</li>
-<li>
-<p>Matrices in \$RR^(1 xx n)\$ and \$RR^(m xx 1)\$ are said to be row and column vectors respectively</p>
-</li>
-<li>
-<p>Matrix addition of \$A,B in RR^(m xx n)\$ is element-wise sum. (Note dimensions must match)</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>After the end of WWI he was tapped early to write the official American history of the war, working closely with Pershing in this capacity. Pershing was most complimentary about his dilligence and thouroughness in the endevour, which often took place under tight deadlines.</p>
 </div>
-<div class="stemblock">
-<div class="content">
-\$A + B := [[a_11 + b_11 ,...,a_(1n) + b_(1n)],[vdots,,vdots],[a_(m1)+b_(m1),...,a_(mn)+b_(mn)]] in RR^(m xx n)\$
+<div class="paragraph">
+<p>His prose writing was good, though not superlative like Grant&#8217;s. It was notable for its clarity. From around this time Eisenhower starts to get almost exlusively 'Superior' results on the efficiency reports submitted by his commanders.</p>
 </div>
+<div class="paragraph">
+<p>At around this time the most critical relationship of his early career was made, with Major General Fox Connor. Eisenhower was with Conner for a while, including in Panama, and Connor took him under his wing and gave him a 'second education' in the classics and in military history. Connor was influential with the high administrative functions of the Armed Forces, and would intervene at several key points in Eisenhower&#8217;s career to get him plum assignments.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Matrix multiplication of \$A in RR^(m xx n), B in RR^(n xx k)\$ yields \$C in RR^(m xx k)\$, where the elements of C are \$c_(ij)=sum_(l=1)^N a_(il) b_(lj)\$</p>
-</li>
-<li>
-<p>In other words, each element \$c_(ij)\$ is the summed element-wise product of the ith row of A and the jth column of B. This is called the <strong>dot product</strong> of the two vectors.</p>
-</li>
-<li>
-<p>note that the dot product is not commutative.</p>
-</li>
-<li>
-<p>associativity: \$forall A in RR^(m xx n),B in RR^(n xx p),C in RR^(p xx q):(AB)C = A(BC)\$</p>
-</li>
-<li>
-<p>distributivity: \$forall A,B in RR^(m xx n),C,D in RR^(n xx p),C in RR^(p xx q):(A+B)C = AC + BC, A(C+D)=AC + AD\$</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Eishenhower next went to the Philippines to work under MacArthur. At this time the US was loosening its grip on the former colony. MacArthur was not yet at this time the almost crazed figure that he later became, though he was certainly quirky. Eisenhower also developed a close relationhip with the first president of the Philippines, who frequently sought his opinion.</p>
 </div>
-<div class="sect2">
-<h3 id="_matrix_operations_in_code">Matrix operations in code</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn matrix [[m n] elements]
-  (if (not= (* m n) (count elements))
-    (throw (ex-info "Incorrect number of elements" {}))
-    [[m n] elements]))
-
-(defn elements [m] (second m))
-(defn dims [m] (first m))
-(defn m-dim [m] (ffirst m)) ;; number of rows
-(defn n-dim [m] (second (first m))) ;; number of columns
-(defn rows [m] (partition (n-dim m) (elements m)))
-(defn columns [m] (apply map vector (rows m)))
-
-(defn m+ [m1 m2]
-  (if (not= (dims m1) (dims m2))
-    (throw (ex-info "Dimensions do not match" {}))
-    (matrix (dims m1) (apply + (elements m1) (elements m2)))))
-
-(defn dot-product [v1 v2] (apply + (map * v1 v2)))
-
-(defn m* [m1 m2]
-  (if (not= (n-dim m1) (m-dim m2))
-    (throw (ex-info "Neighbouring dimensions do not match" {}))
-    (matrix [(m-dim m1) (n-dim m2)]
-            (for [row (rows m1) col (columns m2)]
-              (dot-product row col)))))
-
-(comment
-  (m* (matrix [2 3] [1 2 3 3 2 1]) (matrix [3 2] [0 2 1 -1 0 1]))
-  ;; =&gt; [[2 2] (2 3 2 5)]
-
-  (m* (matrix [3 2] [0 2 1 -1 0 1]) (matrix [2 3] [1 2 3 3 2 1]))
-  ;; =&gt; [[3 3] (6 4 2 -2 0 2 3 2 1)]
-  )</code></pre>
+<div class="paragraph">
+<p>Over time MacArthur began to display the traits that would typify him in later years. He was impulsive, refused to listen to others, and wildly flamboyant in his language. He would rage when others disagreed with him. Eisenhower extracted himself from the situation when he had had enough, and when MacArthur had had enough of him - though he managed to avoid the perception that there had been any break, the first time that his political nous was on full display.</p>
 </div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The Identity matrix</p>
-</li>
-</ul>
-</div>
-<div class="stemblock">
-<div class="content">
-\$I_n := [[1,0,...,0,...,0],[0,1,...,0,...,0],[vdots,vdots,ddots,vdots,ddots,vdots],[0,0,...,1,...,0],[vdots,vdots,ddots,vdots,ddots,vdots],[0,0,...,0,...,1]] in RR^(n xx n)\$
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>\$forall A in RR^(m xx n): I_mA = A I_n = A\$</p>
-</li>
-<li>
-<p>\$A^(-1) in RR^(n xx n)\$ is the <strong>Inverse</strong> of \$A in RR^(n xx n)\$, where \$A A^(-1) = I_n = A^(-1)A\$</p>
-</li>
-<li>
-<p>not every matrix A has an inverse</p>
-</li>
-<li>
-<p>An A which does have an inverse is called <strong>regular</strong> or <strong>invertable</strong></p>
-</li>
-<li>
-<p>if \$A in RR^(m xx n)\$ The <strong>transpose</strong> is the matrix \$A^top in RR^(n xx m)\$ where \$a_(ij)=a_(ji)^top\$</p>
-</li>
-<li>
-<p>A matrix is <strong>symmetric</strong> if \$A^top = A\$</p>
-</li>
-<li>
-<p>\$(AB)^(-1) = B^(-1)A^(-1)\$</p>
-</li>
-<li>
-<p>\$(A^top)^top = A\$</p>
-</li>
-<li>
-<p>\$(A+B)^top= A^top+B^top \$</p>
-</li>
-<li>
-<p>\$(AB)^top= B^topA^top \$</p>
-</li>
-<li>
-<p>If \$A\$ is invertable, so is \$A^top\$</p>
-</li>
-<li>
-<p>The sum of two symmetric matrices is also symmetric, but their product may not be.</p>
-</li>
-<li>
-<p>Scalar multiplication:</p>
-</li>
-</ul>
-</div>
-<div class="stemblock">
-<div class="content">
-\$lambda in RR, A in RR^(m xx n) : lambda A = K, " where " k_(ij) = lambda a_(ij)\$
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>associativity: \$(lambda psi)C = lambda(psi C)\$</p>
-</li>
-<li>
-<p>associativity2: \$(lambda)BC = (lambda B)C = B(lambda C) = (BC)lambda \$</p>
-</li>
-<li>
-<p>distributivity: \$(lambda C)^top = lambda C^top\$</p>
-</li>
-<li>
-<p>distributivity2: \$(lambda + psi)C = lambda C + psi C \$</p>
-</li>
-<li>
-<p>distributivity3: \$lambda(B+C) = lambda B + lambda C \$</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn id-matrix [n]
-  (matrix [n n] (mapcat #(assoc (vec (repeat n 0)) % 1) (range n))))
-
-(defn transpose [m]
-  (matrix (reverse (dims m)) (apply concat (columns m))))
-
-(defn scalar* [s m]
-  (matrix (dims m) (map #(* s %) (elements m))))</code></pre>
-</div>
-</div>
+<div class="paragraph">
+<p>After MacArthur, Eisenhower held several posts, all prestigious, and excelled at all. He went to several command preparation academies, and worked in the office of the Army Chief of Staff. He continued to develop and maintain excellent relationships with important people, including at this time Marshall.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_is_a_system_of_linear_equations">What is a system of linear equations?</h2>
+<h2 id="_phase_3_ww2_before_overlord_marshall_torch_gymnast_and_lessons_in_theatre_command">Phase 3: WW2 before OVERLORD - Marshall, TORCH, GYMNAST and Lessons in theatre command</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A system of linear equations is a problem stated in the algebraic form</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$a_11 x_1 + ... + a_(1n) x_n = b_1\$<br>
-\$vdots\$<br>
-\$a_(m1) x_1 + ... + a_(mn) x_n = b_m\$
-</div>
+<p>Eisenhower was chosen as the commander of the TORCH operation, despite having no experience of commanding troops or being in a war. The intention was that he would also prepare the way for OVERLORD, which was earmarked for command by Marshall (or Brooke).</p>
 </div>
 <div class="paragraph">
-<p>Where \$a_(ij), b_i in RR\$</p>
+<p>The early American efforts in North Africa were quite comically bad. The strategy was flawed (the landings were much too far West), and the political situation with the Vichy government was mishandled. Eisenhower did not, objectively, do a great job as commander of TORCH. But his superiors either cut him a lot of slack, or were carefully managed by Ike.</p>
 </div>
 <div class="paragraph">
-<p>This can be more succinctly denoted using matrix notation:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[a_11,...,a_(1n)],[vdots,,vdots],[a_(m1),...,a_(mn)]] [[x_1],[vdots],[x_(n)]] = [[b_1],[vdots],[b_(n)]]\$
-</div>
+<p>However, he learned a great deal very quickly from the experience. He started displaying great executive ability, able to effectively delegate and keep his contributions at the right level. After a disasterous strategy briefing with the more experienced British commanders, where his 'classroom excercise' level plans were torn to pieces, he largely left the preparation of planning offensives to subordinates who were good at that sort of thing - Monty for the Normandy invasions for example. Many, many people commented throughout the war that his strategic planning ability and battlefield sense was just awful, rooted in the antiquated American doctrine of frontal assault on a wide front, when better battlefield commanders like Patton and Bradley had moved on.</p>
 </div>
 <div class="paragraph">
-<p>Or \$Ax=b " where " A in RR^(m,n), x in RR^n,b in RR^m\$</p>
+<p>Throughout he displayed consumate political skill in handling coalition partners. In this area there have been few better in all of history. This was particularly difficult when you consider that many Americans and French hated the British, and that the Americans and British (not to mention the French themselves) were split between support for De Gaulle&#8217;s Free French and conciliation of the Vichy Regime. FDR in particular hated De Gaulle, and the Americans in general were explicitly in favor of trying to 'turn' Vichy officials. He absolutely charmed the pants of everyone. Every quote from those he worked closely with is drenched with praise. It says much that the famously difficult and aloof De Gaulle loved Eisenhower, and disliked or was disdainful of almost everyone else.</p>
 </div>
 <div class="paragraph">
-<p>Even more compact is the <em>augmented matrix</em> format</p>
+<p>After the troubles in North Africa, the Sicily invasion was better planning and executed, with Eisenhower largely out of the planning, and the planners learning the lessons from TORCH (the blot on the copy book was letting several excellent German divisions escape unmolested across the straights of Messina). The Italy invasion went less well. The expectation was that the Italians were ready to fold, and resistance would be light. Instead, Germany under Model resisted fiercly and in strength. Eisenhower made quick corrections, but the Italian campaign was never especially successful, and Eisenhower displayed the other skill he had in abundance: the subtle fudging of the record to make things appear better than they were. In this case a lot of the blame was shifted to Montgomery, when in fact the fault was in the planning.</p>
 </div>
-<div class="stemblock">
-<div class="content">
-\$[[a_11,...,a_(1n),|,b_1],
- [vdots,,vdots,|,vdots],
- [a_(m1),...,a_(mn),|,b_n]]\$
-</div>
+<div class="paragraph">
+<p>Marshall, during this entire time and going foward, was a dream superior. His confidence in Ike never waivered. He was supportive of Eisenhower&#8217;s decisions, but never got directly involved or micromanaged.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_solving_systems_of_linear_equations">Solving systems of linear equations</h2>
+<h2 id="_phase_4_overlord_executive_mastery_churchill_fdr_and_de_gaulle">Phase 4: OVERLORD - Executive mastery, Churchill FDR and De Gaulle</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The general approach we will follow is:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Find a particular solution to <em>Ax=b</em></p>
-</li>
-<li>
-<p>Find all solutions to <em>Ax=0</em></p>
-</li>
-<li>
-<p>Combine these to find the general solution</p>
-</li>
-</ol>
+<p>Eisenhower was moved over to act as supreme commander of the Channel Crossing. Learning his lessons, he put Montgomery in charge of planning the invasion, and also had him command the ground forces in the field. Monty was very good at this stuff, and Ike let him get on with it.</p>
 </div>
 <div class="paragraph">
-<p>Consider the SOLE:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,0,8,-4],[0,1,2,12]][[x_1],[x_2],[x_3],[x_4]]=[[b_1],[b_2]]\$
-</div>
+<p>Eisenhower&#8217;s responsibilities at this stage were mainly conciliating personalities, and convincing various people to hand over authority to him. On the latter, he managed to get the Strategic Bomber commands of both UK and US under his umbrella, despite great resistance from their respective commanders. Much of his effort was spent persuading Churchill, who was still less than enthusiatic about invading France from either north or south, and preferred a focus on Italy, and trying to prepare for the post-invasion administration of France.</p>
 </div>
 <div class="paragraph">
-<p>Since there are two equations and four unknowns, we can expect infinitely many solutions.</p>
+<p>This last was made infinitely more difficult by FDRs resistance. Ike was convinced by this point that De Gaulle was the only one who could really manage a post-German France. The alternative, favored by the President, was that Vichy officials would remain in key positions, with a de facto occupation by UK and American forces. Not only did Eisenhower not believe this would work politically, but he didn&#8217;t want to have to assume the burden of himself managing France. Through very fancy footwork indeed, Eisenhower managed to make it clear to De Gaulle that he expected him to take over in France, and would assist him in it, but also managed to keep FDR to a large degree onside.</p>
 </div>
 <div class="paragraph">
-<p>This example is easy to find a <em>particular solution</em> for by sight because of the 1 0 0 1 pattern that starts the matrix. We can set some x values to zero to get them out of the way. One can see that if \$x=[42,8,0,0]\$, the equation is solved</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(m* (matrix [2 4] [1 0 8 -4 0 1 2 12])
-    (matrix [4 1] [42 8 0 0]))
-  ;; =&gt; [[2 1] (42 8)]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To find solutions to <em>Ax=0</em>, we again take advantage of the 1 0 0 1 pattern. Setting x4 to 0 to get it out of the way, the third column is [8,2], so if we set x3 to -1, we can just set x1 to 8 and x2 to 2 to set both matrix rows equaling zero. By setting x3 to -1 we can force it to cancel out anything in x1 and x2. In fact this works for any multiple of [8,2,-1,0]</p>
-</div>
-<div class="paragraph">
-<p>Likewise the 4th column is [-4,12]. Setting x3 to 0 and x4 to -1, we can call x1 and x2 -4 and 12 respectively.</p>
-</div>
-<div class="paragraph">
-<p>Glueing these together we can get the <em>general solution</em>, which is all vectors in an infinite set:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$x in RR^4: x=[[42],[8],[0],[0]]+lambda_1 [[8],[2],[-1],[0]]+lambda_2 [[-4],[12],[0],[-1]], lambda_1,lambda_2 in RR\$
-</div>
-</div>
-<div class="sect2">
-<h3 id="_row_echelon_form">Row-Echelon Form</h3>
-<div class="paragraph">
-<p>Notice that what made this easy was the fact that the first part of the matrix A was in a convenient form. This has a name: Row-echelon form (REF). A matrix is in REF if</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>all rows with only zeros are at the bottom</p>
-</li>
-<li>
-<p>for nonzero rows, the first nonzero number (the <em>pivot</em>) is always to the right of the pivot of the row above it.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Having a SOLE in REF will allow us to find the particular solution (but not necessarily the general one)</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_elementary_transformations">Elementary transformations</h3>
-<div class="paragraph">
-<p>Obviously not all SOLEs will be in REF, but we can tranform SOLEs to <em>get</em> them into REF</p>
-</div>
-<div class="paragraph">
-<p>There are 3 elementary transformations of SOLEs</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Exchange of two equations (swapping rows in the matrix)</p>
-</li>
-<li>
-<p>Multiplication of a row with a constant</p>
-</li>
-<li>
-<p>addition of two rows</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn swap-rows [m r1 r2]
-  (matrix (dims m) (apply concat (let [rs (rows m)] (-&gt; rs (assoc r1 (rs r2)) (assoc r2 (rs r1)))))))
-
-(defn row-mult [m r s]
-  (matrix (dims m) (apply concat (update (rows m) r vector-scalar* s))))
-
-(defn row-addition [m change-row scalar with-row]
-  (let [r (vector-scalar* ((rows m) with-row) scalar)]
-    (matrix (dims m) (apply concat (update (rows m) change-row (partial map +) r)))))</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Consider</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[-2,4,-2,-1,4,|,-3],
- [4,-8,3,-3,1,|,2],
- [1,-2,0,-1,1,|,0],
- [1,-2,0,-3,4,|,-1]]\$
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">  (-&gt; (matrix [4 6] [-2 4 -2 -1 4 -3
-                     4 -8 3 -3 1 2
-                     1 -2 1 -1 1 0
-                     1 -2 0 -3 4 -1])
-      (swap-rows 0 2)
-      (row-addition 1 -4 0)
-      (row-addition 2 2 0)
-      (row-addition 3 -1 0)
-      (row-addition 3 -1 1)
-      (row-addition 3 -1 2)
-      (row-mult 1 -1)
-      (row-mult 2 -1/3)
-      (rows))
-  ;; =&gt; [(1 -2 1 -1 1 0)
-  ;;     (0 0 1 -1 3 -2)
-  ;;     (0 0 0 1 -2 1)
-  ;;     (0 0 0 0 0 0)]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Using elementary transformations, this becomes:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,1,-1,1,|,0],
- [0,0,1,-1,3,|,-2],
- [0,0,0,1,-2,|,1],
- [0,0,0,0,0,|,0]]\$
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_basic_and_free_variables">Basic and Free variables</h3>
-<div class="paragraph">
-<p>Notice the following about this REF:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The REF follows a 'staircase' structure.</p>
-</li>
-<li>
-<p>The 'pivots' are in columns 1,3 and 4. The corresponding variables \$x_1,x_3,x_4\$ are <strong>basic variables</strong></p>
-</li>
-<li>
-<p>variables not corresponding to a pivot (\$x_2,x_5\$) are <strong>free variables</strong>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>To find the particular solution, set the free variables to 0, and solve. This works for all SOLEs that can be reduced to REF</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,1,-1,|,0],
- [0,1,-1,|,-2],
- [0,0,1,|,1],
- [0,0,0,|,0]]\$<br>
-<br>
-\$"where " [[x_1],[x_3],[x_4]]\$
-</div>
-</div>
-<div class="paragraph">
-<p>Working upwards, \$x_4=1,x_3=-1,x_1=2\$, so the particular solutions is [2,0,-1,1,0]</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_reduced_row_echelon_form_rref">Reduced Row Echelon Form (RREF)</h3>
-<div class="paragraph">
-<p>A matrix is in RREF when</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>It&#8217;s in REF</p>
-</li>
-<li>
-<p>Every pivot is 1</p>
-</li>
-<li>
-<p>The pivot is the only nonzero entry in its column</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>With REF we can find the particular solution. With RREF we can also find the general solution.</p>
-</div>
-<div class="paragraph">
-<p>From the REF we apply some transformations:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,1,-1,1,|,0],
- [0,0,1,-1,3,|,-2],
- [0,0,0,1,-2,|,1],
- [0,0,0,0,0,|,0]]\$
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">  (-&gt; (matrix [4 6] '(1 -2 1 -1 1 0
-                      0 0 1 -1 3 -2
-                      0 0 0 1 -2 1
-                      0 0 0 0 0 0))
-      (row-addition 0 1 2)
-      (row-addition 1 1 2)
-      (row-addition 0 -1 1)
-      rows)
-  ;; =&gt; [(1 -2 0 0 -2  2)
-  ;;     (0  0 1 0  1 -1)
-  ;;     (0  0 0 1 -2  1)
-  ;;     (0  0 0 0  0  0)]</code></pre>
-</div>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,0,0,-2,|,2],
- [0,0,1,0,1,|,-1],
- [0,0,0,1,-2,|,1],
- [0,0,0,0,0,|,0]]\$
-</div>
-</div>
-<div class="paragraph">
-<p>To find the solutions to <em>Ax=0</em> we want to express the <em>non-pivot</em> columns in terms of the pivot columns. Since the pivot columns have 1 in only one position, this is very easy:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,0,0,-2],
- [0,0,1,0,1],
- [0,0,0,1,-2],
- [0,0,0,0,0]]\$<br>
-<br>
-\$c_2=-2c_1 =&gt; 2c_1+c_2=0\$<br>
-<br>
-\$c_5=-2c_1+c_3-2c_4 =&gt; 2c_1-c_3+2c_4+c_5=0\$
-</div>
-</div>
-<div class="paragraph">
-<p>So the solutions are <em>[2 1 0 0 0]</em> and <em>[2 0 -1 2 1]</em>, giving the general solution</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$x in RR^5: x=[[2],[0],[-1],[1],[0]]+lambda_1 [[2],[1],[0],[0],[0]]+lambda_2 [[2],[0],[-1],[2],[1]], lambda_1,lambda_2 in RR\$
-</div>
-</div>
+<p>Though by now supremely effective at delegating, Eisenhower made the big decisions when he needed to, and was careful to emphasis that the responsibility for the consequences were on him alone (though when things went badly he was phenomenally good at shaping the narrative in his favor). The two main examples are the airbourne drops on the Cherbourg Peninsula, and the Go decision for Overlord. In the first, one of his generals came to him with concerns that the two airbourne divisions that were due to support the Utah and Omaha landings would get torn to pieces by anti-aircraft fire and air cover. Eisenhower told him to put his concerns in writing, then after thinking about for a while he decided to go ahead with the drops and confirmed the same to the general, also in writing. The basis for his decision seems to have been based on his similar experience in Italy, where paratroopers got through OK. In the event they did in Normandy too.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-27 12:48:35 +0100
+Last updated 2021-10-09 17:26:17 +0100
 </div>
 </div>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  messageStyle: "none",
-  tex2jax: {
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"]],
-    ignoreClass: "nostem|nolatexmath"
-  },
-  asciimath2jax: {
-    delimiters: [["\\$", "\\$"]],
-    ignoreClass: "nostem|noasciimath"
-  },
-  TeX: { equationNumbers: { autoNumber: "none" } }
-})
-MathJax.Hub.Register.StartupHook("AsciiMath Jax Ready", function () {
-  MathJax.InputJax.AsciiMath.postfilterHooks.Add(function (data, node) {
-    if ((node = data.script.parentNode) && (node = node.parentNode) && node.classList.contains('stemblock')) {
-      data.math.root.display = "block"
-    }
-    return data
-  })
-})
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 </body>
 </html>

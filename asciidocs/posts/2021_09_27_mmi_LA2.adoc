@@ -1,0 +1,88 @@
+= Mathematics for Machine Learning Part 2: Vector spaces
+:stem:
+
+https://mml-book.github.io/book/mml-book.pdf[The book]
+
+This post covers sections 2.4 to 2.6 of the book
+
+== Groups and vector spaces
+
+Consider a set G and operation on the elements of that set stem:[ox]. stem:[bbb"G":=(G,ox)] is a group if:
+
+* *Closure*: stem:[AA x,y in bbb"G":x ox y in bbb"G"]
+* Associativity
+* Neutral element / identity (stem:[e])
+* Inverse element (stem:[x^(-1)])
+
+If it's also commutative, the group is *Abelian*.
+
+The group stem:[(A in RR^(n xx n), xx)] is a group, called the _general linear group_ stem:[GL(n,RR)] (though since it's not commutative it's not Abelian)
+
+The operation in a group is called an _inner operation_, since it maps stem:[G ox G -> G]. Sets can also contain an outer operation, such that stem:[H ox G -> G] (stem:[ox] can represent different operations in each case).
+
+A vector space is a set with two operations, stem:[bbb"V":=(V, +, *)] such that:
+
+* stem:[V + V -> V]
+* stem:[RR * V -> V]
+* stem:[(V,+)] is an Abelian group
+* Distributivity (stem:[lambda * (x+y) = lamda * x + lambda * y])
+* Associative on outer operation (stem:[lambda * (psi * x) = (lamda * psi) * x)])
+* Neutral element for outer operation (1)
+
+stem:[x in bbb"V"] is the formal definition of a vector. the + is vector addition (element-wise), stem:[*] is scalar multiplication. There is no _vector multiplication_, though there is the _outer product_ stem:[ab^top in RR^(n n)] and the _inner (or dot) product_ stem:[a^top b in RR]
+
+* stem:[V = RR^n, n in NN] is a vector space
+* stem:[V = RR^(m n), m, n in NN] is a vector space
+* stem:[V = CC] is a vector space
+
+*Vector subspaces* are sets in a vector space that are themselves closed under their operation. They will be used for dimensionality reduction later in the book.
+
+== Linear independence
+
+Consider a vector space V, and a subset of elements stem:[x_i in A sube V].
+
+We can construct other elements from a _linear combination_ of elements of A. That is by vector addition and scalar multiplication
+
+[stem]
+++++
+v = sum_(i=1)^k lambda_i x_i in V
+++++
+
+The trivial linear combination is when all stem:[lambda_i=0], giving the 0 vector. A non-trivial linear combination is when at least one of the lambdas is nonzero.
+
+If there is at least one non-trivial linear combination such that stem:[sum_(i=1)^k lambda_i x_i = 0], the vectors are _linearly dependent_. If there is not, they are _linearly independent_. You can think of it as a indicator of redundancy.
+
+* If stem:[0 in A], A is linearly dependent 
+* If A contains two identical vectors, it is linearly dependent 
+* If any element in A is a combination of two others in A, A is linearly dependent
+* A is linearly independent iff, when put in a matrix column-wise and reducing to REF, every column is a pivot column.
+
+== Generating set, Span, Basis
+
+If every vector in V can be expressed as a linear combination of vectors in A, A is called a *generating set*.
+
+The set of all linear combinations of A is called the *span* of A. If A is a generating set of V, we say A *spans* V: stem:[V = span[A\]]
+
+A generating set A of V is said to be *minimal* if there is no subset of A that also spans V. A linearly independent generating set of V is minimal, and is called the *basis* (that is, a basis is a linearly independent minimal generating set)
+
+Not every linearly independent set is a generating set.
+
+The *canonical/standard* basis is the set of vectors which, when set together in columns, make the identity matrix. From this we can infer that every vector space has a basis.
+
+A vector space can have many bases, but each will contain the same number of elements. This number is the *dimension* of V, written stem:[dim(V)]. The dimension of a vector space is not necessarily the number of elements in a vector. Consider stem:[V=span[[[0\],[1\]\]\]], which has two elements but one dimension. 
+
+To find a basis of a subspace stem:[U=span[x_1,...,x_m\] sube RR^n], find the REF of the matrix-form of stem:[x_i]. The x's associated with the pivot columns are the basis.
+
+== Rank
+
+The number of LI columns of a matrix A is called the rank, and is denoted by rk(A). Properties:
+
+* stem:[rk(A) = rk(A^top)] (i.e. column rank = row rank)
+* the columns of A are a generating set of a subspace U, where dim(U) = rk(A). This subspace is the _image_ or _range_. (the _rows_ of A are the GS of a different subspace)
+* stem:[AA A in RR^(n n) : A] is invertible iff rk(A)=n
+* stem:[AA A in RR^(m n), b in RR^m :] the linear system stem:[Ax=b] can be solved only if rk(A)=rk(A|b). A|b is the augmented system.
+* The subspace of solutions to stem:[Ax=0, A in RR^(m n)] has dimension stem:[n-rk(A)]. This is called the _kernal or null space_.
+* A matrix stem:[A in RR^(m n)] with stem:[rk(A)= min(m,n)] (i.e. rank equal to lesser of its rows and columns), is said to have _full rank_, or if it doesn't, _rank deficient_.
+
+== Linear mappings
+

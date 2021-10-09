@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Mathematics for Machine Learning Part 1: Solving systems of linear equations</title>
+<title>Mathematics for Machine Learning Part 2: Vector spaces</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,7 +438,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Mathematics for Machine Learning Part 1: Solving systems of linear equations</h1>
+<h1>Mathematics for Machine Learning Part 2: Vector spaces</h1>
 </div>
 <div id="content">
 <div id="preamble">
@@ -447,497 +447,191 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><a href="https://mml-book.github.io/book/mml-book.pdf">The book</a></p>
 </div>
 <div class="paragraph">
-<p>This post covers sections 2.1 to 2.3 of the book</p>
+<p>This post covers sections 2.4 to 2.6 of the book</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_matrices">Matrices</h2>
+<h2 id="_groups_and_vector_spaces">Groups and vector spaces</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>A matrix has <em>m</em> rows and <em>n</em> columns, where \$m,n in NN\$</p>
-</li>
-<li>
-<p>An <em>(m,n)</em> matrix <em>A</em> is said to be in the set of \$RR^(m xx n)\$</p>
-</li>
-<li>
-<p>Matrices in \$RR^(1 xx n)\$ and \$RR^(m xx 1)\$ are said to be row and column vectors respectively</p>
-</li>
-<li>
-<p>Matrix addition of \$A,B in RR^(m xx n)\$ is element-wise sum. (Note dimensions must match)</p>
-</li>
-</ul>
-</div>
-<div class="stemblock">
-<div class="content">
-\$A + B := [[a_11 + b_11 ,...,a_(1n) + b_(1n)],[vdots,,vdots],[a_(m1)+b_(m1),...,a_(mn)+b_(mn)]] in RR^(m xx n)\$
-</div>
+<div class="paragraph">
+<p>Consider a set G and operation on the elements of that set \$ox\$. \$bbb"G":=(G,ox)\$ is a group if:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Matrix multiplication of \$A in RR^(m xx n), B in RR^(n xx k)\$ yields \$C in RR^(m xx k)\$, where the elements of C are \$c_(ij)=sum_(l=1)^N a_(il) b_(lj)\$</p>
+<p><strong>Closure</strong>: \$AA x,y in bbb"G":x ox y in bbb"G"\$</p>
 </li>
 <li>
-<p>In other words, each element \$c_(ij)\$ is the summed element-wise product of the ith row of A and the jth column of B. This is called the <strong>dot product</strong> of the two vectors.</p>
+<p>Associativity</p>
 </li>
 <li>
-<p>note that the dot product is not commutative.</p>
+<p>Neutral element / identity (\$e\$)</p>
 </li>
 <li>
-<p>associativity: \$forall A in RR^(m xx n),B in RR^(n xx p),C in RR^(p xx q):(AB)C = A(BC)\$</p>
-</li>
-<li>
-<p>distributivity: \$forall A,B in RR^(m xx n),C,D in RR^(n xx p),C in RR^(p xx q):(A+B)C = AC + BC, A(C+D)=AC + AD\$</p>
+<p>Inverse element (\$x^(-1)\$)</p>
 </li>
 </ul>
 </div>
-<div class="sect2">
-<h3 id="_matrix_operations_in_code">Matrix operations in code</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn matrix [[m n] elements]
-  (if (not= (* m n) (count elements))
-    (throw (ex-info "Incorrect number of elements" {}))
-    [[m n] elements]))
-
-(defn elements [m] (second m))
-(defn dims [m] (first m))
-(defn m-dim [m] (ffirst m)) ;; number of rows
-(defn n-dim [m] (second (first m))) ;; number of columns
-(defn rows [m] (partition (n-dim m) (elements m)))
-(defn columns [m] (apply map vector (rows m)))
-
-(defn m+ [m1 m2]
-  (if (not= (dims m1) (dims m2))
-    (throw (ex-info "Dimensions do not match" {}))
-    (matrix (dims m1) (apply + (elements m1) (elements m2)))))
-
-(defn dot-product [v1 v2] (apply + (map * v1 v2)))
-
-(defn m* [m1 m2]
-  (if (not= (n-dim m1) (m-dim m2))
-    (throw (ex-info "Neighbouring dimensions do not match" {}))
-    (matrix [(m-dim m1) (n-dim m2)]
-            (for [row (rows m1) col (columns m2)]
-              (dot-product row col)))))
-
-(comment
-  (m* (matrix [2 3] [1 2 3 3 2 1]) (matrix [3 2] [0 2 1 -1 0 1]))
-  ;; =&gt; [[2 2] (2 3 2 5)]
-
-  (m* (matrix [3 2] [0 2 1 -1 0 1]) (matrix [2 3] [1 2 3 3 2 1]))
-  ;; =&gt; [[3 3] (6 4 2 -2 0 2 3 2 1)]
-  )</code></pre>
+<div class="paragraph">
+<p>If it&#8217;s also commutative, the group is <strong>Abelian</strong>.</p>
 </div>
+<div class="paragraph">
+<p>The group \$(A in RR^(n xx n), xx)\$ is a group, called the <em>general linear group</em> \$GL(n,RR)\$ (though since it&#8217;s not commutative it&#8217;s not Abelian)</p>
+</div>
+<div class="paragraph">
+<p>The operation in a group is called an <em>inner operation</em>, since it maps \$G ox G -&gt; G\$. Sets can also contain an outer operation, such that \$H ox G -&gt; G\$ (\$ox\$ can represent different operations in each case).</p>
+</div>
+<div class="paragraph">
+<p>A vector space is a set with two operations, \$bbb"V":=(V, +, *)\$ such that:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The Identity matrix</p>
+<p>\$V + V -&gt; V\$</p>
+</li>
+<li>
+<p>\$RR * V -&gt; V\$</p>
+</li>
+<li>
+<p>\$(V,+)\$ is an Abelian group</p>
+</li>
+<li>
+<p>Distributivity (\$lambda * (x+y) = lamda * x + lambda * y\$)</p>
+</li>
+<li>
+<p>Associative on outer operation (\$lambda * (psi * x) = (lamda * psi) * x)\$)</p>
+</li>
+<li>
+<p>Neutral element for outer operation (1)</p>
 </li>
 </ul>
 </div>
-<div class="stemblock">
-<div class="content">
-\$I_n := [[1,0,...,0,...,0],[0,1,...,0,...,0],[vdots,vdots,ddots,vdots,ddots,vdots],[0,0,...,1,...,0],[vdots,vdots,ddots,vdots,ddots,vdots],[0,0,...,0,...,1]] in RR^(n xx n)\$
-</div>
+<div class="paragraph">
+<p>\$x in bbb"V"\$ is the formal definition of a vector. the + is vector addition (element-wise), \$*\$ is scalar multiplication. There is no <em>vector multiplication</em>, though there is the <em>outer product</em> \$ab^top in RR^(n n)\$ and the <em>inner (or dot) product</em> \$a^top b in RR\$</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>\$forall A in RR^(m xx n): I_mA = A I_n = A\$</p>
+<p>\$V = RR^n, n in NN\$ is a vector space</p>
 </li>
 <li>
-<p>\$A^(-1) in RR^(n xx n)\$ is the <strong>Inverse</strong> of \$A in RR^(n xx n)\$, where \$A A^(-1) = I_n = A^(-1)A\$</p>
+<p>\$V = RR^(m n), m, n in NN\$ is a vector space</p>
 </li>
 <li>
-<p>not every matrix A has an inverse</p>
-</li>
-<li>
-<p>An A which does have an inverse is called <strong>regular</strong> or <strong>invertable</strong></p>
-</li>
-<li>
-<p>if \$A in RR^(m xx n)\$ The <strong>transpose</strong> is the matrix \$A^top in RR^(n xx m)\$ where \$a_(ij)=a_(ji)^top\$</p>
-</li>
-<li>
-<p>A matrix is <strong>symmetric</strong> if \$A^top = A\$</p>
-</li>
-<li>
-<p>\$(AB)^(-1) = B^(-1)A^(-1)\$</p>
-</li>
-<li>
-<p>\$(A^top)^top = A\$</p>
-</li>
-<li>
-<p>\$(A+B)^top= A^top+B^top \$</p>
-</li>
-<li>
-<p>\$(AB)^top= B^topA^top \$</p>
-</li>
-<li>
-<p>If \$A\$ is invertable, so is \$A^top\$</p>
-</li>
-<li>
-<p>The sum of two symmetric matrices is also symmetric, but their product may not be.</p>
-</li>
-<li>
-<p>Scalar multiplication:</p>
+<p>\$V = CC\$ is a vector space</p>
 </li>
 </ul>
 </div>
-<div class="stemblock">
-<div class="content">
-\$lambda in RR, A in RR^(m xx n) : lambda A = K, " where " k_(ij) = lambda a_(ij)\$
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>associativity: \$(lambda psi)C = lambda(psi C)\$</p>
-</li>
-<li>
-<p>associativity2: \$(lambda)BC = (lambda B)C = B(lambda C) = (BC)lambda \$</p>
-</li>
-<li>
-<p>distributivity: \$(lambda C)^top = lambda C^top\$</p>
-</li>
-<li>
-<p>distributivity2: \$(lambda + psi)C = lambda C + psi C \$</p>
-</li>
-<li>
-<p>distributivity3: \$lambda(B+C) = lambda B + lambda C \$</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn id-matrix [n]
-  (matrix [n n] (mapcat #(assoc (vec (repeat n 0)) % 1) (range n))))
-
-(defn transpose [m]
-  (matrix (reverse (dims m)) (apply concat (columns m))))
-
-(defn scalar* [s m]
-  (matrix (dims m) (map #(* s %) (elements m))))</code></pre>
-</div>
-</div>
+<div class="paragraph">
+<p><strong>Vector subspaces</strong> are sets in a vector space that are themselves closed under their operation. They will be used for dimensionality reduction later in the book.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_is_a_system_of_linear_equations">What is a system of linear equations?</h2>
+<h2 id="_linear_independence">Linear independence</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A system of linear equations is a problem stated in the algebraic form</p>
+<p>Consider a vector space V, and a subset of elements \$x_i in A sube V\$.</p>
+</div>
+<div class="paragraph">
+<p>We can construct other elements from a <em>linear combination</em> of elements of A. That is by vector addition and scalar multiplication</p>
 </div>
 <div class="stemblock">
 <div class="content">
-\$a_11 x_1 + ... + a_(1n) x_n = b_1\$<br>
-\$vdots\$<br>
-\$a_(m1) x_1 + ... + a_(mn) x_n = b_m\$
+\$v = sum_(i=1)^k lambda_i x_i in V\$
 </div>
 </div>
 <div class="paragraph">
-<p>Where \$a_(ij), b_i in RR\$</p>
+<p>The trivial linear combination is when all \$lambda_i=0\$, giving the 0 vector. A non-trivial linear combination is when at least one of the lambdas is nonzero.</p>
 </div>
 <div class="paragraph">
-<p>This can be more succinctly denoted using matrix notation:</p>
+<p>If there is at least one non-trivial linear combination such that \$sum_(i=1)^k lambda_i x_i = 0\$, the vectors are <em>linearly dependent</em>. If there is not, they are <em>linearly independent</em>. You can think of it as a indicator of redundancy.</p>
 </div>
-<div class="stemblock">
-<div class="content">
-\$[[a_11,...,a_(1n)],[vdots,,vdots],[a_(m1),...,a_(mn)]] [[x_1],[vdots],[x_(n)]] = [[b_1],[vdots],[b_(n)]]\$
-</div>
-</div>
-<div class="paragraph">
-<p>Or \$Ax=b " where " A in RR^(m,n), x in RR^n,b in RR^m\$</p>
-</div>
-<div class="paragraph">
-<p>Even more compact is the <em>augmented matrix</em> format</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[a_11,...,a_(1n),|,b_1],
- [vdots,,vdots,|,vdots],
- [a_(m1),...,a_(mn),|,b_n]]\$
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If \$0 in A\$, A is linearly dependent</p>
+</li>
+<li>
+<p>If A contains two identical vectors, it is linearly dependent</p>
+</li>
+<li>
+<p>If any element in A is a combination of two others in A, A is linearly dependent</p>
+</li>
+<li>
+<p>A is linearly independent iff, when put in a matrix column-wise and reducing to REF, every column is a pivot column.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_solving_systems_of_linear_equations">Solving systems of linear equations</h2>
+<h2 id="_generating_set_span_basis">Generating set, Span, Basis</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The general approach we will follow is:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Find a particular solution to <em>Ax=b</em></p>
-</li>
-<li>
-<p>Find all solutions to <em>Ax=0</em></p>
-</li>
-<li>
-<p>Combine these to find the general solution</p>
-</li>
-</ol>
+<p>If every vector in V can be expressed as a linear combination of vectors in A, A is called a <strong>generating set</strong>.</p>
 </div>
 <div class="paragraph">
-<p>Consider the SOLE:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,0,8,-4],[0,1,2,12]][[x_1],[x_2],[x_3],[x_4]]=[[b_1],[b_2]]\$
-</div>
+<p>The set of all linear combinations of A is called the <strong>span</strong> of A. If A is a generating set of V, we say A <strong>spans</strong> V: \$V = span[A]\$</p>
 </div>
 <div class="paragraph">
-<p>Since there are two equations and four unknowns, we can expect infinitely many solutions.</p>
+<p>A generating set A of V is said to be <strong>minimal</strong> if there is no subset of A that also spans V. A linearly independent generating set of V is minimal, and is called the <strong>basis</strong> (that is, a basis is a linearly independent minimal generating set)</p>
 </div>
 <div class="paragraph">
-<p>This example is easy to find a <em>particular solution</em> for by sight because of the 1 0 0 1 pattern that starts the matrix. We can set some x values to zero to get them out of the way. One can see that if \$x=[42,8,0,0]\$, the equation is solved</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(m* (matrix [2 4] [1 0 8 -4 0 1 2 12])
-    (matrix [4 1] [42 8 0 0]))
-  ;; =&gt; [[2 1] (42 8)]</code></pre>
-</div>
+<p>Not every linearly independent set is a generating set.</p>
 </div>
 <div class="paragraph">
-<p>To find solutions to <em>Ax=0</em>, we again take advantage of the 1 0 0 1 pattern. Setting x4 to 0 to get it out of the way, the third column is [8,2], so if we set x3 to -1, we can just set x1 to 8 and x2 to 2 to set both matrix rows equaling zero. By setting x3 to -1 we can force it to cancel out anything in x1 and x2. In fact this works for any multiple of [8,2,-1,0]</p>
+<p>The <strong>canonical/standard</strong> basis is the set of vectors which, when set together in columns, make the identity matrix. From this we can infer that every vector space has a basis.</p>
 </div>
 <div class="paragraph">
-<p>Likewise the 4th column is [-4,12]. Setting x3 to 0 and x4 to -1, we can call x1 and x2 -4 and 12 respectively.</p>
+<p>A vector space can have many bases, but each will contain the same number of elements. This number is the <strong>dimension</strong> of V, written \$dim(V)\$. The dimension of a vector space is not necessarily the number of elements in a vector. Consider \$V=span[[[0],[1]]]\$, which has two elements but one dimension.</p>
 </div>
 <div class="paragraph">
-<p>Glueing these together we can get the <em>general solution</em>, which is all vectors in an infinite set:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$x in RR^4: x=[[42],[8],[0],[0]]+lambda_1 [[8],[2],[-1],[0]]+lambda_2 [[-4],[12],[0],[-1]], lambda_1,lambda_2 in RR\$
+<p>To find a basis of a subspace \$U=span[x_1,...,x_m] sube RR^n\$, find the REF of the matrix-form of \$x_i\$. The x&#8217;s associated with the pivot columns are the basis.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_row_echelon_form">Row-Echelon Form</h3>
+</div>
+<div class="sect1">
+<h2 id="_rank">Rank</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Notice that what made this easy was the fact that the first part of the matrix A was in a convenient form. This has a name: Row-echelon form (REF). A matrix is in REF if</p>
+<p>The number of LI columns of a matrix A is called the rank, and is denoted by rk(A). Properties:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>all rows with only zeros are at the bottom</p>
+<p>\$rk(A) = rk(A^top)\$ (i.e. column rank = row rank)</p>
 </li>
 <li>
-<p>for nonzero rows, the first nonzero number (the <em>pivot</em>) is always to the right of the pivot of the row above it.</p>
+<p>the columns of A are a generating set of a subspace U, where dim(U) = rk(A). This subspace is the <em>image</em> or <em>range</em>. (the <em>rows</em> of A are the GS of a different subspace)</p>
+</li>
+<li>
+<p>\$AA A in RR^(n n) : A\$ is invertible iff rk(A)=n</p>
+</li>
+<li>
+<p>\$AA A in RR^(m n), b in RR^m :\$ the linear system \$Ax=b\$ can be solved only if rk(A)=rk(A|b). A|b is the augmented system.</p>
+</li>
+<li>
+<p>The subspace of solutions to \$Ax=0, A in RR^(m n)\$ has dimension \$n-rk(A)\$. This is called the <em>kernal or null space</em>.</p>
+</li>
+<li>
+<p>A matrix \$A in RR^(m n)\$ with \$rk(A)= min(m,n)\$ (i.e. rank equal to lesser of its rows and columns), is said to have <em>full rank</em>, or if it doesn&#8217;t, <em>rank deficient</em>.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Having a SOLE in REF will allow us to find the particular solution (but not necessarily the general one)</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_elementary_transformations">Elementary transformations</h3>
-<div class="paragraph">
-<p>Obviously not all SOLEs will be in REF, but we can tranform SOLEs to <em>get</em> them into REF</p>
-</div>
-<div class="paragraph">
-<p>There are 3 elementary transformations of SOLEs</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Exchange of two equations (swapping rows in the matrix)</p>
-</li>
-<li>
-<p>Multiplication of a row with a constant</p>
-</li>
-<li>
-<p>addition of two rows</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn swap-rows [m r1 r2]
-  (matrix (dims m) (apply concat (let [rs (rows m)] (-&gt; rs (assoc r1 (rs r2)) (assoc r2 (rs r1)))))))
+<div class="sect1">
+<h2 id="_linear_mappings">Linear mappings</h2>
+<div class="sectionbody">
 
-(defn row-mult [m r s]
-  (matrix (dims m) (apply concat (update (rows m) r vector-scalar* s))))
-
-(defn row-addition [m change-row scalar with-row]
-  (let [r (vector-scalar* ((rows m) with-row) scalar)]
-    (matrix (dims m) (apply concat (update (rows m) change-row (partial map +) r)))))</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Consider</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[-2,4,-2,-1,4,|,-3],
- [4,-8,3,-3,1,|,2],
- [1,-2,0,-1,1,|,0],
- [1,-2,0,-3,4,|,-1]]\$
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">  (-&gt; (matrix [4 6] [-2 4 -2 -1 4 -3
-                     4 -8 3 -3 1 2
-                     1 -2 1 -1 1 0
-                     1 -2 0 -3 4 -1])
-      (swap-rows 0 2)
-      (row-addition 1 -4 0)
-      (row-addition 2 2 0)
-      (row-addition 3 -1 0)
-      (row-addition 3 -1 1)
-      (row-addition 3 -1 2)
-      (row-mult 1 -1)
-      (row-mult 2 -1/3)
-      (rows))
-  ;; =&gt; [(1 -2 1 -1 1 0)
-  ;;     (0 0 1 -1 3 -2)
-  ;;     (0 0 0 1 -2 1)
-  ;;     (0 0 0 0 0 0)]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Using elementary transformations, this becomes:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,1,-1,1,|,0],
- [0,0,1,-1,3,|,-2],
- [0,0,0,1,-2,|,1],
- [0,0,0,0,0,|,0]]\$
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_basic_and_free_variables">Basic and Free variables</h3>
-<div class="paragraph">
-<p>Notice the following about this REF:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The REF follows a 'staircase' structure.</p>
-</li>
-<li>
-<p>The 'pivots' are in columns 1,3 and 4. The corresponding variables \$x_1,x_3,x_4\$ are <strong>basic variables</strong></p>
-</li>
-<li>
-<p>variables not corresponding to a pivot (\$x_2,x_5\$) are <strong>free variables</strong>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>To find the particular solution, set the free variables to 0, and solve. This works for all SOLEs that can be reduced to REF</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,1,-1,|,0],
- [0,1,-1,|,-2],
- [0,0,1,|,1],
- [0,0,0,|,0]]\$<br>
-<br>
-\$"where " [[x_1],[x_3],[x_4]]\$
-</div>
-</div>
-<div class="paragraph">
-<p>Working upwards, \$x_4=1,x_3=-1,x_1=2\$, so the particular solutions is [2,0,-1,1,0]</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_reduced_row_echelon_form_rref">Reduced Row Echelon Form (RREF)</h3>
-<div class="paragraph">
-<p>A matrix is in RREF when</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>It&#8217;s in REF</p>
-</li>
-<li>
-<p>Every pivot is 1</p>
-</li>
-<li>
-<p>The pivot is the only nonzero entry in its column</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>With REF we can find the particular solution. With RREF we can also find the general solution.</p>
-</div>
-<div class="paragraph">
-<p>From the REF we apply some transformations:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,1,-1,1,|,0],
- [0,0,1,-1,3,|,-2],
- [0,0,0,1,-2,|,1],
- [0,0,0,0,0,|,0]]\$
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-clojure" data-lang="clojure">  (-&gt; (matrix [4 6] '(1 -2 1 -1 1 0
-                      0 0 1 -1 3 -2
-                      0 0 0 1 -2 1
-                      0 0 0 0 0 0))
-      (row-addition 0 1 2)
-      (row-addition 1 1 2)
-      (row-addition 0 -1 1)
-      rows)
-  ;; =&gt; [(1 -2 0 0 -2  2)
-  ;;     (0  0 1 0  1 -1)
-  ;;     (0  0 0 1 -2  1)
-  ;;     (0  0 0 0  0  0)]</code></pre>
-</div>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,0,0,-2,|,2],
- [0,0,1,0,1,|,-1],
- [0,0,0,1,-2,|,1],
- [0,0,0,0,0,|,0]]\$
-</div>
-</div>
-<div class="paragraph">
-<p>To find the solutions to <em>Ax=0</em> we want to express the <em>non-pivot</em> columns in terms of the pivot columns. Since the pivot columns have 1 in only one position, this is very easy:</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$[[1,-2,0,0,-2],
- [0,0,1,0,1],
- [0,0,0,1,-2],
- [0,0,0,0,0]]\$<br>
-<br>
-\$c_2=-2c_1 =&gt; 2c_1+c_2=0\$<br>
-<br>
-\$c_5=-2c_1+c_3-2c_4 =&gt; 2c_1-c_3+2c_4+c_5=0\$
-</div>
-</div>
-<div class="paragraph">
-<p>So the solutions are <em>[2 1 0 0 0]</em> and <em>[2 0 -1 2 1]</em>, giving the general solution</p>
-</div>
-<div class="stemblock">
-<div class="content">
-\$x in RR^5: x=[[2],[0],[-1],[1],[0]]+lambda_1 [[2],[1],[0],[0],[0]]+lambda_2 [[2],[0],[-1],[2],[1]], lambda_1,lambda_2 in RR\$
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-27 12:48:35 +0100
+Last updated 2021-09-28 09:59:15 +0100
 </div>
 </div>
 <script type="text/x-mathjax-config">

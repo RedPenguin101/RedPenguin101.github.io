@@ -1,0 +1,52 @@
+= How an ECS works
+
+Based on the Rust "Specs" ECS system and "Rltk" game engine detailed https://bfnightly.bracketproductions.com/rustbook/chapter_0.html[in this tutorial].
+
+ECS stands for "Entity Component System". It is a program organization technique commonly used in the creation of video games. This post is my attempt to explain how it works, based on doing the first part of the above linked tutorial.
+
+Entity and Component are clearly important concepts, given they're in the name. What do they refer to?
+
+An *Entity* is just a label/pointer to something that exists in your gameworld.
+
+A *Component* is an attribute that is assigned to an entity, with a "is a" or "has a" relationship. It may contain data that informs that describes the attribute, which can change over time. For example, an entity might have a Position component, which currently has the value `{x: 3, y:4}`
+
+A *World* (or ECS) is the thing which contains and tracks all of these things. When you set up a World, you will _register_ Components into the World (`gs.ecs.register::<Position>();`). You will _create_ Entities and assign them Components (`gs.ecs.create_entity().with(Position { x, y }).build()`). An ECS is a snapshot of the world at a specific point in time.
+
+In a traditional rouguelike, you will have entities representing the player and monsters.
+
+You can think of an ECS as a table of Components and Entities. Consider a simple ECS where we register the Components Player (indicating whether or not an entity is a player), Monster (Indicating the entity is a Monster) and Position (Giving the coordinates of the entity). Note the last component is the only one that has any state associated with it.
+
+[cols="1,1,1,1"]
+|===
+| Components v, Entities >
+| 0
+| 1
+| 2
+
+| Position
+| yes: data=1,1
+| yes: data=2,2
+| yes: data=3,3
+
+| Monster
+| no
+| yes
+| yes
+
+| Player
+| yes
+| no
+| no
+|===
+
+
+You can also insert other things that are not entities into the World, such as a map: `gs.ecs.insert(map);`
+
+Once you have created your World and added the Entities and Components, you need to move your world forward in time. One jump forward in time is called a *tick* (as in clock tick). A tick will involve some or all of your entities deciding what to do, and doing it. This includes the player, who can provide input, and the non-player entities, who might make a decision based on their AI. This cycle of ticks is called the *main loop*.
+
+Before going into detail about what happens during a tick, we must define a *System*. A system is a mini-loop which reads from the World, has some logic to decide how to change the world, and makes modifications to the World based on that logic.
+
+For example, you might have a visibility systems which determines what each entity can see, based on where they are and what's around them. Once that logic has been run, the system will write back to the World the entity's new "viewshed".
+
+Or you might have a system for monster AI, which iterates though every entity which has a 'Monster' component (indicating they are in fact a monster), have some logic which determines that they should move (maybe based on them spotting the player), and will then modify the 'Position' component of the monster entity, writing it back to the ECS.
+
