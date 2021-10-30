@@ -1,0 +1,52 @@
+= Repo spelunking: Rust Roguelike Tutorial
+
+https://github.com/amethyst/rustrogueliketutorial/tree/master/chapter-74-darkcity/src[Source]
+
+== Namespaces
+
+====
+|- Main
+|- Components
+|- Damage System
+|- GameSystem
+|- Player
+|- Random Table
+|- Rect
+|- REX assets
+|- rng
+|- saveload system
+|- spawner
+|- effects
+|     |- damage
+|     |- hunger
+|     |- movement
+|     |- particles
+|     |- targeting
+|     |- triggers
+|- gamelog: events builders logstore
+|- gui
+|   |- menus (has primatives?)
+|   |- specific menus.
+|- map
+|   |- camera
+|   |- dungeon
+|   |- themes
+|   |- tiletype
+|- map_builders: Lots!
+|- raws: a few, but no idea what they do
+|- systems
+    |- ai
+    |   |-chase, flee, initiative etc.
+    |- dispatcher
+    |- inventory
+    |   |-collection, drop, equip etc.
+    |- hunger
+    |- lighting
+    |- map indexing
+    |- melee combat
+    |- ranged combat
+    |- movement
+    |- particle
+    |- trigger
+    |- visibility
+====

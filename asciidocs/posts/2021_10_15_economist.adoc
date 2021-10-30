@@ -1,0 +1,64 @@
+= Economist October 16th 2021
+
+== The energy shock
+
+World leaders plan to set net-zero carbon goals for 2050. Meanwhile, an energy scare. Oil, coal and gas have nearly doubled in price since May. The cost will be higher inflation and slower growth.
+
+There are three problems: Energy investment is half what it needs to be to meet the 2050 goal. Decarbonising rich countries will result in autocratic petrostates providing most fossil fuels, increasing their leverage. Energy markets are struggling to cope with the transition to clean energy.
+
+Governments must act. Energy suppliers should hold reserves, like banks hold capital. Encouraging diversity in supply will weaken petrostate leverage. Cross-border electricity trading, currently 4% in rich countries, is a requirement.
+
+Actual policy is lacking. Many countries with net-zero pledges have no plan for getting there. They are not investing enough in renewables, but putting legal and regulatory hurdles in front of fossil-fuel projects.
+
+The best idea is a global carbon price. Current pricing schemes cover only a fifth of all emissions.
+
+== Wage growth
+
+Since the GFC, both inflation and wage growth have been very low. In 2021 they are surging. American pay increased 4.6% in the year to September, and inflation was 5.4%.
+
+Employment rates are mostly lower than pre-pandemic. Open positions are abundent but workers seem unwilling to take them. It is not clear why. The end of pandemic unemployment measures has seen surprisingly little increase in people looking for work.   
+
+This makes central bank decision making hard. The causes of the inflation seem clear: spiking demand, supply bottlenecks and the energy shock. This implies it might be temporary, but the wage growth could be a driver of longer term inflation.
+
+Avoiding this would require a combination of firms not raising prices to offset wage growth, productivity growth, or workers returning to the labor force.
+
+Policymakers should focus on the labor supply. The other two are hard to judge and respond to.
+
+== The end of the pandemic
+
+COVID-19 will become endemic, like flu, circulating and mutating. It will remain a threat, though not on the same scale.
+
+The path to endemicity is inthe great majority of the population having antibodies, through infection or vaccination. This results in much lower death rates, even where case rates are high.
+
+Winter is coming, bringing conditions that Covid likes. Governments should be prepared to intervene if hospitals become overwhelmed. There are promising antivirals that are pending approval. Mask-wearing and limiting hot-spots may be required.
+
+Better early warning systems for mutation should be put in place. Sampling to detect new variants is common in the rich world, but not in the poor.
+
+Immunity through vaccination is more reliable and much safer than through infection. Get jabs in arms. 
+
+== Responsibility for internet regulation
+
+Allowing users to post freely introduces challenging questions about the line between acceptable and unacceptable content. Who should be responsible for answering these questions?
+
+Currently the hosting firms answer them. Social networks decide what constitutes misinformation. Web-hosting companies take down sites they deem harmful. Financial firms restrict what people can buy.
+
+The problem is that market incentives can lead either to over-caution, depriving legitimate industries like cannabis of the ability to make payments, or decisions that are not in the interest of society, such as encouraging the harmful effect of social media on children.
+
+A more competative market would be best, but many of the firms involved like Facebook, Mastercard and Visa are effectively monopolies.
+
+Governments must get more involved. Representatives are right to be wary of constraining speech, but abdicating responsibility completely has worse consequences.
+
+== Puberty blockers in the US
+
+Puberty blockers prevent the development of secondary sex characteristics like breasts and facial hair.
+
+Current orthodoxy is that prescribing them is conservative because the effects are largly reversible, and they prevent distress caused by gender dysphoria.
+
+Now, concerns are being raised about this attitude. A recently coined term, "Rapid onset gender dysphoria", refers to cases of dysphoria induced by social influence. Doctors are being critisized for jumping too quickly to the diagnosis of dysphoria.
+
+== US climate policy
+
+Biden has pledged to cut emissions to 50% of their 2005 level by 2030. The White House has put forward a politically ambitious set of proposals for decarbonisation. They include clean energy and electric vehicles. 
+
+Some of these are in the the $1trn bipartisan infrastructure bill, but most are in the $3.5trn budget, which will likely need to pass the senate via reconciliation.
+

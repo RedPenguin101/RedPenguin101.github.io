@@ -1,0 +1,19 @@
+= Models of Programming, by Ashton Wiersdorf 
+
+https://lambdaland.org/posts/2021-09-25_models_of_programming_draft2/[Link]
+
+What is programming?
+
+View 1: You are ordering a computer to do your bidding. You tell it every step to take. _Imperative_ programming.
+
+View 2: You are teaching the computer to solve problems, then more complicated problems by composing those things together.
+
+> Programs start behaving more like the Fourier series: the aggregation of simple, easy-to-understand components yields a robust and flexible result.
+
+In the first case you're more focused on how to get the computer to do something. The second approach leads to deeper thinking about the problem at hand.
+
+High level functional languages are good teaching tools: Building small, testable, composable things. Then composing and orchestrating them.Building things that fit the problem. No side effects means the ability to reason locally: vital for learning.
+
+Abstract mathematics and the lambda calculus is a rich modelling domain in which to teach problem decomposition and effective programming. SICP and HTDP are examples of this.
+
+Is low-level detail of computer operations useless? No. At some point that is going to become relevant to a program you are trying to write. But it's not the right starting point. 

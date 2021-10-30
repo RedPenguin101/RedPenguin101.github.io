@@ -2,10 +2,16 @@
 
 A list of things I'm reading or working on, and what I have in the backlog
 
+== Spelunking targets
+
+* https://github.com/lucywang000/clj-statecharts/tree/master/src/statecharts[CLJ StateCharts]: A clojure FSM implementation
+* https://github.com/AbhinavOmprakash/sisyphus[Sisyphus]: A Clojure task scheduler
+* https://github.com/phronmophobic/membrane.term[Membrane.Term]: A Clojure Terminal Emulator
+* https://github.com/clojure-numerics/expresso[Expresso]: Symbolic manipulation of Algebraic Expressions
+
 == Working on
 
-* Project: Bug
-* Book: Escaping the build trap
+* Project: Pocket-Gettysburg
 
 == 12 books for 2021
 

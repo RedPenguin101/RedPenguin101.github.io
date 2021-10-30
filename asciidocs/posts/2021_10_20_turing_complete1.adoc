@@ -1,0 +1,85 @@
+= Turing Complete Part 1: Basic Gates
+
+== Wires and electronic signals
+
+== Logical components and truth tables
+
+Unary and Binary
+
+== NAND ('Noth Both')
+
+A NAND (or "Not And") logic gate is the basis of all computing. We will be defining everything else in terms of NANDs 
+
+Provided with two input signals, the NAND will output a signal *unless* both inputs are on.
+
+----
+A  B  O
+0  0  1
+0  1  1
+1  0  1
+1  1  0
+----
+
+== NOT
+
+A NOT gate is a unary operation which 'flips' the signal. If the input signal is 1, the output is 0 and vice versa.
+
+We can build a NOT from one NAND gate by plugging the signal into both inputs of the NAND
+
+----
+Signal NAND-A NAND-B Output
+  1      1      1      0
+  0      0      0      1
+----
+
+== AND ('Both')
+
+AND takes two input signals, and outputs a signal *only* if both inputs are on.
+
+AND is the _opposite_ of NAND (see below table).
+
+----
+A  B  O  (NAND)
+0  0  0   (1)
+0  1  0   (1)
+1  0  0   (1)
+1  1  1   (0)
+----
+
+To construct this from NAND gates, we can do a NAND, and then 'flip' the output with a NOT.
+
+An AND gate can therefore be made from 2 NAND gates
+
+== OR ('Either')
+
+OR takes two input signals, and outputs a signal if *either* of the signals are on.
+
+The difference between an OR and a NAND is that a NAND does not output only if both inputs are *on*, where an or doesn't output only if both inputs are *off*.
+
+This means that `OR A B = NAND (NOT A) (NOT B)`
+
+----
+A  B  NOT-A  NOT-B  ->NAND  (NAND-alone)
+0  0    1      1      0         (1) 
+0  1    1      0      1         (1) 
+1  0    0      1      1         (1) 
+1  1    0      0      1         (0) 
+----
+
+An OR gate can therefore be made from 3 NAND gates
+
+== NOR ('Neither')
+
+----
+A  B  NOT-A  NOT-B   ->NAND  ->NOT
+0  0    1      1        0      1     
+0  1    1      0        1      0     
+1  0    0      1        1      0     
+1  1    0      0        1      0     
+----
+
+A NOR gate can therefore be made from 4 NAND gates
+
+== XOR ('One but not both')
+
+== Binary construction
