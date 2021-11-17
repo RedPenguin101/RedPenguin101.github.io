@@ -1,0 +1,49 @@
+= One Hundred Books
+
+== Philosophy
+
+* Confucius: Analects
+* Plato: Republic
+* Bacon: Essays
+* Bacon: New Atlantis (the advancement of learning)
+* Marcus Aurelius: Meditations
+* Montaigne: Essays
+* Schopenhauer: Essays and Aphorisms
+* Whitehead: Process and Reality
+* Nietzsche: Zarathustra
+* Frankl: Man's search for meaning
+* King James Bible
+* Jefferson Bible
+* Camus: The Stranger
+* I am a strange loop
+
+== Fiction and Poetry
+
+* Tolstoy: Anna Karenina
+* Dostoyevsky: Crime and Punishment
+* Voltaire: Candide
+* Homer: The Iliad
+
+== Economics
+
+* Smith: Wealth of Nations
+* Taleb: The Black Swan
+* Piketty: Capital
+
+== History and Biography
+
+* Holland: In the shadow of the sword
+* Plutarch: Lives
+* Thucydides: Peloponnesian War
+* Herodotus: Histories
+* Chernow: Hamilton
+* Caro: Lyndon B Johnson
+* Gibbon: Decline and Fall
+
+== Politics
+
+* Federalist Papers
+
+== Other
+
+* Voss: Never split the difference

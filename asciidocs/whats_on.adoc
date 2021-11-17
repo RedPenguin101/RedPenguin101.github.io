@@ -2,6 +2,10 @@
 
 A list of things I'm reading or working on, and what I have in the backlog
 
+== Working on
+
+* Project: Pocket-Gettysburg
+
 == Spelunking targets
 
 * https://github.com/lucywang000/clj-statecharts/tree/master/src/statecharts[CLJ StateCharts]: A clojure FSM implementation
@@ -9,14 +13,12 @@ A list of things I'm reading or working on, and what I have in the backlog
 * https://github.com/phronmophobic/membrane.term[Membrane.Term]: A Clojure Terminal Emulator
 * https://github.com/clojure-numerics/expresso[Expresso]: Symbolic manipulation of Algebraic Expressions
 
-== Working on
-
-* Project: Pocket-Gettysburg
+== 12 books for 2022
 
 == 12 books for 2021
 
 . Elements of Clojure (Jan) DONE
-. Introduction to general systems thinking (Feb)
+. Introduction to general systems thinking (Feb) DONE
 . The Republic
 . Naming and necessity
 . Data oriented programming
@@ -29,9 +31,14 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 == Backlog
 
+=== Mini projects
+
+* write up interops cheatsheet for Clojure(Script). I forget every time
+
 === Projects
 
 . Project: PrismSync in Clojure
+* Project: Upgrade blog to include books and what's on
 . Project: Learn about FTPs
 . Project: File ETL program
 . Project: RestTest. Auto testing and documentation of REST apis.
@@ -47,8 +54,12 @@ A list of things I'm reading or working on, and what I have in the backlog
 . Writing: Types - pros and cons
 . Writing: Why REPL is a superpower https://vvvvalvalval.github.io/posts/what-makes-a-good-repl.html[1] https://clojure.org/guides/repl/introduction[2] https://www.youtube.com/watch?v=Ngt29DyNDRM[3] https://www.youtube.com/watch?v=tpcl5pjkRTQ[4] https://www.youtube.com/watch?v=oLvwbDUXGsc[5] https://purelyfunctional.tv/courses/repl-driven-development-in-clojure/[6] https://www.youtube.com/watch?v=gIoadGfm5T8[7]
 
-=== Papers and talks
+=== Papers, blogs and talks
 
+* https://www.poor.dev/blog/terminal-anatomy/[Anatomy of a terminal emulator]
+* https://www.infoworld.com/article/3639050/complexity-is-killing-software-developers.html[Complexity is killing developers]
+* https://jacobian.org/2021/oct/20/simple-pm-tricks/[Simple PM tricks]
+* https://old.reddit.com/r/adventofcode/comments/qj6wdg/2015_day_9_with_ants/[Ant Colony Optimization]
 . https://fsharpforfunandprofit.com/rop/[Railyway Oriented Programming], https://fsharpforfunandprofit.com/posts/recipe-part2/[(and this)]
 . Clojure Zippers: https://grishaev.me/en/clojure-zippers/
 . Tutorial: https://www.jacekschae.com/courses/learn-reitit-pro/[Jacek Schae's Learn Reitit] 
@@ -60,44 +71,56 @@ A list of things I'm reading or working on, and what I have in the backlog
 
 === Books and Courses
 
+==== Programming and software design
+
 . Book: https://www.manning.com/books/data-oriented-programming[Data oriented programming]
 . Book: Mythical Man Month
-. Book: Working with Legacy Code (Started 14 Feb 2021)
+. Book: Working with Legacy Code
 . Book: Refactoring: Improving the design of existing code
-. Book: Naming and Necessity
-. Book: Data and Reality (2nd Read)
 . Book: Domain Driven Design (a second read)
 . Book: Algebra-driven design
-. Book: The Republic
-. Book: Thinking in Systems
+. Book: Data and Reality (2nd Read)
 . Book: Design Unbound
-. Book: Data and reality (a second read)
-. Book: Statistical rethinking
 . Book: Event Storming
 . Book: SICP
 . Book: Accelerate
 . Book: The DevOps handbook
-. Book: The managers path
 . Book: DataWarehousing
 . Book: The little lisper
-. Book: High Output Management
-. Book: The Six Sigma Way
-. Book: Information: A history, a theory, a flood
 . Book: Agile Conversations
-. Book: Notes on the synthesis of form
-. Book: Against Method
 . Book: Living Documentation
-. Book: An introduction to general systems thinking.
 . Book: Patterns of Software, Richard Gabriel 
+. Book: Concepts, Techniques, and Models of Computer Programming
+. Book: How to Design Programs, Felleisen
+
+==== Philosophy
+
+. Book: Naming and Necessity
+. Book: The Republic
+. Book: Thinking in Systems
+. Book: Data and reality (a second read)
+. Book: Information: A history, a theory, a flood
+. Book: Notes on the synthesis of form
 . Book: Simulacra and Simulation
+. Book: An introduction to general systems thinking.
 . Book: Invisible Cities
 . Book: The image of the city
 . Book: Against Method
-. Book: Concepts, Techniques, and Models of Computer Programming
-. Book: How to Design Programs, Felleisen
-. Book: A Pattern Language, Christopher Alexander
 . Book: Timeless ways of building, Christopher Alexander
+. Book: A Pattern Language, Christopher Alexander
 . Book: The Oregon Experiment, Christopher Alexander
+
+==== Mathematics and Statistics
+
+. Book: Statistical rethinking
+
+==== Business, Management, Leadership
+
+. Book: The managers path
+. Book: High Output Management
+. Book: The Six Sigma Way
+. Book: Zone to Win: Organizing to Compete in an Age of Disruption, by Geoffrey A. Moore
+. Book: Technological Revolutions and Financial Capital: The Dynamics of Bubbles and Golden Ages, by Carlota Perez
 
 === Other
 
