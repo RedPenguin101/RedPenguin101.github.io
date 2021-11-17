@@ -155,11 +155,11 @@ What are the raw materials and how are they sucessively transformed into WIP?
 ** Low growth
 ** Complex production flow, thousands of parts
 ** Non-homogenous customer demand
-* Inventory / avoiding overproduction is a big thing in TPS. What is the equivalent idea in a service industry? Is it as critical as it is in the production world?
+* Inventory / avoiding overproduction is a big thing in TPS. What is the equivalent of inventory in a service industry? Is it as critical as it is in the production world?
 * In a production system, the things flowing through the production line are physical parts. What flows through the Varde production line? What are some examples?
 * What are examples of Varde's production line?
 * Pull vs. Push: are there any examples of this in the context of Varde's production processes?
-* TPS has a Kanban, or sign board, signalling that materials are required. What are the signals we could use to indicate a need for 'materials'?
+* TPS has a Kanban, or sign board, signalling that materials are required. What are the signals we use to indicate a need for 'materials'?
 * What are the implications of the TPS for 'supervisor' processes. That is, the need to plan overall coordination? Does it need more centralized coordination or less?
 * TPS talks about Autonomation. What would that concept imply in the context of a Varde business process?
 * What would prevent the implementation of an autonomous process?
