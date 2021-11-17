@@ -1,0 +1,76 @@
+= Neovim
+
+== Setup
+
+* https://www.chrisatmachine.com/Neovim/01-vim-plug/[setup]
+* https://www.chrisatmachine.com/Neovim/02-vim-general-settings/[some settings]
+* https://www.chrisatmachine.com/Neovim/01-vim-plug/[plugins]
+
+* initialization is in _~/.config/nvim/init.vim_ 
+* settings are in _~/.config/nvim/general/settings.vim_
+* plugins are in _~/.config/nvim/vim-plug/plugins.vim_
+
+== vim-plug
+
+https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+`:PlugStatus`, `:PlugInstall`, `:PlugUpdate`, `:PlugDiff`, `:PlugClean`, `:PlugUpgrade` (upgrades vim-plug itself)
+
+== Editing
+
+* multiple row select with `Ctrl+v`
+* `v` for Visual mode
+
+== Window management: `Ctrl-W`
+
+* `Alt+hjkl` Navigation
+* `Ctrl-W-W` tab between 2 windows
+* `Ctrl-w v` Vertical split
+* `Ctrl-w s` Horizontal split
+* `Ctrl-w <>` Horizontal resize
+* `Ctrl-w -+` vertical resize resize
+* `Ctrl-w =` equalize window size
+
+== Motions
+
+=== Nouns
+
+* `0` Start
+* `$` End
+* `%` Matching brace
+* `^` 1st non-empty
+* `g_` last non-empty
+* `w/W` Next word
+* `e/E` End of word
+* `b/B` Back word
+* `gg/G` Start/end of doc
+* `H/M/L` move cursor High, Mid, Low of screen
+* `zt/zz/zb` move screen aroudn cursor high, mid, low
+
+=== Insert
+
+=== Delete
+
+* `x` Char
+* `d..` delete...something (define with noun)
+* `dd` delete line
+* `c..` Change: delete and insert
+
+=== Edit
+
+* `r` replace
+* `R` replace _Mode_
+* `y..` yank
+* `yy` yank line
+* `p/P` paste after/before
+
+== Search
+
+* `/` or `?` search mode (fwd/backward)
+* `n/N` next/previous occurance
+
+== Commands
+
+* `:set linebreak` toggles word wrap
+* `:ls` list buffers
+* `:b 2` open buffer 2 in current window

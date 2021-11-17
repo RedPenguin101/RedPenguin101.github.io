@@ -7,7 +7,16 @@
 * `cargo test`
 * `cargo new myapplication --bin`
 
+== Modules and imports
+
+* `use std::fs::File;`
+* `use std::io::{BufRead, BufReader};`
+
+* `mod day1;`
+
 == Strings
+
+* `input.trim().split(",");`, where "," is the separator
 
 === From string-slice to a vec of chars
 
@@ -19,32 +28,16 @@ or to an iterator of chars:
 
 `caps[2].chars().next().unwrap()` where caps[2] is a &str to get the first char of a string
 
-== Command Line Args
+=== String concatenation
 
 [source,rust]
 ----
-use std::env;
-
-let args: Vec<String> = env::args().collect();
-let file = &args[1];
+let mut filename = "resources/day".to_string();
+filename.push_str(&day.to_string());
+filename.push_str("input.txt");
 ----
 
-== Reading from a file
-
-[source,rust]
-----
-use std::fs;
-let filename = &args[1];
-let contents = fs::read_to_string(filename).expect("File read error");
-
-// or
-
-use std::fs::File;
-use std::io::{BufReader, BufRead};
-let f = BufReader::new(File::open("../input/day01.txt").unwrap());
-----
-
-== Parsing a string to an integer
+=== Parsing a string to an integer
 
 [source,rust]
 ----
@@ -58,7 +51,39 @@ fn parse_number_list(input: String) -> Vec<u32> {
 
 //or 
 let num: usize = line.unwrap().parse().unwrap();
+let x = usize::from_str_radix(&bin, 2).unwrap()
 ----
+
+== Command Line Args
+
+[source,rust]
+----
+use std::env;
+
+let args: Vec<String> = env::args().collect();
+let file = &args[1];
+----
+
+== FileIO
+
+=== Reading from a file
+
+[source,rust]
+----
+use std::fs;
+let filename = &args[1];
+let contents = fs::read_to_string(filename).expect("File read error");
+----
+
+=== Reading from a file with BufReader
+
+----
+use std::fs::File;
+use std::io::{BufReader, BufRead};
+let f = BufReader::new(File::open("../input/day01.txt").unwrap());
+----
+
+* use `f.lines()` method to get a iter of lines
 
 == Regex
 
@@ -74,20 +99,17 @@ cap[0] // is full string
 cap[1] // is first match etc
 ----
 
-== Integer to string
+== Numbers
+
+* `my_num.abs()` Absolute value
+
+=== Integer to string
 
 `num.to_string()`
 
-== String concatenation
+== Structs
 
-[source,rust]
-----
-let mut filename = "resources/day".to_string();
-filename.push_str(&day.to_string());
-filename.push_str("input.txt");
-----
-
-== Named Tuples / Tuple Structs
+=== Named Tuples / Tuple Structs
 
 [source,rust]
 ----
@@ -101,3 +123,19 @@ let Password(low, high, ch, pw) = pp;
 * `println!({}, a);` prints `a` in format specified by type `fmt` method of `a => std::fmt::Display` 
 * `println!({:?}, a);` prints `a` in format specified by type `fmt` method `a => std::fmt::Debug` 
 * `println!({:032b}, a);` print binary format with 32 left padded zeros. `a => std::fmt::Binary` 
+
+== Tests
+
+[source,rust]
+----
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_example(){
+        blah blah blah
+        assert_eq!(a, b )
+    }
+}
+----
