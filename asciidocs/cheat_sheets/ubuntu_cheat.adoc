@@ -1,0 +1,16 @@
+= Ubuntu and Linux cheat sheet
+
+== Package and binary management
+
+List all install packages `sudo apt list --installed`
+
+`which dyalog` see where an executable is running from (e.g. `usr/bin/`)
+
+== Bash/ZSH
+
+=== Aliases
+
+* Stored in _~/.zshrc_
+* Syntax `alias <flag> <alias_name>="command"`
+* e.g. `alias v=nvim`
+* Refresh read from config file with `source ~/.zshrc`
