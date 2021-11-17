@@ -1,0 +1,33 @@
+= Nil Punning
+
+Many language have the concept of nil or null or nothing. This represents a variable that points to literally nothing.
+
+One school of thought (including the person who first invented null pointers) think null is a big mistake. Many more modern languages don't have the concept at all, replacing it with Maybe monads.
+
+Lisps do not take this attitude. They take it in totally the other direction, and have turned the use and interpretation of nil into a pattern of programming. This is referred to as _nil punning_, because when you get a `nil`, it can be read in multiple ways, to mean different things.
+
+In old lisps, nil is the terminator of a list (or more accurately, the empty list itself), the boolean false, and also used to represent 'no answer'.
+
+In Clojure, interpretation of what a returned nil means can be confusing, because there is more 'stuff' in Clojure than in, say, Scheme. More data structures, more protocols. Also confusing is the decision about when to return nil from your own functions, and the implied idiomatic meaning that your caller should place on it.
+
+The best way to express what nil means in Clojure is 'there is nothing'. This can mean:
+
+* In the context of a data structure 'no map', or 'no sequence'
+* In the context of an operation on a sequence, 'nothing there'. So if you do `(first my-list)` on an empty list, it will return `nil`
+* (Combining these, you can ask for the first element of 'no list', `(first nil) => nil`)
+
+The pattern of usage that I referred to boils down to saying "if I get back a thing (and not nothing), I'm going to do something, but if I have nothing I'm going to do nothing (i.e. return nil)". What this amounts to is that nils 'bubble up' through your call stack.
+
+A significant downside of this is if you call a function, get back a nil, and _are not expecting a nil_, it's hard to figure out why. Unlike an Exception, another thing which bubbles up through the call stack, there's no stack trace. So you have to crawl down the call chain yourself and figure it out. This mostly will come up when you run into something that _doesn't_ interpret nils. `(+ 5 nil)` for example throws a null pointer exception, and leaves it up to you to figure out why you're getting a nil when you're expecting a number.
+
+The upside is flexibility and concision. Clojure is a very liberal language when it comes to typing, it lets you get away with a lot. It won't check if the arguments that are passed in are a particular, it will just let it through and call function on it. The result of operations in these cases are often a nil. This means your systems can be pretty flexible in the face of changing conditions. Throw stuff at it that it isn't expecting, and it won't blow up. At some point a nil will come around and your system will just decide that it can't do anything with it, shrug its shoulders, and carry on. This obviously assumes that you've properly handled what to do when you encounter a 'nothing'. But once you've done it once, you don't need to do it again.
+
+It is important to not take nil punning too far. You should definately be distinguishing between the response of "I've got nothing for you" (returning a nil, which the implication of 'nothing' being clear from context) and "That question makes no sense, are you sure you know what you're doing?" (throwing expections). 
+
+Likewise don't under-convey. If you have something meaningful to say, say it, don't rely on the user to infer the meaning of your 'nil'. e.g. if you call a server and don't get a response, nil is not appropriate. Tell your caller what happened through the returned value. This will often mean that you 'break the nil chain' at some sensible point in your program. 
+
+Sources:
+
+* https://lispcast.com/nil-punning/
+* https://lispcast.com/what-is-nil-punning/
+* https://lispcast.com/power-of-nil-punning/

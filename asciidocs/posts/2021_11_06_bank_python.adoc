@@ -1,0 +1,128 @@
+= Bank Python
+
+Notes on https://calpaterson.com/bank-python.html[this article]
+
+* Bank python are effectively internal forks of the entire Python Ecosystem by Investment Banks (most of the big ones)
+* Article is framed around a fictional one called 'Minerva'
+
+== Barbara: A global database of Python objects
+
+[source,python]
+----
+import barbara
+
+# open a connection to the default database "ring"
+db = barbara.open()
+
+# pull out some bond
+my_gilt = db["/Instruments/UKGILT201510yZXhhbXBsZQ=="]
+
+# calculate the current value of the bond (according to
+# the bank's modellers)
+current_value: float = my_gilt.value()
+----
+
+* Just pickle and zip under the covers
+* Has 'rings' (namespaces), but the default one is basically global.
+* Majority of day-to-day data comes out of this
+* Apps store their internal state on it (with very simple if any transaction handling)
+* There are multiple instances of the default ring, with eventual consistency between them
+* Object size limit it about 16MB - pretty big for a zipped pickle
+
+== Dagger: A DAG of instruments
+
+* The nature of financial instruments is that they rely (or reference) other financial instruments.
+* Those other financial instruments have dependencies of their own.
+* In other words it's a DAG.
+
+[source,python]
+----
+class CreditDefaultSwap(Instrument):
+    """A credit default swap pays some money when a bond goes into
+    default"""
+
+    def __init__(self, bond: Bond):
+        super().__init__(underliers=[bond])
+        self.bond = bond
+
+    def value(self) -> float:
+        # return the (cached) valuation, according to some
+        # asset pricing model
+        return ...
+----
+
+* When you want to get the price of an instrument, it will walk the graph and generate the price.
+* Instruments are composed into positions: instrument+quantity
+* A collection of positions is called a "book"
+* Or actually, a book contains 'valuables': anything that has a 'value' trait. So a book contains other books.
+* There is a hierarchy of books, all the way up to the bank itself
+* This is, essentially, an Excel replacement. A way to get financial models out of Excel, into a programming language and under tests and version control
+* Also handles 'Risk Metrics'
+* Time-travel abilities
+
+== Walpole
+
+* Source code is also in Barbara, in a special ring called 'sourcecode'
+* So how do you run code? Through Walpole, a general purpose job-runner
+* There is one mega-instance of this program
+* Used for both long-lived-services and period jobs
+* Also for builds! Very low bar for getting stuff into prod
+
+== MnTable
+
+* A table data structure
+* used _everywhere_ in banks
+* Most datasets in banks are 'medium sized': A few gigs.
+* Programmers love hashtables, but they have drawbacks. Mostly memory and speed related
+* Tables are memory dense, easy to spool with disk, very efficient access.
+* Support bulk ops well
+* Pandas? Also drawbacks. Mostly it's 'baroque' API
+
+[source,python]
+----
+# make a new table with three columns of the types provided
+t1 = mntable.Table([('counterparty', str),
+                    ('instrument', str),
+                    ('quantity', float)])
+
+# put some stuff in the table (in place, tables are
+# immutable by default)
+t1.extend(
+    [
+        ['Cleon Partners', 'xlon:voda', 1200.0],
+        ['Cleon Partners', 'xlon:spd', 1200.0],
+        ['Blackpebble', 'xlon:voda', 1200.0],
+    ],
+    in_place=True)
+
+# return a new table (without changing the original)
+# that only includes vodafone.  this is lazy and
+# won't get evaluated until you look at it
+t1.restrict(instrument='xlon:voda)
+----
+
+== Pain
+
+* Hard to get up to speed
+* Has it's own IDE!
+* Divergence between Bank Python and Python only gets larger
+* Professional: you'll forget how to use pip!
+
+== Other stuff
+
+* proprietary time series data structure
+* non-git, sort of bespoke VSC
+* 'vouch' for merge
+* 'replay-oriented financial message buses', whatever that means
+
+== Reflections (of the article author)
+
+* Very 'data first', not 'code first' approach
+* Impedence mismatch comes up a _lot_ in the table<->object stuff
+* Monolith in all respects: one codebase, one database, one job runner. _removes_ a lot of acceidental complexity. You can get something running in prod within an hour.
+* Heavily Excel influenced. All new software will be compared with Excel. The technologists attitude of disdain for Excel is unhelpful to actually getting stuff done.
+* Takes away business user agency. They don't understand their own processes
+* 'Ludicrous Technology Dweebs'
+* Python functions in a source controlled system is a middle ground between Excel and J2EE.
+* Excel is great! You can achieve a lot in it with relatively little experience.
+* Financial modelling uses floats for money ("horror"). But this is because the people using these apps don't give a shit about pennies. Let them not round properly, who cares.

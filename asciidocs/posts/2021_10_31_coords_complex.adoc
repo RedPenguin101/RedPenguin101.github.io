@@ -1,0 +1,49 @@
+= Coordinates and complex numbers
+
+I was trying to do AOC2016 Day 1 in Rust. It took ages because I'm terrible at Rust.
+
+BUT I did find something interesting online about using ideas from complex numbers in handing systems of coordinates.
+
+The problem is essentially walking a set of directions on a 2d grid. You retain a 'facing' (North, south, east, west) and are told to turn left or right, changing your facing.
+
+The naiive way to do this is with large conditionals: `if 'L' and 'N', 'W'` etc.
+
+You can represent positions as tuples of integers (a Point), obviously, but you can also store directions like that. So South is [0 1], indicating that a move south to a point would increment the Y value. Then 'moving' South is just vector addition.
+
+One thing to note is that you can also represent 2d coordinates as complex numbers. [x, y] -> (x + yi) etc. So we can do the same with directions:
+
+* N = -i
+* S = i
+* E = 1
+* W = -1
+
+Since complex numbers have the same addition semantics as vector addition, moving is complex number addition: `(10 + 5i) + i = 10 + 6i`. That's not so interesting, but what is interesting is when you start to do complex multiplication:
+
+* N * i = -i * i = 1 = E
+* E * i = 1 * i = i = S
+* W * -i = -1 * -i = i = S
+
+Without going through everything, you can see that multiplying by i rotates clockwise / right, by -i rotates counterclockwise / left. This is pretty obvious if you think about complex numbers for a bit, but it makes it easy to do this 'realtive' movements on coordinate systems.
+
+Here's an extract from the code I ended up writing:
+
+[source,rust]
+----
+fn walk_path(instructions: &Vec<(char, isize)>) -> Point {
+    let mut position = Point(0, 0);
+    let mut direction = Point(0, 1);
+
+    for (turn, moves) in instructions.iter() {
+        if turn == &'L' {
+            direction.rotate(1)
+        } else {
+            direction.rotate(-1)
+        }
+
+        for _ in 0..*moves {
+            position += direction;
+        }
+    }
+    position
+}
+----
