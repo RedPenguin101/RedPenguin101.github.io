@@ -2,13 +2,8 @@
 
 == Setup
 
-* https://www.chrisatmachine.com/Neovim/01-vim-plug/[setup]
-* https://www.chrisatmachine.com/Neovim/02-vim-general-settings/[some settings]
-* https://www.chrisatmachine.com/Neovim/01-vim-plug/[plugins]
-
-* initialization is in _~/.config/nvim/init.vim_ 
-* settings are in _~/.config/nvim/general/settings.vim_
-* plugins are in _~/.config/nvim/vim-plug/plugins.vim_
+* config is in _~/.config/nvim/init.vim_ 
+* (custom) quick config access with `SPC-ve`, reload with `SPC-vr`
 
 == vim-plug
 
@@ -20,16 +15,24 @@ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 * multiple row select with `Ctrl+v`
 * `v` for Visual mode
+* (custom) `jj` for quick escape
 
 == Window management: `Ctrl-W`
 
-* `Alt+hjkl` Navigation
 * `Ctrl-W-W` tab between 2 windows
 * `Ctrl-w v` Vertical split
 * `Ctrl-w s` Horizontal split
 * `Ctrl-w <>` Horizontal resize
 * `Ctrl-w -+` vertical resize resize
 * `Ctrl-w =` equalize window size
+* (custom) `Alt+hjkl` Navigation
+* `gf` - goto file (if it exists)
+
+== Buffers
+
+* (custom) TAB/S-TAB, next/prv buffer
+* (custom) SPC-q: close buffer
+* (custom) SPC-Q: close all buffer
 
 == Motions
 

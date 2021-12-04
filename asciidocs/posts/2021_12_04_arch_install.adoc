@@ -1,0 +1,168 @@
+= Installing and configuring Arch: a guide
+
+This is a log of my attempt to install and configure Arch Linux on a Laptop. The starting point is having a Live USB with a Arch ISO on it, and you are booted into a live environment. It also assumes a wired internet connection at the start, so you don't have to worry about wifi setup.
+
+I'm using https://itsfoss.com/install-arch-linux/[this] as my reference.
+
+(I always forget, so putting it here: to boot from USB on an Acer, use F12 when booting)
+
+When you're at the command prompt, make sure you can talk to the web, with `ping google.com`
+
+== Disk partitioning (UEFI)
+
+`fdisk -l` to see the disks. Your USB key should be there (for me, `/dev/sda`, and your main drive (`/dev/nvme0n1`).
+
+Select the disk to partition: `fdisk /dev/nvme0n1`
+
+Delete everything on the disk: command `d` until there are no partitions left.
+
+Create an EFI partition with command `n`, with defaults for the first 2 values and `+512M` for the 3rd.
+
+Then command `t` to change it to EFI type (type is probably 1 but you can check with L).
+
+Next we will make the root partition (note: no swap partition these days, just use a swapfile). `n` again, and go with all defaults, to take up the rest of the disk.
+
+Now, `w` to write
+
+== Filesystem
+
+Format the first EFI partition with FAT32: `mkfs.fat -F32 /dev/nvme0n1p1`.
+
+Format the second root partition with ext4: `mkfs.ext4 /dev/nvme0n1p2`
+
+== Install Arch
+
+First update the repository with `pacman -Syy`
+
+Next we'll make sure we're pointing at the right mirrors - the defaults can be _very_ slow.
+
+* `pacman -S reflector`
+* `cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak`
+* `reflector -c "GB" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist`
+
+Mount the partition with `mount /dev/nvme0n1p2 /mnt`
+
+Use pacstrap to install Arch:
+
+`pacstrap /mnt base linux linux-firmware vim sudo`
+
+== Basic OS configuration
+
+generate an fstab file (File Systems Table), contains basic config.
+
+`genfstab -U /mnt >> /mnt/etc/fstab`
+
+Log into the disk installed OS with `arch-chroot /mnt`
+
+=== Time and Locale
+
+Set up your datetime with `timedatectl set-timezone Europe/London`
+
+Open `/etc/locale.gen` in vim and uncomment `en_GB.UTF-8 UTF-8`, and generate a localconf with:
+
+```
+locale-gen
+echo LANG=en_GB.UTF-8 > /etc/locale.conf
+export LANG=en_GB.UTF-8
+```
+
+=== Networking
+
+`echo acerarch > /etc/hostname` (change the hostname to whatever you want)
+
+`touch /etc/hosts`
+
+edit `/etc/hosts` for the following:
+
+```
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   acerarch
+```
+
+set up a root password with `passwd`
+
+== Install grub
+
+`pacman -S grub efibootmgr`
+
+`mkdir /boot/efi`
+
+`mount /dev/nvme0n1p1 /boot/efi` (mount your EFI partition)
+
+`grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi`
+
+`grub-mkconfig -o /boot/grub/grub.cfg`
+
+== Install networking stuff
+
+`pacman -S netctl dialog wpa_supplicant dhcpcd`
+
+== Reboot your machine and log in
+
+`exit`, `umount -R /mnt`, `reboot now`
+
+== Set up wifi
+
+`wifi-menu`
+
+== Non-root user
+
+`useradd -m -G wheel -s /bin/bash joe`
+
+`passwd joe`
+
+`EDITOR=vim visudo`
+
+uncomment `%wheel ALL=(ALL) ALL`
+
+Shutdown, re-login as your new user and see if stuff works.
+
+== Swap file
+
+`free` to see your RAM size. Use that in place of 4G if it's not 4G
+
+```
+fallocate -l 4G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+```
+
+`free` again to see it.
+
+== Install X/i3
+
+https://sks147.medium.com/minimal-arch-linux-uefi-installation-with-i3-gaps-cfc507cc8be1
+
+`pacman -S xorg xorg-xinit xorg-server lightdm lightdm-gtk-greeter i3 rxvt-unicode`
+
+`systemctl start lightdm`
+`systemctl enable lightdm`
+
+Some issues with this: try
+
+```
+echo "exec i3" >> .xinitrc
+startx
+```
+
+== Setup
+
+```
+pacman -S install git neovim python unzip wget
+git clone [my dotfiles]
+```
+
+=== Kitty install
+
+```
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+
+wget https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip
+unzip ,,,
+sudo mv JetBrainsMono-*.ttf /usr/share/fonts/
+```
+
+edit `~/.config/i3/config` with line `bindsym $mod+Return exec ~/.local/kitty.app/bin/kitty` (replace what's there)
+
