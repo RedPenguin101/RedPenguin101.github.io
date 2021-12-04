@@ -18,6 +18,18 @@
 
 * `input.trim().split(",");`, where "," is the separator
 
+=== From vec of chars to string
+
+[source,rust]
+----
+fn main() {
+    let char_vector = vec!['h', 'e', 'l', 'l', 'o'];
+    let str: String = char_vector.into_iter().collect();
+
+    println!("{}", str);
+}
+----
+
 === From string-slice to a vec of chars
 
 `let c: Vec<char> = str.chars().collect();`
