@@ -154,10 +154,11 @@ echo "exec i3" >> .xinitrc
 startx
 ```
 
-== Setup
+== User Setup
 
 ```
-pacman -S install git neovim python unzip wget lazygit epiphany
+pacman -S install git neovim python unzip wget sed which
+pacman -S install lazygit epiphany feh rofi
 git clone [my dotfiles]
 ```
 
@@ -203,9 +204,36 @@ chmod +x linux-install-1.10.3.1040.sh
 sudo ./linux-install-1.10.3.1040.sh
 ```
 
-=== Todo
+=== ZSH/OMZ
 
-* zig (with coc)
-* git ssh
-* zsh / omzsh
+https://github.com/ohmyzsh/ohmyzsh/wiki
+https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
 
+```
+sudo pacman -S zsh
+chsh -s $(which zsh)
+sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+```
+
+=== Zig
+
+```
+sudo pacman -S zig nodejs
+mkdir $HOME/zls && cd $HOME/zls && curl -L https://github.com/zigtools/zls/releases/download/0.1.0/x86_64-linux.tar.xz | tar -xJ --strip-components=1 -C .
+```
+
+Make sure `coc` is installed in nvim
+
+=== babashka
+
+AUR has a package, but diong it from source here
+
+```
+sudo bash < <(curl -s https://raw.githubusercontent.com/babashka/babashka/master/install)
+```
+
+installs to /usr/local/bin/bb
+
+Get `pacman -S asciidoctor` for blog publishing
