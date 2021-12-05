@@ -138,6 +138,12 @@ swapon /swapfile
 
 `free` again to see it.
 
+Add an entry in `/etc/fstab` for the swapfile:
+
+```
+/swapfile none swap defaults 0 0
+```
+
 == Install X/i3
 
 https://sks147.medium.com/minimal-arch-linux-uefi-installation-with-i3-gaps-cfc507cc8be1

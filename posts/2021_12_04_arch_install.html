@@ -670,6 +670,14 @@ swapon /swapfile</code></pre>
 <div class="paragraph">
 <p><code>free</code> again to see it.</p>
 </div>
+<div class="paragraph">
+<p>Add an entry in <code>/etc/fstab</code> for the swapfile:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>/swapfile none swap defaults 0 0</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -801,13 +809,16 @@ mkdir $HOME/zls &amp;&amp; cd $HOME/zls &amp;&amp; curl -L https://github.com/zi
 <div class="paragraph">
 <p>installs to /usr/local/bin/bb</p>
 </div>
+<div class="paragraph">
+<p>Get <code>pacman -S asciidoctor</code> for blog publishing</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-12-05 13:25:44 UTC
+Last updated 2021-12-05 13:33:52 UTC
 </div>
 </div>
 </body>
