@@ -106,6 +106,13 @@ set up a root password with `passwd`
 
 `wifi-menu`
 
+Once everything seems to be working, and you've generated the profile, you can enable use
+
+```
+sudo netctl start profile-name
+sudo netctl enable profile-name
+```
+
 == Non-root user
 
 `useradd -m -G wheel -s /bin/bash joe`
@@ -135,7 +142,7 @@ swapon /swapfile
 
 https://sks147.medium.com/minimal-arch-linux-uefi-installation-with-i3-gaps-cfc507cc8be1
 
-`pacman -S xorg xorg-xinit xorg-server lightdm lightdm-gtk-greeter i3 rxvt-unicode`
+`pacman -S xorg xorg-xinit xorg-server lightdm lightdm-gtk-greeter i3`
 
 `systemctl start lightdm`
 `systemctl enable lightdm`
@@ -150,9 +157,17 @@ startx
 == Setup
 
 ```
-pacman -S install git neovim python unzip wget
+pacman -S install git neovim python unzip wget lazygit epiphany
 git clone [my dotfiles]
 ```
+
+=== Git
+
+```
+git config --global user.name "Joe Lezala"
+git config --global user.email "allaboutthatmace1789@gmail.com"
+```
+Add in SSH stuff here
 
 === Kitty install
 
@@ -165,4 +180,21 @@ sudo mv JetBrainsMono-*.ttf /usr/share/fonts/
 ```
 
 edit `~/.config/i3/config` with line `bindsym $mod+Return exec ~/.local/kitty.app/bin/kitty` (replace what's there)
+
+Copy over dotfiles
+
+=== Install clojure
+
+```
+pacman -S jdk11-openjdk rlwrap
+curl -O https://download.clojure.org/install/linux-install-1.10.3.1040.sh
+chmod +x linux-install-1.10.3.1040.sh
+sudo ./linux-install-1.10.3.1040.sh
+```
+
+=== Todo
+
+* zig (with coc)
+* git ssh
+* zsh / omzsh
 
