@@ -765,8 +765,12 @@ sudo mv JetBrainsMono-*.ttf /usr/share/fonts/</code></pre>
 <pre class="highlight"><code>pacman -S jdk11-openjdk rlwrap
 curl -O https://download.clojure.org/install/linux-install-1.10.3.1040.sh
 chmod +x linux-install-1.10.3.1040.sh
-sudo ./linux-install-1.10.3.1040.sh</code></pre>
+sudo ./linux-install-1.10.3.1040.sh
+sudo bash &lt; &lt;(curl -s https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install)</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>clojure-lsp is installed in <code>/usr/local/bin</code></p>
 </div>
 </div>
 <div class="sect2">
@@ -788,7 +792,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 <h3 id="_zig">Zig</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>sudo pacman -S zig nodejs
+<pre class="highlight"><code>sudo pacman -S zig nodejs npm
 mkdir $HOME/zls &amp;&amp; cd $HOME/zls &amp;&amp; curl -L https://github.com/zigtools/zls/releases/download/0.1.0/x86_64-linux.tar.xz | tar -xJ --strip-components=1 -C .</code></pre>
 </div>
 </div>
@@ -818,7 +822,7 @@ mkdir $HOME/zls &amp;&amp; cd $HOME/zls &amp;&amp; curl -L https://github.com/zi
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-12-05 13:33:52 UTC
+Last updated 2021-12-06 14:10:04 UTC
 </div>
 </div>
 </body>

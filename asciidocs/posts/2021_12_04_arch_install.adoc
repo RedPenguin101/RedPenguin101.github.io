@@ -208,7 +208,9 @@ pacman -S jdk11-openjdk rlwrap
 curl -O https://download.clojure.org/install/linux-install-1.10.3.1040.sh
 chmod +x linux-install-1.10.3.1040.sh
 sudo ./linux-install-1.10.3.1040.sh
+sudo bash < <(curl -s https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install)
 ```
+clojure-lsp is installed in `/usr/local/bin`
 
 === ZSH/OMZ
 
@@ -226,7 +228,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 === Zig
 
 ```
-sudo pacman -S zig nodejs
+sudo pacman -S zig nodejs npm
 mkdir $HOME/zls && cd $HOME/zls && curl -L https://github.com/zigtools/zls/releases/download/0.1.0/x86_64-linux.tar.xz | tar -xJ --strip-components=1 -C .
 ```
 
