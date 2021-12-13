@@ -6,6 +6,7 @@
          '[clojure.string :as str])
 
 (def adoc-post-path "./asciidocs/posts/")
+(def markdown-post-path "./markdown/posts/")
 (def html-post-path "./posts/")
 (def index "./index.html")
 
@@ -24,16 +25,26 @@
 ;; Post publishing
 ;;;;;;;;;;;;;;;;;;;;
 
-(defn publish-post [path]
+(defn publish-ascii-post [path]
   (sh "asciidoctor" path)
   (str/replace path ".adoc" ".html"))
+
+(defn publish-markdown-post [path]
+  #_(sh "asciidoctor" path)
+  (str/replace path ".md" ".html"))
 
 (defn move-file [in-path out-path]
   (sh "mv" in-path out-path))
 
-(defn publish! []
+(defn publish-adoc! []
   (->> (get-file-paths adoc-post-path)
-       (map publish-post)
+       (map publish-ascii-post)
+       (map #(move-file % html-post-path))
+       doall))
+
+(defn publish-markdown! []
+  (->> (get-file-paths markdown-post-path)
+       (map publish-markdown-post)
        (map #(move-file % html-post-path))
        doall))
 
@@ -41,18 +52,26 @@
 ;; Index building
 ;;;;;;;;;;;;;;;;;;;;
 
-(defn post-title [adoc-file-path]
-  (subs (file-first-line adoc-file-path) 2))
+(defn post-title [file-path]
+  (subs (file-first-line file-path) 2))
 
-(defn adoc-path-from-html [file-path]
-  (str adoc-post-path (str/replace (last (str/split file-path #"/")) ".html" ".adoc")))
+(defn path-from-html [html-post-path extention]
+  (str (if (= extention :adoc) adoc-post-path markdown-post-path)
+       (str/replace (last (str/split html-post-path #"/"))
+                    ".html"
+                    (if (= extention :adoc) ".adoc" ".md"))))
+
+(defn get-post-title [html-post-path]
+  (try (post-title (path-from-html html-post-path :md))
+       (catch Exception _
+        (post-title (path-from-html html-post-path :adoc)))))
 
 (defn entry-from-file [file-path]
   (let [filename (last (str/split file-path #"/"))
         [y m d] (re-seq #"\d+" filename)]
     {:date (str/join "-" [y m d])
      :filename filename
-     :title (post-title (adoc-path-from-html file-path))}))
+     :title (get-post-title file-path)}))
 
 (defn build-index [entries]
   [:div
@@ -73,7 +92,8 @@
        (spit index)))
 
 (defn -main []
-  (publish!)
+  (publish-adoc!)
+  #_(publish-markdown!)
   (create-index!))
 
 (-main)
