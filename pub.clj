@@ -39,12 +39,14 @@
   (sh "mv" in-path out-path))
 
 (defn publish-adoc! []
+  (println "Publishing Adocs")
   (->> (get-file-paths adoc-post-path)
        (map publish-ascii-post)
        (map #(move-file % html-post-path))
        doall))
 
 (defn publish-markdown! []
+  (println "Publishing Markdowns")
   (->> (get-file-paths markdown-post-path)
        (map publish-markdown-post)
        (map #(move-file % html-post-path))
@@ -87,6 +89,7 @@
              (:title entry)]]])]])
 
 (defn create-index! []
+  (println "Creating index")
   (->> (get-file-paths html-post-path)
        (map entry-from-file)
        build-index
@@ -99,3 +102,4 @@
   (create-index!))
 
 (-main)
+
