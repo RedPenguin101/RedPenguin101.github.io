@@ -30,7 +30,9 @@
   (str/replace path ".adoc" ".html"))
 
 (defn publish-markdown-post [path]
-  #_(sh "asciidoctor" path)
+  (sh "pandoc"
+      path "-f" "markdown" "-t" "html" "-s" "-o"
+      (str/replace path ".md" ".html"))
   (str/replace path ".md" ".html"))
 
 (defn move-file [in-path out-path]
@@ -93,7 +95,7 @@
 
 (defn -main []
   (publish-adoc!)
-  #_(publish-markdown!)
+  (publish-markdown!)
   (create-index!))
 
 (-main)
