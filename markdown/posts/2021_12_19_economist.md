@@ -107,3 +107,27 @@ They will have to move fast and notch up some marks on corruption: much of the e
 Frances presidential election is in April. Macron is hoping to use France's presidency of the EU Council between January and then as an electioneering tool.
 
 The Council presidency itself is largely procedural. But is a good platform for getting attention. On December 9th he announced a typical avalanche of big ideas. A lofty European ambition was one of the things that won him the presidency in the first place, and he's hoping it will again. The approach might backfire: other countries don't like being the idea of being bossed around by France.
+
+## Oxford-AZ Vaccine
+
+On some measures (number of doses, number of lives saved) AZ is probably the most successful vaccine. It was never intended to be a money printer: Oxford university didn't want it sold at profit. A dose costs $4, compared to $20 for Pfizer.
+
+But AZ will rarely be used for boosters in the UK. And the company's share price gains are not on a par with Pfizer and Moderna.
+
+The FDA hasn't approved it, after AZ failed to notify them about an adverse event in a trial. A failed delivery to the EU meant they ordered Pfizer. It's a adenoviral vector, rather than an mrna vaccine, which has proved less effective at stopping infection, and maybe at preventing death. There were early scares about blood-clots.
+
+AZ is heavily used in India, Mexico and Brazil, and is starting to see use in SE Asia.
+
+## Liz Truss, UK Foreign Secretary
+
+Truss became FS in the September reshuffle. The doctrine is ideological, non-European, global alliance seeking, anti Russia and China. Global Britain. Her Chatham House speech on December 8th was Manichean, almost America: a battle between the free world and the autocracies, with 'non-aligned' states in play. She criticizes a post 1992 'age of introspection'. She is nervous of an America turning inward, and wants to strengthen ties with Australia and India.
+
+The party has made a u-turn on China since 2006, but this is the first time it has been cast as an ideological, rather than a pragmatic, move.
+
+She wants economic diplomacy: a 'network of liberty'. She want into the TPP, and to provide infra spending in poor countries to provide an alternative to China.
+
+Skeptics dislike the 'boosterism' and the overly simplistic patriotic views Truss espouses.
+
+She seems to be good at getting things done. She dislikes abstraction. She is adept at working around Whitehall inertia.
+
+Despite being a supporter of Brexit (though she voted remain), Europhiles believe she will ultimately be a booster of the relationship with Europe: the new cold war will mean the EU are on the side of the angels in her view.
