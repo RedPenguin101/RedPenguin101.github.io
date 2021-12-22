@@ -1,5 +1,9 @@
 # Tacit Knowledge vs. Deliberate Practice
 
+* Tacit Knowledge vs. Transmissionism: can every expertise be explained?
+* In trying to explain: principles and heuristics. But then many exceptions. Then "It just feels right"
+* The right way is to emulate and get feedback on specific cases.
+
 ## Tacit Knowledge
 
 [Link](https://commoncog.com/blog/tacit-knowledge-is-a-real-thing/)
