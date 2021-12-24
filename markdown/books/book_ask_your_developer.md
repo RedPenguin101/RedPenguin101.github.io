@@ -1,4 +1,4 @@
-# Book notes, ask your developer, by Jeff Lawson
+# Ask your developer, by Jeff Lawson
 
 ## Content
 
