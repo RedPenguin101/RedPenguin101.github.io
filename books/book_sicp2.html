@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Structure and interpretation of computer programs Part 2: Building abstractions with data</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+/* Uncomment @import statement to use as custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}
+audio,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+a{background:none}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*::before,*::after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.stretch{width:100%}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:0}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #dddddf;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite::before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt{background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix::before,.clearfix::after,.float-group::before,.float-group::after{content:" ";display:table}
+.clearfix::after,.float-group::after{clear:both}
+:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+:not(pre)>code.nobreak{word-wrap:normal}
+:not(pre)>code.nowrap{white-space:nowrap}
+pre{color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;line-height:1.45;text-rendering:optimizeSpeed}
+pre code,pre pre{color:inherit;font-size:inherit;line-height:inherit}
+pre>code{display:block}
+pre.nowrap,pre.nowrap pre{white-space:pre;word-wrap:normal}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menuref{color:#000}
+.menuseq b:not(.caret),.menuref{font-weight:inherit}
+.menuseq{word-spacing:-.02em}
+.menuseq b.caret{font-size:1.25em;line-height:.8}
+.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
+b.button::before,b.button::after{position:relative;top:-1px;font-weight:400}
+b.button::before{content:"[";padding:0 3px 0 2px}
+b.button::after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header::before,#header::after,#content::before,#content::after,#footnotes::before,#footnotes::after,#footer::before,#footer::after{content:" ";display:table}
+#header::after,#content::after,#footnotes::after,#footer::after{clear:both}
+#content{margin-top:1.25em}
+#content::before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #dddddf}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
+#header .details{border-bottom:1px solid #dddddf;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span::before{content:"\00a0\2013\00a0"}
+#header .details br+span.author::before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark::before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber::after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #dddddf;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #e7e7e9;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #e7e7e9;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #e7e7e9;left:auto;right:0}}
+@media screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+#content{margin-bottom:.625em}
+.sect1{padding-bottom:.625em}
+@media screen and (min-width:768px){#content{margin-bottom:1.25em}
+.sect1{padding-bottom:1.25em}}
+.sect1:last-child{padding-bottom:0}
+.sect1+.sect1{border-top:1px solid #e7e7e9}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor::before,h2>a.anchor::before,h3>a.anchor::before,#toctitle>a.anchor::before,.sidebarblock>.content>.title>a.anchor::before,h4>a.anchor::before,h5>a.anchor::before,h6>a.anchor::before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+details,.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+details>summary:first-of-type{cursor:pointer;display:list-item;outline:none;margin-bottom:.75em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
+.paragraph.lead>p,#preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:1.21875em;line-height:1.6;color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock>.content>pre{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;overflow-x:auto;padding:1em;font-size:.8125em}
+@media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
+@media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
+.literalblock pre,.listingblock>.content>pre:not(.highlight),.listingblock>.content>pre[class="highlight"],.listingblock>.content>pre[class^="highlight "]{background:#f7f7f8}
+.literalblock.output pre{color:#f7f7f8;background:rgba(0,0,0,.9)}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]::before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:inherit;opacity:.5}
+.listingblock:hover code[data-lang]::before{display:block}
+.listingblock.terminal pre .command::before{content:attr(data-prompt);padding-right:.5em;color:inherit;opacity:.5}
+.listingblock.terminal pre .command:not([data-prompt])::before{content:"$"}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.prettyprint{background:#f7f7f8}
+pre.prettyprint .linenums{line-height:1.45;margin-left:2em}
+pre.prettyprint li{background:none;list-style-type:inherit;padding-left:0}
+pre.prettyprint li code[data-lang]::before{opacity:1}
+pre.prettyprint li:not(:first-child) code[data-lang]::before{display:none}
+table.linenotable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.linenotable td[class]{color:inherit;vertical-align:top;padding:0;line-height:inherit;white-space:normal}
+table.linenotable td.code{padding-left:.75em}
+table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;padding-right:.5em}
+pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
+pre.pygments .lineno::before{content:"";margin-right:-.125em}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.75em;margin-right:.5ex;text-align:right}
+.verseblock{margin:0 1em 1.25em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract blockquote::before,.quoteblock.excerpt blockquote::before,.quoteblock .quoteblock blockquote::before{display:none}
+.quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
+.quoteblock.abstract{margin:0 1em 1.25em;display:block}
+.quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
+.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
+.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
+.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
+table.tableblock{max-width:100%;border-collapse:separate}
+p.tableblock:last-child{margin-bottom:0}
+td.tableblock>.content>:last-child{margin-bottom:-1.25em}
+td.tableblock>.content>:last-child.sidebarblock{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all>thead>tr>.tableblock,table.grid-all>tbody>tr>.tableblock{border-width:0 1px 1px 0}
+table.grid-all>tfoot>tr>.tableblock{border-width:1px 1px 0 0}
+table.grid-cols>*>tr>.tableblock{border-width:0 1px 0 0}
+table.grid-rows>thead>tr>.tableblock,table.grid-rows>tbody>tr>.tableblock{border-width:0 0 1px}
+table.grid-rows>tfoot>tr>.tableblock{border-width:1px 0 0}
+table.grid-all>*>tr>.tableblock:last-child,table.grid-cols>*>tr>.tableblock:last-child{border-right-width:0}
+table.grid-all>tbody>tr:last-child>.tableblock,table.grid-all>thead:last-child>tr>.tableblock,table.grid-rows>tbody>tr:last-child>.tableblock,table.grid-rows>thead:last-child>tr>.tableblock{border-bottom-width:0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot,table.frame-ends{border-width:1px 0}
+table.stripes-all tr,table.stripes-odd tr:nth-of-type(odd),table.stripes-even tr:nth-of-type(even),table.stripes-hover tr:hover{background:#f8f8f7}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
+ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
+ul.unstyled,ol.unstyled{margin-left:0}
+ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.inline{display:-ms-flexbox;display:-webkit-box;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap;list-style:none;margin:0 0 .625em -1.25em}
+ul.inline>li{margin-left:1.25em}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
+.colist td:not([class]):first-child img{max-width:none}
+.colist td:not([class]):last-child{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left{margin:.25em .625em 1.25em 0}
+.imageblock.right{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em;border-width:1px 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none;margin-left:-1.05em}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background:#00fafa}
+.black{color:#000}
+.black-background{background:#000}
+.blue{color:#0000bf}
+.blue-background{background:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background:#fa00fa}
+.gray{color:#606060}
+.gray-background{background:#7d7d7d}
+.green{color:#006000}
+.green-background{background:#007d00}
+.lime{color:#00bf00}
+.lime-background{background:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background:#7d0000}
+.navy{color:#000060}
+.navy-background{background:#00007d}
+.olive{color:#606000}
+.olive-background{background:#7d7d00}
+.purple{color:#600060}
+.purple-background{background:#7d007d}
+.red{color:#bf0000}
+.red-background{background:#fa0000}
+.silver{color:#909090}
+.silver-background{background:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background:#fafa00}
+span.icon>.fa{cursor:default}
+a span.icon>.fa{cursor:inherit}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]::after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@page{margin:1.25cm .75cm}
+@media print{*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+html{font-size:80%}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare)::after,a[href^="https:"]:not(.bare)::after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]::after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #dddddf!important;padding-bottom:0!important}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span::before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]::before{display:block}
+#footer{padding:0 .9375em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+@media print,amzn-kf8{#header>h1:first-child{margin-top:1.25rem}
+.sect1{padding:0!important}
+.sect1+.sect1{border:0}
+#footer{background:none}
+#footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
+@media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>Structure and interpretation of computer programs Part 2: Building abstractions with data</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction_to_data_abstraction">Introduction to data abstraction</a></li>
+<li><a href="#_hierarchical_data_and_the_closure_property">Hierarchical data and the closure property</a>
+<ul class="sectlevel2">
+<li><a href="#_sequences">Sequences</a></li>
+<li><a href="#_hierarchical_structures">Hierarchical structures</a></li>
+<li><a href="#_sequences_as_conventional_interfaces">Sequences as conventional interfaces</a></li>
+</ul>
+</li>
+<li><a href="#_symbolic_data">Symbolic data</a>
+<ul class="sectlevel2">
+<li><a href="#_example_symbolic_differentiation_example">Example: Symbolic differentiation example</a></li>
+<li><a href="#_example_representing_sets">Example: Representing Sets</a></li>
+<li><a href="#_example_huffman_encoding_trees">Example: Huffman Encoding Trees</a></li>
+</ul>
+</li>
+<li><a href="#_multiple_representations_for_abstract_data">Multiple Representations for Abstract Data</a>
+<ul class="sectlevel2">
+<li><a href="#_complex_numbers">Complex Numbers</a></li>
+</ul>
+</li>
+<li><a href="#_systems_with_generic_operations">Systems with Generic Operations</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>So far we&#8217;ve looked at procedural abstractions operating on numerical data. Usually, we&#8217;ll need to build more complex abstractions on data types themselves. In particular, <em>compound data types</em>. Similarly to procedural abstractions, this will allow us to elevate the conceptual level at which we can design our programs.</p>
+</div>
+<div class="paragraph">
+<p>Consider rational numbers (i.e. those that can be expressed as x/y, where x and y are integers). We could design a program where we we deal with and track numerators and denominators separately. But it would be better if we could 'glue together' the two numbers, and deal with them as a single thing, and we can separate how we deal with rational numbers from their concrete representation, such separation forming an <strong>abstraction barrier</strong> between different parts of a program.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction_to_data_abstraction">Introduction to data abstraction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A data abstraction is when you use compound data objects so that they operate on abstract data. The concrete data representation is defined independently from the programs that use the data. We use <strong>selectors</strong> and <strong>constructors</strong> to interface between the two thing.</p>
+</div>
+<div class="paragraph">
+<p>Consider an API for a rational numbers abstraction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(make-rat &lt;n&gt; &lt;d&gt;)
+(numer &lt;x&gt;)
+(denom &lt;x&gt;)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is an example of the <strong>wishful thinking</strong> strategy. We haven&#8217;t talked about how this will be implemented, only the operations we would like to use to interact with rationals. Using these, we can trivially implement higher level operations on rationals:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn add-r [x y]
+  (make-rat (+ (* (numer x1) (denom x2)) (* (numer x2) (denom x1)))
+            (* (denom x1) (denom x2))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can implement a data structure for rationals with a pair:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn pair [a b] [a b])
+(defn make-rat [n d] (pair n d))
+(defn numer [x] (first x))
+(defn denom [x] (second x))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that make-rat doesn&#8217;t reduce its arguments to the gcd, but can be made to do so trivially.</p>
+</div>
+<div class="paragraph">
+<p>We can envision this schema as a series of abstraction barriers, where at each level separated by a barrier, the level doesn&#8217;t need to know how the implementation below it works. This makes programs easier to maintain and modify, since provided we don&#8217;t change the API, we can change how lower level procedures are implemented without breaking the client.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>=== Programs that use rational number ===
+    Rational numbers in problem domain
+========= add-rat, sub-rat etc. =========
+    Rational numbers as numer / denom
+======= make-rat, numer, denom ==========
+       Rational numbers as pairs
+========= pair, first, second ===========
+    Language implementation of pair</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is worth pausing to consider what we mean by data. We implemented rationals with <code>pair</code> <code>first</code> and <code>second</code> above, but we don&#8217;t know how the language implements them. We assume there is some underlying 'stuff' which allows us to glue together two numbers and then later retrieve them. In fact we can easily implement these without any such underlying data, using only procedures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn pair [x y]
+  (fn [m]
+    (cond (= m 0) x
+          (= m 1) y
+          :else (throw (ex-info "Argument not 0 or 1" [x y m])))))
+
+(defn first [z] (z 0))
+(defn second [z] (z 1))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hierarchical_data_and_the_closure_property">Hierarchical data and the closure property</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We&#8217;ve seen pairs are primitive glue we can use to make compound data.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_2_box1.gif" alt="2 2 box1">
+</div>
+</div>
+<div class="paragraph">
+<p>We can extend this to create more complicated things by having pairs of <em>pairs</em>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_2_box2.gif" alt="2 2 box2">
+</div>
+</div>
+<div class="paragraph">
+<p>This permits the creation of <em>hierarchical</em> data structures: structures made up of parts which are themselves made up of parts.</p>
+</div>
+<div class="paragraph">
+<p>The two most important structures we can create with nested pairs are <strong>sequences</strong> and <strong>trees</strong>.</p>
+</div>
+<div class="sect2">
+<h3 id="_sequences">Sequences</h3>
+<div class="paragraph">
+<p>A sequence can be represented as a chain of pairs, where the first element is your data, and the second element is a pair, the first element of which is your data, the second element is a pair&#8230;&#8203;etc.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_4_sequence.gif" alt="2 4 sequence">
+</div>
+</div>
+<div class="paragraph">
+<p>This would be constructed using like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(pair 1
+      (pair 2
+            (pair 3
+                  (pair 4 nil))))
+;; =&gt; [1 [2 [3 [4 nil]]]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Not the use of <code>nil</code> (from <em>nihil</em>, meaning "nothing") to terminate the list.</p>
+</div>
+<div class="paragraph">
+<p>This sequence is call a <em>list</em>, or linked list. Clojure has a built in primitive <code>list</code> to help in constructing lists. The above can be described <code>(list 1 2 3 4)</code></p>
+</div>
+<div class="paragraph">
+<p>Note that in Clojure, lists are <em>not</em> represented as a chain of pairs. So in SICP <code>cdr</code> can be equivalent to <code>second</code> or <code>rest</code> depending on the data structure.</p>
+</div>
+<div class="paragraph">
+<p>We can manipulate lists by successively " <code>rest</code> ing down" the list. For example, to get the nth element of the list:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn list-ref [items n]
+  (if (= n 0) (first items)
+      (list-ref (rest items) (- n 1))))
+
+(list-ref (list 1 4 9 16 25) 3) ;;=&gt; 16</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sometimes you&#8217;ll want to traverse the whole list, so you need to know when you&#8217;re finished - which is signalled by the call to <code>rest</code> returning the empty list</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn length [items]
+  (if (empty? items) 0
+      (+ 1 (length (rest items)))))
+
+(length (list 1 3 5 7))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another convention is to " <code>cons</code> up" an result list while <code>rest</code> ing down another one:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn append [list1 list2]
+  (if (empty? list1) list2
+      (cons (first list1) (append (rest list1) list2))))
+
+(append (list 1 4 9 16 25) (list 1 3 5 7)) ;; =&gt; (1 4 9 16 25 1 3 5 7)
+(append (list 1 3 5 7) (list 1 4 9 16 25)) ;; =&gt; (1 3 5 7 1 4 9 16 25)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(note: in Clojure, <code>cons</code> <em>is</em> the right fn to use here, even though it hasn&#8217;t been up to now. This is due to the differing implementations of lists in Scheme and Clojure).</p>
+</div>
+<div class="paragraph">
+<p>Often we want to apply a transform to each element in a list.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn scale-list [items factor]
+  (if (empty? items) nil
+      (cons (* (first items) factor)
+            (scale-list (rest items) factor))))
+
+(scale-list (list 1 2 3 4 5) 10)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This idea is useful enough that it can be abstracted into a higher order function called <code>map</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn map' [f items]
+  (if (empty? items) nil
+      (cons (f (first items))
+            (map' f (rest items)))))
+
+(map' (fn [item] (* item 10)) (list 1 2 3 4 5))
+
+(defn scale-list [items factor]
+  (map' (fn [x] (* x factor) items)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Note: though <code>map'</code> is defined here, for future examples, Clojure&#8217;s built in <code>map</code> will be used)</p>
+</div>
+<div class="paragraph">
+<p><code>map</code> represents an important pattern, because it allows us to deal with lists at a higher level. In the original <code>scale-list</code> it was very explicit how we were looping through the sequence. <code>map</code> suppresses that detail. We are allowed to <em>think</em> about the operation differently. <code>map</code> is a way of erecting an abstraction barrier that isolates implementation of procedures that transform lists from the detail of how lists are created and combined.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hierarchical_structures">Hierarchical structures</h3>
+<div class="paragraph">
+<p>We saw that sequences can be thought of as chains of pairs, where the first element is scalar data, and the second is another pair (or nil). We can further generalise this by permitting the <em>first</em> element to be a compound structure too. For example <code>(pair (list 1 2) (list 3 4))</code> could be thought of as</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_5_hier.gif" alt="2 5 hier">
+</div>
+</div>
+<div class="paragraph">
+<p>Or alternatively, as a <em>tree</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_6_tree.gif" alt="2 6 tree">
+</div>
+</div>
+<div class="paragraph">
+<p>Note that a tree consists of leaves (scalar data) and branches (compound glue). Note also that a tree can be thought of as consisting of sub-trees.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn count-leaves [tree]
+  (cond (not (coll? tree)) 1
+        (empty? tree) 0
+        :else (+ (count-leaves (first tree))
+                 (count-leaves (rest tree)))))
+
+(length (list (list 1 2) 3 4)) ;; =&gt; 3
+(count-leaves (list (list 1 2) 3 4)) ;; =&gt; 4</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can also use <code>map</code> together with recursion to deal with trees.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn scale-tree [tree factor]
+  (map (fn [subtree]
+         (if (coll? subtree) (scale-tree subtree factor)
+             (* subtree factor)))
+       tree))
+
+(scale-tree '((1) 2 (3 4)) 3)
+;; =&gt; ((3) 6 (9 12))</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sequences_as_conventional_interfaces">Sequences as conventional interfaces</h3>
+<div class="paragraph">
+<p>Consider the procedures</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn sum-odd-squares [tree]
+  (cond (not (list? tree)) (if (odd? tree) (square tree) 0)
+        (empty? tree) 0
+        :else (+ (sum-odd-squares (first tree))
+                 (sum-odd-squares (rest tree)))))
+
+(sum-odd-squares '(1 2 3 4 5))
+;; =&gt; 35
+
+(defn even-fibs [n]
+  (letfn [(next [k]
+            (if (&gt; k n) nil
+                (let [f (fib k)]
+                  (if (even? f) (cons f (next (inc k))) (next (+ k 1))))))]
+    (next 0)))
+
+(even-fibs 10)
+;; =&gt; (0 2 8 34)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On the surface these would seem to have little in common. The first can be described as:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>enumerates the leaves of a tree as a sequence</p>
+</li>
+<li>
+<p>filters them, selecting the odd ones</p>
+</li>
+<li>
+<p>computes the square of each of the selected ones</p>
+</li>
+<li>
+<p>accumulates the results using +, starting a zero</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The second as:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>enumerates the integers from 0 to n as a sequence</p>
+</li>
+<li>
+<p>computes the Fibonacci numbers for each integer</p>
+</li>
+<li>
+<p>filters them, selecting the even ones</p>
+</li>
+<li>
+<p>accumulates the results using cons, starting with the empty list</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The first step is to create a sequence of values from our input data structure. These can be analogized as 'signals' flowing through a circuit, with stages implementing which transform those signals/sequences</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_7_pipe.gif" alt="2 7 pipe">
+</div>
+</div>
+<div class="paragraph">
+<p>The procedures defined above don&#8217;t really reflect this blueprint. In <code>sum-odd-squares</code>, the enumeration is spread over the whole function. Everything is mixed together. If we could separate them, we could get the same conceptual clarity as in the flow chart.</p>
+</div>
+<div class="paragraph">
+<p>Filter can be implemented thus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn filter' [pred s]
+  (cond (empty? s) nil
+        (pred (first s)) (cons (first s) (filter' pred (rest s)))
+        :else (filter' pred (rest s))))
+
+(filter odd? (list 1 2 3 4 5))
+;; =&gt; (1 3 5)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And accumulations like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn accumulate [op init s]
+  (if (empty? s) init
+      (op (first s)
+          (accumulate op init (rest s)))))
+
+(accumulate + 0 (list 1 2 3 4 5))
+;; =&gt; 15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we need the "enumerate" part - this will be different for different inputs, since this is how we 'transform' whatever we&#8217;re given into sequences (implemented here as lists).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn enumerate-interval [low high]
+  (if (&gt; low high) nil
+      (cons low (enumerate-interval (inc low) high))))
+
+(enumerate-interval 4 10)
+;; =&gt; (4 5 6 7 8 9 10)
+
+
+(defn enumerate-tree [tree]
+  (cond (not (coll? tree)) (list tree)
+        (empty? tree) nil
+        :else (concat (enumerate-tree (first tree))
+                      (enumerate-tree (rest tree)))))
+
+(enumerate-tree '(1 (2 3) 4 5 (6 7)))
+;; =&gt; (1 2 3 4 5 6 7)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now the functions can be restated as an almost 1:1 match with the signal-flow plans.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn even-fibs [n]
+  (-&gt;&gt; (enumerate-interval 0 n)
+       (map fib)
+       (filter even?)
+       (accumulate cons '())))
+
+(even-fibs 10)
+;; =&gt; (0 2 8 34)
+
+(defn even-fibs [n]
+  (-&gt;&gt; (enumerate-interval 0 n)
+       (map fib)
+       (filter even?)
+       (accumulate cons '())))
+
+(even-fibs 10)
+;; =&gt; (0 2 8 34)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In programming languages with looping constructs it&#8217;s common to have 'nested loops' to deal with things like 2d matrices. Consider the problem: Given a positive integer n, find all ordered pairs of distinct positive integers i and j, where 1&#8656;j&lt;i&#8656;n, such that i + j is prime.</p>
+</div>
+<div class="paragraph">
+<p>One way to do this, is to enumerate a sequence of pairs [i j], then test and filter each of these for primality.</p>
+</div>
+<div class="paragraph">
+<p>We can generate a list of <code>i</code> with <code>(enumerate 1 n) ;;&#8658; [1 2 3 4,,,]</code>. For each of these <code>i</code> (i.e. we want to map over the sequence of i&#8217;s) we want to generate a sequence of pairs <code>[i j]</code>, where <code>1&#8656;j&lt;i</code>. We can do this with <code>(enumerate 1 (dec i))</code>.</p>
+</div>
+<div class="paragraph">
+<p>This should lead us down the path of a nested map:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(map (fn [j] (list 5 j)) (enumerate-interval 1 (- 5 1))) ;; inner map, for i=5
+;; =&gt; ((5 1) (5 2) (5 3) (5 4))
+
+(map (fn [i] (map (fn [j] (list i j)) (enumerate-interval 1 (- i 1)))) ;; nested map
+     (enumerate-interval 1 10))
+;; =&gt; (()
+;;     ((2 1))
+;;     ((3 1) (3 2))
+;;     ((4 1) (4 2) (4 3))
+;;     ((5 1) (5 2) (5 3) (5 4))
+;;     ((6 1) (6 2) (6 3) (6 4) (6 5))
+;;     ((7 1) (7 2) (7 3) (7 4) (7 5) (7 6))
+;;     ((8 1) (8 2) (8 3) (8 4) (8 5) (8 6) (8 7))
+;;     ((9 1) (9 2) (9 3) (9 4) (9 5) (9 6) (9 7) (9 8))
+;;     ((10 1) (10 2) (10 3) (10 4) (10 5) (10 6) (10 7) (10 8) (10 9)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This isn&#8217;t exactly what we want - we need to 'unnest' the resultant sequences. We can do by accumulate with <code>append</code>, initial <code>nil</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(accumulate append
+            nil
+            (map (fn [i] (map (fn [j] (list i j)) (enumerate-interval 1 (- i 1))))
+                 (enumerate-interval 1 10)))
+;; =&gt; ((2 1) (3 1) (3 2) (4 1) (4 2) (4 3) (5 1) (5 2)
+;;     etc.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This pattern, where you end with a sequence of sequences of things but you want to get to just a sequence of things, is common enough that it has it&#8217;s own convention, called the <code>flatmap</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn flatmap [f xs]
+  (accumulate append nil (map f xs)))
+
+(flatmap (fn [i] (map (fn [j] (list i j)) (enumerate-interval 1 (- i 1))))
+         (enumerate-interval 1 10))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Note: Flatmap is called <code>mapcat</code> in Clojure)</p>
+</div>
+<div class="paragraph">
+<p>Now, we can answer the original question</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn prime-sum? [pair]
+  (prime? (+ (first pair) (second pair))))
+
+(defn make-pair-sum [pair]
+  (list (first pair) (second pair) (+ (first pair) (second pair))))
+
+(defn prime-sum-pairs [n]
+  (-&gt;&gt; (enumerate-interval 1 n)
+       (flatmap (fn [i] (map (fn [j] (list i j)) (enumerate-interval 1 (- i 1)))))
+       (filter prime-sum?)
+       (map make-pair-sum)))
+
+(prime-sum-pairs 6)
+;; =&gt; ((2 1 3) (3 2 5) (4 1 5) (4 3 7) (5 2 7) (6 1 7) (6 5 11))</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_symbolic_data">Symbolic data</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_example_symbolic_differentiation_example">Example: Symbolic differentiation example</h3>
+<div class="paragraph">
+<p>We will write a program to do automatic differentiation, encoding the following rules:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs1.gif" alt="1 2 4 diffs1">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs2.gif" alt="1 2 4 diffs2">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs3.gif" alt="1 2 4 diffs3">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/1_2_4_diffs4.gif" alt="1 2 4 diffs4">
+</div>
+</div>
+<div class="paragraph">
+<p>Our initial evaluator looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn deriv [exp var]
+  (cond (number? exp) 0
+        (variable? exp) (if (same-variable? exp var) 1 0)
+        (sum? exp) (make-sum (deriv (addend exp) var)
+                             (deriv (augend exp) var))
+        (product? exp) (make-sum (make-product (multiplier exp)
+                                               (deriv (multiplicand exp) var))
+                                 (make-product (deriv (multiplier exp) var)
+                                               (multiplicand exp)))
+        :else (throw (ex-info "unknown expression type -- DERIV" exp))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With one cond branch for each rule. There are a number of procedures we need to create (number? is a built-in in Clojure). To do that, we need to decide on a representation of an expression to be evaluated. Since we have perfectly good list-syntax, with <code>+</code> and <code><strong></code> we can use that. So the exp in the above will look like <code>'(</strong> (* x y) (+ x 3))</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def variable? symbol?)
+(defn same-variable? [a b] (and (every? symbol? [a b]) (= a b)))
+(defn sum? [expr] (and (seq expr) (= (first expr) '+)))
+(defn product? [expr] (and (seq expr) (= (first expr) '*)))
+(defn make-sum [e1 e2] (list '+ e1 e2))
+(defn make-product [e1 e2] (list '* e1 e2))
+(defn addend [expr] (nth expr 1))
+(defn augend [expr] (nth expr 2))
+(defn multiplier [expr] (nth expr 1))
+(defn multiplicand [expr] (nth expr 2))
+
+(deriv 1 'x)
+;; =&gt; 0
+(deriv '(+ x 3) 'x)
+;; =&gt; (+ 1 0)
+(deriv '(* x y) 'x)
+;; =&gt; (+ (* x 0) (* 1 y))
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; =&gt; (+ (* (* x y) (+ 1 0)) (* (+ (* x 0) (* 1 y)) (+ x 3)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unfortunately, the terms aren&#8217;t being simplified. <code>(+ (* x 0) (* 1 y))</code> is obviously just <code>y</code>.</p>
+</div>
+<div class="paragraph">
+<p>We can fix that by iterating our make-sum and make-product so they handle the cases where both values are numbers, the identity cases, and (for multiplication) the null cases.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn make-sum [e1 e2]
+  (cond (every? number? [e1 e2]) (+ e1 e2)
+        (and (number? e1) (zero? e1)) e2
+        (and (number? e2) (zero? e2)) e1
+        :else (list '+ e1 e2)))
+
+(defn make-product [e1 e2]
+  (cond (every? number? [e1 e2]) (* e1 e2)
+        (and (number? e1) (zero? e1)) 0
+        (and (number? e1) (= 1 e1)) e2
+        (and (number? e2) (zero? e2)) 0
+        (and (number? e2) (= 1 e2)) e1
+        :else (list '* e1 e2)))
+
+(deriv 1 'x)
+;; =&gt; 0
+(deriv '(+ x 3) 'x)
+;; =&gt; 1
+(deriv '(* x y) 'x)
+;; =&gt; y
+(deriv '(* (* x y) (+ x 3)) 'x)
+;; =&gt; (+ (* x y) (* y (+ x 3)))</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_representing_sets">Example: Representing Sets</h3>
+<div class="paragraph">
+<p>A set is a collection of distinct objects. They have operations <code>union</code> <code>intersection</code> <code>element-of-set?</code> and <code>adjoin-set</code></p>
+</div>
+<div class="paragraph">
+<p>The choice for representation here is not so obvious. There are many possibilities.</p>
+</div>
+<div class="paragraph">
+<p>One way to represent a set is as an unordered list of elements that appear no more than once. In this case the operations could look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn adjoin-set [x set]
+  (if (element-of-set? x set) set
+      (cons x set)))
+
+(defn intersection-set [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (element-of-set? (first set1) set2) (cons (first set1)
+                                                  (intersection-set (rest set1) (set2)))
+        :else (intersection-set (rest set1) set2)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider the efficiency of these operations.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>element-of-set? is O(N) in the worst case (it has to scan every element)</p>
+</li>
+<li>
+<p>because adjoin-set tests element of set, it too is O(N)</p>
+</li>
+<li>
+<p>Intersection is O(N^2), because it does an element-of-set test for every element of set1</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If we could increase the efficiency of element-of-set, we can make all of faster.</p>
+</div>
+<div class="paragraph">
+<p>Consider an implementation as an <em>ordered</em> list. If we do this, we no longer need to scan the entire list:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (&lt; x (first set)) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On average, we can expect that we will have to examine about half the items in the set. So we can say that, though this is still O(N), we&#8217;ve reduced the time by about a factor of 2.</p>
+</div>
+<div class="paragraph">
+<p>We can make <code>intersection</code> O(N) though.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn intersection-set [set1 set2]
+  (cond (or (empty? set1) (empty? set2)) '()
+        (= (first set1) (first set2)) (cons (first set1) (intersection-set (rest set1) (rest set2)))
+        (&lt; (first set1) (first set2)) (intersection-set (rest set1) set2)
+        (&gt; (first set1) (first set2)) (intersection-set set1 (rest set2))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider that we have have two lists: <code>(2 4 6 8 10)</code> and <code>(3 4 5 6 7)</code></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>we test 2 against 3: 2&lt;3 so we recur with <code>(4 6 8 10)</code> and <code>(3 4 5 6 7)</code></p>
+</li>
+<li>
+<p>4&gt;3 so we recur with <code>(4 6 8 10)</code> and <code>(4 5 6 7)</code></p>
+</li>
+<li>
+<p>4=4 so we cons 4 and recur with <code>(6 8 10)</code> and <code>(5 6 7)</code></p>
+</li>
+<li>
+<p>6&gt;5 so we recur with <code>(6 8 10)</code> and <code>(6 7)</code></p>
+</li>
+<li>
+<p>6=6 so we cons 6 and recur with <code>(8 10)</code> and <code>(7)</code></p>
+</li>
+<li>
+<p>8&gt;7 so we recur with <code>(8 10)</code> and <code>()</code></p>
+</li>
+<li>
+<p>set 2 is empty, return false, ending up with <code>(cons 4 (cons 6 false)) &#8658; (4 6)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>At most, we will have number of operations len(set1) + len(set2)</p>
+</div>
+<div class="paragraph">
+<p>A third representation of sets is as a binary tree. Binary meaning that each node as at most 2 children: a left and right branch.</p>
+</div>
+<div class="paragraph">
+<p>The special property of the tree that we want is that, with respect to any given node, everything in the <em>left</em> subtree is smaller than the node value, and everything in the <em>right</em> subtree is larger (we don&#8217;t need to worry about equal to, since a set has no repeated elements). This does mean there can be many representations of the same set. For example {1 3 5 7 9 11} can be represented as.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_16_set_tree.gif" alt="2 16 set tree">
+</div>
+</div>
+<div class="paragraph">
+<p>The rationale for doing this is speed. Consider we want to check if 9 is in the set. In an ordered list representation, this would take 5 checks. In the above tree representations it is 2 or 3, depending on tree structure. e.g. in the first one, set 7, then go right, check 9, done.</p>
+</div>
+<div class="paragraph">
+<p>Comparing the left tree to the ordered list, we can see the number of tests you need to perform (ordered list on the left)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>element-of-set? 1:  1 vs. 3</p>
+</li>
+<li>
+<p>element-of-set? 3:  2 vs. 2</p>
+</li>
+<li>
+<p>element-of-set? 5:  3 vs. 3</p>
+</li>
+<li>
+<p>element-of-set? 7:  4 vs. 1</p>
+</li>
+<li>
+<p>element-of-set? 9:  5 vs. 2</p>
+</li>
+<li>
+<p>element-of-set? 11: 6 vs. 3</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We can see a tree has a maximum of 3 tests. In general, the maximum number of tests for a tree is the height of the tree. This leads to the intuition that shorter trees are better, because it reduces the maximum number of tests. The second tree, for example, has a height of 4, and to check 11 you&#8217;d need to do 4 tests. The height of a <em>balanced</em> binary tree of n elements is log2 n. So our element-of-set operation can now be O(log n), which is <em>much</em> faster than O(N).</p>
+</div>
+<div class="paragraph">
+<p>So we need an abstraction for working with trees. We can again use lists as the underlying structure, where a tree will look like:</p>
+</div>
+<div class="paragraph">
+<p><code>(entry left-subtree right-subtree)</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (nth tree 2 nil))
+(defn make-tree [entry left-branch right-branch]
+  (list entry left-branch right-branch))
+
+(defn element-of-set? [x set]
+  (cond (nil? set) false
+        (= x (entry set)) true
+        (&lt; x (entry set)) (element-of-set? x (left-branch set))
+        (&gt; x (entry set)) (element-of-set? x (right-branch set))))
+
+(element-of-set? 6 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; false
+(element-of-set? 5 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>element-of-set here just walks the tree - very declarative and easy to understand.</p>
+</div>
+<div class="paragraph">
+<p>With this representation, we can&#8217;t just adjoin an element to a set with <code>cons</code>, we have to expand the tree.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn adjoin-set [x set]
+  (cond (empty? set) (make-tree x nil nil)
+        (= x (entry set)) set
+        (&lt; x (entry set)) (make-tree (entry set)
+                                     (adjoin-set x (left-branch set))
+                                     (right-branch set))
+        (&gt; x (entry set)) (make-tree (entry set)
+                                     (left-branch set)
+                                     (adjoin-set x (right-branch set)))))
+
+(adjoin-set 1 '())
+;; =&gt; (1 nil nil)
+(adjoin-set 1 '(2))
+;; =&gt; (2 (1 nil nil) nil)
+(adjoin-set 3 '(2))
+;; =&gt; (2 nil (3 nil nil))
+(adjoin-set 1 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; (7 (3 (1) (5)) (9 nil (11)))
+(adjoin-set 4 '(7 (3 (1) (5)) (9 nil (11))))
+;; =&gt; (7 (3 (1) (5 (4 nil nil) nil)) (9 nil (11)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Essentially, assuming the element isn&#8217;t already in the set, this walks the tree until it finds it&#8217;s 'spot' (a <code>nil</code> on the end of a node), then in place of the nil, puts a new element <code>(x nil nil)</code> (a leaf node). This is very similar in concept to the element-of operation, and is also O(log n)</p>
+</div>
+<div class="paragraph">
+<p>There is a problem here though: Our assumption that the operations are O(log n) are premised on the tree being <em>balanced</em>. Consider a tree that looks like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_17_tall_tree.gif" alt="2 17 tall tree">
+</div>
+</div>
+<div class="paragraph">
+<p>An element-of operation on this will be O(N), since the height of the tree is N (in fact this is totally equivalent to an ordered list representation). To properly say that this has O(log n) properties, we must make sure the tree is mostly balanced - that is, the size of the left subtrees are about equal to the size of the right subtrees, for all nodes. One way to solve this is to have an operation that 'balances' a tree. This is left as an exercise.</p>
+</div>
+<div class="paragraph">
+<p>The thought process we&#8217;ve examined here comes up again and again in data focused programs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_huffman_encoding_trees">Example: Huffman Encoding Trees</h3>
+<div class="paragraph">
+<p>ASCII text can be represented as a sequence of seven bits, allowing us to represent (2^7) 128 different characters as binary numbers. In general, a system for representing n symbols will need us to use log2 n bits. These are called <strong>fixed-length codes</strong>. For example, to represent the 8 characters A-H, we could use 3 bits (2^3 = 8)</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>A 000 	C 010 	E 100 	G 110
+B 001 	D 011 	F 101 	H 111</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>BACADAEAFABBAAAGAH = 001000010000011000100000101000001001000000000110000111</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We could also represent data using a system of <strong>variable-length codes</strong>. For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>A 0 	C 1010 	E 1100 	G 1110
+B 100 	D 1011 	F 1101 	H 1111</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>BACADAEAFABBAAAGAH = 100010100101101100011010100100000111001111</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Saving 20% in length.</p>
+</div>
+<div class="paragraph">
+<p>One of the problems here is that you need to know when you reach the end of one symbol. You could achieve this with an explicit separator (consider the variable length code <em>morse code</em>, where letters are separated with with a pause). Another solution is design your code such that no symbol is represented by a code that is the prefix of another code. Taking the above example, since <code>A</code> is represented by 0, no other symbol can be represented by a code that starts with 0, since then you couldn&#8217;t tell if the <code>0101</code> is <code>0</code> and <code>101</code> or <code>0101</code>.</p>
+</div>
+<div class="paragraph">
+<p>Huffman encoding is a system which which assigns each symbol a <em>weight</em>, corresponding the frequency in which that symbol is expected to occur.</p>
+</div>
+<div class="paragraph">
+<p>For example, consider system for encoding the letters A-H, with a weight of 8 for A, 3 for B, and one for everything else.</p>
+</div>
+<div class="paragraph">
+<p>We can construct a tree where the leaves are pairs of <code>[symbol, weight]</code>, and the parents are merged sets of their children with <code>[set of symbols, sum symbol weights]</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/book_sicp/2_18_huffman.gif" alt="2 18 huffman">
+</div>
+</div>
+<div class="paragraph">
+<p>Using this, we can arrive at the representation for any symbol by the following process: Navigate down the tree until you find the symbol you want. Every time you take a left branch, take a 0, and right, take a 1. To get to D, you go right, left, right, right, so the encoding is <code>1011</code>. To decode a bit sequence, you do the same thing: starting with 1011, you go right, left, right, right and get to D.</p>
+</div>
+<div class="paragraph">
+<p>The 'Best' code is one that minimises the number of tests you have to make. This is where the weights (frequencies) come in. You want to construct the tree such that the most frequent symbols take the least amount of branches to reach.</p>
+</div>
+<div class="paragraph">
+<p>How to construct such a tree?</p>
+</div>
+<div class="paragraph">
+<p>Start with a set of symbols/weight pairs:</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)}</code></p>
+</div>
+<div class="paragraph">
+<p>Find the two elements with the lowest weight, and merge them together</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) ({C D} 2) (E 1) (F 1) (G 1) (H 1)}</code></p>
+</div>
+<div class="paragraph">
+<p>Repeat a couple of times to get:</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) ({C D} 2) ({E F} 2) ({G H} 2)}</code></p>
+</div>
+<div class="paragraph">
+<p>On the next merge, you are now unioning two sets:</p>
+</div>
+<div class="paragraph">
+<p><code>{(A 8) (B 3) ({C D} 2) ({E F G H} 4)}</code></p>
+</div>
+<div class="paragraph">
+<p>And ultimately you end up</p>
+</div>
+<div class="paragraph">
+<p><code>{({A B C D E F G H} 17)}</code></p>
+</div>
+<div class="paragraph">
+<p>representing your root node.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the below code is quite different from the book, but I thought it was good enough. maybe the exercises will show different.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def huff '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
+
+(defn make-leaf [symbol weight] (list 'leaf symbol weight))
+(defn leaf? [x] (= 'leaf (first x)))
+(defn symbol-leaf [x] (second x))
+(defn weight-leaf [x] (nth x 2))
+
+(leaf? (make-leaf 'A 8)) ;; =&gt; true
+(symbol-leaf (make-leaf 'A 8)) ;; =&gt; A
+(weight-leaf (make-leaf 'A 8)) ;; =&gt; 8
+
+(defn symbols [node] (if (leaf? node) (list (symbol-leaf node)) (nth node 2)))
+(defn weight [node] (if (leaf? node) (weight-leaf node) (nth node 3)))
+(defn make-code-tree [left right]
+  (list left right (append (symbols left) (symbols right)) (+ (weight left) (weight right))))
+
+(defn left-branch [tree] (first tree))
+(defn right-branch [tree] (second tree))
+
+(defn make-huff-tree [codes]
+  (let [[fst scd &amp; rst] (sort-by weight codes)]
+    (if (= 1 (count codes)) codes
+        (make-huff-tree (cons (make-code-tree fst scd) rst)))))
+
+(first (make-huff-tree (map #(apply make-leaf %) huff)))
+;; =&gt;
+'(((leaf A 8)
+   ((((leaf G 1)
+      (leaf H 1)
+      (G H) 2)
+     ((leaf E 1)
+      (leaf F 1)
+      (E F) 2)
+     (G H E F) 4)
+    (((leaf C 1)
+      (leaf D 1)
+      (C D) 2)
+     (leaf B 3)
+     (C D B) 5)
+    (G H E F C D B) 9)
+   (A G H E F C D B) 17))
+
+(defn decode-bits [bits tree]
+  (cond (leaf? tree) (symbol-leaf tree)
+        (zero? (first bits)) (decode-bits (rest bits) (left-branch tree))
+        :else (decode-bits (rest bits) (right-branch tree))))
+
+;; Redefining unordered list implementation of element of set
+(defn element-of-set? [x set]
+  (cond (empty? set) false
+        (= x (first set)) true
+        :else (element-of-set? x (rest set))))
+
+(defn encode-bits [sym tree]
+  (cond (leaf? tree) '()
+        (element-of-set? sym (symbols (left-branch tree))) (cons 0 (encode-bits sym (left-branch tree)))
+        :else (cons 1 (encode-bits sym (right-branch tree)))))
+
+(encode-bits 'A (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (0)
+(encode-bits 'B (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 1 1)
+(encode-bits 'C (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 1 0 0)
+(encode-bits 'D (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 1 0 1)
+(encode-bits 'E (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 1 0)
+(encode-bits 'F (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 1 1)
+(encode-bits 'G (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 0 0)
+(encode-bits 'H (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; (1 0 0 1)
+
+
+(decode-bits '(0) (first (make-huff-tree (map #(apply make-leaf %) huff))))       ;; =&gt; A
+(decode-bits '(1 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff))))   ;; =&gt; B
+(decode-bits '(1 1 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; C
+(decode-bits '(1 1 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; D
+(decode-bits '(1 0 1 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; E
+(decode-bits '(1 0 1 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; F
+(decode-bits '(1 0 0 0) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; G
+(decode-bits '(1 0 0 1) (first (make-huff-tree (map #(apply make-leaf %) huff)))) ;; =&gt; H</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_multiple_representations_for_abstract_data">Multiple Representations for Abstract Data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Data abstraction allows us to write much of our program without depending on a specific representation, by erecting an abstraction barrier.</p>
+</div>
+<div class="paragraph">
+<p>But what if there is more than one useful representation? For example, complex numbers can be represented in rectangular or polar form, with each being useful in different cases. In the real world, systems are designed by many people over long periods. You might end up with multiple representations that need to be isolated from each other and allow multiple representations to exist in a single program. You also need to allow for <em>new</em> representations to be added as they become necessary without breaking the existing code.</p>
+</div>
+<div class="paragraph">
+<p>We will get around this by creating <strong>generic procedures</strong> - procedures that can operate on multiple representations, where the type of representation is denoted by a <em>type tag</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_complex_numbers">Complex Numbers</h3>
+<div class="paragraph">
+<p>Complex numbers can be represented in either rectangular form, with real and imaginary parts (<code>5 + 4i</code>) or in polar form, with angle and magnitude <code>[120,3]</code>. Both essentially descriptions of points on a 2d plane.</p>
+</div>
+<div class="paragraph">
+<p>Addition is easy in rectangular form: <code>(a+bi) + (c+di) = (a+c)+(b+d)i</code>.</p>
+</div>
+<div class="paragraph">
+<p>Multiplication is simpler in polar form: <code>[a,b]*[c,d]=[a+c,b*d]</code></p>
+</div>
+<div class="paragraph">
+<p>The principle of data abstraction states that the user should be able to use all operations without caring about the representation.</p>
+</div>
+<div class="paragraph">
+<p>To create a system of complex numbers, we should have two constructors <code>make-from-mag-ang</code> and <code>make-from-real-imag</code>; and four accessors <code>real-part</code>, <code>imag-part</code>, <code>magnitude</code>, <code>angle</code>.</p>
+</div>
+<div class="paragraph">
+<p>Then from these we can easily implement <code>add-complex</code> etc. without specifying a representation. To complete the package we have to pick a representation though, and implement <code>real-part</code> etc. This can be done with a pair of real,imag, or mag,angle.</p>
+</div>
+<div class="paragraph">
+<p>Here we are practicing the <strong>principle of least commitment</strong>. We can use either, we don&#8217;t have to decide until the last minute, thus retaining flexibility.</p>
+</div>
+<div class="paragraph">
+<p>Or, we can just implement both, which effectively defers the commitment <em>even later</em>.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll need a way to determine which representation is actually being used. We&#8217;ll do this with type tags. We&#8217;ll create another abstraction barrier, where we have <code>type-tag</code> and <code>contents</code> procedures that can extract the type or content, and a <code>attach tag</code> to add the tag.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn attach-tag [type-tag contents] (list type-tag contents))
+(def type-tag first)
+(def content second)
+
+(defn rectangular? [z] (= 'rectangular (type-tag z)))
+(defn polar? [z] (= 'polar (type-tag z)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, both representations can have their own procedures - though we have to make sure there are not name collisions, e.g <code>real-part-rectangular</code>, <code>real-part-polar</code>.</p>
+</div>
+<div class="paragraph">
+<p>A generic selector will check a datum&#8217;s type-tag and choose the appropriate concrete implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(def magnitude-polar first)
+(def angle-polar second)
+
+(defn real-part-rectangular [z] (first z))
+(defn real-part-polar [z]
+  (* (magnitude-polar z) (Math/cos (angle-polar z))))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (ex-info "Unknown type -- REAL PART" z))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since the complex number arithmetic are defined in terms of <code>real-part</code> etc. these will still work with either representation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>     Programs that use complex numbers
+========== add, sub, mul, div ==============
+       Complex arithmetic package
+== real-part, imag-part, magnitude, angle ==
+       Rectangular  |   Polar
+    Representation  | Representation</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we have a system that has 3 relatively independent parts: the arithmetic operations, the rectangular implementation and the polar representation. The two implementations could&#8217;ve been designed separately, as long as they implement a similar interface.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_systems_with_generic_operations">Systems with Generic Operations</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-09-19 13:22:57 +0100
+</div>
+</div>
+</body>
+</html>

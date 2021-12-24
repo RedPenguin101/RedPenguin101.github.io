@@ -6,9 +6,13 @@
          '[clojure.string :as str])
 
 (def adoc-post-path "./asciidocs/posts/")
+(def adoc-book-path "./asciidocs/books/")
 (def markdown-post-path "./markdown/posts/")
+(def markdown-book-path "./markdown/books/")
 (def html-post-path "./posts/")
+(def html-book-path "./books/")
 (def index "./index.html")
+(def books "./books.html")
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; file operations
@@ -25,11 +29,11 @@
 ;; Post publishing
 ;;;;;;;;;;;;;;;;;;;;
 
-(defn publish-ascii-post [path]
+(defn publish-ascii [path]
   (sh "asciidoctor" path)
   (str/replace path ".adoc" ".html"))
 
-(defn publish-markdown-post [path]
+(defn publish-markdown [path]
   (sh "pandoc"
       path "-f" "markdown" "-t" "html" "-s" "-o"
       (str/replace path ".md" ".html"))
@@ -38,18 +42,10 @@
 (defn move-file [in-path out-path]
   (sh "mv" in-path out-path))
 
-(defn publish-adoc! []
-  (println "Publishing Adocs")
-  (->> (get-file-paths adoc-post-path)
-       (map publish-ascii-post)
-       (map #(move-file % html-post-path))
-       doall))
-
-(defn publish-markdown! []
-  (println "Publishing Markdowns")
-  (->> (get-file-paths markdown-post-path)
-       (map publish-markdown-post)
-       (map #(move-file % html-post-path))
+(defn publish! [pub-fn in-path out-path]
+  (->> (get-file-paths in-path)
+       (map pub-fn)
+       (map #(move-file % out-path))
        doall))
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -80,6 +76,9 @@
 (defn build-index [entries]
   [:div
    [:h1 "Joe's Blog"]
+   [:h2 "Other stuff"]
+   [:ul [:li [:a {:href "./books.html"} "Notes on books"]]]
+   [:h2 "Blog posts"]
    [:table
     [:tr [:th "Date"] [:th "Title"]]
     (for [entry (reverse (sort-by :date entries))]
@@ -97,8 +96,15 @@
        (spit index)))
 
 (defn -main []
-  (publish-adoc!)
-  (publish-markdown!)
+  (println "Publishing Adoc Posts")
+  (publish! publish-ascii adoc-post-path html-post-path)
+  (println "Publishing markdown Posts")
+  (publish! publish-markdown markdown-post-path html-post-path)
+  (println "Publishing Adoc Books")
+  (publish! publish-ascii adoc-book-path html-book-path)
+  (println "Publishing markdown Books")
+  (publish! publish-markdown markdown-book-path html-book-path)
+  (println "Creating index")
   (create-index!))
 
 (-main)
