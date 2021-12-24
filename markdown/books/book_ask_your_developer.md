@@ -6,6 +6,72 @@
 * Part 2: Understand/Motivate devs
 * Part 3: Making devs successful: The culture, the infra, the leadership, the customer focus.
 
+## Summary of main ideas from a skim read
+
+### Build, Buy, Die. Disruption is coming
+
+Software has disrupted many industries. It will disrupt yours. Don't be myopic.
+
+To stay alive you need good devs, but you need good _management_ of devs as well, from the executive / non tech side. That's really what this book is about: a handbook for execs about how tech teams work, and how to work with them.
+
+You want to set up software as a profit center, not a cost center. Be able to get things in prod _fast_, so you can adapt fast.
+
+Buying off the shelf is fine for back-office stuff. But _never_ for customer facing functions, or functions that you see as a differentiator for your business. 
+
+First: One-size-fits-all really means it fits no-one. If you have to change your process to fit the software, but your process is your differentiator, that's not going to work.
+
+Second: You can't differentiate yourself if you're using the same stuff as everyone else.
+
+Third: off-the-shelf is anathema to quick feedback loops, quick adaptability. You need those attributes to succeed. You can't incrementally on-board a vendor product (mostly)
+
+Forth: Integrations get _very_ hard when you're trying to stitch together multiple vendor products.
+
+Buying off the shelf _services_, on the other hand is fine. Things like Slack, Twillo, Zoom. You obviously don't want to build that stuff yourself. The "Third Great Era of Software" is about using service components to build original systems: using Stripe for payments, AWS for Infra etc.
+
+> “The only things companies should build themselves are the things that are core to their business”
+
+### What motivates developers, and how to hire them
+
+Devs like solving problems, being creative. The do _not_ like being handed a checklist of technical tasks to complete (or at least, they become apathetic when they are). Happily, this also leads to the best solutions.
+
+> “We just say to a team ‘Here’s the idea, here’s roughly where we want to go or want to build. It’s your responsibility to take that and figure that out.’ There’s a lot of agency here, a lot of autonomy. They decide how they want to attack the problem… We could detail something out and figure out there needs to be forty-two steps and then…give someone forty-two tasks…but then you’re telling them, ‘Don’t use your brain, just do what we tell you’” - Jason Fried
+
+It's not hard to make the case that your Co is more attractive than the FANGs, even if you can't compete on salary. Emphasize and give examples of how you treat your devs like _people_, not resources. Candidates want autonomy, mastery, purpose. So sell on that. Salary (above a 'fair' level) are secondary. Small teams are usually compelling, so sell on that.
+
+Early hires are especially important: recruit a great leader and the rest will follow.
+
+### How to set up your dev teams
+
+Small teams, as autonomous as possible. Minimal collaboration required (that is _fine_, it's not a problem). Interfaces between teams should be well defined, including the APIs between the software of the teams.
+
+The goal with small teams is to keep that startup energy even as you grow. Divide them by mitosis when they get too big.
+
+The division of teams should be around common customers, missions and metrics.
+
+Most importantly the teams should have **total decision making authority**. If a manager can swoop in and veto, the team doesn't have decision making authority.
+
+> It’s natural for leaders to want to delegate upward. It’s a sanity check on the decisions, but for hard decisions, it’s usually easier to ask your boss to make the call. But doing so is escaping accountability, which isn’t good for building a culture of empowered leaders…My goal is to make the single-threaded leaders accountable, but help them answer their own questions.
+
+Don't create buffers between devs and customers: the more direct exposure they have, the better software they can build.
+
+### Innovate by experiment, be tolerant of small failures
+
+You don't know what the right thing to build is ahead of time. You have to experiment, and then base your next moves off the results of those experiments.
+
+Experimentation, though, means accepting, even celebrating failure, which is anathema to the culture of most organizations. You have to change that.
+
+You also have to learn how to create good experiments: you need to know what _business_ assumption (not technical assumption) you are testing _before_ you start it. And what potential results from your experiment will prove or disprove that assumption. You _have_ to measure it, and write it down.
+
+### Infrastructure: developer happiness, productivity, safety
+
+Good infrastructure is hard to see the value of, but it _is_ extremely valuable.
+
+First, devs hate fighting their tools. If you have good infra around deployments etc. that's a selling point to potential hires.
+
+Second, it speeds you up. The less time devs spend on their own infra, the more they can spend on solving actual business problems.
+
+Create an infra team as soon as you can.
+
 ## 2 hour read
 
 ### Part 1:
