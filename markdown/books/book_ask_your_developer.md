@@ -6,7 +6,7 @@
 * Part 2: Understand/Motivate devs
 * Part 3: Making devs successful: The culture, the infra, the leadership, the customer focus.
 
-## 2 hour read (11:45-
+## 2 hour read
 
 ### Part 1:
 
@@ -64,6 +64,101 @@
 * Most software is just CRUD. The real difference in how long it takes to solve a problem and how well its solved comes from the developer understanding the problem.
 * Get your devs talking to customers/users early and often (about the _problem_). Remove any barriers you can to this
 
+### Experimentation as prerequisite to innovation
+
+* people are afraid to fail
+* but tolerance for failure is the key to innovation
+* an org should encourage incremental development to get around this, because it reduces the cost of failure.
+* A culture that is good at experimentation
+* Experiments running _in production_. AB testing etc.
+* Learn about your customers quickly
+* Build or Die: you can't incrementally adopt a purchased product (mostly)
+* Can't know ahead of time what ideas are good.
+
+> First, vet the idea...[for] two things
+>  1. what assumptions about customers, the problem, or the market are you making, and how will your experiment prove or disprove those assumptions?
+>  2. If you are wildly successful, will it be a big outcome? Otherwise, why bother?
+
+* only reasons for declining: opp is too small, or don't know how to measure
+* experiments must have experimental outcomes, _have_ to measure. _write it down_
+* The hypothesis is a _business_ hypothesis.
+* when to pull the plug. Engineers are generally going to give you straight answers, ask them.
+* How to fail without failing customers:
+  * Just ask them. If they say 'no, I wouldn't buy that', that's a failed experiment
+  * "Painted Door": write some ads and put them on google, without building the product, see if you get bites.
+
+### Hiring devs
+
+* It's not hard to make the case that your co is more attractive than FANGS.
+* Have to be treated like people.
+* Early hires especially important
+* Recruit a great leader and the rest will follow
+* Don't rush, don't settle
+* real reasons for work (after 'fair' salary): Automony, Mastery, purpose.
+* Recruiting: get CEO's / Execs to swoop in as closers.
+* Make potential hires aware of your problems, get them excited about solving them. Create a hero's journey for them
+* Small teams approach is always compelling. Sell it if you have it
+* Don't pay bonuses :P. Bonuses are premised on cash motivating performance. It's not true, at least for engineers
+* **Ask your developers why you are having trouble hiring developers**
+
+### Open learning environment
+
+* Open, learning environment. Continually seek truth
+* NOT classroom learning or book learning. Learning from eachother. Feedback loops to improve.
+* Needs guardrails and support
+* Open project reviews: OPRs. Anyone is welcome to observe any project meeting. Public calendars. Agenda published 2 days before. Only specific people allowed to speak. Become a classroom
+* AWS Weekly business review
+* Tension between openness and safety
+* Blameless postmortem
+
+### Small teams, single threaded leaders
+
+* Startups have energy. How do you retain it? Small teams
+* 2 pizza
+* Group teams around customer, mission, metrics
+* Divide teams by Mitosis, cell division
+* Teams should be empowered to make decisions independently. No "cascading"
+
+> It's natural for leaders to want to delegate upward. It's a sanity check on the decisions, but for hard decisions, it's usually easier to ask your boss to make the call. But doing so is escaping accountability, which isn't good for building a culture of empowered leaders...My goal is to make the single-threaded leaders accountable, but help them answer their own questions.
+
+* If there's always a manager who can veto, the person who has the decision actially doesn't.
+
+### Collaboration
+
+* Autonomous teams don't need to work together much
+* Many mistake this for a problem. It's not.
+* Where teams do need to collaborate, formalize the relationship with 'service contracts'
+* Interfaces are usually APIs
+
+### Wearing customers shoes
+
+* Eat your own dog food if you can
+* Don't create buffers between devs and customers (sales, product managers etc.)
+* Start from press release: focuses on what your customer wants, works backwards.
+
+### Agile (for executives)
+
+* features, deadlines, quality, certainty: pick 3, maybe 2
+* Throwing more devs at a delayed project will delay it further.
+* Forget the formal methodologies, trainers, consultants.
+
+### Infra
+
+* Good infra is hard to see the value of. But it _is_ extremely valuable.
+* Engineers hate fighting their tools. Make it easy for them, that's motivating for them
+* Twillo infra principles
+  * Paved path vs. offroad. Don't ban things, make the things you want people to use attractive
+  * Self service: IAAS
+  * Opt into complexity: Opinionated, but customizable, flow.
+  * Prioritize
+  * Composability
+* Don't worry about duplicating work.
+
+> Other companies, most notably Microsoft, have become obsessed with stamping out duplication only to dicover that the "de-duplication" effort eats up more resources than it saves. That's because keeping an eye out for duplication and/or spending time de-duplicating overlapping products means creating a new layer of oversight, which slows everything down.
+
+* **Hire an infrastructure team**
+* "time spend outside code"
+
 ### Stories and example
 
 * Billboard (Intro)
@@ -79,3 +174,12 @@
   * IBM, Logo
 * Business / Dev interaction
   * Matt from Versity/Nine Star
+* experimentation
+  * Wright brothers.
+  * GE, Immalt's digital big bang
+* Hire the leader, the rest will follow: Dominoes
+* Open environments
+  * Twillo OPR
+  * AWS Weekly Business Review
+* Customer focus
+  * Bloomberg meeting traders
