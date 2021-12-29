@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>2021_12_29_dsymetypes</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1 id="don-syme-on-type-level-programming">Don Syme on type level programming</h1>
+<p><a href="https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347">Link</a></p>
+<p>On the 9th of September 2021, Don Syme posted a response to a GitHub issue requesting type classes by implemented in F#. This is a summary of that response.</p>
+<h2 id="the-response">The response</h2>
+<p>F# has a ‘functions + data’ approach at the base of its philosophy. The trade-offs of type classes in this approach are not favourable. What follows are some of the negatives.</p>
+<ol type="1">
+<li>Simple type-classes are not sufficient, and will lead to requests for type-level abstractions (higher kinds, type families, etc.)</li>
+<li>Combination of type-class-like features leads to obfuscated, subtle code.</li>
+<li>Type-level programming has serious compilation performance downsides.</li>
+<li>It leads to compile-time debugging, which isn’t supported by IDEs.</li>
+<li>It leads to fractiousness in the community, as groups fixate on the ‘right’ way to use type classes.</li>
+<li>More layers of type hierarchy can lead to libraries ‘tweaking’ their implementations, creating noise for callers.</li>
+<li>It leads to a community where people without higher-level math knowledge (e.g. category theory) are disempowered.</li>
+</ol>
+<p>The last one I’ll quote in full</p>
+<blockquote>
+<p>The most effective use of these features require end-to-end design of the entire API surface area with these features in mind. Everything becomes tied up into a particular view on type-level abstractions and type-level programming. It quickly becomes impossible to program without an understanding of these abstractions, or without referencing a library which encodes this</p>
+</blockquote>
+<p>Next comes some discussion about language details, which is not of interest here.</p>
+<p>Finally Don has a couple of paragraphs of more general thoughts about the realities of talking about type-level programming with its advocates.</p>
+<ul>
+<li>They don’t seem to believe the downsides are real.</li>
+<li>Or at least they can be solved by the language creator, rather than being intrinsic.</li>
+<li>They seem to prioritise TLP over actual programming.</li>
+<li>He claims TLP fans are caught up in the world of pure world of types, when real world programming is about information.</li>
+<li>Often when you translate code that uses higher level type features to a language that doesn’t have them, it will be much simpler</li>
+</ul>
+<blockquote>
+<p>[when] type-level programming facilities are available in a language they immediately, routinely get misapplied in ways that makes code harder to understand, excludes beginners and fails to convince those from the outside.</p>
+</blockquote>
+<h2 id="what-is-type-level-programming-and-what-are-type-classes">What is type level programming and what are type classes?</h2>
+<h3 id="type-classes">Type Classes</h3>
+<p>Type classes are an approach to polymorphism, roughly similar in intent to interfaces in OOP. They are most common in typed and strictly functional languages like Haskell.</p>
+<p>Type classes are an example of <em>ad hoc</em> polymorphism, as opposed to <em>parametric</em> polymorphism<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>The problem that we are trying to solve here can be stated as:</p>
+<blockquote>
+<p>I want an <code>equal</code> function to detect if two objects have the same value. But I don’t want to have a different function for each type of data I operate on (<code>integer-equal</code>, <code>float-equal</code>, <code>string-equal</code>), I want a single equal function that operates on all of them. How do I do this?<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+</blockquote>
+<p>In Haskell, we can declare that a type is an <em>instance</em> of a type class, and provide the operations which that type class implements.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">class</span> <span class="dt">Eq</span> a <span class="kw">where</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="ot">  (==) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></a></code></pre></div>
+<p>This gives <code>==</code> the type <code>(Eq a) =&gt; a -&gt; a -&gt; Bool</code>, meaning that <em>“For every type <code>a</code> that is an instance of the type class Eq, there must be a declaration of how the function <code>==</code> is implemented”</em>.</p>
+<p>Then, you would declare the instance and define the implementation of <code>==</code> (called a <em>Method</em>):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Integer</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-2" title="2">  x <span class="op">==</span> y <span class="ot">=</span> integerEq x y</a></code></pre></div>
+<p>Type classes can be used for type checking. For example a sorting function can be defined like <code>sort :: (Ord a) =&gt; [a] -&gt; [a]</code>. That is we can declare that <code>sort</code> can take a list of any types, so long as those types implement ordering (<code>&lt;</code>,<code>&gt;=</code>). Then, the compiler can check that for us.</p>
+<h3 id="similarity-to-oop-interfaces">Similarity to OOP Interfaces</h3>
+<p>You can see how this is similar to an interface. Like a Java interface, a type class defines a <em>protocol for use</em> (method names and signatures) without defining an implementation.</p>
+<p>Like when a Java class implements an interface, when a type is an instance of a class, it <em>must</em> define implementations (concrete methods) for that protocol.</p>
+<h3 id="type-level-programming-and-kinds.">Type-level programming and <em>Kinds</em>.</h3>
+<p>This is a crazy complicated topic that I don’t pretend to understand, so this is a very high level summary.</p>
+<p>Consider that in a type system, every value is an instance of a type. For example the value <code>"Hello, World!"</code> is an instance of the type <code>String</code>.</p>
+<p>We can also say that a type is an instance of a <em>kind</em> of type (called just a <em>kind</em>).</p>
+<p>Without going into detail, this introduces a new level of hierarchy to the type system.</p>
+<p>You might ask: are type classes not also a new level of hierarchy to the type system? I don’t really understand kinds, so I can’t say for sure, but I think yes, they are. I believe this is the source of Don’s criticism that <em>“Combination of type-class-like features leads to obfuscated, subtle code.”</em>. I can certainly see that it could be confusing how these things will interact.</p>
+<h2 id="thoughts-on-dons-critique">Thoughts on Don’s critique</h2>
+<p>Don’s criticisms can be divided into two: the intrinsic problems of the type system itself, and the impact on the community.</p>
+<p>The common denominator in both of these is <em>people</em>: The negatives in the TLP is around how they are <em>used</em>, and the paths it leads people down (requesting more TLP constructs), and communities are obviously comprised of people.</p>
+<p>I think the meta-narrative here is about the paradox of the need for hierarchy and order in peoples minds. When trying to understand a complex system, we try to order it. We try to create categories and hierarchies, mental models. It is an incredibly useful tool. Since it is our natural way of processing things, it can’t be avoided.</p>
+<p>The paradox comes in when order is taken passed a certain point: the order starts to <em>create its own complexity</em> rather than aid us in our comprehension of the complex system. The drive to over-order is a strong one. On the first level, people see that a little order is a good thing, and assume that a lot of order must be an even better thing. On a second, more subconscious level, the drive to order takes over.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> People forget the reason for creating the order is to make sense of the reality, and the goal becomes the creation of more sophisticated orderings. There seems to be a strong, probably naturally selected, satisfaction in taking something and making it more ordered.</p>
+<p>Why is it that hierarchy, past a certain point, becomes counter-productive? I think it is quite obviously a “mistaking the map for the territory” problem: Reality is not ordered, it is not hierarchical. It is chaotic, fractal, unpredictable. It is fundamentally and irreducibly complex. A model of any kind is a simplification of the reality, that is useful for us in comprehension. Creating a hierarchy on top of that model is to move progressively further away from the reality.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
+<p>The hierarchy presumes that the model is <em>“correct”</em>, and invalidations of the model will result in invalidations of the hierarchy. Since the underlying model is a simplification, such invalidations are inevitable: the model is slightly brittle to change. Thus, hierarchies are also brittle. The problem is that because the model is now written in terms of higher order constructs, the underlying model becomes doubly brittle: To change it, you now need to change the level above it. Subsequent levels of hierarchy compound the effect.</p>
+<p>It reminds me of something Russell said in his <em>History of Western Philosophy</em>:</p>
+<blockquote>
+<p>“The difference of method, here, may be characterized as follows: In Locke or Hume, a comparatively modest conclusion is drawn from a broad survey of many facts, whereas in Leibniz a vast edifice of deduction is pyramided upon a pin-point of logical principle. In Leibniz, if the principle is completely true and the deductions are entirely valid, all is well; but the structure is unstable, and the slightest flaw anywhere brings it down to ruins. In Locke or Hume, on the contrary, the base of the pyramid is on the solid ground of observed fact, and the pyramid tapers upward, not downward; consequently the equilibrium is stable, and a flaw here or there can be rectified without total disaster.”</p>
+</blockquote>
+<p>This is the first problem: hierarchy in a model creates rigidity, which means an inflexibility to change. Given the model is a simplification of reality, there are a multitude of things which are in reality that have been left out of the model. Inevitably one of these things will have to be introduced into the model at some point, due to changing requirements. Thus inflexibility to change is the nemesis of models.</p>
+<p>The second problem is that hierarchies tend to become more general the higher up them you go. You move from concrete instances that can be looked at, poked and prodded, and so can be understood easily. Go a level up and you start to get more abstract, and things can’t so easily be understood by example and comparison.</p>
+<p>Category theory is a good example of this I think. You start off with a concrete idea of counting rocks. Very easy to understand. You abstract away the idea of rocks, and get to the idea of counting. It’s more difficult to understand in isolation. The best way to understand it is to dive back down to concretions: counting rocks, counting apples etc. This is the reason that the idea of ‘zero’ and ‘negative numbers’ took so long to emerge.</p>
+<p>Going up another level, you abstract the idea of counting, moving into areas of operations on a ‘container’ of objects. This is where you get into ideas like <code>map</code>, <code>fold</code>, and ‘functors’. Above that you have concepts like monoids, monads, and then above that you have the idea of categories themselves. Each progressively more difficult to understand because you have a pile of abstractions, when the only way to understand abstractions is by looking at concretions.</p>
+<p>This comes back to Syme’s point about making things inaccessible to newcomers, and the centralization of knowledge and influence in the hands of those who have mastered these arcane topics, rather than those who are good at writing programs that are effective.</p>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Parametric polymorphism are things like <code>map</code> that operates on containers, without caring what is contained in them.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Type classes are an <em>early binding</em>, or <em>compile time</em> approach to ah hoc polymorphism. <em>Late binding</em> or <em>run time</em> polymorphism is another approach, seen in Smalltalk and Clojure.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>I notice only after writing this that I have created a little hierarchy, a mental model, neatly giving example to the idea in explaining the idea.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>Whether reality has such abstractions itself, I don’t know. I think it probably does.<a href="#fnref4" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
+</body>
+</html>
