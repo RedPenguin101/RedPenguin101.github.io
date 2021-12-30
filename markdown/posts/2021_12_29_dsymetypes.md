@@ -1,10 +1,10 @@
-# Don Syme on type level programming
+% Don Syme on type level programming
 
 [Link](https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347)
 
 On the 9th of September 2021, Don Syme posted a response to a GitHub issue requesting type classes by implemented in F#. This is a summary of that response.
 
-## The response
+# The response
 
 F# has a 'functions + data' approach at the base of its philosophy. The trade-offs of type classes in this approach are not favourable. What follows are some of the negatives.
 
@@ -32,9 +32,9 @@ Finally Don has a couple of paragraphs of more general thoughts about the realit
 
 > [when] type-level programming facilities are available in a language they immediately, routinely get misapplied in ways that makes code harder to understand, excludes beginners and fails to convince those from the outside.
 
-## What is type level programming and what are type classes?
+# What is type level programming and what are type classes?
 
-### Type Classes
+## Type Classes
 
 Type classes are an approach to polymorphism, roughly similar in intent to interfaces in OOP. They are most common in typed and strictly functional languages like Haskell.
 
@@ -66,13 +66,13 @@ instance Eq Integer where
 
 Type classes can be used for type checking. For example a sorting function can be defined like `sort :: (Ord a) => [a] -> [a]`. That is we can declare that `sort` can take a list of any types, so long as those types implement ordering (`<`,`>=`). Then, the compiler can check that for us.
 
-### Similarity to OOP Interfaces
+## Similarity to OOP Interfaces
 
 You can see how this is similar to an interface. Like a Java interface, a type class defines a _protocol for use_ (method names and signatures) without defining an implementation. 
 
 Like when a Java class implements an interface, when a type is an instance of a class, it _must_ define implementations (concrete methods) for that protocol.
 
-### Type-level programming and _Kinds_.
+## Type-level programming and _Kinds_.
 
 This is a crazy complicated topic that I don't pretend to understand, so this is a very high level summary.
 
@@ -84,7 +84,7 @@ Without going into detail, this introduces a new level of hierarchy to the type 
 
 You might ask: are type classes not also a new level of hierarchy to the type system? I don't really understand kinds, so I can't say for sure, but I think yes, they are. I believe this is the source of Don's criticism that _"Combination of type-class-like features leads to obfuscated, subtle code."_. I can certainly see that it could be confusing how these things will interact.
 
-## Thoughts on Don's critique
+# Thoughts on Don's critique
 
 Don's criticisms can be divided into two: the intrinsic problems of the type system itself, and the impact on the community. 
 

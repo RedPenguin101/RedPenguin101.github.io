@@ -1,4 +1,4 @@
-# Don't start with Microservices
+% Don't start with Microservices
 
 Notes on a [blog post](https://arnoldgalovics.com/microservices-in-production/) by Arnold Galovics
 
@@ -26,7 +26,7 @@ Another difficulty is the impact an MS architecture has on the organization. The
 
 Addressing the **fault isolation** point, the authors point is that it take a lot of difficult design work to get that right. It's never free, you pay for it, and like anything you have to weigh the costs and benefits.
 
-## My thoughts
+# My thoughts
 
 The title says _don't **start** with microservices_, but I don't think he ever comes out and says what to me is the main thrust of the article. It even comes in a pleasingly syllogistic form:
 

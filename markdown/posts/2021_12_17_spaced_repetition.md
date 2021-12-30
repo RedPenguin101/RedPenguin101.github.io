@@ -1,8 +1,8 @@
-# Spaced Repetition Algorithm
+% Spaced Repetition Algorithm
 
 [Article link](https://e-student.org/spaced-repetition/)
 
-## SM-18
+# SM-18
 
 [Link](https://supermemo.guru/wiki/Algorithm_SM-18)
 
@@ -17,7 +17,7 @@
 
 This is _way_ too complicated for a first pass.
 
-##  Leitner System
+# Leitner System
 
 [Link](https://e-student.org/leitner-system/)
 

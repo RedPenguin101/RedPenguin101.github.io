@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>2021_12_16_dont_start_micro</title>
+  <title>Don’t start with Microservices</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -14,14 +14,14 @@
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
+<header id="title-block-header">
+<h1 class="title">Don’t start with Microservices</h1>
+</header>
 <nav id="TOC">
 <ul>
-<li><a href="#dont-start-with-microservices">Don’t start with Microservices</a><ul>
 <li><a href="#my-thoughts">My thoughts</a></li>
-</ul></li>
 </ul>
 </nav>
-<h1 id="dont-start-with-microservices">Don’t start with Microservices</h1>
 <p>Notes on a <a href="https://arnoldgalovics.com/microservices-in-production/">blog post</a> by Arnold Galovics</p>
 <p>Microservices have several purported benefits.</p>
 <ul>
@@ -39,7 +39,7 @@
 <p>Another difficulty is the impact an MS architecture has on the organization. The reality is that a PO (who doesn’t care about the architecture) will ask for a feature that will require touching many services, but the changes to each service will not be meaningful in isolation, so you can’t develop iteratively. The change will take <em>longer</em> than in a corresponding monolith.</p>
 <p><strong>JL:</strong> reminds me of that <a href="https://www.youtube.com/watch?v=y8OnoxKotPQ">Krazam</a> video. All of these points are based on Microservices not being actually isolated in practice. The title of the article might be <strong><em>Don’t start with microservices if you can’t isolate them properly</em></strong>. Maybe a corollary would be <strong><em>you can’t isolate microservices properly in a new build, because you don’t understand the correct way to divide the parts yet</em></strong>. The author doesn’t explicitly say it I think, but it seems to me to be implied.</p>
 <p>Addressing the <strong>fault isolation</strong> point, the authors point is that it take a lot of difficult design work to get that right. It’s never free, you pay for it, and like anything you have to weigh the costs and benefits.</p>
-<h2 id="my-thoughts">My thoughts</h2>
+<h1 id="my-thoughts">My thoughts</h1>
 <p>The title says <em>don’t <strong>start</strong> with microservices</em>, but I don’t think he ever comes out and says what to me is the main thrust of the article. It even comes in a pleasingly syllogistic form:</p>
 <ol type="1">
 <li>The benefits of microservices all come from decoupled services</li>

@@ -1,10 +1,10 @@
-# Tacit Knowledge vs. Deliberate Practice
+% Tacit Knowledge vs. Deliberate Practice
 
 * Tacit Knowledge vs. Transmissionism: can every expertise be explained?
 * In trying to explain: principles and heuristics. But then many exceptions. Then "It just feels right"
 * The right way is to emulate and get feedback on specific cases.
 
-## Tacit Knowledge
+# Tacit Knowledge
 
 [Link](https://commoncog.com/blog/tacit-knowledge-is-a-real-thing/)
 
@@ -32,7 +32,7 @@ Other problems are that such an encoding results in fragile systems. i.e. strict
 
 There are perhaps some isolated exceptions to this. Occasionally a rare genius will appear who _can_ go a long way to making tacit knowledge explicit. But this is not generalizable.
 
-## Deliberate Practice
+# Deliberate Practice
 
 DP is arguably the hot topic in the field of expertise development.
 

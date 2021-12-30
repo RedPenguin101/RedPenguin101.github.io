@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>2021_12_29_dsymetypes</title>
+  <title>Don Syme on type level programming</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -77,9 +77,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
+<header id="title-block-header">
+<h1 class="title">Don Syme on type level programming</h1>
+</header>
 <nav id="TOC">
 <ul>
-<li><a href="#don-syme-on-type-level-programming">Don Syme on type level programming</a><ul>
 <li><a href="#the-response">The response</a></li>
 <li><a href="#what-is-type-level-programming-and-what-are-type-classes">What is type level programming and what are type classes?</a><ul>
 <li><a href="#type-classes">Type Classes</a></li>
@@ -87,13 +89,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#type-level-programming-and-kinds.">Type-level programming and <em>Kinds</em>.</a></li>
 </ul></li>
 <li><a href="#thoughts-on-dons-critique">Thoughts on Don’s critique</a></li>
-</ul></li>
 </ul>
 </nav>
-<h1 id="don-syme-on-type-level-programming">Don Syme on type level programming</h1>
 <p><a href="https://github.com/fsharp/fslang-suggestions/issues/243#issuecomment-916079347">Link</a></p>
 <p>On the 9th of September 2021, Don Syme posted a response to a GitHub issue requesting type classes by implemented in F#. This is a summary of that response.</p>
-<h2 id="the-response">The response</h2>
+<h1 id="the-response">The response</h1>
 <p>F# has a ‘functions + data’ approach at the base of its philosophy. The trade-offs of type classes in this approach are not favourable. What follows are some of the negatives.</p>
 <ol type="1">
 <li>Simple type-classes are not sufficient, and will lead to requests for type-level abstractions (higher kinds, type families, etc.)</li>
@@ -120,8 +120,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <p>[when] type-level programming facilities are available in a language they immediately, routinely get misapplied in ways that makes code harder to understand, excludes beginners and fails to convince those from the outside.</p>
 </blockquote>
-<h2 id="what-is-type-level-programming-and-what-are-type-classes">What is type level programming and what are type classes?</h2>
-<h3 id="type-classes">Type Classes</h3>
+<h1 id="what-is-type-level-programming-and-what-are-type-classes">What is type level programming and what are type classes?</h1>
+<h2 id="type-classes">Type Classes</h2>
 <p>Type classes are an approach to polymorphism, roughly similar in intent to interfaces in OOP. They are most common in typed and strictly functional languages like Haskell.</p>
 <p>Type classes are an example of <em>ad hoc</em> polymorphism, as opposed to <em>parametric</em> polymorphism<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <p>The problem that we are trying to solve here can be stated as:</p>
@@ -136,16 +136,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Integer</span> <span class="kw">where</span></a>
 <a class="sourceLine" id="cb2-2" title="2">  x <span class="op">==</span> y <span class="ot">=</span> integerEq x y</a></code></pre></div>
 <p>Type classes can be used for type checking. For example a sorting function can be defined like <code>sort :: (Ord a) =&gt; [a] -&gt; [a]</code>. That is we can declare that <code>sort</code> can take a list of any types, so long as those types implement ordering (<code>&lt;</code>,<code>&gt;=</code>). Then, the compiler can check that for us.</p>
-<h3 id="similarity-to-oop-interfaces">Similarity to OOP Interfaces</h3>
+<h2 id="similarity-to-oop-interfaces">Similarity to OOP Interfaces</h2>
 <p>You can see how this is similar to an interface. Like a Java interface, a type class defines a <em>protocol for use</em> (method names and signatures) without defining an implementation.</p>
 <p>Like when a Java class implements an interface, when a type is an instance of a class, it <em>must</em> define implementations (concrete methods) for that protocol.</p>
-<h3 id="type-level-programming-and-kinds.">Type-level programming and <em>Kinds</em>.</h3>
+<h2 id="type-level-programming-and-kinds.">Type-level programming and <em>Kinds</em>.</h2>
 <p>This is a crazy complicated topic that I don’t pretend to understand, so this is a very high level summary.</p>
 <p>Consider that in a type system, every value is an instance of a type. For example the value <code>"Hello, World!"</code> is an instance of the type <code>String</code>.</p>
 <p>We can also say that a type is an instance of a <em>kind</em> of type (called just a <em>kind</em>).</p>
 <p>Without going into detail, this introduces a new level of hierarchy to the type system.</p>
 <p>You might ask: are type classes not also a new level of hierarchy to the type system? I don’t really understand kinds, so I can’t say for sure, but I think yes, they are. I believe this is the source of Don’s criticism that <em>“Combination of type-class-like features leads to obfuscated, subtle code.”</em>. I can certainly see that it could be confusing how these things will interact.</p>
-<h2 id="thoughts-on-dons-critique">Thoughts on Don’s critique</h2>
+<h1 id="thoughts-on-dons-critique">Thoughts on Don’s critique</h1>
 <p>Don’s criticisms can be divided into two: the intrinsic problems of the type system itself, and the impact on the community.</p>
 <p>The common denominator in both of these is <em>people</em>: The negatives in the TLP is around how they are <em>used</em>, and the paths it leads people down (requesting more TLP constructs), and communities are obviously comprised of people.</p>
 <p>I think the meta-narrative here is about the paradox of the need for hierarchy and order in peoples minds. When trying to understand a complex system, we try to order it. We try to create categories and hierarchies, mental models. It is an incredibly useful tool. Since it is our natural way of processing things, it can’t be avoided.</p>

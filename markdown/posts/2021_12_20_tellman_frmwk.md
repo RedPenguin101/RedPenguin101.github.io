@@ -1,10 +1,10 @@
-# Zach Tellman: Designing a Framework for Conversational Interfaces 
+% Zach Tellman: Designing a Framework for Conversational Interfaces 
 
 [Link](https://www.microsoft.com/en-us/research/group/msai/articles/designing-a-framework-for-conversational-interfaces)
 
 > "Early AI researchers envisioned a world where knowledge had a singular representation and a singular repository. Instead, we live in a world where data, and the ability to interpret it, is fragmented and diffuse. As a result, our constraint solver must be unusually extensible, allowing developers to compose it with their own systems and domain expertise."
 
-## Intro
+# Intro
 
 Zach and Semantic Machines (SM) are working on the conversational interface for Outlook Mobile.
 
@@ -22,9 +22,9 @@ Consider a command:
 
 This is more difficult to model, and to separate linguistic and business logic. Natural language is _compositional_, and S&I frameworks are not. The above demands a set ideas that can be combined with little restriction (“find a block,” “taller than,” “held block,”). S&I doesn't allow for this flexibility.
 
-## Semantic Machines solution
+# Semantic Machines solution
 
-### Plans
+## Plans
 
 Utterances are translated into small programs call **plans** using a _transformer-based encoder-decoder neural network_.
 
@@ -49,13 +49,13 @@ The utterance has a mix of context-independent and context-dependent language (d
 
 SM has a referential resolution system which tracks the history of context. So calls to `the` will query a graph of every plan in the conversation to figure out what it resolves to.
 
-### Constraints
+## Constraints
 
 An **intensional description** (as opposed to extensional) is one that provides criteria for finding the entity e.g. "A block that is taller than the one you are holding". In reality, all descriptions are intensional, since there is no way to uniquely specify an entity: the closest we get is a _name_, but they are ambiguous enough that we need to search our context to resolve the entity.
 
 How to resolve this? A simplistic way would be as a predicate function: `the[Person](p => p.name ~= "Alice")` and map over 'people'. But the 'Person' dataset is likely to be remote, large, and limited (for privacy) in what it exposes. We need to _query_ for it. Unfortunately, that pushes the query implementation logic (of, say _similarity_) to the API, which probably won't suit us. We need to pass our _constraints_ to the query, as well as passing them the tools for interpreting those constraints, usually called _controllers_.
 
-### Revision
+## Revision
 
 Language is ambiguous. "I'm heading to the bank" can have several meanings. _Pragmatics_ is the study of how context confers meaning.
 

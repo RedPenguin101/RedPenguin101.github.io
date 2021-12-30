@@ -1,4 +1,4 @@
-# FT Opinion: Big Tech Financial Shell Game
+% FT Opinion: Big Tech Financial Shell Game
 Hiding behind outdated reporting rules.
 
 [Link to article](https://www.ft.com/content/99ca12c5-498e-4ee4-8046-a27cd0a1038b)

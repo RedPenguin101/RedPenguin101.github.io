@@ -1,10 +1,10 @@
-# Hashicorp Writing Practices and Culture
+% Hashicorp Writing Practices and Culture
 
 [link](https://works.hashicorp.com/articles/writing-practices-and-culture)
 
 > we write to clarify our ideas, to articulate concepts to our colleagues both within and beyond our teams, and to gather the feedback we need to make those ideas better. 
 
-## Why write proposals and solution documents?
+# Why write proposals and solution documents?
 
 * Clarify ideas
 * articulate concepts to colleagues
@@ -18,11 +18,11 @@
 * Avoids long, circular meetings
 * Makes decisions more efficient: Come to the meeting having read the doc, yay or nay vote is often enough
 
-## What do they write?
+# What do they write?
 
 Problem Requirements Document (PRD): Defines the problem. The 'Why'. Request for Comment (RFC): Proposes the solution
 
-## PRD
+# PRD
 
 [PRD Template](https://works.hashicorp.com/articles/prd-template)
 
@@ -35,7 +35,7 @@ Problem Requirements Document (PRD): Defines the problem. The 'Why'. Request for
 
 > A PRD reader should clearly understand what the problem is, who it affects, and why it is important to solve.
 
-### Template content
+## Template content
 
 1. **Introduction**: Explains the goal of the PRD. Summarizes the content. _Do this last_
 2. **Background**: Provide useful context about the problem domain. Context is essential for understanding content. Use visuals if possible
@@ -51,7 +51,7 @@ Problem Requirements Document (PRD): Defines the problem. The 'Why'. Request for
 5. **User research**: The most important section. Grounds the PRD in real experience. One section for each customer. Include a link to interview notes, and a para summarizing state of workflow and key takeaways.
 6. **Approvals**: All stakeholders must approve the PRD before it goes for RFC.
 
-## RFC
+# RFC
 
 [RFC Template](https://works.hashicorp.com/articles/rfc-template)
 
@@ -59,7 +59,7 @@ Problem Requirements Document (PRD): Defines the problem. The 'Why'. Request for
 * Again, articulate and get feedback on solution
 * Not _Mandatory_ to have an RFC. Generally for bigger, more complex work, or requiring buy-in from many stakeholders
 
-## Tips for writing and feedback
+# Tips for writing and feedback
 
 * Write with a buddy if you haven't written one before
 * Collaborate early and often
@@ -72,6 +72,6 @@ Problem Requirements Document (PRD): Defines the problem. The 'Why'. Request for
 * For RFC, sometimes an 'options exploration' step after PRD is good.
 * If comments are not resolving, get on a Zoom. Easier to do in person.
 
-## Other stuff
+# Other stuff
 
 [Technical writing workshop](https://drive.google.com/file/d/1zyt0RMCDEwmTEPQQ2yiAxW_NZ1dNOOID/view)

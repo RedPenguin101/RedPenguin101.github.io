@@ -1,6 +1,6 @@
-# Economist: 18th December
+% Economist: 18th December
 
-## US: Internal Migrations
+# US: Internal Migrations
 
 The internet and remote work are changing where people want to live. The last time a change on this scale happened was suburbanization in the 50's.
 
@@ -16,7 +16,7 @@ Suburbs today tend to have more amenities, and to be more ethnically diverse tha
 
 The second trend is a move southwards. The biggest have been Texas, Florida and Arizona (86% of the total), which have seen in-migration rates increase 46%, 24% and 16% respectively since covid. Florida and Texas have no state income tax (California has a 13% top rate, NJ has 11%). These states also tend to have been less harsh on covid measures.
 
-## US: Kentucky Tornado
+# US: Kentucky Tornado
 
 On 10th December, Mayfield Kentucky was hit by the worst US tornado in a decade. Can it recover?
 
@@ -24,7 +24,7 @@ Having a plan matters. An organized local government can petition for state and 
 
 Poor towns have it harder: If you are not insured, or a renter, you will be less likely to get help. And consequently, more likely to leave.
 
-## US: War on Christmas
+# US: War on Christmas
 
 Fox news has been talking about a war on Chrismas for two decades. After a homeless man set a Christmas tree on fire in NYC, Fox portrayed it as evidence that there was a war, and it dominated its coverage for a few days. Its CEO made a statement about it.
 
@@ -32,7 +32,7 @@ The war on Christmas is non-existent. Christmas is alive and well even as church
 
 Attacks on Christmas have occurred, but from _Christians_. The puritans of Plymouth were against it on the basis that it is heathen and wasteful (the former is true: Christmas is a mish-mash of pagan and Christian beliefs that first took form in the 4th Century). Christmas did not start to become an official holiday until the mid 19th Century. It was an occasion of _popular_ celebration (and much drunkenness), though, which was slowly domesticated by the middle class. The modern gift-giving version of Santa comes from this domestication. The adoption of the Christmas tree in the same period was part of the same drive.
 
-## North Korea: A decade of KJU
+# North Korea: A decade of KJU
 
 Kim Jong Un took over NK on December 17th, 2011. Today, NK is looking more isolated than it has in decades. Its border closure is among the world's strictest. There are reports of food shortages and political purges, even as diplomatic outreaches by the US and SK are rejected. Kim himself has admitted the food situation is "tense".
 
@@ -46,13 +46,13 @@ Kim's diplomatic outreaches in 2017-2018 were an attempt to have these removed, 
 
 For now, though, the situation looks survivable, and it looks unlikely that Kim will come back to the negotiating table any time soon.
 
-## Asia: Democratic Decline
+# Asia: Democratic Decline
 
 The coup in Myanmar in Feb 2021 means it joins Thailand as the second coup-led military dictatorship in SE Asia. The region also includes Laos and Vietnam (Leninist dictatorships), Brunei (absolute monarchy), Cambodia (near-dictatorship) and Singapore (authoritarian one party-ish state). Its nominal democracies do not seem healthy. Duterte in the Philippines has attacked the press and judiciary. Jokowi in Indonesia was once hoped to be a straight-shooting reformer, but is not. Malaysia's reform movement now looks a lot like its predecessor. Sri Lanka, India, Afghanistan, all seem to be trending downwards.
 
 There is still some glimmers of hope. India has reasserted democracy before, after Gandhi's short dictatorship of the 70's. For all Jokowi's failings, Indonesia's future elections are likely to be fair. The youth in these countries are angry and active.
 
-## China and Lithuania
+# China and Lithuania
 
 Lithuania withdrew its diplomats (temporarily, it says) from China on the 15th. This is the latest action in the saga that began with Lithuania allowing a "Taiwanese Representative Office" in its capital, for which China has been pressuring it ever since. China sent home the Lithuanian ambassador in September, downgraded its embassy in November, and told its staff to leave in December.
 
@@ -62,7 +62,7 @@ As well as diplomatic pressure, there has been quiet economic action taken. Impo
 
 Lithuania's move was not fully welcomed by its EU neighbours. Some though it needlessly provocative (China doesn't object to "Taipei" overseas offices). China's reaction, using economic and diplomatic coercion which politicians see as "breaking the rules", has hardened attitudes. It is not isolated: similar tactics have been used against Australia, Canada, Japan and South Korea. China's bet that EU countries will choose the Chinese market over the Baltics looks ill-advised. France and even Hungary have spoken out. The EU has announced retaliation rules against economic coercion.
 
-## Ethiopian civil war
+# Ethiopian civil war
 
 Federal troops are pushing back up the road to Tigray, rolling back the rebel advance through Amhara between Tigray and Addis. It is another swing of the pendulum in the civil war, after rebels had got within 160km of the capital. The government has also largely pushed east, regaining control over the road to Djibouti and the sea.
 
@@ -74,7 +74,7 @@ President Abiy's call to arms seems to have worked too, especially after he said
 
 Foreign intervention is a risk. Iran and the UAE are backing the government (their own antagonism notwithstanding), but the TLPF might try to drag in Sudan or Egypt on its side, both of which have beef with Ethiopia over a dam on the Nile.
 
-## Libya's election
+# Libya's election
 
 Libya's first presidential election is scheduled for the 24th. It's been messy, and will likely be postponed.
 
@@ -86,7 +86,7 @@ Haftar himself is also a candidate, and also accused of war crimes. He may do we
 
 Abdul Hamid Dbeibeh, the interim PM, is a leading candidate in the West, after breaking his promise not to run. He sounds liberal compared to the other two, but that is not difficult.
 
-## Denmark and Immigration
+# Denmark and Immigration
 
 Denmark has a policy of breaking up "parallel societies": groupings of poor, jobless, uneducated people of common foreign origin. It also tries to prevent the formation of such pockets by carefully assigning housing to immigrants. 
 
@@ -94,7 +94,7 @@ Even further, it tries to deter migrants from arriving. In March it announced it
 
 Denmark's approach is gaining some followers in Europe, but also detractors, who accuse it of racism.
 
-## Bulgaria's reformist new PM
+# Bulgaria's reformist new PM
 
 After 12 years, Boyko Borisov is out. Kiril Petkov and Assen Vassilev are the new PM and finance minister. Both are Harvard Business grads and entrepreneurs. After serving as interim ministers they started the "We Continue the Change" party, and after winning 26% of the vote in a general in November, have finally managed to pull together a coalition government.
 
@@ -102,13 +102,13 @@ They say that Bulgaria's woes (it is the poorest EU country) are fixable: it jus
 
 They will have to move fast and notch up some marks on corruption: much of the extremely corrupt regime they displaced is still in positions of influence.
 
-## French presidential elections
+# French presidential elections
 
 Frances presidential election is in April. Macron is hoping to use France's presidency of the EU Council between January and then as an electioneering tool.
 
 The Council presidency itself is largely procedural. But is a good platform for getting attention. On December 9th he announced a typical avalanche of big ideas. A lofty European ambition was one of the things that won him the presidency in the first place, and he's hoping it will again. The approach might backfire: other countries don't like being the idea of being bossed around by France.
 
-## Oxford-AZ Vaccine
+# Oxford-AZ Vaccine
 
 On some measures (number of doses, number of lives saved) AZ is probably the most successful vaccine. It was never intended to be a money printer: Oxford university didn't want it sold at profit. A dose costs $4, compared to $20 for Pfizer.
 
@@ -118,7 +118,7 @@ The FDA hasn't approved it, after AZ failed to notify them about an adverse even
 
 AZ is heavily used in India, Mexico and Brazil, and is starting to see use in SE Asia.
 
-## Liz Truss, UK Foreign Secretary
+# Liz Truss, UK Foreign Secretary
 
 Truss became FS in the September reshuffle. The doctrine is ideological, non-European, global alliance seeking, anti Russia and China. Global Britain. Her Chatham House speech on December 8th was Manichean, almost America: a battle between the free world and the autocracies, with 'non-aligned' states in play. She criticizes a post 1992 'age of introspection'. She is nervous of an America turning inward, and wants to strengthen ties with Australia and India.
 

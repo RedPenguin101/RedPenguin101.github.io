@@ -1,4 +1,4 @@
-# Simple Component Driven ClojureScript
+% Simple Component Driven ClojureScript
 
 [Link](https://davidvujic.blogspot.com/2021/12/simple-component-driven-clojurescript.html?utm_source=pocket_mylist)
 
