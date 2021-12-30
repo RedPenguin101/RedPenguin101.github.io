@@ -1,14 +1,14 @@
-# Ask your developer, by Jeff Lawson
+% Ask your developer, by Jeff Lawson
 
-## Content
+# Content
 
 * Part 1: Why devs matter: Build v die and the software supply chain
 * Part 2: Understand/Motivate devs
 * Part 3: Making devs successful: The culture, the infra, the leadership, the customer focus.
 
-## Summary of main ideas from a skim read
+# Summary of main ideas from a skim read
 
-### Build, Buy, Die. Disruption is coming
+## Build, Buy, Die. Disruption is coming
 
 Software has disrupted many industries. It will disrupt yours. Don't be myopic.
 
@@ -30,7 +30,7 @@ Buying off the shelf _services_, on the other hand is fine. Things like Slack, T
 
 > “The only things companies should build themselves are the things that are core to their business”
 
-### What motivates developers, and how to hire them
+## What motivates developers, and how to hire them
 
 Devs like solving problems, being creative. The do _not_ like being handed a checklist of technical tasks to complete (or at least, they become apathetic when they are). Happily, this also leads to the best solutions.
 
@@ -40,7 +40,7 @@ It's not hard to make the case that your Co is more attractive than the FANGs, e
 
 Early hires are especially important: recruit a great leader and the rest will follow.
 
-### How to set up your dev teams
+## How to set up your dev teams
 
 Small teams, as autonomous as possible. Minimal collaboration required (that is _fine_, it's not a problem). Interfaces between teams should be well defined, including the APIs between the software of the teams.
 
@@ -54,7 +54,7 @@ Most importantly the teams should have **total decision making authority**. If a
 
 Don't create buffers between devs and customers: the more direct exposure they have, the better software they can build.
 
-### Innovate by experiment, be tolerant of small failures
+## Innovate by experiment, be tolerant of small failures
 
 You don't know what the right thing to build is ahead of time. You have to experiment, and then base your next moves off the results of those experiments.
 
@@ -62,7 +62,7 @@ Experimentation, though, means accepting, even celebrating failure, which is ana
 
 You also have to learn how to create good experiments: you need to know what _business_ assumption (not technical assumption) you are testing _before_ you start it. And what potential results from your experiment will prove or disprove that assumption. You _have_ to measure it, and write it down.
 
-### Infrastructure: developer happiness, productivity, safety
+## Infrastructure: developer happiness, productivity, safety
 
 Good infrastructure is hard to see the value of, but it _is_ extremely valuable.
 
@@ -72,9 +72,9 @@ Second, it speeds you up. The less time devs spend on their own infra, the more 
 
 Create an infra team as soon as you can.
 
-## 2 hour read
+# 2 hour read
 
-### Part 1:
+## Part 1:
 
 * Foreword
   * Software revolution Disruption will come to your industry
@@ -112,7 +112,7 @@ Create an infra team as soon as you can.
 * **YOU CAN'T BUY DIFFERENTIATION, YOU CAN ONLY BUILD IT**
 * Software people should decide what to build and what to buy
 
-### Part 2
+## Part 2
 
 * What drives devs to do best work? How do you as a leader motivate them?
 * "Building software is easy, but building the _right_ thing is hard". Experimentation and close contact with customers.
@@ -130,7 +130,7 @@ Create an infra team as soon as you can.
 * Most software is just CRUD. The real difference in how long it takes to solve a problem and how well its solved comes from the developer understanding the problem.
 * Get your devs talking to customers/users early and often (about the _problem_). Remove any barriers you can to this
 
-### Experimentation as prerequisite to innovation
+## Experimentation as prerequisite to innovation
 
 * people are afraid to fail
 * but tolerance for failure is the key to innovation
@@ -153,7 +153,7 @@ Create an infra team as soon as you can.
   * Just ask them. If they say 'no, I wouldn't buy that', that's a failed experiment
   * "Painted Door": write some ads and put them on google, without building the product, see if you get bites.
 
-### Hiring devs
+## Hiring devs
 
 * It's not hard to make the case that your co is more attractive than FANGS.
 * Have to be treated like people.
@@ -167,7 +167,7 @@ Create an infra team as soon as you can.
 * Don't pay bonuses :P. Bonuses are premised on cash motivating performance. It's not true, at least for engineers
 * **Ask your developers why you are having trouble hiring developers**
 
-### Open learning environment
+## Open learning environment
 
 * Open, learning environment. Continually seek truth
 * NOT classroom learning or book learning. Learning from eachother. Feedback loops to improve.
@@ -177,7 +177,7 @@ Create an infra team as soon as you can.
 * Tension between openness and safety
 * Blameless postmortem
 
-### Small teams, single threaded leaders
+## Small teams, single threaded leaders
 
 * Startups have energy. How do you retain it? Small teams
 * 2 pizza
@@ -189,26 +189,26 @@ Create an infra team as soon as you can.
 
 * If there's always a manager who can veto, the person who has the decision actially doesn't.
 
-### Collaboration
+## Collaboration
 
 * Autonomous teams don't need to work together much
 * Many mistake this for a problem. It's not.
 * Where teams do need to collaborate, formalize the relationship with 'service contracts'
 * Interfaces are usually APIs
 
-### Wearing customers shoes
+## Wearing customers shoes
 
 * Eat your own dog food if you can
 * Don't create buffers between devs and customers (sales, product managers etc.)
 * Start from press release: focuses on what your customer wants, works backwards.
 
-### Agile (for executives)
+## Agile (for executives)
 
 * features, deadlines, quality, certainty: pick 3, maybe 2
 * Throwing more devs at a delayed project will delay it further.
 * Forget the formal methodologies, trainers, consultants.
 
-### Infra
+## Infra
 
 * Good infra is hard to see the value of. But it _is_ extremely valuable.
 * Engineers hate fighting their tools. Make it easy for them, that's motivating for them
@@ -225,7 +225,7 @@ Create an infra team as soon as you can.
 * **Hire an infrastructure team**
 * "time spend outside code"
 
-### Stories and example
+## Stories and example
 
 * Billboard (Intro)
 * Casper and Tempur Sealy (C1)
