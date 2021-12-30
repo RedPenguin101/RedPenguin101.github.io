@@ -16,6 +16,8 @@
                  :adoc "./asciidocs/books/"
                  :markdown "./markdown/books/"})
 
+(def css-path "../css/style.css")
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; file operations
 ;;;;;;;;;;;;;;;;;;;;
@@ -37,7 +39,8 @@
 
 (defn publish-markdown [path]
   (sh "pandoc"
-      path "-f" "markdown" "-t" "html" "-s" "-o"
+      path "-f" "markdown" "-t" "html" "-s" "--toc" "-c" css-path
+      "-o"
       (str/replace path ".md" ".html"))
   (str/replace path ".md" ".html"))
 
