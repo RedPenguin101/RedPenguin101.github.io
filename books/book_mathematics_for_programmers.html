@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Mathematics for Programmers</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Mathematics for Programmers</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#parts">Parts</a></li>
+<li><a href="#part-1-vectors-and-linear-algebra">Part 1: Vectors and Linear Algebra</a><ul>
+<li><a href="#chapter-2-2d-vectors">Chapter 2: 2d vectors</a><ul>
+<li><a href="#arithmetic">Arithmetic</a></li>
+<li><a href="#trigonometry-and-polar-coordinates">Trigonometry and Polar coordinates</a></li>
+<li><a href="#transformation-of-vector-collections">Transformation of vector collections</a></li>
+</ul></li>
+<li><a href="#d-vectors">3d vectors</a><ul>
+<li><a href="#arithmetic-1">Arithmetic</a></li>
+<li><a href="#dot-products">Dot products</a></li>
+<li><a href="#cross-product">Cross Product</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="parts">Parts</h1>
+<ul>
+<li>Vectors and linear algebra:
+<ul>
+<li>2d</li>
+<li>3d</li>
+<li>linear transformations</li>
+<li>Matrices</li>
+<li>Systems of linear equations</li>
+</ul></li>
+<li>Calculus
+<ul>
+<li>Rates of change</li>
+<li>Motion simulation</li>
+<li>Symbolic expressions</li>
+<li>Force simulation</li>
+<li>Physical system optimization</li>
+<li>Fourier series</li>
+</ul></li>
+<li>Machine Learning
+<ul>
+<li>Fitting</li>
+<li>Logistic regression</li>
+<li>Neural networks</li>
+</ul></li>
+</ul>
+<h1 id="part-1-vectors-and-linear-algebra">Part 1: Vectors and Linear Algebra</h1>
+<ul>
+<li><em>Linear Algebra</em> deals with computations on multidimensional data.</li>
+<li>A <em>vector</em> is a point in multidimensional space.</li>
+<li>A <em>linear transformation</em> is an <code>f :: v -&gt; v</code> which preserves geometry. They can be represented as a <em>matrix</em>.</li>
+<li>A <em>system of linear equations</em> tells us where dimensional bodies intersect in a vector space</li>
+</ul>
+<h2 id="chapter-2-2d-vectors">Chapter 2: 2d vectors</h2>
+<ul>
+<li>A 2d space is a <em>plane</em></li>
+<li>The reference point of a plane is the <em>origin</em></li>
+</ul>
+<p>A 2d vector can be thought of as a point on the plane, or as an ‘arrow’ starting at the origin.</p>
+<h3 id="arithmetic">Arithmetic</h3>
+<p>Vector addition is pairwise. Vector addition is a <em>translation</em> on a 2d plane. You can ‘shift’ drawings around a canvas using vector addition.</p>
+<p>The length of a line described by a vector (or distance of point from origin) is obtained by the Pythagorean theorem.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(<span class="bu">defn</span><span class="fu"> vector-length </span>[[x y]]</a>
+<a class="sourceLine" id="cb1-2" title="2">  (Math/sqrt (<span class="kw">+</span> (square x) (square y))))</a></code></pre></div>
+<p>Scalar multiplication is <code>* :: s, v -&gt; v</code>, where <code>s</code> is a real number. The <em>opposite</em> vector to v is <code>-1 * v</code>.</p>
+<p>Scalar multiplication <em>rescales</em> vectors on a 2d plane. That is, you can make images bigger or smaller on a canvas.</p>
+<p>The <em>displacement</em> of two vectors <code>v</code> and <code>w</code> is a description of the line connecting them. It is obtained by <code>v-w</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="bu">defn</span><span class="fu"> v+ </span>[&amp; vs] (<span class="kw">apply</span> <span class="kw">map</span> <span class="kw">+</span> vs))</a>
+<a class="sourceLine" id="cb2-2" title="2">(<span class="bu">defn</span><span class="fu"> v* </span>[s v] (<span class="kw">map</span> #(<span class="kw">*</span> s <span class="va">%</span>) v))</a></code></pre></div>
+<h3 id="trigonometry-and-polar-coordinates">Trigonometry and Polar coordinates</h3>
+<p>If you know the <em>length</em> of a vector, and its <em>direction</em> (angle relative to axis) you can infer the coordinates. Put another way, the length and angle of a vector is an alternative and equivalent description of a vector: <code>[x,y] -&gt; [l,d]</code>. The first method is called the <em>Cartesian Coordinate</em> system, the second is the <em>Polar Coordinate</em> system.</p>
+<p>Given an angle <code>a</code>, the coordinates of vectors along the line drawn to that angle will have a constant ratio <code>r</code>. This ratio is called the <em>tangent</em> of the angle. <code>tan(a) = r</code></p>
+<p>The <em>sine</em> and <em>cosine</em>, given an angle <code>a</code>, give the vertical and horizontal distance covered relative to the length of the vector. <code>sin(a) = v/d</code>, <code>cos(a) = h/d</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">defn</span><span class="fu"> polar-&gt;cartesian </span>[[r a]]</a>
+<a class="sourceLine" id="cb3-2" title="2">  [(<span class="kw">*</span> r (Math/cos a)) (<span class="kw">*</span> r (Math/sin a))])</a></code></pre></div>
+<p>The <em>arcsine</em>, <em>arccosine</em> and <em>arctangent</em> are the <em>inverse</em> of the trigonomic functions. That is, they translate from ratios of distances to angles. However, there are some gotchas here, and most programming languages provide an <code>atan2</code> (2-argument arctangent) function, which given an <em>x</em> and <em>y</em> coordinate will calculate the angle.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">defn</span><span class="fu"> cartesian-&gt;polar </span>[[x y]]</a>
+<a class="sourceLine" id="cb4-2" title="2">  [(vector-length [x y]) (Math/atan2 y x)])</a></code></pre></div>
+<p>Translations are easier with Cartesian, but rotation is easier with Polar. The rotation operation is <code>rotate :: angle, vector -&gt; vector</code>. When stated in polar coordinates, rotation is simply the addition of the angle parameter to the angle element of the polar-vector.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="bu">defn</span><span class="fu"> vector-rotate </span>[a v]</a>
+<a class="sourceLine" id="cb5-2" title="2">  (polar-&gt;cartesian (v+ [<span class="dv">0</span> a] (cartesian-&gt;polar v))))</a></code></pre></div>
+<h3 id="transformation-of-vector-collections">Transformation of vector collections</h3>
+<p>The three operations (translate with addition, rescale with multiplication, and rotate with rotation) can easily be extended to vector sets:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn</span><span class="fu"> xform-vectors </span>[xform]</a>
+<a class="sourceLine" id="cb6-2" title="2">  (<span class="kw">fn</span> [vs x] (<span class="kw">map</span> #(xform x <span class="va">%</span>) vs)))</a>
+<a class="sourceLine" id="cb6-3" title="3"></a>
+<a class="sourceLine" id="cb6-4" title="4">(<span class="bu">def</span><span class="fu"> translate </span>(xform-vectors v+))</a>
+<a class="sourceLine" id="cb6-5" title="5">(<span class="bu">def</span><span class="fu"> rescale   </span>(xform-vectors v*))</a>
+<a class="sourceLine" id="cb6-6" title="6">(<span class="bu">def</span><span class="fu"> rotate    </span>(xform-vectors vector-rotate))</a>
+<a class="sourceLine" id="cb6-7" title="7"></a>
+<a class="sourceLine" id="cb6-8" title="8">(<span class="kw">-&gt;</span> dino-vectors</a>
+<a class="sourceLine" id="cb6-9" title="9">    (rotate (<span class="kw">*</span> <span class="dv">5</span> (<span class="kw">/</span> Math/PI <span class="dv">3</span>)))</a>
+<a class="sourceLine" id="cb6-10" title="10">    (translate [<span class="dv">8</span> <span class="dv">8</span>]))</a></code></pre></div>
+<h2 id="d-vectors">3d vectors</h2>
+<p>2d vectors can be described as <code>[x, y]</code>. 3d vectors can simply be described with <code>[x, y, z]</code></p>
+<h3 id="arithmetic-1">Arithmetic</h3>
+<p>Arithmetic in three (or more) directions is very similar to two dimensions. We therefore need only to generalize our functions from the previous section.</p>
+<p>Our addition and scalar multiplication functions don’t need to be changed to account for the 3rd dimension:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> v+ </span>[&amp; vs] (<span class="kw">apply</span> <span class="kw">map</span> <span class="kw">+</span> vs))</a>
+<a class="sourceLine" id="cb7-2" title="2">(<span class="bu">defn</span><span class="fu"> v* </span>[s v]  (<span class="kw">map</span> #(<span class="kw">*</span> s <span class="va">%</span>) v))</a>
+<a class="sourceLine" id="cb7-3" title="3"></a>
+<a class="sourceLine" id="cb7-4" title="4">(v+ [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span>] [<span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span>]) <span class="co">; (5 7 9)</span></a>
+<a class="sourceLine" id="cb7-5" title="5">(v* <span class="dv">10</span> [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span>]) <span class="co">; (10 20 30)</span></a></code></pre></div>
+<p>To calculate line length of <code>x,y,z</code>, we can think of the problem as being decomposed into two right angle triangles, the first in the <code>x,y</code> plane, and the second adding in the <code>z</code> plane.</p>
+<p>The first will have length <code>a</code>, and will be calculated as before: <code>a = sqrt(x^2 + y^2)</code>. The second will be <code>b = sqrt(z^2 + a^2)</code>. This expands to</p>
+<pre><code>b = sqrt(z^2 + (sqrt(a^2 + b^2))^2)
+b = sqrt(z^2 + a^2 + b^2)</code></pre>
+<p>Our function for <code>vector-length</code> will need to be generalized to handle higher dimensions.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> square </span>[x] (<span class="kw">*</span> x x))</a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3">(<span class="bu">defn</span><span class="fu"> vector-length </span>[v]</a>
+<a class="sourceLine" id="cb9-4" title="4">  (Math/sqrt (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> square v))))</a></code></pre></div>
+<p>Things are more complicated for polar representations of higher dimensional vectors. While a single angle was sufficient for 2d, 2 angles are necessary for 3d. In general (n-1) angles will be necessary to describe a n-dimensional vector in polar form.</p>
+<p>We will wait until we have a better tool, <em>vector products</em> before tackling this.</p>
+<h3 id="dot-products">Dot products</h3>
+<p>There are two ways to multiply vectors together. The first is the <code>dot-product :: v1, v2 -&gt; s</code> (aka <em>inner product</em>), where s is a scalar. The second is the <code>cross-product :: v1, v2 -&gt; v3</code>. Each can help us reason about vectors in 3d.</p>
+<p>You can think of the dot-product as representing <em>alignment</em> of two vectors. A positive dot product means positive alignment: they are pointing in around the same direction. Negative means the opposite. A dot-product of 0 means the vectors are <em>perpendicular</em>. This is very useful because otherwise you would need trigonometry to calculate the relative angle of vectors.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(<span class="bu">defn</span><span class="fu"> dot-product </span>[v1 v2]</a>
+<a class="sourceLine" id="cb10-2" title="2">   (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> <span class="kw">*</span> v1 v2)))</a></code></pre></div>
+<p>Some properties of dot-products:</p>
+<p>Vectors lying on different axes are perpendicular (e.g. <code>[0 3 0], [0 0 -5]</code>)</p>
+<pre><code>av dot w = v dot aw
+
+a[x y] dot [n m]
+= [ax ay] dot [n m]
+= axn + aym
+= [x y] dot [an am]
+= [x y] dot a[n m]</code></pre>
+<p>The maximum value of the dot product is the product of the length of the vectors. The minimum value is the negative of the product of lengths. Thus if <code>v . w = len(v) * len(w)</code>, v and w are perfectly aligned, and if <code>v . w = -(len(v) * len(w))</code> then v and w are opposite.</p>
+<p>In other words, the dot-product divided by the product of lengths gives the angle between two vectors: 1 means 0, -1 means 180 degrees, 0 means 90 degrees. This, you might notice, is very similar to the cosine:</p>
+<pre><code>cos(90) = 0
+cos(0) = 1
+cos(180) = -1</code></pre>
+<p>In other words: <code>cos(a) = u.v / len(u)*len(v)</code>. By applying <code>acos</code> we use the dot product to calculate angles between vectors, <code>a = acos((u.v)/(len(u)*len(v)))</code></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="bu">defn</span><span class="fu"> angle </span>[v1 v2]</a>
+<a class="sourceLine" id="cb13-2" title="2">  (Math/acos </a>
+<a class="sourceLine" id="cb13-3" title="3">    (<span class="kw">/</span> (dot-product v1 v2)</a>
+<a class="sourceLine" id="cb13-4" title="4">       (<span class="kw">*</span> (vector-length v1) (vector-length v2)))))</a>
+<a class="sourceLine" id="cb13-5" title="5"></a>
+<a class="sourceLine" id="cb13-6" title="6">(angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>]) <span class="co">; 0.47588224966041665</span></a>
+<a class="sourceLine" id="cb13-7" title="7">(radian-&gt;degree (angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>])) <span class="co">; 27.266044450732828</span></a></code></pre></div>
+<h3 id="cross-product">Cross Product</h3>
+</body>
+</html>
