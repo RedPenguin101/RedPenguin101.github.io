@@ -22,7 +22,7 @@
 
 # Part 1: Vectors and Linear Algebra
 
-* _Linear Algebra_ deals with computations on multidimensional data.
+* _Linear algebra_ deals with computations on multidimensional data.
 * A _vector_ is a point in multidimensional space.
 * A _linear transformation_ is an `f :: v -> v` which preserves geometry. They can be represented as a _matrix_.
 * A _system of linear equations_ tells us where dimensional bodies intersect in a vector space
@@ -54,15 +54,16 @@ The _displacement_ of two vectors `v` and `w` is a description of the line conne
 ```clojure
 (defn v+ [& vs] (apply map + vs))
 (defn v* [s v] (map #(* s %) v))
+(defn v- [v1 v2] (v+ v1 (v* -1 v2)))
 ```
 
 ### Trigonometry and Polar coordinates
 
-If you know the _length_ of a vector, and its _direction_ (angle relative to axis) you can infer the coordinates. Put another way, the length and angle of a vector is an alternative and equivalent description of a vector: `[x,y] -> [l,d]`. The first method is called the _Cartesian Coordinate_ system, the second is the _Polar Coordinate_ system.
+If you know the _length_ of a vector, and its _direction_ (angle relative to axis) you can infer the coordinates. Put another way, the length (`r`) and angle (`a`) of a vector is an alternative and equivalent description of a vector: `[x,y] -> [r,a]`. The first method is called the _Cartesian Coordinate_ system, the second is the _Polar Coordinate_ system.
 
-Given an angle `a`, the coordinates of vectors along the line drawn to that angle will have a constant ratio `r`. This ratio is called the _tangent_ of the angle. `tan(a) = r`
+Given an angle `a`, the coordinates of vectors along the line drawn to that angle will have a constant ratio. This ratio is called the _tangent_ of the angle. `tan(a) = x/y`
 
-The _sine_ and _cosine_, given an angle `a`, give the vertical and horizontal distance covered relative to the length of the vector. `sin(a) = v/d`, `cos(a) = h/d`
+The _sine_ and _cosine_, given an angle `a`, give the vertical and horizontal distance covered relative to the length of the vector. `sin(a) = y/r`, `cos(a) = x/r`
 
 ```clojure
 (defn polar->cartesian [[r a]]
@@ -102,7 +103,7 @@ The three operations (translate with addition, rescale with multiplication, and 
 
 ## 3d vectors
 
-2d vectors can be described as `[x, y]`. 3d vectors can simply be described with `[x, y, z]`
+2d vectors can be described as `[x, y]`. 3d vectors can be described with `[x, y, z]`
 
 ### Arithmetic
 
@@ -123,8 +124,8 @@ To calculate line length of `x,y,z`, we can think of the problem as being decomp
 The first will have length `a`, and will be calculated as before: `a = sqrt(x^2 + y^2)`. The second will be `b = sqrt(z^2 + a^2)`. This expands to 
 
 ```
-b = sqrt(z^2 + (sqrt(a^2 + b^2))^2)
-b = sqrt(z^2 + a^2 + b^2)
+b = sqrt(z^2 + (sqrt(x^2 + y^2))^2)
+b = sqrt(z^2 + x^2 + y^2)
 ```
 
 Our function for `vector-length` will need to be generalized to handle higher dimensions.
@@ -135,10 +136,6 @@ Our function for `vector-length` will need to be generalized to handle higher di
 (defn vector-length [v]
   (Math/sqrt (apply + (map square v))))
 ```
-
-Things are more complicated for polar representations of higher dimensional vectors. While a single angle was sufficient for 2d, 2 angles are necessary for 3d. In general (n-1) angles will be necessary to describe a n-dimensional vector in polar form.
-
-We will wait until we have a better tool, _vector products_ before tackling this.
 
 ### Dot products
 
@@ -178,10 +175,12 @@ cos(180) = -1
 In other words: `cos(a) = u.v / len(u)*len(v)`. By applying `acos` we use the dot product to calculate angles between vectors, `a = acos((u.v)/(len(u)*len(v)))`
 
 ```clojure
+(defn normalized-dot [v1 v2]
+  (/ (dot-product v1 v2)
+     (* (vector-length v1) (vector-length v2))))
+
 (defn angle [v1 v2]
-  (Math/acos 
-    (/ (dot-product v1 v2)
-       (* (vector-length v1) (vector-length v2)))))
+  (Math/acos (normalized-dot v1 v2))
 
 (angle [1 2 2] [2 2 1]) ; 0.47588224966041665
 (radian->degree (angle [1 2 2] [2 2 1])) ; 27.266044450732828
@@ -189,4 +188,98 @@ In other words: `cos(a) = u.v / len(u)*len(v)`. By applying `acos` we use the do
 
 ### Cross Product
 
+The formula for a 3d cross product is simple enough
 
+```
+u x v = (uy vz - uz vy, uz vx - ux vz, ux vy - uy vx)
+```
+
+```clojure
+(defn cross-product [[ux uy uz] [vx vy vz]]
+  [(- (* uy vz) (* uz vy))
+   (- (* uz vx) (* ux vz))
+   (- (* ux vy) (* uy vx))])
+```
+
+The geometric description, what the cross product _means_, is trickier, and will take some preliminary work.
+
+First, direction. The cross product of two 3d vectors returns a 3d vector that is _perpendicular_ two the two input vectors. (Perpendicular according to a _right hand rule_ orientation.)
+
+The length of the cross product tells us something like how perpendicular the two _input_ vectors are to eachother. Specifically, it describes the area of the parallelogram with sides u and v.
+
+## Projecting 3d shapes onto a 2d plane
+
+First, we must choose what direction we are observing from, by defining vectors that are 'up' `v-up` and 'right' `v-right` from our perspective.
+
+We can then extract a _component_ from any vector, relative to a direction vector with `dot-product(v, dir)/len(dir)`. Our projection function is therefore simply `[component(v, v-up), component(v, v-right)]`
+
+This will suffice to render the shape, but without distinguishing the faces of the shape with color, it will be hard for us to tell what it actually look like.
+
+If we define a light source vector `v-light`, then the amount of light on the face of a shape (represented by a vector that is _normal_ to the face) will be the alignment (i.e. dot-product) of that vector with `v-light`.
+
+The normal vector of a face described by 3 vectors _v1, v2, v2_ is
+
+```
+n-vec = (v2-v1) x (v3-v1)
+```
+
+```clojure
+(defn normal [[v1 v2 v3]]
+  (cross-product (v- v2 v1) (v- v3 v1)))
+```
+
+A final helper we will use is `unit`, which normalizes the vector to an overall length of 1.
+
+```clojure
+(defn unit [v] (v* (/ 1 (vector-length v)) v))
+```
+
+Bringing all this together, we want a function that translates a 3d-shape to a description of a 2 dimensional projection, including appropriate shading.
+
+```
+project-shape :: 3d-polygon, v-up, v-right, v-light -> 2d-shapes
+```
+
+A 3d polygon is a sequence of 3 3-d vectors describing the triangular face of a 3d shape. `[v1 v2 v3]`
+
+A 2d shape is a sequence of three 2d vectors (describing a triangle) with a number describing it's alignment (in 3d) to the light source.
+
+```clojure
+(defn project-face [face v-up v-right v-light]
+  (when (> (last (unit (normal face))) 0) 
+    {:vertices    (map #(project-2d % v-up v-right) face)
+     :light-align (normalized-dot (normal face) v-light)}))
+```
+
+This returns a 'shape', comprised of the 2d vertices of the shape and its alignment to the light source. The `when` statement here filters out all faces whose z-component of the normal is less than zero - i.e. is facing downwards and is therefore not visible from the 'overhead' perspective we will start by using. This will be insufficient later, but for now is fine.
+
+All that's necessary now is to render the triangles using a drawing library, here [Clojure2D](https://github.com/Clojure2D/clojure2d).
+
+```clojure
+(defn color [light-align]
+  (col/color :blue (+ 20 (* (- 1 light-align) 235))))
+
+(defn s [p] (+ 500 (* 500 p)))
+(defn flip-y [v] (update v 1 * -1))
+
+(defn draw-triangle [canvas {:keys [vertices light-align]}]
+  (c2d/with-canvas [c canvas]
+    (c2d/set-color c (color light-align))
+    (let [[[x1 y1] [x2 y2] [x3 y3]] (map flip-y vertices)]
+      (c2d/triangle c (s x1) (s y1) (s x2)
+                    (s y2) (s x3) (s y3)))))
+
+(defn render-triangles [triangles]
+  (let [canvas (c2d/canvas 1000 1000)]
+    (doseq [t triangles] (draw-triangle canvas t))
+    (c2d/show-window canvas "Drawing")))
+```
+
+TODO: 
+* Add pictures
+* Write stuff about interpretting up, right, light vectors
+* filter faces that are not facing the _camera_
+* Better shading - alpha isn't correct. Include better use of negative light-aligns
+* Better implementation of camera? Don't really need 2 vectors surely. Something to do with view stretching?
+* Tidy up code and better explain component, unit, etc.
+* Axis label

@@ -94,6 +94,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#dot-products">Dot products</a></li>
 <li><a href="#cross-product">Cross Product</a></li>
 </ul></li>
+<li><a href="#projecting-3d-shapes-onto-a-2d-plane">Projecting 3d shapes onto a 2d plane</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -125,7 +126,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <h1 id="part-1-vectors-and-linear-algebra">Part 1: Vectors and Linear Algebra</h1>
 <ul>
-<li><em>Linear Algebra</em> deals with computations on multidimensional data.</li>
+<li><em>Linear algebra</em> deals with computations on multidimensional data.</li>
 <li>A <em>vector</em> is a point in multidimensional space.</li>
 <li>A <em>linear transformation</em> is an <code>f :: v -&gt; v</code> which preserves geometry. They can be represented as a <em>matrix</em>.</li>
 <li>A <em>system of linear equations</em> tells us where dimensional bodies intersect in a vector space</li>
@@ -145,11 +146,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Scalar multiplication <em>rescales</em> vectors on a 2d plane. That is, you can make images bigger or smaller on a canvas.</p>
 <p>The <em>displacement</em> of two vectors <code>v</code> and <code>w</code> is a description of the line connecting them. It is obtained by <code>v-w</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="bu">defn</span><span class="fu"> v+ </span>[&amp; vs] (<span class="kw">apply</span> <span class="kw">map</span> <span class="kw">+</span> vs))</a>
-<a class="sourceLine" id="cb2-2" title="2">(<span class="bu">defn</span><span class="fu"> v* </span>[s v] (<span class="kw">map</span> #(<span class="kw">*</span> s <span class="va">%</span>) v))</a></code></pre></div>
+<a class="sourceLine" id="cb2-2" title="2">(<span class="bu">defn</span><span class="fu"> v* </span>[s v] (<span class="kw">map</span> #(<span class="kw">*</span> s <span class="va">%</span>) v))</a>
+<a class="sourceLine" id="cb2-3" title="3">(<span class="bu">defn</span><span class="fu"> v- </span>[v1 v2] (v+ v1 (v* <span class="dv">-1</span> v2)))</a></code></pre></div>
 <h3 id="trigonometry-and-polar-coordinates">Trigonometry and Polar coordinates</h3>
-<p>If you know the <em>length</em> of a vector, and its <em>direction</em> (angle relative to axis) you can infer the coordinates. Put another way, the length and angle of a vector is an alternative and equivalent description of a vector: <code>[x,y] -&gt; [l,d]</code>. The first method is called the <em>Cartesian Coordinate</em> system, the second is the <em>Polar Coordinate</em> system.</p>
-<p>Given an angle <code>a</code>, the coordinates of vectors along the line drawn to that angle will have a constant ratio <code>r</code>. This ratio is called the <em>tangent</em> of the angle. <code>tan(a) = r</code></p>
-<p>The <em>sine</em> and <em>cosine</em>, given an angle <code>a</code>, give the vertical and horizontal distance covered relative to the length of the vector. <code>sin(a) = v/d</code>, <code>cos(a) = h/d</code></p>
+<p>If you know the <em>length</em> of a vector, and its <em>direction</em> (angle relative to axis) you can infer the coordinates. Put another way, the length (<code>r</code>) and angle (<code>a</code>) of a vector is an alternative and equivalent description of a vector: <code>[x,y] -&gt; [r,a]</code>. The first method is called the <em>Cartesian Coordinate</em> system, the second is the <em>Polar Coordinate</em> system.</p>
+<p>Given an angle <code>a</code>, the coordinates of vectors along the line drawn to that angle will have a constant ratio. This ratio is called the <em>tangent</em> of the angle. <code>tan(a) = x/y</code></p>
+<p>The <em>sine</em> and <em>cosine</em>, given an angle <code>a</code>, give the vertical and horizontal distance covered relative to the length of the vector. <code>sin(a) = y/r</code>, <code>cos(a) = x/r</code></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">defn</span><span class="fu"> polar-&gt;cartesian </span>[[r a]]</a>
 <a class="sourceLine" id="cb3-2" title="2">  [(<span class="kw">*</span> r (Math/cos a)) (<span class="kw">*</span> r (Math/sin a))])</a></code></pre></div>
 <p>The <em>arcsine</em>, <em>arccosine</em> and <em>arctangent</em> are the <em>inverse</em> of the trigonomic functions. That is, they translate from ratios of distances to angles. However, there are some gotchas here, and most programming languages provide an <code>atan2</code> (2-argument arctangent) function, which given an <em>x</em> and <em>y</em> coordinate will calculate the angle.</p>
@@ -171,7 +173,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-9" title="9">    (rotate (<span class="kw">*</span> <span class="dv">5</span> (<span class="kw">/</span> Math/PI <span class="dv">3</span>)))</a>
 <a class="sourceLine" id="cb6-10" title="10">    (translate [<span class="dv">8</span> <span class="dv">8</span>]))</a></code></pre></div>
 <h2 id="d-vectors">3d vectors</h2>
-<p>2d vectors can be described as <code>[x, y]</code>. 3d vectors can simply be described with <code>[x, y, z]</code></p>
+<p>2d vectors can be described as <code>[x, y]</code>. 3d vectors can be described with <code>[x, y, z]</code></p>
 <h3 id="arithmetic-1">Arithmetic</h3>
 <p>Arithmetic in three (or more) directions is very similar to two dimensions. We therefore need only to generalize our functions from the previous section.</p>
 <p>Our addition and scalar multiplication functions don’t need to be changed to account for the 3rd dimension:</p>
@@ -182,15 +184,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb7-5" title="5">(v* <span class="dv">10</span> [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span>]) <span class="co">; (10 20 30)</span></a></code></pre></div>
 <p>To calculate line length of <code>x,y,z</code>, we can think of the problem as being decomposed into two right angle triangles, the first in the <code>x,y</code> plane, and the second adding in the <code>z</code> plane.</p>
 <p>The first will have length <code>a</code>, and will be calculated as before: <code>a = sqrt(x^2 + y^2)</code>. The second will be <code>b = sqrt(z^2 + a^2)</code>. This expands to</p>
-<pre><code>b = sqrt(z^2 + (sqrt(a^2 + b^2))^2)
-b = sqrt(z^2 + a^2 + b^2)</code></pre>
+<pre><code>b = sqrt(z^2 + (sqrt(x^2 + y^2))^2)
+b = sqrt(z^2 + x^2 + y^2)</code></pre>
 <p>Our function for <code>vector-length</code> will need to be generalized to handle higher dimensions.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> square </span>[x] (<span class="kw">*</span> x x))</a>
 <a class="sourceLine" id="cb9-2" title="2"></a>
 <a class="sourceLine" id="cb9-3" title="3">(<span class="bu">defn</span><span class="fu"> vector-length </span>[v]</a>
 <a class="sourceLine" id="cb9-4" title="4">  (Math/sqrt (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> square v))))</a></code></pre></div>
-<p>Things are more complicated for polar representations of higher dimensional vectors. While a single angle was sufficient for 2d, 2 angles are necessary for 3d. In general (n-1) angles will be necessary to describe a n-dimensional vector in polar form.</p>
-<p>We will wait until we have a better tool, <em>vector products</em> before tackling this.</p>
 <h3 id="dot-products">Dot products</h3>
 <p>There are two ways to multiply vectors together. The first is the <code>dot-product :: v1, v2 -&gt; s</code> (aka <em>inner product</em>), where s is a scalar. The second is the <code>cross-product :: v1, v2 -&gt; v3</code>. Each can help us reason about vectors in 3d.</p>
 <p>You can think of the dot-product as representing <em>alignment</em> of two vectors. A positive dot product means positive alignment: they are pointing in around the same direction. Negative means the opposite. A dot-product of 0 means the vectors are <em>perpendicular</em>. This is very useful because otherwise you would need trigonometry to calculate the relative angle of vectors.</p>
@@ -211,13 +211,63 @@ a[x y] dot [n m]
 cos(0) = 1
 cos(180) = -1</code></pre>
 <p>In other words: <code>cos(a) = u.v / len(u)*len(v)</code>. By applying <code>acos</code> we use the dot product to calculate angles between vectors, <code>a = acos((u.v)/(len(u)*len(v)))</code></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="bu">defn</span><span class="fu"> angle </span>[v1 v2]</a>
-<a class="sourceLine" id="cb13-2" title="2">  (Math/acos </a>
-<a class="sourceLine" id="cb13-3" title="3">    (<span class="kw">/</span> (dot-product v1 v2)</a>
-<a class="sourceLine" id="cb13-4" title="4">       (<span class="kw">*</span> (vector-length v1) (vector-length v2)))))</a>
-<a class="sourceLine" id="cb13-5" title="5"></a>
-<a class="sourceLine" id="cb13-6" title="6">(angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>]) <span class="co">; 0.47588224966041665</span></a>
-<a class="sourceLine" id="cb13-7" title="7">(radian-&gt;degree (angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>])) <span class="co">; 27.266044450732828</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="bu">defn</span><span class="fu"> normalized-dot </span>[v1 v2]</a>
+<a class="sourceLine" id="cb13-2" title="2">  (<span class="kw">/</span> (dot-product v1 v2)</a>
+<a class="sourceLine" id="cb13-3" title="3">     (<span class="kw">*</span> (vector-length v1) (vector-length v2))))</a>
+<a class="sourceLine" id="cb13-4" title="4"></a>
+<a class="sourceLine" id="cb13-5" title="5">(<span class="bu">defn</span><span class="fu"> angle </span>[v1 v2]</a>
+<a class="sourceLine" id="cb13-6" title="6">  (Math/acos (normalized-dot v1 v2))</a>
+<a class="sourceLine" id="cb13-7" title="7"></a>
+<a class="sourceLine" id="cb13-8" title="8">(angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>]) <span class="co">; 0.47588224966041665</span></a>
+<a class="sourceLine" id="cb13-9" title="9">(radian-&gt;degree (angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>])) <span class="co">; 27.266044450732828</span></a></code></pre></div>
 <h3 id="cross-product">Cross Product</h3>
+<p>The formula for a 3d cross product is simple enough</p>
+<pre><code>u x v = (uy vz - uz vy, uz vx - ux vz, ux vy - uy vx)</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb15-1" title="1">(<span class="bu">defn</span><span class="fu"> cross-product </span>[[ux uy uz] [vx vy vz]]</a>
+<a class="sourceLine" id="cb15-2" title="2">  [(<span class="kw">-</span> (<span class="kw">*</span> uy vz) (<span class="kw">*</span> uz vy))</a>
+<a class="sourceLine" id="cb15-3" title="3">   (<span class="kw">-</span> (<span class="kw">*</span> uz vx) (<span class="kw">*</span> ux vz))</a>
+<a class="sourceLine" id="cb15-4" title="4">   (<span class="kw">-</span> (<span class="kw">*</span> ux vy) (<span class="kw">*</span> uy vx))])</a></code></pre></div>
+<p>The geometric description, what the cross product <em>means</em>, is trickier, and will take some preliminary work.</p>
+<p>First, direction. The cross product of two 3d vectors returns a 3d vector that is <em>perpendicular</em> two the two input vectors. (Perpendicular according to a <em>right hand rule</em> orientation.)</p>
+<p>The length of the cross product tells us something like how perpendicular the two <em>input</em> vectors are to eachother. Specifically, it describes the area of the parallelogram with sides u and v.</p>
+<h2 id="projecting-3d-shapes-onto-a-2d-plane">Projecting 3d shapes onto a 2d plane</h2>
+<p>First, we must choose what direction we are observing from, by defining vectors that are ‘up’ <code>v-up</code> and ‘right’ <code>v-right</code> from our perspective.</p>
+<p>We can then extract a <em>component</em> from any vector, relative to a direction vector with <code>dot-product(v, dir)/len(dir)</code>. Our projection function is therefore simply <code>[component(v, v-up), component(v, v-right)]</code></p>
+<p>This will suffice to render the shape, but without distinguishing the faces of the shape with color, it will be hard for us to tell what it actually look like.</p>
+<p>If we define a light source vector <code>v-light</code>, then the amount of light on the face of a shape (represented by a vector that is <em>normal</em> to the face) will be the alignment (i.e. dot-product) of that vector with <code>v-light</code>.</p>
+<p>The normal vector of a face described by 3 vectors <em>v1, v2, v2</em> is</p>
+<pre><code>n-vec = (v2-v1) x (v3-v1)</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb17-1" title="1">(<span class="bu">defn</span><span class="fu"> normal </span>[[v1 v2 v3]]</a>
+<a class="sourceLine" id="cb17-2" title="2">  (cross-product (v- v2 v1) (v- v3 v1)))</a></code></pre></div>
+<p>A final helper we will use is <code>unit</code>, which normalizes the vector to an overall length of 1.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb18-1" title="1">(<span class="bu">defn</span><span class="fu"> unit </span>[v] (v* (<span class="kw">/</span> <span class="dv">1</span> (vector-length v)) v))</a></code></pre></div>
+<p>Bringing all this together, we want a function that translates a 3d-shape to a description of a 2 dimensional projection, including appropriate shading.</p>
+<pre><code>project-shape :: 3d-polygon, v-up, v-right, v-light -&gt; 2d-shapes</code></pre>
+<p>A 3d polygon is a sequence of 3 3-d vectors describing the triangular face of a 3d shape. <code>[v1 v2 v3]</code></p>
+<p>A 2d shape is a sequence of three 2d vectors (describing a triangle) with a number describing it’s alignment (in 3d) to the light source.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb20-1" title="1">(<span class="bu">defn</span><span class="fu"> project-face </span>[face v-up v-right v-light]</a>
+<a class="sourceLine" id="cb20-2" title="2">  (<span class="kw">when</span> (<span class="kw">&gt;</span> (<span class="kw">last</span> (unit (normal face))) <span class="dv">0</span>) </a>
+<a class="sourceLine" id="cb20-3" title="3">    {<span class="at">:vertices</span>    (<span class="kw">map</span> #(project-2d <span class="va">%</span> v-up v-right) face)</a>
+<a class="sourceLine" id="cb20-4" title="4">     <span class="at">:light-align</span> (normalized-dot (normal face) v-light)}))</a></code></pre></div>
+<p>This returns a ‘shape’, comprised of the 2d vertices of the shape and its alignment to the light source. The <code>when</code> statement here filters out all faces whose z-component of the normal is less than zero - i.e. is facing downwards and is therefore not visible from the ‘overhead’ perspective we will start by using. This will be insufficient later, but for now is fine.</p>
+<p>All that’s necessary now is to render the triangles using a drawing library, here <a href="https://github.com/Clojure2D/clojure2d">Clojure2D</a>.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb21-1" title="1">(<span class="bu">defn</span><span class="fu"> color </span>[light-align]</a>
+<a class="sourceLine" id="cb21-2" title="2">  (col/color <span class="at">:blue</span> (<span class="kw">+</span> <span class="dv">20</span> (<span class="kw">*</span> (<span class="kw">-</span> <span class="dv">1</span> light-align) <span class="dv">235</span>))))</a>
+<a class="sourceLine" id="cb21-3" title="3"></a>
+<a class="sourceLine" id="cb21-4" title="4">(<span class="bu">defn</span><span class="fu"> s </span>[p] (<span class="kw">+</span> <span class="dv">500</span> (<span class="kw">*</span> <span class="dv">500</span> p)))</a>
+<a class="sourceLine" id="cb21-5" title="5">(<span class="bu">defn</span><span class="fu"> flip-y </span>[v] (<span class="kw">update</span> v <span class="dv">1</span> <span class="kw">*</span> <span class="dv">-1</span>))</a>
+<a class="sourceLine" id="cb21-6" title="6"></a>
+<a class="sourceLine" id="cb21-7" title="7">(<span class="bu">defn</span><span class="fu"> draw-triangle </span>[canvas {<span class="at">:keys</span> [vertices light-align]}]</a>
+<a class="sourceLine" id="cb21-8" title="8">  (c2d/with-canvas [c canvas]</a>
+<a class="sourceLine" id="cb21-9" title="9">    (c2d/set-color c (color light-align))</a>
+<a class="sourceLine" id="cb21-10" title="10">    (<span class="kw">let</span> [[[x1 y1] [x2 y2] [x3 y3]] (<span class="kw">map</span> flip-y vertices)]</a>
+<a class="sourceLine" id="cb21-11" title="11">      (c2d/triangle c (s x1) (s y1) (s x2)</a>
+<a class="sourceLine" id="cb21-12" title="12">                    (s y2) (s x3) (s y3)))))</a>
+<a class="sourceLine" id="cb21-13" title="13"></a>
+<a class="sourceLine" id="cb21-14" title="14">(<span class="bu">defn</span><span class="fu"> render-triangles </span>[triangles]</a>
+<a class="sourceLine" id="cb21-15" title="15">  (<span class="kw">let</span> [canvas (c2d/canvas <span class="dv">1000</span> <span class="dv">1000</span>)]</a>
+<a class="sourceLine" id="cb21-16" title="16">    (<span class="kw">doseq</span> [t triangles] (draw-triangle canvas t))</a>
+<a class="sourceLine" id="cb21-17" title="17">    (c2d/show-window canvas <span class="st">&quot;Drawing&quot;</span>)))</a></code></pre></div>
+<p>TODO: * Add pictures * Write stuff about interpretting up, right, light vectors * filter faces that are not facing the <em>camera</em> * Better shading - alpha isn’t correct. Include better use of negative light-aligns * Better implementation of camera? Don’t really need 2 vectors surely. Something to do with view stretching? * Tidy up code and better explain component, unit, etc. * Axis label</p>
 </body>
 </html>

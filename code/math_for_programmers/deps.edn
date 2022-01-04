@@ -1,0 +1,2 @@
+{:paths ["src"]
+ :deps {clojure2d {:mvn/version "1.4.3"}}}
