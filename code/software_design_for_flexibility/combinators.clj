@@ -1,31 +1,37 @@
-(ns combinators)
+(ns combinators
+  (:require [clojure.reflect :as r]))
 
 (defonce debug (atom nil))
-(deref debug)
 
 ;; Arity
 
 (def inf ##Inf)
 (defonce arity-table (atom {}))
+(comment (reset! arity-table {}))
 
-(defn count-args [args]
-  (if ((set args) '&) inf (count args)))
+(defn count-args [arg-list]
+  (if (some #(= "clojure.lang.ISeq" (name %)) arg-list)
+    inf (count arg-list)))
 
-(defmacro procedure-arities [f]
-  `(keep count-args (:arglists (meta (var ~f)))))
+(defn procedure-arities [f]
+  (->> (:members (r/reflect f))
+       (filter #(#{"invoke" "invokeStatic"} (name (:name %))))
+       (map #(count-args (:parameter-types %)))
+       (sort)
+       (dedupe)))
 
-(defn procedure-arities2 [sym]
-  (keep count-args (:arglists (meta (var sym)))))
+(comment
+  (procedure-arities list) ; (##Inf)
+  (procedure-arities +) ; (0 1 2 ##Inf)
+  (procedure-arities constantly) ; (1)
+  (procedure-arities #(- %)) ; (1)
+  (procedure-arities #(- %1 %2)) ; (2)
+  (procedure-arities (fn ([x] x) ([x y] x))) ; (1 2)
+  )
 
 (defn get-arity [f]
-  (reset! debug f)
   (or (get @arity-table f)
-      (procedure-arities f)))
-
-(:arglists (meta (var +)))
-(procedure-arities2 '+)
-(procedure-arities list)
-(procedure-arities (fn [x y] (list 'foo x y)))
+      (first (procedure-arities f))))
 
 (defn restrict-arity [proc nargs]
   (swap! arity-table assoc proc nargs)
@@ -68,15 +74,14 @@
       (h (apply f (take n args))
          (apply g (drop n args))))))
 
-
 ((spread-combine list
                  (fn [x y] (list 'foo x y))
                  (fn [u v w] (list 'bar u v w)))
  'a 'b 'c 'd 'e)
+; ((foo a b) (bar c d e))
 
-(defn spread-combine [h f g]
-  (let [n (get-arity f)
-        m (get-arity g)
+(defn spread-combine2 [h f g]
+  (let [n (get-arity f) m (get-arity g)
         t (+ n m)]
     (restrict-arity
       (fn the-combination [& args]
@@ -85,7 +90,46 @@
            (apply g (drop n args))))
       t)))
 
-((spread-combine list
+(def sc2-check (spread-combine2 list
                  (fn [x y] (list 'foo x y))
-                 (fn [u v w] (list 'bar u v w)))
- 'a 'b 'c 'd 'e)
+                 (fn [u v w] (list 'bar u v w))))
+
+(sc2-check 'a 'b 'c 'd 'e) ; ((foo a b) (bar c d e))
+
+(get-arity sc2-check) ; 5
+
+;; exercise 2.1 Arity repair: check, assert, advertise arity
+
+(defn compose2 [f g]
+  (let [m (get-arity f)]
+    (assert (= 1 (get-arity g)))
+    (restrict-arity
+      (fn the-combination [& args]
+        (assert (= m (count args)))
+        (f (apply g args)))
+      m)))
+
+(def comp-check (compose2 #(list 'foo %)
+                          #(list 'bar %)))
+
+(comp-check 'z) ; (foo (bar z))
+(get-arity comp-check) ; 1
+
+(comment (reset! arity-table {}))
+
+(defn parallel-combine2 [h f g]
+  (let [f' (get-arity f) g' (get-arity g)]
+    (assert (= f' g'))
+    (assert (= 2 (get-arity h)))
+    (restrict-arity
+      (fn the-combination [& args]
+        (h (apply f args) (apply g args)))
+      f')))
+
+(def pc2-check
+  (parallel-combine2 (fn [a b] (list a b))
+                     (fn [x y z] (list 'foo x y z))
+                     (fn [u v w] (list 'bar u v w))))
+
+(get-arity pc2-check) ; 3
+(pc2-check 'a 'b 'c) ; ((foo a b c) (bar a b c))
