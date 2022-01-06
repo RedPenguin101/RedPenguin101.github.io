@@ -207,7 +207,7 @@ First, direction. The cross product of two 3d vectors returns a 3d vector that i
 
 The length of the cross product tells us something like how perpendicular the two _input_ vectors are to eachother. Specifically, it describes the area of the parallelogram with sides u and v.
 
-## Projecting 3d shapes onto a 2d plane
+### Projecting 3d shapes onto a 2d plane
 
 First, we must choose what direction we are observing from, by defining vectors that are 'up' `v-up` and 'right' `v-right` from our perspective.
 
@@ -245,6 +245,9 @@ A 3d polygon is a sequence of 3 3-d vectors describing the triangular face of a 
 A 2d shape is a sequence of three 2d vectors (describing a triangle) with a number describing it's alignment (in 3d) to the light source.
 
 ```clojure
+(defn project-2d [v, v-up, v-right]
+  [(component v v-up) (component v v-right)])
+
 (defn project-face [face v-up v-right v-light]
   (when (> (last (unit (normal face))) 0) 
     {:vertices    (map #(project-2d % v-up v-right) face)
@@ -283,3 +286,98 @@ TODO:
 * Better implementation of camera? Don't really need 2 vectors surely. Something to do with view stretching?
 * Tidy up code and better explain component, unit, etc.
 * Axis label
+
+## Linear transformations
+
+A Linear Transfomation is a vector transformation _T_ that preserves vector addition and scalar multiplication. That is, for any input vectors _u_ and _v_, `T(u)+T(v)=T(u+v)`, and `T(sv)=sT(v)`. The transformation `[x^2, y^2]`, for example, is not a linear transformation. Translations are _not_ (surprisingly). Scaling, reflection, projection, shearing, rotation all are.
+
+A _linear combination_ of a collection of vectors is a sum of scalar multiples of them. For example: _3u-2v_. Since these are linear transformations, addition and scalar multiplication are preserved.
+
+```
+T(s1v1+s2v2+...+snvn)=s1T(v1)+s2T(v2)+...+snT(vn)
+```
+
+The combination _0.5u+0.5v_ is the midpoint of a line connecting two points _u_ and _v_. In fact any _au+(1-a)v_ (where _a<=1_) is on the line connecting two points.
+
+Any vector can be decomposed into a linear combination of dimensional units. `[4,3,5]` can be describes as the linear combination `4[1 0 0]+3[0 1 0]+5[0 0 1]`. These dimensional units are called the _standard basis_ for n-dimensional spaces, and denoted _e1, e2, e3_. So the previous example can be written `4e1+3e2+5e3`. This is just a notation change, but it is a useful one for linear transformations.
+
+## Computing transformations with matrices
+
+Using the ideas from the last chapter: Let _a_ be a linear transformation. All we know about _a_ is that `a(e1)=[1 1 1], a(e2)=[1 0 -1], a(e3)=[0 1 1]` If `v=[-1,2,2]` what is `a(v)`?
+
+We can write _v_ as `-e1+2e2+2e3`. 
+
+```
+a(v)=a(-e1+2e2+2e3)=-a(e1)+2a(e2)+2a(e3)
+= -[1 1 1]+2[1 0 -1]+2[0 1 1]=[1 1 -1]
+```
+
+What we have done here is express a transformation as how it impacts the standard basis: `[1 0 -1],[0 1 1],[-1 2 2]`. _Any_ transformation (in 3d) can be represented in this way, with these 9 numbers. We express this in a matrix for convenience (with the vectors 'flipped' vertical and set next to each other):
+
+```
+[ 1 0 -1
+  0 1  2
+ -1 1  2]
+```
+
+### Matrix . Vector: Applying linear transformation
+
+If a linear transformation _T_ can be represented as a matrix, then the application of the linear transformation _Tv_ is obtained by multiplying the matrix by the vector _v_.
+
+```
+[0 2  1  [ 3
+ 0 1  0   -2
+ 1 0 -1]   5]
+```
+
+The calculation is done by applying the dot-product of the rows of the matrix to the vector:
+
+```
+[0 2 1].[3 -2 5] = 1
+[0 1 0].[3 -2 5] = -2
+[1 0 -1].[3 -2 5] = -2
+```
+
+(Note that _Bv != vB_. Matrix multiplication is non-commutative)
+
+### Matrix . Matrix: Composition of linear transformations
+
+Let's say you have 1000 vectors, and you want to apply the same 1000 transformations to every vector. This takes 1000000 calculations. However, if you can compose the 1000 linear transformations into _one_ linear transformation (which by the properties of linear transformations we can), then we can apply the composition to the vector, and complete the task in 1001 calculations.
+
+In other words, instead of _A(Bv)_, we want to do _(AB)v_. This, we can do. The above method of matrix multiplication extends for the second argument being a 3x3 matrix, just with 9 dot products, 3 for each 'column' of matrix _B_.
+
+In general, a matrix that is _mxn_ can be multiplied by a _pxq_ matrix only when _n=p_. The resulting matrix is _nxq_.
+
+### Projection as a linear map from 3d to 2d
+
+A _linear map_ (sometimes linear function) is also an operation on vectors. Like a linear transformation it preserves vector sums and scalar multiplications. But, unlike a linear transformation, it _doesn't_ need to preserve dimensions.
+
+If _v_ is a 3d vector (i.e. _3x1_ matrix), and _A_ is a _2x3_ matrix, the result of _Av_ is a _2x1_ matrix - or a 2d vector. We can use this to describe projection as a linear map.
+
+Consider the rules we established before for projection.
+
+```
+Given v-up u=[u1 u2 u3] and v-right r=[r1 r2 r3]
+
+project2d of v=[v1 v2 v3]
+= [(v.u)/len(u), (v.r)/len(r)]
+= [v.(u/len(u)), v.(r/len(r))]
+```
+
+Assuming u and r are already in normalized form (length=1) this can be expressed as matrix multiplication
+
+```
+[u1 u2 u3  [v1    [[u1 u2 u3].[v1 v2 v3]
+ r1 r2 r3]  v2  =  [r1 r2 r3].[v1 v2 v3]]
+            v3]
+```
+
+What's more, transformation and projection can also be composed: `TP` is a _3x3_ matrix multiplied by a _3x2_ matrix, yielding a _3x2_ matrix.
+
+### Translating vectors with matrices
+
+We noted earlier that translations (shifting points around a plane) are not linear transformations. Another way of saying this is that there is no 2d matrix that, when applied to a linear combination of vectors, will preserve addition and multiplication.
+
+This is inconvenient because it means we can't use our matrix method to do this. 
+
+There is a trick for doing translations in 2d: You can think of the 2d vectors as _3d_ vectors, and then, magically, you _can

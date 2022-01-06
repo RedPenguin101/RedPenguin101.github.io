@@ -93,8 +93,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#arithmetic-1">Arithmetic</a></li>
 <li><a href="#dot-products">Dot products</a></li>
 <li><a href="#cross-product">Cross Product</a></li>
-</ul></li>
 <li><a href="#projecting-3d-shapes-onto-a-2d-plane">Projecting 3d shapes onto a 2d plane</a></li>
+</ul></li>
+<li><a href="#linear-transformations">Linear transformations</a></li>
+<li><a href="#computing-transformations-with-matrices">Computing transformations with matrices</a><ul>
+<li><a href="#matrix-.-vector-applying-linear-transformation">Matrix . Vector: Applying linear transformation</a></li>
+<li><a href="#matrix-.-matrix-composition-of-linear-transformations">Matrix . Matrix: Composition of linear transformations</a></li>
+<li><a href="#projection-as-a-linear-map-from-3d-to-2d">Projection as a linear map from 3d to 2d</a></li>
+<li><a href="#translating-vectors-with-matrices">Translating vectors with matrices</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -230,7 +237,7 @@ cos(180) = -1</code></pre>
 <p>The geometric description, what the cross product <em>means</em>, is trickier, and will take some preliminary work.</p>
 <p>First, direction. The cross product of two 3d vectors returns a 3d vector that is <em>perpendicular</em> two the two input vectors. (Perpendicular according to a <em>right hand rule</em> orientation.)</p>
 <p>The length of the cross product tells us something like how perpendicular the two <em>input</em> vectors are to eachother. Specifically, it describes the area of the parallelogram with sides u and v.</p>
-<h2 id="projecting-3d-shapes-onto-a-2d-plane">Projecting 3d shapes onto a 2d plane</h2>
+<h3 id="projecting-3d-shapes-onto-a-2d-plane">Projecting 3d shapes onto a 2d plane</h3>
 <p>First, we must choose what direction we are observing from, by defining vectors that are ‘up’ <code>v-up</code> and ‘right’ <code>v-right</code> from our perspective.</p>
 <p>We can then extract a <em>component</em> from any vector, relative to a direction vector with <code>dot-product(v, dir)/len(dir)</code>. Our projection function is therefore simply <code>[component(v, v-up), component(v, v-right)]</code></p>
 <p>This will suffice to render the shape, but without distinguishing the faces of the shape with color, it will be hard for us to tell what it actually look like.</p>
@@ -245,10 +252,13 @@ cos(180) = -1</code></pre>
 <pre><code>project-shape :: 3d-polygon, v-up, v-right, v-light -&gt; 2d-shapes</code></pre>
 <p>A 3d polygon is a sequence of 3 3-d vectors describing the triangular face of a 3d shape. <code>[v1 v2 v3]</code></p>
 <p>A 2d shape is a sequence of three 2d vectors (describing a triangle) with a number describing it’s alignment (in 3d) to the light source.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb20-1" title="1">(<span class="bu">defn</span><span class="fu"> project-face </span>[face v-up v-right v-light]</a>
-<a class="sourceLine" id="cb20-2" title="2">  (<span class="kw">when</span> (<span class="kw">&gt;</span> (<span class="kw">last</span> (unit (normal face))) <span class="dv">0</span>) </a>
-<a class="sourceLine" id="cb20-3" title="3">    {<span class="at">:vertices</span>    (<span class="kw">map</span> #(project-2d <span class="va">%</span> v-up v-right) face)</a>
-<a class="sourceLine" id="cb20-4" title="4">     <span class="at">:light-align</span> (normalized-dot (normal face) v-light)}))</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb20-1" title="1">(<span class="bu">defn</span><span class="fu"> project-2d </span>[v, v-up, v-right]</a>
+<a class="sourceLine" id="cb20-2" title="2">  [(component v v-up) (component v v-right)])</a>
+<a class="sourceLine" id="cb20-3" title="3"></a>
+<a class="sourceLine" id="cb20-4" title="4">(<span class="bu">defn</span><span class="fu"> project-face </span>[face v-up v-right v-light]</a>
+<a class="sourceLine" id="cb20-5" title="5">  (<span class="kw">when</span> (<span class="kw">&gt;</span> (<span class="kw">last</span> (unit (normal face))) <span class="dv">0</span>) </a>
+<a class="sourceLine" id="cb20-6" title="6">    {<span class="at">:vertices</span>    (<span class="kw">map</span> #(project-2d <span class="va">%</span> v-up v-right) face)</a>
+<a class="sourceLine" id="cb20-7" title="7">     <span class="at">:light-align</span> (normalized-dot (normal face) v-light)}))</a></code></pre></div>
 <p>This returns a ‘shape’, comprised of the 2d vertices of the shape and its alignment to the light source. The <code>when</code> statement here filters out all faces whose z-component of the normal is less than zero - i.e. is facing downwards and is therefore not visible from the ‘overhead’ perspective we will start by using. This will be insufficient later, but for now is fine.</p>
 <p>All that’s necessary now is to render the triangles using a drawing library, here <a href="https://github.com/Clojure2D/clojure2d">Clojure2D</a>.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb21-1" title="1">(<span class="bu">defn</span><span class="fu"> color </span>[light-align]</a>
@@ -269,5 +279,52 @@ cos(180) = -1</code></pre>
 <a class="sourceLine" id="cb21-16" title="16">    (<span class="kw">doseq</span> [t triangles] (draw-triangle canvas t))</a>
 <a class="sourceLine" id="cb21-17" title="17">    (c2d/show-window canvas <span class="st">&quot;Drawing&quot;</span>)))</a></code></pre></div>
 <p>TODO: * Add pictures * Write stuff about interpretting up, right, light vectors * filter faces that are not facing the <em>camera</em> * Better shading - alpha isn’t correct. Include better use of negative light-aligns * Better implementation of camera? Don’t really need 2 vectors surely. Something to do with view stretching? * Tidy up code and better explain component, unit, etc. * Axis label</p>
+<h2 id="linear-transformations">Linear transformations</h2>
+<p>A Linear Transfomation is a vector transformation <em>T</em> that preserves vector addition and scalar multiplication. That is, for any input vectors <em>u</em> and <em>v</em>, <code>T(u)+T(v)=T(u+v)</code>, and <code>T(sv)=sT(v)</code>. The transformation <code>[x^2, y^2]</code>, for example, is not a linear transformation. Translations are <em>not</em> (surprisingly). Scaling, reflection, projection, shearing, rotation all are.</p>
+<p>A <em>linear combination</em> of a collection of vectors is a sum of scalar multiples of them. For example: <em>3u-2v</em>. Since these are linear transformations, addition and scalar multiplication are preserved.</p>
+<pre><code>T(s1v1+s2v2+...+snvn)=s1T(v1)+s2T(v2)+...+snT(vn)</code></pre>
+<p>The combination <em>0.5u+0.5v</em> is the midpoint of a line connecting two points <em>u</em> and <em>v</em>. In fact any <em>au+(1-a)v</em> (where <em>a&lt;=1</em>) is on the line connecting two points.</p>
+<p>Any vector can be decomposed into a linear combination of dimensional units. <code>[4,3,5]</code> can be describes as the linear combination <code>4[1 0 0]+3[0 1 0]+5[0 0 1]</code>. These dimensional units are called the <em>standard basis</em> for n-dimensional spaces, and denoted <em>e1, e2, e3</em>. So the previous example can be written <code>4e1+3e2+5e3</code>. This is just a notation change, but it is a useful one for linear transformations.</p>
+<h2 id="computing-transformations-with-matrices">Computing transformations with matrices</h2>
+<p>Using the ideas from the last chapter: Let <em>a</em> be a linear transformation. All we know about <em>a</em> is that <code>a(e1)=[1 1 1], a(e2)=[1 0 -1], a(e3)=[0 1 1]</code> If <code>v=[-1,2,2]</code> what is <code>a(v)</code>?</p>
+<p>We can write <em>v</em> as <code>-e1+2e2+2e3</code>.</p>
+<pre><code>a(v)=a(-e1+2e2+2e3)=-a(e1)+2a(e2)+2a(e3)
+= -[1 1 1]+2[1 0 -1]+2[0 1 1]=[1 1 -1]</code></pre>
+<p>What we have done here is express a transformation as how it impacts the standard basis: <code>[1 0 -1],[0 1 1],[-1 2 2]</code>. <em>Any</em> transformation (in 3d) can be represented in this way, with these 9 numbers. We express this in a matrix for convenience (with the vectors ‘flipped’ vertical and set next to each other):</p>
+<pre><code>[ 1 0 -1
+  0 1  2
+ -1 1  2]</code></pre>
+<h3 id="matrix-.-vector-applying-linear-transformation">Matrix . Vector: Applying linear transformation</h3>
+<p>If a linear transformation <em>T</em> can be represented as a matrix, then the application of the linear transformation <em>Tv</em> is obtained by multiplying the matrix by the vector <em>v</em>.</p>
+<pre><code>[0 2  1  [ 3
+ 0 1  0   -2
+ 1 0 -1]   5]</code></pre>
+<p>The calculation is done by applying the dot-product of the rows of the matrix to the vector:</p>
+<pre><code>[0 2 1].[3 -2 5] = 1
+[0 1 0].[3 -2 5] = -2
+[1 0 -1].[3 -2 5] = -2</code></pre>
+<p>(Note that <em>Bv != vB</em>. Matrix multiplication is non-commutative)</p>
+<h3 id="matrix-.-matrix-composition-of-linear-transformations">Matrix . Matrix: Composition of linear transformations</h3>
+<p>Let’s say you have 1000 vectors, and you want to apply the same 1000 transformations to every vector. This takes 1000000 calculations. However, if you can compose the 1000 linear transformations into <em>one</em> linear transformation (which by the properties of linear transformations we can), then we can apply the composition to the vector, and complete the task in 1001 calculations.</p>
+<p>In other words, instead of <em>A(Bv)</em>, we want to do <em>(AB)v</em>. This, we can do. The above method of matrix multiplication extends for the second argument being a 3x3 matrix, just with 9 dot products, 3 for each ‘column’ of matrix <em>B</em>.</p>
+<p>In general, a matrix that is <em>mxn</em> can be multiplied by a <em>pxq</em> matrix only when <em>n=p</em>. The resulting matrix is <em>nxq</em>.</p>
+<h3 id="projection-as-a-linear-map-from-3d-to-2d">Projection as a linear map from 3d to 2d</h3>
+<p>A <em>linear map</em> (sometimes linear function) is also an operation on vectors. Like a linear transformation it preserves vector sums and scalar multiplications. But, unlike a linear transformation, it <em>doesn’t</em> need to preserve dimensions.</p>
+<p>If <em>v</em> is a 3d vector (i.e. <em>3x1</em> matrix), and <em>A</em> is a <em>2x3</em> matrix, the result of <em>Av</em> is a <em>2x1</em> matrix - or a 2d vector. We can use this to describe projection as a linear map.</p>
+<p>Consider the rules we established before for projection.</p>
+<pre><code>Given v-up u=[u1 u2 u3] and v-right r=[r1 r2 r3]
+
+project2d of v=[v1 v2 v3]
+= [(v.u)/len(u), (v.r)/len(r)]
+= [v.(u/len(u)), v.(r/len(r))]</code></pre>
+<p>Assuming u and r are already in normalized form (length=1) this can be expressed as matrix multiplication</p>
+<pre><code>[u1 u2 u3  [v1    [[u1 u2 u3].[v1 v2 v3]
+ r1 r2 r3]  v2  =  [r1 r2 r3].[v1 v2 v3]]
+            v3]</code></pre>
+<p>What’s more, transformation and projection can also be composed: <code>TP</code> is a <em>3x3</em> matrix multiplied by a <em>3x2</em> matrix, yielding a <em>3x2</em> matrix.</p>
+<h3 id="translating-vectors-with-matrices">Translating vectors with matrices</h3>
+<p>We noted earlier that translations (shifting points around a plane) are not linear transformations. Another way of saying this is that there is no 2d matrix that, when applied to a linear combination of vectors, will preserve addition and multiplication.</p>
+<p>This is inconvenient because it means we can’t use our matrix method to do this.</p>
+<p>There is a trick for doing translations in 2d: You can think of the 2d vectors as <em>3d</em> vectors, and then, magically, you _can</p>
 </body>
 </html>
