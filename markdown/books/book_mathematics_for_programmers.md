@@ -500,7 +500,7 @@ $$
 * consequences:
     1. the _zero vector_ $0 \cdot v = 0$
     2. the _opposite vector_ $-1 \cdot v = -v$
-* an $n \times m$ matrix can be treated as a $n \cdot m$ vector, and so an $\R^nm$ vector space.
+* an $n \times m$ matrix can be treated as a $n \cdot m$ vector, and so an $\R^{nm}$ vector space.
 * We saw before that a matrix can be considered a linear function. In vector space terms we would say $a: \R^n \rightarrow \R^m$. A $n \times m$ matrix $a$ is a mapping between vector spaces $\R^n$ and $\R^m$
 
 **TODO**: add the $\{v\}$ syntax in here somewhere
@@ -620,3 +620,9 @@ Not every SOLE can be solved - that is, there is no point where the lines, plane
 ### Generalizing to higher dimensions
 
 These are when you have more than an $x$ and a $y$
+
+# Exercises
+
+## Chapter 2: 2d Vectors
+
+### 2.1: what are the x,y
