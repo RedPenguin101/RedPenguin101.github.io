@@ -2,12 +2,6 @@
 
 # Parts
 
-* Vectors and linear algebra: 
-    * 2d 
-    * 3d 
-    * linear transformations
-    * Matrices
-    * Systems of linear equations
 * Calculus
     * Rates of change
     * Motion simulation
@@ -107,7 +101,7 @@ The three operations (translate with addition, rescale with multiplication, and 
 
 ### Arithmetic
 
-Arithmetic in three (or more) directions is very similar to two dimensions. We therefore need only to generalize our functions from the previous section.
+Arithmetic in three (or more) dimensions is very similar to two dimensions. We therefore need only to generalize our functions from the previous section.
 
 Our addition and scalar multiplication functions don't need to be changed to account for the 3rd dimension:
 
@@ -121,12 +115,13 @@ Our addition and scalar multiplication functions don't need to be changed to acc
 
 To calculate line length of `x,y,z`, we can think of the problem as being decomposed into two right angle triangles, the first in the `x,y` plane, and the second adding in the `z` plane.
 
-The first will have length `a`, and will be calculated as before: `a = sqrt(x^2 + y^2)`. The second will be `b = sqrt(z^2 + a^2)`. This expands to 
+The first will have length `a`, and will be calculated as before: $a = \sqrt{x^2 + y^2}$. The second will be $b = \sqrt{z^2 + a^2}$. This expands to 
 
-```
-b = sqrt(z^2 + (sqrt(x^2 + y^2))^2)
-b = sqrt(z^2 + x^2 + y^2)
-```
+$$
+b = \sqrt{z^2 + \sqrt{x^2 + y^2}^2}
+\newline
+b = \sqrt{z^2 + x^2 + y^2}
+$$
 
 Our function for `vector-length` will need to be generalized to handle higher dimensions.
 
@@ -152,17 +147,19 @@ Some properties of dot-products:
 
 Vectors lying on different axes are perpendicular (e.g. `[0 3 0], [0 0 -5]`)
 
-```
-av dot w = v dot aw
+$av \cdot w = v \cdot aw$.
 
-a[x y] dot [n m]
-= [ax ay] dot [n m]
-= axn + aym
-= [x y] dot [an am]
-= [x y] dot a[n m]
-```
+$$
+av \cdot w \newline
+= a(x,y) \cdot (n,m) \newline
+= (ax,ay) \cdot (n,m) \newline
+= axn + aym \newline
+= (x,y) \cdot (an,am) \newline
+= (x,y) \cdot a(n,m)
+= v \cdot aw
+$$
 
-The maximum value of the dot product is the product of the length of the vectors. The minimum value is the negative of the product of lengths. Thus if `v . w = len(v) * len(w)`, v and w are perfectly aligned, and if `v . w = -(len(v) * len(w))` then v and w are opposite.
+The maximum value of the dot product is the product of the length of the vectors. The minimum value is the negative of the product of lengths. Thus if $v \cdot w = |v||w|$, $v$ and $w$ are perfectly aligned, and if $v \cdot w = -|v||w|$ then $v$ and $w$ are opposite.
 
 In other words, the dot-product divided by the product of lengths gives the angle between two vectors: 1 means 0, -1 means 180 degrees, 0 means 90 degrees. This, you might notice, is very similar to the cosine:
 
@@ -172,7 +169,7 @@ cos(0) = 1
 cos(180) = -1
 ```
 
-In other words: `cos(a) = u.v / len(u)*len(v)`. By applying `acos` we use the dot product to calculate angles between vectors, `a = acos((u.v)/(len(u)*len(v)))`
+Therefore $cos(a) = \frac{u \cdot v}{|u||v|}$. By applying `acos` we use the dot product to calculate angles between vectors, $a = acos\left(\frac{u \cdot v}{|u||v|}\right)$
 
 ```clojure
 (defn normalized-dot [v1 v2]
@@ -188,11 +185,13 @@ In other words: `cos(a) = u.v / len(u)*len(v)`. By applying `acos` we use the do
 
 ### Cross Product
 
+**TODO:** More stuff here about how this translates to 3d spaces, how to think about it etc.
+
 The formula for a 3d cross product is simple enough
 
-```
-u x v = (uy vz - uz vy, uz vx - ux vz, ux vy - uy vx)
-```
+$$
+u \times v = ((u_y v_z - u_z v_y), (u_z v_x - u_x v_z), (u_x v_y - u_y v_x))
+$$
 
 ```clojure
 (defn cross-product [[ux uy uz] [vx vy vz]]
@@ -211,7 +210,7 @@ The length of the cross product tells us something like how perpendicular the tw
 
 First, we must choose what direction we are observing from, by defining vectors that are 'up' `v-up` and 'right' `v-right` from our perspective.
 
-We can then extract a _component_ from any vector, relative to a direction vector with `dot-product(v, dir)/len(dir)`. Our projection function is therefore simply `[component(v, v-up), component(v, v-right)]`
+We can then extract a _component_ from any vector, relative to a direction vector with $\frac{v \cdot d}{|d|}$. Our projection function is therefore simply `[component(v, v-up), component(v, v-right)]`
 
 This will suffice to render the shape, but without distinguishing the faces of the shape with color, it will be hard for us to tell what it actually look like.
 
@@ -219,9 +218,9 @@ If we define a light source vector `v-light`, then the amount of light on the fa
 
 The normal vector of a face described by 3 vectors _v1, v2, v2_ is
 
-```
-n-vec = (v2-v1) x (v3-v1)
-```
+$$
+normal(v_1,v_2,v_3) = (v_2-v_1) \times (v_3-v_1)
+$$
 
 ```clojure
 (defn normal [[v1 v2 v3]]
@@ -278,81 +277,107 @@ All that's necessary now is to render the triangles using a drawing library, her
     (c2d/show-window canvas "Drawing")))
 ```
 
-TODO: 
+**TODO:**
+
 * Add pictures
-* Write stuff about interpretting up, right, light vectors
-* filter faces that are not facing the _camera_
-* Better shading - alpha isn't correct. Include better use of negative light-aligns
-* Better implementation of camera? Don't really need 2 vectors surely. Something to do with view stretching?
+* Write stuff about interpreting up, right, light vectors. How does this actually project? Need a mental model for it
+* More about _why_ the z-filtering isn't good enough.
+* Better shading - Use darken
 * Tidy up code and better explain component, unit, etc.
-* Axis label
+* Axis label?
 
 ## Linear transformations
 
-A Linear Transfomation is a vector transformation _T_ that preserves vector addition and scalar multiplication. That is, for any input vectors _u_ and _v_, `T(u)+T(v)=T(u+v)`, and `T(sv)=sT(v)`. The transformation `[x^2, y^2]`, for example, is not a linear transformation. Translations are _not_ (surprisingly). Scaling, reflection, projection, shearing, rotation all are.
+A _linear transformation_ is a vector transformation $T$ that preserves vector addition and scalar multiplication. That is, for any input vectors $u$ and $v$, $T(u)+T(v)=T(u+v)$, and $T(sv)=sT(v)$. The transformation $(x^2, y^2)$, for example, is not a linear transformation. Translations are _not_ (surprisingly). Scaling, reflection, projection, shearing, rotation all are.
 
-A _linear combination_ of a collection of vectors is a sum of scalar multiples of them. For example: _3u-2v_. Since these are linear transformations, addition and scalar multiplication are preserved.
+A _linear combination_ of a collection of vectors is a sum of scalar multiples of them. For example: $3u-2v$.
 
-```
-T(s1v1+s2v2+...+snvn)=s1T(v1)+s2T(v2)+...+snT(vn)
-```
+$$
+T(s_1v_1+s_2v_2+...+s_nv_n)=s_1T(v_1)+s_2T(v_2)+...+s_nT(v_n)
+$$
 
-The combination _0.5u+0.5v_ is the midpoint of a line connecting two points _u_ and _v_. In fact any _au+(1-a)v_ (where _a<=1_) is on the line connecting two points.
+The combination $0.5u+0.5v$ is the midpoint of a line connecting two points $u$ and $v$. In fact any $au+(1-a)v$ is on the line connecting two points.
 
-Any vector can be decomposed into a linear combination of dimensional units. `[4,3,5]` can be describes as the linear combination `4[1 0 0]+3[0 1 0]+5[0 0 1]`. These dimensional units are called the _standard basis_ for n-dimensional spaces, and denoted _e1, e2, e3_. So the previous example can be written `4e1+3e2+5e3`. This is just a notation change, but it is a useful one for linear transformations.
+Any vector can be decomposed into a linear combination of dimensional units. $(4,3,5)$ can be describes as the linear combination $4(1,0,0)+3(0,1,0)+5(0,0,1)$. These dimensional units are called the _standard basis_ for n-dimensional spaces, and denoted $e_1, e_2, e_3$. So the previous example can be written $4e_1+3e_2+5e_3$. This is just a notation change, but it is a useful one for linear transformations.
 
 ## Computing transformations with matrices
 
-Using the ideas from the last chapter: Let _a_ be a linear transformation. All we know about _a_ is that `a(e1)=[1 1 1], a(e2)=[1 0 -1], a(e3)=[0 1 1]` If `v=[-1,2,2]` what is `a(v)`?
+Using the ideas from the last chapter: Let $a$ be a linear transformation. All we know about $a$ is that $a(e_1)=(1,1,1), a(e_2)=(1,0,-1), a(e_3)=(0,1,1)$.
 
-We can write _v_ as `-e1+2e2+2e3`. 
+If $v=(-1,2,2)$ what is $a(v)$?
 
-```
-a(v)=a(-e1+2e2+2e3)=-a(e1)+2a(e2)+2a(e3)
-= -[1 1 1]+2[1 0 -1]+2[0 1 1]=[1 1 -1]
-```
+We can write $v=-e_1+2e_2+2e_3$.
+
+$$
+a(v)=a(-e_1+2e_2+2e_3)=-a(e_1)+2a(e_2)+2a(e_3) \newline
+= -(1,1,1)+2(1,0,-1)+2(0,1,1)=(1,1,-1)
+$$
 
 What we have done here is express a transformation as how it impacts the standard basis: `[1 0 -1],[0 1 1],[-1 2 2]`. _Any_ transformation (in 3d) can be represented in this way, with these 9 numbers. We express this in a matrix for convenience (with the vectors 'flipped' vertical and set next to each other):
 
-```
-[ 1 0 -1
-  0 1  2
- -1 1  2]
-```
+$$
+\begin{bmatrix}
+1 & 0 & -1 \\
+0 & 1 & 2 \\
+-1 & 1 & 2
+\end{bmatrix}
+$$
+
+**TODO:** check the numbers here, looks off
 
 ### Matrix . Vector: Applying linear transformation
 
-If a linear transformation _T_ can be represented as a matrix, then the application of the linear transformation _Tv_ is obtained by multiplying the matrix by the vector _v_.
-
-```
-[0 2  1  [ 3
- 0 1  0   -2
- 1 0 -1]   5]
-```
+If a linear transformation $T$ can be represented as a matrix, then the application of the linear transformation $Tv$ is obtained by multiplying the matrix by the vector $v$.
 
 The calculation is done by applying the dot-product of the rows of the matrix to the vector:
 
-```
-[0 2 1].[3 -2 5] = 1
-[0 1 0].[3 -2 5] = -2
-[1 0 -1].[3 -2 5] = -2
-```
+$$
+\begin{bmatrix}
+ 0 & 2 &  1 \\
+ 0 & 1 &  0 \\
+ 1 & 0 & -1
+\end{bmatrix}
 
-(Note that _Bv != vB_. Matrix multiplication is non-commutative)
+\cdot
+
+\begin{bmatrix}
+ 3 \\
+-2 \\
+ 5
+\end{bmatrix}
+
+= 
+
+\begin{bmatrix}
+ (0,2,1) \cdot  (3,-2,5)\\
+ (0,1,0) \cdot  (3,-2,5)\\
+ (1,0,-1) \cdot  (3,-2,5)
+\end{bmatrix}
+
+=
+
+\begin{bmatrix}
+ 1 \\
+-2 \\
+-2
+\end{bmatrix}
+$$
+
+(Note that $Bv \ne vB$. Matrix multiplication is non-commutative)
 
 ### Matrix . Matrix: Composition of linear transformations
 
 Let's say you have 1000 vectors, and you want to apply the same 1000 transformations to every vector. This takes 1000000 calculations. However, if you can compose the 1000 linear transformations into _one_ linear transformation (which by the properties of linear transformations we can), then we can apply the composition to the vector, and complete the task in 1001 calculations.
 
-In other words, instead of _A(Bv)_, we want to do _(AB)v_. This, we can do. The above method of matrix multiplication extends for the second argument being a 3x3 matrix, just with 9 dot products, 3 for each 'column' of matrix _B_.
+In other words, instead of $A(Bv)$, we want to do $(AB)v$. This, we can do. The above method of matrix multiplication extends for the second argument being a 3x3 matrix, just with 9 dot products, 3 for each 'column' of matrix $B$.
 
-In general, a matrix that is _mxn_ can be multiplied by a _pxq_ matrix only when _n=p_. The resulting matrix is _nxq_.
+In general, a matrix that is $m\times n$ can be multiplied by a $p \times q$ matrix only when $n=p$. The resulting matrix is $n\times q$.
 
 ### Projection as a linear map from 3d to 2d
 
 A _linear map_ (sometimes linear function) is also an operation on vectors. Like a linear transformation it preserves vector sums and scalar multiplications. But, unlike a linear transformation, it _doesn't_ need to preserve dimensions.
 
-If _v_ is a 3d vector (i.e. _3x1_ matrix), and _A_ is a _2x3_ matrix, the result of _Av_ is a _2x1_ matrix - or a 2d vector. We can use this to describe projection as a linear map.
+If _v_ is a 3d vector (i.e. $3 \times 1$ matrix), and $A$ is a $2 \times 3$ matrix, the result of $Av$ is a $2 \times 1$ matrix - or a 2d vector. We can use this to describe projection as a linear map.
 
 Consider the rules we established before for projection.
 
@@ -366,18 +391,232 @@ project2d of v=[v1 v2 v3]
 
 Assuming u and r are already in normalized form (length=1) this can be expressed as matrix multiplication
 
-```
-[u1 u2 u3  [v1    [[u1 u2 u3].[v1 v2 v3]
- r1 r2 r3]  v2  =  [r1 r2 r3].[v1 v2 v3]]
-            v3]
-```
+$$
+\begin{bmatrix}
+ u_1 & u_2 & u_3 \\
+ r_1 & r_2 & r_3 \\
+\end{bmatrix}
 
-What's more, transformation and projection can also be composed: `TP` is a _3x3_ matrix multiplied by a _3x2_ matrix, yielding a _3x2_ matrix.
+\cdot
+
+\begin{bmatrix}
+ v_1 \\
+ v_2 \\
+ v_3
+\end{bmatrix}
+
+= 
+
+\begin{bmatrix}
+ (u_1,u_2,u_3) \cdot  (v_1,v_2,v_3) \\
+ (r_1,r_2,r_3) \cdot  (v_1,v_2,v_3) \\
+\end{bmatrix}
+$$
+
+What's more, transformation and projection can also be composed: $TP$ is a $3 \times 3$ matrix multiplied by a $3 \times 2$ matrix, yielding a $3 \times 2$ matrix.
 
 ### Translating vectors with matrices
 
-We noted earlier that translations (shifting points around a plane) are not linear transformations. Another way of saying this is that there is no 2d matrix that, when applied to a linear combination of vectors, will preserve addition and multiplication.
+We noted earlier that translations (shifting points around a plane) are not linear transformations. Another way of saying this is that there is no 2d matrix that, when applied to a linear combination of vectors, will preserve addition and multiplication. This is inconvenient because it means we can't use our matrix method to do this. 
 
-This is inconvenient because it means we can't use our matrix method to do this. 
+There is a trick for doing translations in 2d: You can think of the 2d vectors as _3d_ vectors. If you have a 2d image, add a z-dimension with value 1 to all the vertices. Multiply that by the following 'magic matrix'. Then drop the z coordinate. You have translated the 2d image by `[3 1]`
 
-There is a trick for doing translations in 2d: You can think of the 2d vectors as _3d_ vectors, and then, magically, you _can
+$$
+\begin{bmatrix}
+ 1 & 0 & 3 \\
+ 0 & 1 & 1 \\
+ 0 & 0 & 1 \\
+\end{bmatrix}
+$$
+
+More generally
+
+$$
+\begin{bmatrix}
+ 1 & 0 & a \\
+ 0 & 1 & b \\
+ 0 & 0 & 1 \\
+\end{bmatrix}
+\cdot
+
+\begin{bmatrix}
+ x \\
+ y \\
+ 1 \\
+\end{bmatrix}
+
+=
+
+\begin{bmatrix}
+ x+a \\
+ y+b \\
+ 1 \\
+\end{bmatrix}
+$$
+
+In 3 dimensions
+
+$$
+\begin{bmatrix}
+ 1 & 0 & 0 & a \\
+ 0 & 1 & 0 & b \\
+ 0 & 0 & 1 & c \\
+ 0 & 0 & 0 & 1 \\
+\end{bmatrix}
+\cdot
+
+\begin{bmatrix}
+ x \\
+ y \\
+ z \\
+ 1 \\
+\end{bmatrix}
+
+=
+
+\begin{bmatrix}
+ x+a \\
+ y+b \\
+ z+c \\
+ 1 \\
+\end{bmatrix}
+$$
+
+## Higher dimensions
+
+### Vector spaces
+
+* _Linear Algebra_ is the concepts we have covered so far, generalized to any number of dimensions.
+* A _vector space_ are a set of objects we can treat as vectors. e.g you can treat images like vectors.
+* Vector spaces are denoted as $\R^n$, where $n$ is the number of dimensions
+* The main operations we are interested in with vectors are vector addition and scalar multiplication
+* To form a vector space, objects should have the following properties
+    1. addition is commutative $u+v = v+u$
+    2. addition is associative $(u+v)+w=u+(v+w)$
+    3. scalar multiplication should be associative: $a(bv) = (ab)v$
+    4. sm should have an identity $1 \cdot v = v$
+    5. $av + bv = (a+b)v$
+    6. $a(v+w)=av + aw$
+* consequences:
+    1. the _zero vector_ $0 \cdot v = 0$
+    2. the _opposite vector_ $-1 \cdot v = -v$
+* an $n \times m$ matrix can be treated as a $n \cdot m$ vector, and so an $\R^nm$ vector space.
+* We saw before that a matrix can be considered a linear function. In vector space terms we would say $a: \R^n \rightarrow \R^m$. A $n \times m$ matrix $a$ is a mapping between vector spaces $\R^n$ and $\R^m$
+
+**TODO**: add the $\{v\}$ syntax in here somewhere
+
+### Vector subspaces and Span
+
+* A _vector subspace_ is a vector space that exists in another vector space. The 2d vector space is a subspace of the 3d vector space, where $z=0$
+* A set of vectors is a subspace only if it is _closed_ under operations. That is, you can't get to a vector not in the set by multiplying and adding vectors that _are_ in the set.
+* A vector subspace containing a vector $v$ necessarily contains at least all scalar multiples of $v$
+* A vector subspace containing vectors $v$ and $w$ contains all vectors in the _span_ of those vectors. _Span_ of a set of vectors is the set of linear combinations of those vectors.
+* If $v$ and $w$ are not parallel, the span is the entire plane. Consider the standard basis vectors: Any point $(x,y)$ on the plane can be reached by $x \cdot (1,0) + y \cdot (0,1)$. And the standard basis can be reached from any non-parallel vectors $v,w$. So the standard basis vectors are in the vector space 
+
+### Linear independence and basis
+
+* In 3 dimensions, a subspace containing two non-parallel vectors spans a plane passing though the origin. A sub
+* The concept of 'parallel' can be generalized to _linearly independent_. A collection of vectors is linearly dependent if any of its members can be obtained by a linear combination of any of the others.
+* An n-dimensional space can have only n vectors that both span the entire dimension and still be linearly independent. That is what the concept of 'dimension' actually means.
+* A linearly independent set of vectors that spans a vector space is call a _basis_ - hence the 'standard basis' we have used before.
+
+* a Linear Function of the form $f(x) = ax+b$ can be described as a vector $(a,b)$. That is, linear functions are a vector space. We can prove that it's a 2d space by stating the basis $f(x)=x, g(x)=1$. Any linear function can be created by $af+bg$, where $a$ and $b$ are scalars.
+* A Quadratic Function $f(x)=ax^2+bx+c$ is a 3d vector space with basis $f(x)=x^2, g(x)=x, h(x)=1$. Linear functions are a subspace of the quadratic functions vector space
+* Generalizing, polynomial functions (linear combinations of powers of $x$, $f(x) = a_0 + a_1x + a_2x^2 +...+a_nx^n$) are vector spaces.
+
+**TODO:** Color thing
+
+## Solving systems of linear equations
+
+* _SOLEs_ are problems of finding points where lines, planes, or higher dimensional vectors, intersect
+* any equation representing a line is called a _linear equation_
+* The _parametric formula_ definition of a line is $r(t)=a + t \cdot b$.
+* The _standard form_ for a linear equation is $ax+by=c$
+* Translation between the two is $(a_y-b_y)x-(a_x-b_x)y=a_yb_x-a_xb_y$
+* A SOLE can be described in the form $M \cdot v=w$, where $M$ is a matrix, and $v,w$ are vectors.
+* A Matrix that describes a SOLE with no unique solutions is called a _singular_ matrix. This is tied in with the rows and columns of the matrix being linearly dependent.
+
+
+### Example: hit-detection
+
+* Does the laser from the ship hit the asteroid?
+* Does the line representing the laser intersect with any of the line segments defining the asteroid?
+* The ships and Asteroids will be modeled as collections of vectors, defined from a 'center'. A `PolygonModel`
+* The laser is a line segment starting at the 'tip' of the ship, and extending in the direction of the ship.
+* The problem is now finding whether the laser intersects with an 'edge' of an asteroid. It involves finding the intersection of two lines (unless they are parallel), and determining whether the intersection occurs within both line segments.
+* This is a _SOLE in two variables_.
+
+### Formula for line
+
+* 1d subspaces (that is, scalar multiples of a vector, $a \cdot v$) are sufficient to describe lines that pass through the origin ($0 \cdot v$), but not ones that don't.
+* We need a second vector to translate to get a more general representation of a line: $u+t \cdot v$ Notice the subspace is bounded because there's no scaling of $u$ permitted. This makes it a definition of a line, not a plane.
+* This is an alternative representation to $y=ax+b$. Or equivalently $ax+by=c$, the standard form. Each method has benefits and drawbacks. We'll be using the standard form mostly.
+* If you have two vectors $u$ and $v$, the line connecting these two is $u-v$. This defines the direction of the line. To define the offset we can use either one of the points. So $r(t)=a+t(a-b)$. One of the benefits of this form is that it's trivial, given two points on the line, to write its definition.
+* To rewrite this to standard form:
+
+$$
+r(t) = a + t (a-b) \\
+(x,y)=(a_x, a_y)+t \cdot (a_x-b_x, a_y-b_y) \newline
+x= a_x + t(a_x-b_x) \\
+y= a_y + t(a_y-b_y) \\
+t=\frac{x-a_x}{a_x-b_x}=\frac{y-a_y}{a_y-b_y} \\
+(a_y-b_y)(x-a_x)=(y-a_y)(a_x-b_x) \\
+a_yx-b_yx-a_xa_y+a_xb_y = a_xy-b_xy-a_xa_y+a_yb_x \\
+(a_y-b_y)x+(a_xb_y-a_xa_y)=(a_x-b_x)y+(a_yb_x-a_xa_y) \\
+(a_y-b_y)x-(a_x-b_x)y=a_yb_x-a_xa_y-a_xb_y+a_xa_y \\
+(a_y-b_y)x-(a_x-b_x)y=a_yb_x-a_xb_y
+$$
+
+When you have two or more standard form linear equations, you can write them as a single matrix equation. For example
+
+$$
+x-y=0
+x+2y=8
+$$
+
+Would be written in vector form
+
+$$
+x
+\begin{pmatrix}
+ 1 \\
+ 1 \\
+\end{pmatrix} + y
+\begin{pmatrix}
+ -1 \\
+ 2 \\
+\end{pmatrix} =
+\begin{pmatrix}
+ 0 \\
+ 8 \\
+\end{pmatrix}
+
+\newline
+$$
+
+And in matrix form
+
+$$
+\begin{pmatrix}
+ 1 & -1 \\
+ 1 & 2 \\
+\end{pmatrix}
+
+\begin{pmatrix}
+ x \\
+ y \\
+\end{pmatrix} =
+
+\begin{pmatrix}
+ 0 \\
+ 8 \\
+\end{pmatrix}
+$$
+
+The goal is to find $x$ and $y$. 
+
+Not every SOLE can be solved - that is, there is no point where the lines, planes, whatever, intersect. This is most obviously the case with parallel lines. However, if the lines are the _exact_ same line, then there are infinitely many points of intersection. A matrix that has no unique solution is called a _singular matrix_
+
+### Generalizing to higher dimensions
+
+These are when you have more than an $x$ and a $y$

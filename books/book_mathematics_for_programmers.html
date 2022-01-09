@@ -102,19 +102,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#projection-as-a-linear-map-from-3d-to-2d">Projection as a linear map from 3d to 2d</a></li>
 <li><a href="#translating-vectors-with-matrices">Translating vectors with matrices</a></li>
 </ul></li>
+<li><a href="#higher-dimensions">Higher dimensions</a><ul>
+<li><a href="#vector-spaces">Vector spaces</a></li>
+<li><a href="#vector-subspaces-and-span">Vector subspaces and Span</a></li>
+<li><a href="#linear-independence-and-basis">Linear independence and basis</a></li>
+</ul></li>
+<li><a href="#solving-systems-of-linear-equations">Solving systems of linear equations</a><ul>
+<li><a href="#example-hit-detection">Example: hit-detection</a></li>
+<li><a href="#formula-for-line">Formula for line</a></li>
+<li><a href="#generalizing-to-higher-dimensions">Generalizing to higher dimensions</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
 <h1 id="parts">Parts</h1>
 <ul>
-<li>Vectors and linear algebra:
-<ul>
-<li>2d</li>
-<li>3d</li>
-<li>linear transformations</li>
-<li>Matrices</li>
-<li>Systems of linear equations</li>
-</ul></li>
 <li>Calculus
 <ul>
 <li>Rates of change</li>
@@ -182,7 +184,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="d-vectors">3d vectors</h2>
 <p>2d vectors can be described as <code>[x, y]</code>. 3d vectors can be described with <code>[x, y, z]</code></p>
 <h3 id="arithmetic-1">Arithmetic</h3>
-<p>Arithmetic in three (or more) directions is very similar to two dimensions. We therefore need only to generalize our functions from the previous section.</p>
+<p>Arithmetic in three (or more) dimensions is very similar to two dimensions. We therefore need only to generalize our functions from the previous section.</p>
 <p>Our addition and scalar multiplication functions don’t need to be changed to account for the 3rd dimension:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> v+ </span>[&amp; vs] (<span class="kw">apply</span> <span class="kw">map</span> <span class="kw">+</span> vs))</a>
 <a class="sourceLine" id="cb7-2" title="2">(<span class="bu">defn</span><span class="fu"> v* </span>[s v]  (<span class="kw">map</span> #(<span class="kw">*</span> s <span class="va">%</span>) v))</a>
@@ -190,127 +192,153 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb7-4" title="4">(v+ [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span>] [<span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span>]) <span class="co">; (5 7 9)</span></a>
 <a class="sourceLine" id="cb7-5" title="5">(v* <span class="dv">10</span> [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span>]) <span class="co">; (10 20 30)</span></a></code></pre></div>
 <p>To calculate line length of <code>x,y,z</code>, we can think of the problem as being decomposed into two right angle triangles, the first in the <code>x,y</code> plane, and the second adding in the <code>z</code> plane.</p>
-<p>The first will have length <code>a</code>, and will be calculated as before: <code>a = sqrt(x^2 + y^2)</code>. The second will be <code>b = sqrt(z^2 + a^2)</code>. This expands to</p>
-<pre><code>b = sqrt(z^2 + (sqrt(x^2 + y^2))^2)
-b = sqrt(z^2 + x^2 + y^2)</code></pre>
+<p>The first will have length <code>a</code>, and will be calculated as before: <span class="math inline">$a = \sqrt{x^2 + y^2}$</span>. The second will be <span class="math inline">$b = \sqrt{z^2 + a^2}$</span>. This expands to</p>
+<p><br /><span class="math display">$$
+b = \sqrt{z^2 + \sqrt{x^2 + y^2}^2}
+\newline
+b = \sqrt{z^2 + x^2 + y^2}
+$$</span><br /></p>
 <p>Our function for <code>vector-length</code> will need to be generalized to handle higher dimensions.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> square </span>[x] (<span class="kw">*</span> x x))</a>
-<a class="sourceLine" id="cb9-2" title="2"></a>
-<a class="sourceLine" id="cb9-3" title="3">(<span class="bu">defn</span><span class="fu"> vector-length </span>[v]</a>
-<a class="sourceLine" id="cb9-4" title="4">  (Math/sqrt (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> square v))))</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(<span class="bu">defn</span><span class="fu"> square </span>[x] (<span class="kw">*</span> x x))</a>
+<a class="sourceLine" id="cb8-2" title="2"></a>
+<a class="sourceLine" id="cb8-3" title="3">(<span class="bu">defn</span><span class="fu"> vector-length </span>[v]</a>
+<a class="sourceLine" id="cb8-4" title="4">  (Math/sqrt (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> square v))))</a></code></pre></div>
 <h3 id="dot-products">Dot products</h3>
 <p>There are two ways to multiply vectors together. The first is the <code>dot-product :: v1, v2 -&gt; s</code> (aka <em>inner product</em>), where s is a scalar. The second is the <code>cross-product :: v1, v2 -&gt; v3</code>. Each can help us reason about vectors in 3d.</p>
 <p>You can think of the dot-product as representing <em>alignment</em> of two vectors. A positive dot product means positive alignment: they are pointing in around the same direction. Negative means the opposite. A dot-product of 0 means the vectors are <em>perpendicular</em>. This is very useful because otherwise you would need trigonometry to calculate the relative angle of vectors.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(<span class="bu">defn</span><span class="fu"> dot-product </span>[v1 v2]</a>
-<a class="sourceLine" id="cb10-2" title="2">   (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> <span class="kw">*</span> v1 v2)))</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> dot-product </span>[v1 v2]</a>
+<a class="sourceLine" id="cb9-2" title="2">   (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> <span class="kw">*</span> v1 v2)))</a></code></pre></div>
 <p>Some properties of dot-products:</p>
 <p>Vectors lying on different axes are perpendicular (e.g. <code>[0 3 0], [0 0 -5]</code>)</p>
-<pre><code>av dot w = v dot aw
-
-a[x y] dot [n m]
-= [ax ay] dot [n m]
-= axn + aym
-= [x y] dot [an am]
-= [x y] dot a[n m]</code></pre>
-<p>The maximum value of the dot product is the product of the length of the vectors. The minimum value is the negative of the product of lengths. Thus if <code>v . w = len(v) * len(w)</code>, v and w are perfectly aligned, and if <code>v . w = -(len(v) * len(w))</code> then v and w are opposite.</p>
+<p><span class="math inline"><em>a</em><em>v</em> ⋅ <em>w</em> = <em>v</em> ⋅ <em>a</em><em>w</em></span>.</p>
+<p><br /><span class="math display">$$
+av \cdot w \newline
+= a(x,y) \cdot (n,m) \newline
+= (ax,ay) \cdot (n,m) \newline
+= axn + aym \newline
+= (x,y) \cdot (an,am) \newline
+= (x,y) \cdot a(n,m)
+= v \cdot aw
+$$</span><br /></p>
+<p>The maximum value of the dot product is the product of the length of the vectors. The minimum value is the negative of the product of lengths. Thus if <span class="math inline"><em>v</em> ⋅ <em>w</em> = |<em>v</em>||<em>w</em>|</span>, <span class="math inline"><em>v</em></span> and <span class="math inline"><em>w</em></span> are perfectly aligned, and if <span class="math inline"><em>v</em> ⋅ <em>w</em> =  − |<em>v</em>||<em>w</em>|</span> then <span class="math inline"><em>v</em></span> and <span class="math inline"><em>w</em></span> are opposite.</p>
 <p>In other words, the dot-product divided by the product of lengths gives the angle between two vectors: 1 means 0, -1 means 180 degrees, 0 means 90 degrees. This, you might notice, is very similar to the cosine:</p>
 <pre><code>cos(90) = 0
 cos(0) = 1
 cos(180) = -1</code></pre>
-<p>In other words: <code>cos(a) = u.v / len(u)*len(v)</code>. By applying <code>acos</code> we use the dot product to calculate angles between vectors, <code>a = acos((u.v)/(len(u)*len(v)))</code></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="bu">defn</span><span class="fu"> normalized-dot </span>[v1 v2]</a>
-<a class="sourceLine" id="cb13-2" title="2">  (<span class="kw">/</span> (dot-product v1 v2)</a>
-<a class="sourceLine" id="cb13-3" title="3">     (<span class="kw">*</span> (vector-length v1) (vector-length v2))))</a>
-<a class="sourceLine" id="cb13-4" title="4"></a>
-<a class="sourceLine" id="cb13-5" title="5">(<span class="bu">defn</span><span class="fu"> angle </span>[v1 v2]</a>
-<a class="sourceLine" id="cb13-6" title="6">  (Math/acos (normalized-dot v1 v2))</a>
-<a class="sourceLine" id="cb13-7" title="7"></a>
-<a class="sourceLine" id="cb13-8" title="8">(angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>]) <span class="co">; 0.47588224966041665</span></a>
-<a class="sourceLine" id="cb13-9" title="9">(radian-&gt;degree (angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>])) <span class="co">; 27.266044450732828</span></a></code></pre></div>
+<p>Therefore <span class="math inline">$cos(a) = \frac{u \cdot v}{|u||v|}$</span>. By applying <code>acos</code> we use the dot product to calculate angles between vectors, <span class="math inline">$a = acos\left(\frac{u \cdot v}{|u||v|}\right)$</span></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb11-1" title="1">(<span class="bu">defn</span><span class="fu"> normalized-dot </span>[v1 v2]</a>
+<a class="sourceLine" id="cb11-2" title="2">  (<span class="kw">/</span> (dot-product v1 v2)</a>
+<a class="sourceLine" id="cb11-3" title="3">     (<span class="kw">*</span> (vector-length v1) (vector-length v2))))</a>
+<a class="sourceLine" id="cb11-4" title="4"></a>
+<a class="sourceLine" id="cb11-5" title="5">(<span class="bu">defn</span><span class="fu"> angle </span>[v1 v2]</a>
+<a class="sourceLine" id="cb11-6" title="6">  (Math/acos (normalized-dot v1 v2))</a>
+<a class="sourceLine" id="cb11-7" title="7"></a>
+<a class="sourceLine" id="cb11-8" title="8">(angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>]) <span class="co">; 0.47588224966041665</span></a>
+<a class="sourceLine" id="cb11-9" title="9">(radian-&gt;degree (angle [<span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">2</span> <span class="dv">1</span>])) <span class="co">; 27.266044450732828</span></a></code></pre></div>
 <h3 id="cross-product">Cross Product</h3>
+<p><strong>TODO:</strong> More stuff here about how this translates to 3d spaces, how to think about it etc.</p>
 <p>The formula for a 3d cross product is simple enough</p>
-<pre><code>u x v = (uy vz - uz vy, uz vx - ux vz, ux vy - uy vx)</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb15-1" title="1">(<span class="bu">defn</span><span class="fu"> cross-product </span>[[ux uy uz] [vx vy vz]]</a>
-<a class="sourceLine" id="cb15-2" title="2">  [(<span class="kw">-</span> (<span class="kw">*</span> uy vz) (<span class="kw">*</span> uz vy))</a>
-<a class="sourceLine" id="cb15-3" title="3">   (<span class="kw">-</span> (<span class="kw">*</span> uz vx) (<span class="kw">*</span> ux vz))</a>
-<a class="sourceLine" id="cb15-4" title="4">   (<span class="kw">-</span> (<span class="kw">*</span> ux vy) (<span class="kw">*</span> uy vx))])</a></code></pre></div>
+<p><br /><span class="math display"><em>u</em> × <em>v</em> = ((<em>u</em><sub><em>y</em></sub><em>v</em><sub><em>z</em></sub> − <em>u</em><sub><em>z</em></sub><em>v</em><sub><em>y</em></sub>), (<em>u</em><sub><em>z</em></sub><em>v</em><sub><em>x</em></sub> − <em>u</em><sub><em>x</em></sub><em>v</em><sub><em>z</em></sub>), (<em>u</em><sub><em>x</em></sub><em>v</em><sub><em>y</em></sub> − <em>u</em><sub><em>y</em></sub><em>v</em><sub><em>x</em></sub>))</span><br /></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb12-1" title="1">(<span class="bu">defn</span><span class="fu"> cross-product </span>[[ux uy uz] [vx vy vz]]</a>
+<a class="sourceLine" id="cb12-2" title="2">  [(<span class="kw">-</span> (<span class="kw">*</span> uy vz) (<span class="kw">*</span> uz vy))</a>
+<a class="sourceLine" id="cb12-3" title="3">   (<span class="kw">-</span> (<span class="kw">*</span> uz vx) (<span class="kw">*</span> ux vz))</a>
+<a class="sourceLine" id="cb12-4" title="4">   (<span class="kw">-</span> (<span class="kw">*</span> ux vy) (<span class="kw">*</span> uy vx))])</a></code></pre></div>
 <p>The geometric description, what the cross product <em>means</em>, is trickier, and will take some preliminary work.</p>
 <p>First, direction. The cross product of two 3d vectors returns a 3d vector that is <em>perpendicular</em> two the two input vectors. (Perpendicular according to a <em>right hand rule</em> orientation.)</p>
 <p>The length of the cross product tells us something like how perpendicular the two <em>input</em> vectors are to eachother. Specifically, it describes the area of the parallelogram with sides u and v.</p>
 <h3 id="projecting-3d-shapes-onto-a-2d-plane">Projecting 3d shapes onto a 2d plane</h3>
 <p>First, we must choose what direction we are observing from, by defining vectors that are ‘up’ <code>v-up</code> and ‘right’ <code>v-right</code> from our perspective.</p>
-<p>We can then extract a <em>component</em> from any vector, relative to a direction vector with <code>dot-product(v, dir)/len(dir)</code>. Our projection function is therefore simply <code>[component(v, v-up), component(v, v-right)]</code></p>
+<p>We can then extract a <em>component</em> from any vector, relative to a direction vector with <span class="math inline">$\frac{v \cdot d}{|d|}$</span>. Our projection function is therefore simply <code>[component(v, v-up), component(v, v-right)]</code></p>
 <p>This will suffice to render the shape, but without distinguishing the faces of the shape with color, it will be hard for us to tell what it actually look like.</p>
 <p>If we define a light source vector <code>v-light</code>, then the amount of light on the face of a shape (represented by a vector that is <em>normal</em> to the face) will be the alignment (i.e. dot-product) of that vector with <code>v-light</code>.</p>
 <p>The normal vector of a face described by 3 vectors <em>v1, v2, v2</em> is</p>
-<pre><code>n-vec = (v2-v1) x (v3-v1)</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb17-1" title="1">(<span class="bu">defn</span><span class="fu"> normal </span>[[v1 v2 v3]]</a>
-<a class="sourceLine" id="cb17-2" title="2">  (cross-product (v- v2 v1) (v- v3 v1)))</a></code></pre></div>
+<p><br /><span class="math display"><em>n</em><em>o</em><em>r</em><em>m</em><em>a</em><em>l</em>(<em>v</em><sub>1</sub>, <em>v</em><sub>2</sub>, <em>v</em><sub>3</sub>) = (<em>v</em><sub>2</sub> − <em>v</em><sub>1</sub>) × (<em>v</em><sub>3</sub> − <em>v</em><sub>1</sub>)</span><br /></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="bu">defn</span><span class="fu"> normal </span>[[v1 v2 v3]]</a>
+<a class="sourceLine" id="cb13-2" title="2">  (cross-product (v- v2 v1) (v- v3 v1)))</a></code></pre></div>
 <p>A final helper we will use is <code>unit</code>, which normalizes the vector to an overall length of 1.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb18-1" title="1">(<span class="bu">defn</span><span class="fu"> unit </span>[v] (v* (<span class="kw">/</span> <span class="dv">1</span> (vector-length v)) v))</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb14-1" title="1">(<span class="bu">defn</span><span class="fu"> unit </span>[v] (v* (<span class="kw">/</span> <span class="dv">1</span> (vector-length v)) v))</a></code></pre></div>
 <p>Bringing all this together, we want a function that translates a 3d-shape to a description of a 2 dimensional projection, including appropriate shading.</p>
 <pre><code>project-shape :: 3d-polygon, v-up, v-right, v-light -&gt; 2d-shapes</code></pre>
 <p>A 3d polygon is a sequence of 3 3-d vectors describing the triangular face of a 3d shape. <code>[v1 v2 v3]</code></p>
 <p>A 2d shape is a sequence of three 2d vectors (describing a triangle) with a number describing it’s alignment (in 3d) to the light source.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb20-1" title="1">(<span class="bu">defn</span><span class="fu"> project-2d </span>[v, v-up, v-right]</a>
-<a class="sourceLine" id="cb20-2" title="2">  [(component v v-up) (component v v-right)])</a>
-<a class="sourceLine" id="cb20-3" title="3"></a>
-<a class="sourceLine" id="cb20-4" title="4">(<span class="bu">defn</span><span class="fu"> project-face </span>[face v-up v-right v-light]</a>
-<a class="sourceLine" id="cb20-5" title="5">  (<span class="kw">when</span> (<span class="kw">&gt;</span> (<span class="kw">last</span> (unit (normal face))) <span class="dv">0</span>) </a>
-<a class="sourceLine" id="cb20-6" title="6">    {<span class="at">:vertices</span>    (<span class="kw">map</span> #(project-2d <span class="va">%</span> v-up v-right) face)</a>
-<a class="sourceLine" id="cb20-7" title="7">     <span class="at">:light-align</span> (normalized-dot (normal face) v-light)}))</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb16-1" title="1">(<span class="bu">defn</span><span class="fu"> project-2d </span>[v, v-up, v-right]</a>
+<a class="sourceLine" id="cb16-2" title="2">  [(component v v-up) (component v v-right)])</a>
+<a class="sourceLine" id="cb16-3" title="3"></a>
+<a class="sourceLine" id="cb16-4" title="4">(<span class="bu">defn</span><span class="fu"> project-face </span>[face v-up v-right v-light]</a>
+<a class="sourceLine" id="cb16-5" title="5">  (<span class="kw">when</span> (<span class="kw">&gt;</span> (<span class="kw">last</span> (unit (normal face))) <span class="dv">0</span>) </a>
+<a class="sourceLine" id="cb16-6" title="6">    {<span class="at">:vertices</span>    (<span class="kw">map</span> #(project-2d <span class="va">%</span> v-up v-right) face)</a>
+<a class="sourceLine" id="cb16-7" title="7">     <span class="at">:light-align</span> (normalized-dot (normal face) v-light)}))</a></code></pre></div>
 <p>This returns a ‘shape’, comprised of the 2d vertices of the shape and its alignment to the light source. The <code>when</code> statement here filters out all faces whose z-component of the normal is less than zero - i.e. is facing downwards and is therefore not visible from the ‘overhead’ perspective we will start by using. This will be insufficient later, but for now is fine.</p>
 <p>All that’s necessary now is to render the triangles using a drawing library, here <a href="https://github.com/Clojure2D/clojure2d">Clojure2D</a>.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb21-1" title="1">(<span class="bu">defn</span><span class="fu"> color </span>[light-align]</a>
-<a class="sourceLine" id="cb21-2" title="2">  (col/color <span class="at">:blue</span> (<span class="kw">+</span> <span class="dv">20</span> (<span class="kw">*</span> (<span class="kw">-</span> <span class="dv">1</span> light-align) <span class="dv">235</span>))))</a>
-<a class="sourceLine" id="cb21-3" title="3"></a>
-<a class="sourceLine" id="cb21-4" title="4">(<span class="bu">defn</span><span class="fu"> s </span>[p] (<span class="kw">+</span> <span class="dv">500</span> (<span class="kw">*</span> <span class="dv">500</span> p)))</a>
-<a class="sourceLine" id="cb21-5" title="5">(<span class="bu">defn</span><span class="fu"> flip-y </span>[v] (<span class="kw">update</span> v <span class="dv">1</span> <span class="kw">*</span> <span class="dv">-1</span>))</a>
-<a class="sourceLine" id="cb21-6" title="6"></a>
-<a class="sourceLine" id="cb21-7" title="7">(<span class="bu">defn</span><span class="fu"> draw-triangle </span>[canvas {<span class="at">:keys</span> [vertices light-align]}]</a>
-<a class="sourceLine" id="cb21-8" title="8">  (c2d/with-canvas [c canvas]</a>
-<a class="sourceLine" id="cb21-9" title="9">    (c2d/set-color c (color light-align))</a>
-<a class="sourceLine" id="cb21-10" title="10">    (<span class="kw">let</span> [[[x1 y1] [x2 y2] [x3 y3]] (<span class="kw">map</span> flip-y vertices)]</a>
-<a class="sourceLine" id="cb21-11" title="11">      (c2d/triangle c (s x1) (s y1) (s x2)</a>
-<a class="sourceLine" id="cb21-12" title="12">                    (s y2) (s x3) (s y3)))))</a>
-<a class="sourceLine" id="cb21-13" title="13"></a>
-<a class="sourceLine" id="cb21-14" title="14">(<span class="bu">defn</span><span class="fu"> render-triangles </span>[triangles]</a>
-<a class="sourceLine" id="cb21-15" title="15">  (<span class="kw">let</span> [canvas (c2d/canvas <span class="dv">1000</span> <span class="dv">1000</span>)]</a>
-<a class="sourceLine" id="cb21-16" title="16">    (<span class="kw">doseq</span> [t triangles] (draw-triangle canvas t))</a>
-<a class="sourceLine" id="cb21-17" title="17">    (c2d/show-window canvas <span class="st">&quot;Drawing&quot;</span>)))</a></code></pre></div>
-<p>TODO: * Add pictures * Write stuff about interpretting up, right, light vectors * filter faces that are not facing the <em>camera</em> * Better shading - alpha isn’t correct. Include better use of negative light-aligns * Better implementation of camera? Don’t really need 2 vectors surely. Something to do with view stretching? * Tidy up code and better explain component, unit, etc. * Axis label</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb17-1" title="1">(<span class="bu">defn</span><span class="fu"> color </span>[light-align]</a>
+<a class="sourceLine" id="cb17-2" title="2">  (col/color <span class="at">:blue</span> (<span class="kw">+</span> <span class="dv">20</span> (<span class="kw">*</span> (<span class="kw">-</span> <span class="dv">1</span> light-align) <span class="dv">235</span>))))</a>
+<a class="sourceLine" id="cb17-3" title="3"></a>
+<a class="sourceLine" id="cb17-4" title="4">(<span class="bu">defn</span><span class="fu"> s </span>[p] (<span class="kw">+</span> <span class="dv">500</span> (<span class="kw">*</span> <span class="dv">500</span> p)))</a>
+<a class="sourceLine" id="cb17-5" title="5">(<span class="bu">defn</span><span class="fu"> flip-y </span>[v] (<span class="kw">update</span> v <span class="dv">1</span> <span class="kw">*</span> <span class="dv">-1</span>))</a>
+<a class="sourceLine" id="cb17-6" title="6"></a>
+<a class="sourceLine" id="cb17-7" title="7">(<span class="bu">defn</span><span class="fu"> draw-triangle </span>[canvas {<span class="at">:keys</span> [vertices light-align]}]</a>
+<a class="sourceLine" id="cb17-8" title="8">  (c2d/with-canvas [c canvas]</a>
+<a class="sourceLine" id="cb17-9" title="9">    (c2d/set-color c (color light-align))</a>
+<a class="sourceLine" id="cb17-10" title="10">    (<span class="kw">let</span> [[[x1 y1] [x2 y2] [x3 y3]] (<span class="kw">map</span> flip-y vertices)]</a>
+<a class="sourceLine" id="cb17-11" title="11">      (c2d/triangle c (s x1) (s y1) (s x2)</a>
+<a class="sourceLine" id="cb17-12" title="12">                    (s y2) (s x3) (s y3)))))</a>
+<a class="sourceLine" id="cb17-13" title="13"></a>
+<a class="sourceLine" id="cb17-14" title="14">(<span class="bu">defn</span><span class="fu"> render-triangles </span>[triangles]</a>
+<a class="sourceLine" id="cb17-15" title="15">  (<span class="kw">let</span> [canvas (c2d/canvas <span class="dv">1000</span> <span class="dv">1000</span>)]</a>
+<a class="sourceLine" id="cb17-16" title="16">    (<span class="kw">doseq</span> [t triangles] (draw-triangle canvas t))</a>
+<a class="sourceLine" id="cb17-17" title="17">    (c2d/show-window canvas <span class="st">&quot;Drawing&quot;</span>)))</a></code></pre></div>
+<p><strong>TODO:</strong></p>
+<ul>
+<li>Add pictures</li>
+<li>Write stuff about interpreting up, right, light vectors. How does this actually project? Need a mental model for it</li>
+<li>More about <em>why</em> the z-filtering isn’t good enough.</li>
+<li>Better shading - Use darken</li>
+<li>Tidy up code and better explain component, unit, etc.</li>
+<li>Axis label?</li>
+</ul>
 <h2 id="linear-transformations">Linear transformations</h2>
-<p>A Linear Transfomation is a vector transformation <em>T</em> that preserves vector addition and scalar multiplication. That is, for any input vectors <em>u</em> and <em>v</em>, <code>T(u)+T(v)=T(u+v)</code>, and <code>T(sv)=sT(v)</code>. The transformation <code>[x^2, y^2]</code>, for example, is not a linear transformation. Translations are <em>not</em> (surprisingly). Scaling, reflection, projection, shearing, rotation all are.</p>
-<p>A <em>linear combination</em> of a collection of vectors is a sum of scalar multiples of them. For example: <em>3u-2v</em>. Since these are linear transformations, addition and scalar multiplication are preserved.</p>
-<pre><code>T(s1v1+s2v2+...+snvn)=s1T(v1)+s2T(v2)+...+snT(vn)</code></pre>
-<p>The combination <em>0.5u+0.5v</em> is the midpoint of a line connecting two points <em>u</em> and <em>v</em>. In fact any <em>au+(1-a)v</em> (where <em>a&lt;=1</em>) is on the line connecting two points.</p>
-<p>Any vector can be decomposed into a linear combination of dimensional units. <code>[4,3,5]</code> can be describes as the linear combination <code>4[1 0 0]+3[0 1 0]+5[0 0 1]</code>. These dimensional units are called the <em>standard basis</em> for n-dimensional spaces, and denoted <em>e1, e2, e3</em>. So the previous example can be written <code>4e1+3e2+5e3</code>. This is just a notation change, but it is a useful one for linear transformations.</p>
+<p>A <em>linear transformation</em> is a vector transformation <span class="math inline"><em>T</em></span> that preserves vector addition and scalar multiplication. That is, for any input vectors <span class="math inline"><em>u</em></span> and <span class="math inline"><em>v</em></span>, <span class="math inline"><em>T</em>(<em>u</em>) + <em>T</em>(<em>v</em>) = <em>T</em>(<em>u</em> + <em>v</em>)</span>, and <span class="math inline"><em>T</em>(<em>s</em><em>v</em>) = <em>s</em><em>T</em>(<em>v</em>)</span>. The transformation <span class="math inline">(<em>x</em><sup>2</sup>, <em>y</em><sup>2</sup>)</span>, for example, is not a linear transformation. Translations are <em>not</em> (surprisingly). Scaling, reflection, projection, shearing, rotation all are.</p>
+<p>A <em>linear combination</em> of a collection of vectors is a sum of scalar multiples of them. For example: <span class="math inline">3<em>u</em> − 2<em>v</em></span>.</p>
+<p><br /><span class="math display"><em>T</em>(<em>s</em><sub>1</sub><em>v</em><sub>1</sub> + <em>s</em><sub>2</sub><em>v</em><sub>2</sub> + ... + <em>s</em><sub><em>n</em></sub><em>v</em><sub><em>n</em></sub>) = <em>s</em><sub>1</sub><em>T</em>(<em>v</em><sub>1</sub>) + <em>s</em><sub>2</sub><em>T</em>(<em>v</em><sub>2</sub>) + ... + <em>s</em><sub><em>n</em></sub><em>T</em>(<em>v</em><sub><em>n</em></sub>)</span><br /></p>
+<p>The combination <span class="math inline">0.5<em>u</em> + 0.5<em>v</em></span> is the midpoint of a line connecting two points <span class="math inline"><em>u</em></span> and <span class="math inline"><em>v</em></span>. In fact any <span class="math inline"><em>a</em><em>u</em> + (1 − <em>a</em>)<em>v</em></span> is on the line connecting two points.</p>
+<p>Any vector can be decomposed into a linear combination of dimensional units. <span class="math inline">(4, 3, 5)</span> can be describes as the linear combination <span class="math inline">4(1, 0, 0) + 3(0, 1, 0) + 5(0, 0, 1)</span>. These dimensional units are called the <em>standard basis</em> for n-dimensional spaces, and denoted <span class="math inline"><em>e</em><sub>1</sub>, <em>e</em><sub>2</sub>, <em>e</em><sub>3</sub></span>. So the previous example can be written <span class="math inline">4<em>e</em><sub>1</sub> + 3<em>e</em><sub>2</sub> + 5<em>e</em><sub>3</sub></span>. This is just a notation change, but it is a useful one for linear transformations.</p>
 <h2 id="computing-transformations-with-matrices">Computing transformations with matrices</h2>
-<p>Using the ideas from the last chapter: Let <em>a</em> be a linear transformation. All we know about <em>a</em> is that <code>a(e1)=[1 1 1], a(e2)=[1 0 -1], a(e3)=[0 1 1]</code> If <code>v=[-1,2,2]</code> what is <code>a(v)</code>?</p>
-<p>We can write <em>v</em> as <code>-e1+2e2+2e3</code>.</p>
-<pre><code>a(v)=a(-e1+2e2+2e3)=-a(e1)+2a(e2)+2a(e3)
-= -[1 1 1]+2[1 0 -1]+2[0 1 1]=[1 1 -1]</code></pre>
+<p>Using the ideas from the last chapter: Let <span class="math inline"><em>a</em></span> be a linear transformation. All we know about <span class="math inline"><em>a</em></span> is that <span class="math inline"><em>a</em>(<em>e</em><sub>1</sub>) = (1, 1, 1), <em>a</em>(<em>e</em><sub>2</sub>) = (1, 0,  − 1), <em>a</em>(<em>e</em><sub>3</sub>) = (0, 1, 1)</span>.</p>
+<p>If <span class="math inline"><em>v</em> = ( − 1, 2, 2)</span> what is <span class="math inline"><em>a</em>(<em>v</em>)</span>?</p>
+<p>We can write <span class="math inline"><em>v</em> =  − <em>e</em><sub>1</sub> + 2<em>e</em><sub>2</sub> + 2<em>e</em><sub>3</sub></span>.</p>
+<p><br /><span class="math display">$$
+a(v)=a(-e_1+2e_2+2e_3)=-a(e_1)+2a(e_2)+2a(e_3) \newline
+= -(1,1,1)+2(1,0,-1)+2(0,1,1)=(1,1,-1)
+$$</span><br /></p>
 <p>What we have done here is express a transformation as how it impacts the standard basis: <code>[1 0 -1],[0 1 1],[-1 2 2]</code>. <em>Any</em> transformation (in 3d) can be represented in this way, with these 9 numbers. We express this in a matrix for convenience (with the vectors ‘flipped’ vertical and set next to each other):</p>
-<pre><code>[ 1 0 -1
-  0 1  2
- -1 1  2]</code></pre>
+<p><br /><span class="math display">$$
+\begin{bmatrix}
+1 &amp; 0 &amp; -1 \\
+0 &amp; 1 &amp; 2 \\
+-1 &amp; 1 &amp; 2
+\end{bmatrix}
+$$</span><br /></p>
+<p><strong>TODO:</strong> check the numbers here, looks off</p>
 <h3 id="matrix-.-vector-applying-linear-transformation">Matrix . Vector: Applying linear transformation</h3>
-<p>If a linear transformation <em>T</em> can be represented as a matrix, then the application of the linear transformation <em>Tv</em> is obtained by multiplying the matrix by the vector <em>v</em>.</p>
-<pre><code>[0 2  1  [ 3
- 0 1  0   -2
- 1 0 -1]   5]</code></pre>
+<p>If a linear transformation <span class="math inline"><em>T</em></span> can be represented as a matrix, then the application of the linear transformation <span class="math inline"><em>T</em><em>v</em></span> is obtained by multiplying the matrix by the vector <span class="math inline"><em>v</em></span>.</p>
 <p>The calculation is done by applying the dot-product of the rows of the matrix to the vector:</p>
-<pre><code>[0 2 1].[3 -2 5] = 1
-[0 1 0].[3 -2 5] = -2
-[1 0 -1].[3 -2 5] = -2</code></pre>
-<p>(Note that <em>Bv != vB</em>. Matrix multiplication is non-commutative)</p>
+$$
+
+
+
+<p>=</p>
+
+<p>=</p>
+
+<p>$$</p>
+<p>(Note that <span class="math inline"><em>B</em><em>v</em> ≠ <em>v</em><em>B</em></span>. Matrix multiplication is non-commutative)</p>
 <h3 id="matrix-.-matrix-composition-of-linear-transformations">Matrix . Matrix: Composition of linear transformations</h3>
 <p>Let’s say you have 1000 vectors, and you want to apply the same 1000 transformations to every vector. This takes 1000000 calculations. However, if you can compose the 1000 linear transformations into <em>one</em> linear transformation (which by the properties of linear transformations we can), then we can apply the composition to the vector, and complete the task in 1001 calculations.</p>
-<p>In other words, instead of <em>A(Bv)</em>, we want to do <em>(AB)v</em>. This, we can do. The above method of matrix multiplication extends for the second argument being a 3x3 matrix, just with 9 dot products, 3 for each ‘column’ of matrix <em>B</em>.</p>
-<p>In general, a matrix that is <em>mxn</em> can be multiplied by a <em>pxq</em> matrix only when <em>n=p</em>. The resulting matrix is <em>nxq</em>.</p>
+<p>In other words, instead of <span class="math inline"><em>A</em>(<em>B</em><em>v</em>)</span>, we want to do <span class="math inline">(<em>A</em><em>B</em>)<em>v</em></span>. This, we can do. The above method of matrix multiplication extends for the second argument being a 3x3 matrix, just with 9 dot products, 3 for each ‘column’ of matrix <span class="math inline"><em>B</em></span>.</p>
+<p>In general, a matrix that is <span class="math inline"><em>m</em> × <em>n</em></span> can be multiplied by a <span class="math inline"><em>p</em> × <em>q</em></span> matrix only when <span class="math inline"><em>n</em> = <em>p</em></span>. The resulting matrix is <span class="math inline"><em>n</em> × <em>q</em></span>.</p>
 <h3 id="projection-as-a-linear-map-from-3d-to-2d">Projection as a linear map from 3d to 2d</h3>
 <p>A <em>linear map</em> (sometimes linear function) is also an operation on vectors. Like a linear transformation it preserves vector sums and scalar multiplications. But, unlike a linear transformation, it <em>doesn’t</em> need to preserve dimensions.</p>
-<p>If <em>v</em> is a 3d vector (i.e. <em>3x1</em> matrix), and <em>A</em> is a <em>2x3</em> matrix, the result of <em>Av</em> is a <em>2x1</em> matrix - or a 2d vector. We can use this to describe projection as a linear map.</p>
+<p>If <em>v</em> is a 3d vector (i.e. <span class="math inline">3 × 1</span> matrix), and <span class="math inline"><em>A</em></span> is a <span class="math inline">2 × 3</span> matrix, the result of <span class="math inline"><em>A</em><em>v</em></span> is a <span class="math inline">2 × 1</span> matrix - or a 2d vector. We can use this to describe projection as a linear map.</p>
 <p>Consider the rules we established before for projection.</p>
 <pre><code>Given v-up u=[u1 u2 u3] and v-right r=[r1 r2 r3]
 
@@ -318,13 +346,140 @@ project2d of v=[v1 v2 v3]
 = [(v.u)/len(u), (v.r)/len(r)]
 = [v.(u/len(u)), v.(r/len(r))]</code></pre>
 <p>Assuming u and r are already in normalized form (length=1) this can be expressed as matrix multiplication</p>
-<pre><code>[u1 u2 u3  [v1    [[u1 u2 u3].[v1 v2 v3]
- r1 r2 r3]  v2  =  [r1 r2 r3].[v1 v2 v3]]
-            v3]</code></pre>
-<p>What’s more, transformation and projection can also be composed: <code>TP</code> is a <em>3x3</em> matrix multiplied by a <em>3x2</em> matrix, yielding a <em>3x2</em> matrix.</p>
+<p>$$ \begin{bmatrix} u_1 &amp; u_2 &amp; u_3 \ r_1 &amp; r_2 &amp; r_3 \ \end{bmatrix}</p>
+
+<p>\begin{bmatrix} v_1 \ v_2 \ v_3 \end{bmatrix}</p>
+<p>=</p>
+<p>\begin{bmatrix} (u_1,u_2,u_3) (v_1,v_2,v_3) \ (r_1,r_2,r_3) (v_1,v_2,v_3) \ \end{bmatrix} $$</p>
+<p>What’s more, transformation and projection can also be composed: <span class="math inline"><em>T</em><em>P</em></span> is a <span class="math inline">3 × 3</span> matrix multiplied by a <span class="math inline">3 × 2</span> matrix, yielding a <span class="math inline">3 × 2</span> matrix.</p>
 <h3 id="translating-vectors-with-matrices">Translating vectors with matrices</h3>
-<p>We noted earlier that translations (shifting points around a plane) are not linear transformations. Another way of saying this is that there is no 2d matrix that, when applied to a linear combination of vectors, will preserve addition and multiplication.</p>
-<p>This is inconvenient because it means we can’t use our matrix method to do this.</p>
-<p>There is a trick for doing translations in 2d: You can think of the 2d vectors as <em>3d</em> vectors, and then, magically, you _can</p>
+<p>We noted earlier that translations (shifting points around a plane) are not linear transformations. Another way of saying this is that there is no 2d matrix that, when applied to a linear combination of vectors, will preserve addition and multiplication. This is inconvenient because it means we can’t use our matrix method to do this.</p>
+<p>There is a trick for doing translations in 2d: You can think of the 2d vectors as <em>3d</em> vectors. If you have a 2d image, add a z-dimension with value 1 to all the vertices. Multiply that by the following ‘magic matrix’. Then drop the z coordinate. You have translated the 2d image by <code>[3 1]</code></p>
+<p><br /><span class="math display">$$
+\begin{bmatrix}
+ 1 &amp; 0 &amp; 3 \\
+ 0 &amp; 1 &amp; 1 \\
+ 0 &amp; 0 &amp; 1 \\
+\end{bmatrix}
+$$</span><br /></p>
+<p>More generally</p>
+$$
+
+
+<p>=</p>
+
+<p>$$</p>
+<p>In 3 dimensions</p>
+$$
+
+
+<p>=</p>
+
+<p>$$</p>
+<h2 id="higher-dimensions">Higher dimensions</h2>
+<h3 id="vector-spaces">Vector spaces</h3>
+<ul>
+<li><em>Linear Algebra</em> is the concepts we have covered so far, generalized to any number of dimensions.</li>
+<li>A <em>vector space</em> are a set of objects we can treat as vectors. e.g you can treat images like vectors.</li>
+<li>Vector spaces are denoted as <span class="math inline">$\R^n$</span>, where <span class="math inline"><em>n</em></span> is the number of dimensions</li>
+<li>The main operations we are interested in with vectors are vector addition and scalar multiplication</li>
+<li>To form a vector space, objects should have the following properties
+<ol type="1">
+<li>addition is commutative <span class="math inline"><em>u</em> + <em>v</em> = <em>v</em> + <em>u</em></span></li>
+<li>addition is associative <span class="math inline">(<em>u</em> + <em>v</em>) + <em>w</em> = <em>u</em> + (<em>v</em> + <em>w</em>)</span></li>
+<li>scalar multiplication should be associative: <span class="math inline"><em>a</em>(<em>b</em><em>v</em>) = (<em>a</em><em>b</em>)<em>v</em></span></li>
+<li>sm should have an identity <span class="math inline">1 ⋅ <em>v</em> = <em>v</em></span></li>
+<li><span class="math inline"><em>a</em><em>v</em> + <em>b</em><em>v</em> = (<em>a</em> + <em>b</em>)<em>v</em></span></li>
+<li><span class="math inline"><em>a</em>(<em>v</em> + <em>w</em>) = <em>a</em><em>v</em> + <em>a</em><em>w</em></span></li>
+</ol></li>
+<li>consequences:
+<ol type="1">
+<li>the <em>zero vector</em> <span class="math inline">0 ⋅ <em>v</em> = 0</span></li>
+<li>the <em>opposite vector</em> <span class="math inline"> − 1 ⋅ <em>v</em> =  − <em>v</em></span></li>
+</ol></li>
+<li>an <span class="math inline"><em>n</em> × <em>m</em></span> matrix can be treated as a <span class="math inline"><em>n</em> ⋅ <em>m</em></span> vector, and so an <span class="math inline">$\R^nm$</span> vector space.</li>
+<li>We saw before that a matrix can be considered a linear function. In vector space terms we would say <span class="math inline">$a: \R^n \rightarrow \R^m$</span>. A <span class="math inline"><em>n</em> × <em>m</em></span> matrix <span class="math inline"><em>a</em></span> is a mapping between vector spaces <span class="math inline">$\R^n$</span> and <span class="math inline">$\R^m$</span></li>
+</ul>
+<p><strong>TODO</strong>: add the <span class="math inline">{<em>v</em>}</span> syntax in here somewhere</p>
+<h3 id="vector-subspaces-and-span">Vector subspaces and Span</h3>
+<ul>
+<li>A <em>vector subspace</em> is a vector space that exists in another vector space. The 2d vector space is a subspace of the 3d vector space, where <span class="math inline"><em>z</em> = 0</span></li>
+<li>A set of vectors is a subspace only if it is <em>closed</em> under operations. That is, you can’t get to a vector not in the set by multiplying and adding vectors that <em>are</em> in the set.</li>
+<li>A vector subspace containing a vector <span class="math inline"><em>v</em></span> necessarily contains at least all scalar multiples of <span class="math inline"><em>v</em></span></li>
+<li>A vector subspace containing vectors <span class="math inline"><em>v</em></span> and <span class="math inline"><em>w</em></span> contains all vectors in the <em>span</em> of those vectors. <em>Span</em> of a set of vectors is the set of linear combinations of those vectors.</li>
+<li>If <span class="math inline"><em>v</em></span> and <span class="math inline"><em>w</em></span> are not parallel, the span is the entire plane. Consider the standard basis vectors: Any point <span class="math inline">(<em>x</em>, <em>y</em>)</span> on the plane can be reached by <span class="math inline"><em>x</em> ⋅ (1, 0) + <em>y</em> ⋅ (0, 1)</span>. And the standard basis can be reached from any non-parallel vectors <span class="math inline"><em>v</em>, <em>w</em></span>. So the standard basis vectors are in the vector space</li>
+</ul>
+<h3 id="linear-independence-and-basis">Linear independence and basis</h3>
+<ul>
+<li>In 3 dimensions, a subspace containing two non-parallel vectors spans a plane passing though the origin. A sub</li>
+<li>The concept of ‘parallel’ can be generalized to <em>linearly independent</em>. A collection of vectors is linearly dependent if any of its members can be obtained by a linear combination of any of the others.</li>
+<li>An n-dimensional space can have only n vectors that both span the entire dimension and still be linearly independent. That is what the concept of ‘dimension’ actually means.</li>
+<li><p>A linearly independent set of vectors that spans a vector space is call a <em>basis</em> - hence the ‘standard basis’ we have used before.</p></li>
+<li>a Linear Function of the form <span class="math inline"><em>f</em>(<em>x</em>) = <em>a</em><em>x</em> + <em>b</em></span> can be described as a vector <span class="math inline">(<em>a</em>, <em>b</em>)</span>. That is, linear functions are a vector space. We can prove that it’s a 2d space by stating the basis <span class="math inline"><em>f</em>(<em>x</em>) = <em>x</em>, <em>g</em>(<em>x</em>) = 1</span>. Any linear function can be created by <span class="math inline"><em>a</em><em>f</em> + <em>b</em><em>g</em></span>, where <span class="math inline"><em>a</em></span> and <span class="math inline"><em>b</em></span> are scalars.</li>
+<li>A Quadratic Function <span class="math inline"><em>f</em>(<em>x</em>) = <em>a</em><em>x</em><sup>2</sup> + <em>b</em><em>x</em> + <em>c</em></span> is a 3d vector space with basis <span class="math inline"><em>f</em>(<em>x</em>) = <em>x</em><sup>2</sup>, <em>g</em>(<em>x</em>) = <em>x</em>, <em>h</em>(<em>x</em>) = 1</span>. Linear functions are a subspace of the quadratic functions vector space</li>
+<li><p>Generalizing, polynomial functions (linear combinations of powers of <span class="math inline"><em>x</em></span>, <span class="math inline"><em>f</em>(<em>x</em>) = <em>a</em><sub>0</sub> + <em>a</em><sub>1</sub><em>x</em> + <em>a</em><sub>2</sub><em>x</em><sup>2</sup> + ... + <em>a</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup></span>) are vector spaces.</p></li>
+</ul>
+<p><strong>TODO:</strong> Color thing</p>
+<h2 id="solving-systems-of-linear-equations">Solving systems of linear equations</h2>
+<ul>
+<li><em>SOLEs</em> are problems of finding points where lines, planes, or higher dimensional vectors, intersect</li>
+<li>any equation representing a line is called a <em>linear equation</em></li>
+<li>The <em>parametric formula</em> definition of a line is <span class="math inline"><em>r</em>(<em>t</em>) = <em>a</em> + <em>t</em> ⋅ <em>b</em></span>.</li>
+<li>The <em>standard form</em> for a linear equation is <span class="math inline"><em>a</em><em>x</em> + <em>b</em><em>y</em> = <em>c</em></span></li>
+<li>Translation between the two is <span class="math inline">(<em>a</em><sub><em>y</em></sub> − <em>b</em><sub><em>y</em></sub>)<em>x</em> − (<em>a</em><sub><em>x</em></sub> − <em>b</em><sub><em>x</em></sub>)<em>y</em> = <em>a</em><sub><em>y</em></sub><em>b</em><sub><em>x</em></sub> − <em>a</em><sub><em>x</em></sub><em>b</em><sub><em>y</em></sub></span></li>
+<li>A SOLE can be described in the form <span class="math inline"><em>M</em> ⋅ <em>v</em> = <em>w</em></span>, where <span class="math inline"><em>M</em></span> is a matrix, and <span class="math inline"><em>v</em>, <em>w</em></span> are vectors.</li>
+<li>A Matrix that describes a SOLE with no unique solutions is called a <em>singular</em> matrix. This is tied in with the rows and columns of the matrix being linearly dependent.</li>
+</ul>
+<h3 id="example-hit-detection">Example: hit-detection</h3>
+<ul>
+<li>Does the laser from the ship hit the asteroid?</li>
+<li>Does the line representing the laser intersect with any of the line segments defining the asteroid?</li>
+<li>The ships and Asteroids will be modeled as collections of vectors, defined from a ‘center’. A <code>PolygonModel</code></li>
+<li>The laser is a line segment starting at the ‘tip’ of the ship, and extending in the direction of the ship.</li>
+<li>The problem is now finding whether the laser intersects with an ‘edge’ of an asteroid. It involves finding the intersection of two lines (unless they are parallel), and determining whether the intersection occurs within both line segments.</li>
+<li>This is a <em>SOLE in two variables</em>.</li>
+</ul>
+<h3 id="formula-for-line">Formula for line</h3>
+<ul>
+<li>1d subspaces (that is, scalar multiples of a vector, <span class="math inline"><em>a</em> ⋅ <em>v</em></span>) are sufficient to describe lines that pass through the origin (<span class="math inline">0 ⋅ <em>v</em></span>), but not ones that don’t.</li>
+<li>We need a second vector to translate to get a more general representation of a line: <span class="math inline"><em>u</em> + <em>t</em> ⋅ <em>v</em></span> Notice the subspace is bounded because there’s no scaling of <span class="math inline"><em>u</em></span> permitted. This makes it a definition of a line, not a plane.</li>
+<li>This is an alternative representation to <span class="math inline"><em>y</em> = <em>a</em><em>x</em> + <em>b</em></span>. Or equivalently <span class="math inline"><em>a</em><em>x</em> + <em>b</em><em>y</em> = <em>c</em></span>, the standard form. Each method has benefits and drawbacks. We’ll be using the standard form mostly.</li>
+<li>If you have two vectors <span class="math inline"><em>u</em></span> and <span class="math inline"><em>v</em></span>, the line connecting these two is <span class="math inline"><em>u</em> − <em>v</em></span>. This defines the direction of the line. To define the offset we can use either one of the points. So <span class="math inline"><em>r</em>(<em>t</em>) = <em>a</em> + <em>t</em>(<em>a</em> − <em>b</em>)</span>. One of the benefits of this form is that it’s trivial, given two points on the line, to write its definition.</li>
+<li>To rewrite this to standard form:</li>
+</ul>
+<p><br /><span class="math display">$$
+r(t) = a + t (a-b) \\
+(x,y)=(a_x, a_y)+t \cdot (a_x-b_x, a_y-b_y) \newline
+x= a_x + t(a_x-b_x) \\
+y= a_y + t(a_y-b_y) \\
+t=\frac{x-a_x}{a_x-b_x}=\frac{y-a_y}{a_y-b_y} \\
+(a_y-b_y)(x-a_x)=(y-a_y)(a_x-b_x) \\
+a_yx-b_yx-a_xa_y+a_xb_y = a_xy-b_xy-a_xa_y+a_yb_x \\
+(a_y-b_y)x+(a_xb_y-a_xa_y)=(a_x-b_x)y+(a_yb_x-a_xa_y) \\
+(a_y-b_y)x-(a_x-b_x)y=a_yb_x-a_xa_y-a_xb_y+a_xa_y \\
+(a_y-b_y)x-(a_x-b_x)y=a_yb_x-a_xb_y
+$$</span><br /></p>
+<p>When you have two or more standard form linear equations, you can write them as a single matrix equation. For example</p>
+<p><br /><span class="math display"><em>x</em> − <em>y</em> = 0<em>x</em> + 2<em>y</em> = 8</span><br /></p>
+<p>Would be written in vector form</p>
+$$ x
+
+<ul>
+<li>y
+=</li>
+</ul>
+
+<p>$$</p>
+<p>And in matrix form</p>
+$$
+
+
+<p>=</p>
+
+<p>$$</p>
+<p>The goal is to find <span class="math inline"><em>x</em></span> and <span class="math inline"><em>y</em></span>.</p>
+<p>Not every SOLE can be solved - that is, there is no point where the lines, planes, whatever, intersect. This is most obviously the case with parallel lines. However, if the lines are the <em>exact</em> same line, then there are infinitely many points of intersection. A matrix that has no unique solution is called a <em>singular matrix</em></p>
+<h3 id="generalizing-to-higher-dimensions">Generalizing to higher dimensions</h3>
+<p>These are when you have more than an <span class="math inline"><em>x</em></span> and a <span class="math inline"><em>y</em></span></p>
 </body>
 </html>
