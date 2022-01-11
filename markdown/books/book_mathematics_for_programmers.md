@@ -619,10 +619,87 @@ Not every SOLE can be solved - that is, there is no point where the lines, plane
 
 ### Generalizing to higher dimensions
 
-These are when you have more than an $x$ and a $y$
+These are when you have more than an $x$ and a $y$. Like with our 2d example, SOLEs in $n$ dimensions can be represented in matrix form: $M \cdot \vec{v} = \vec{a}$, were the dimension of $\vec{v}$ and $\vec{a}$ are $n$ dimensional, and $M$ is $n \times n$ dimensional.
 
-# Exercises
+For example consider three 3d planes described by
 
-## Chapter 2: 2d Vectors
+$$
+x+y+z = -1 \newline
+2y-z=4 \newline
+x+z = 2
+$$
 
-### 2.1: what are the x,y
+What is the intersection of these planes?
+
+We can write this in matrix form:
+
+$$
+\begin{pmatrix}
+  1 & 1 & -1 \\
+  0 & 2 & -1 \\
+  1 & 0 & 1 \\
+\end{pmatrix}
+\begin{pmatrix}
+  x \\
+  y \\
+  z \\
+\end{pmatrix} =
+\begin{pmatrix}
+  -1 \\
+  3  \\
+  2  \\
+\end{pmatrix}
+$$
+
+Running this through a SOLE solver, we get $(x,y,z)=(-1,3,3)$ as the point where all three planes intersect.
+
+### Counting solutions
+
+How do we know if a SOLE has a unique solution?
+
+It should be clear that in a 3d space, at least 3 planes are required to arrive at a unique solution. With 2 planes, your solution is a 1d space of solutions (that is, a line). In general, you need $n$ equations to get a unique solution in $n$ dimensions. Or, an $n$ dimensional space with $m \le n$ equations leads to solutions in an $n-m$ vector space.
+
+So in an $n$ dimensional space you need at _least_ $n$ equations to guarantee a solution. What if we have more that that? How can we tell if the SOLE has a unique solution?
+
+We've said that vectors can be linearly independent. It's also the case that equations can be linearly independent (or dependent). A linearly independent equation can be thought of as an equation which, when added to the other equations in a SOLE, does _not_ reduce the dimensionality of the solution space. So if we have a SOLE in 3 dimensions that has 3 equations, there is a unique solution if and only if the 3 equations are linearly independent. If one is dependent on the others, the dimensionality will be reduced by at most 2.
+
+The number of basis vectors in a space is sometimes called the _degrees of freedom_ of a vector space, because it 'frees' us to move in a new direction in the vector space. Each new linearly independent equation we add _removes_ a degree of freedom, and constrains the solution space. A space with 0 DOF is a point.
+
+### Changing basis by solving SOLEs
+
+Linear independence exists for both vectors and equations. What is the cnonection between them?
+
+The connection is that solving SOLEs is equivalent to re-writing vectors in a different basis.
+
+We've said that any independent vectors are a basis of a vector space. For example $\vec{v_1}=(1,1) and \vec{v_2}=(-1,1)$ are a basis of $R^2$. This implies that the point $(4,2)$ can be reached by some linear combination $a(1,1)+b(-1,2)=(4,2)$
+
+This can be rewritten as a SOLE:
+
+$$
+\begin{pmatrix}
+1 & -1 \\
+1 & 1 \\
+\end{pmatrix}
+\begin{pmatrix}
+c \\
+d \\
+\end{pmatrix} = 
+\begin{pmatrix}
+4 \\
+2 \\
+\end{pmatrix}
+$$
+
+The unique solution to this is $c=3, d=-1$. No other combination of c and d will get you to this point. You have 0 degrees of freedom in the solution space.
+
+## Part 2: Calculus
+
+* Calculus is the study of _continuous change_
+* If we have an equation that calculates a cumulative value at a given point in time (say, distance), the _derivative_ of that function provides another equation that describes a _rate of change_ (speed) of that cumulative function at a point in time.
+* The reverse of this operation (`f: rate-fn -> cumulative-fn`) is the _integral_
+* Chapter 8 sets up intuition for these things
+* Chapter 9 extends the ideas to multiple dimensions.
+* Chapter 10 covers the mechanics, and introduces a tool for automating the process using symbolic programming
+* Chapter 11 returns to multiple dimensions with the new tool
+* Chapter 12 covers function optimization (find the input which returns the highest output).
+* Chapter 13 covers Fourier Series: using integration to compare function similarity, with an application to sound waves.

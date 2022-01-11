@@ -111,12 +111,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#example-hit-detection">Example: hit-detection</a></li>
 <li><a href="#formula-for-line">Formula for line</a></li>
 <li><a href="#generalizing-to-higher-dimensions">Generalizing to higher dimensions</a></li>
+<li><a href="#counting-solutions">Counting solutions</a></li>
+<li><a href="#changing-basis-by-solving-soles">Changing basis by solving SOLEs</a></li>
 </ul></li>
-</ul></li>
-<li><a href="#exercises">Exercises</a><ul>
-<li><a href="#chapter-2-2d-vectors-1">Chapter 2: 2d Vectors</a><ul>
-<li><a href="#what-are-the-xy">2.1: what are the x,y</a></li>
-</ul></li>
+<li><a href="#part-2-calculus">Part 2: Calculus</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -485,9 +483,70 @@ $$
 <p>The goal is to find <span class="math inline"><em>x</em></span> and <span class="math inline"><em>y</em></span>.</p>
 <p>Not every SOLE can be solved - that is, there is no point where the lines, planes, whatever, intersect. This is most obviously the case with parallel lines. However, if the lines are the <em>exact</em> same line, then there are infinitely many points of intersection. A matrix that has no unique solution is called a <em>singular matrix</em></p>
 <h3 id="generalizing-to-higher-dimensions">Generalizing to higher dimensions</h3>
-<p>These are when you have more than an <span class="math inline"><em>x</em></span> and a <span class="math inline"><em>y</em></span></p>
-<h1 id="exercises">Exercises</h1>
-<h2 id="chapter-2-2d-vectors-1">Chapter 2: 2d Vectors</h2>
-<h3 id="what-are-the-xy">2.1: what are the x,y</h3>
+<p>These are when you have more than an <span class="math inline"><em>x</em></span> and a <span class="math inline"><em>y</em></span>. Like with our 2d example, SOLEs in <span class="math inline"><em>n</em></span> dimensions can be represented in matrix form: <span class="math inline"><em>M</em> ⋅ <em>v⃗</em> = <em>a⃗</em></span>, were the dimension of <span class="math inline"><em>v⃗</em></span> and <span class="math inline"><em>a⃗</em></span> are <span class="math inline"><em>n</em></span> dimensional, and <span class="math inline"><em>M</em></span> is <span class="math inline"><em>n</em> × <em>n</em></span> dimensional.</p>
+<p>For example consider three 3d planes described by</p>
+<p><br /><span class="math display">$$
+x+y+z = -1 \newline
+2y-z=4 \newline
+x+z = 2
+$$</span><br /></p>
+<p>What is the intersection of these planes?</p>
+<p>We can write this in matrix form:</p>
+<p><br /><span class="math display">$$
+\begin{pmatrix}
+  1 &amp; 1 &amp; -1 \\
+  0 &amp; 2 &amp; -1 \\
+  1 &amp; 0 &amp; 1 \\
+\end{pmatrix}
+\begin{pmatrix}
+  x \\
+  y \\
+  z \\
+\end{pmatrix} =
+\begin{pmatrix}
+  -1 \\
+  3  \\
+  2  \\
+\end{pmatrix}
+$$</span><br /></p>
+<p>Running this through a SOLE solver, we get <span class="math inline">(<em>x</em>, <em>y</em>, <em>z</em>) = ( − 1, 3, 3)</span> as the point where all three planes intersect.</p>
+<h3 id="counting-solutions">Counting solutions</h3>
+<p>How do we know if a SOLE has a unique solution?</p>
+<p>It should be clear that in a 3d space, at least 3 planes are required to arrive at a unique solution. With 2 planes, your solution is a 1d space of solutions (that is, a line). In general, you need <span class="math inline"><em>n</em></span> equations to get a unique solution in <span class="math inline"><em>n</em></span> dimensions. Or, an <span class="math inline"><em>n</em></span> dimensional space with <span class="math inline"><em>m</em> ≤ <em>n</em></span> equations leads to solutions in an <span class="math inline"><em>n</em> − <em>m</em></span> vector space.</p>
+<p>So in an <span class="math inline"><em>n</em></span> dimensional space you need at <em>least</em> <span class="math inline"><em>n</em></span> equations to guarantee a solution. What if we have more that that? How can we tell if the SOLE has a unique solution?</p>
+<p>We’ve said that vectors can be linearly independent. It’s also the case that equations can be linearly independent (or dependent). A linearly independent equation can be thought of as an equation which, when added to the other equations in a SOLE, does <em>not</em> reduce the dimensionality of the solution space. So if we have a SOLE in 3 dimensions that has 3 equations, there is a unique solution if and only if the 3 equations are linearly independent. If one is dependent on the others, the dimensionality will be reduced by at most 2.</p>
+<p>The number of basis vectors in a space is sometimes called the <em>degrees of freedom</em> of a vector space, because it ‘frees’ us to move in a new direction in the vector space. Each new linearly independent equation we add <em>removes</em> a degree of freedom, and constrains the solution space. A space with 0 DOF is a point.</p>
+<h3 id="changing-basis-by-solving-soles">Changing basis by solving SOLEs</h3>
+<p>Linear independence exists for both vectors and equations. What is the cnonection between them?</p>
+<p>The connection is that solving SOLEs is equivalent to re-writing vectors in a different basis.</p>
+<p>We’ve said that any independent vectors are a basis of a vector space. For example <span class="math inline">$\vec{v_1}=(1,1) and \vec{v_2}=(-1,1)$</span> are a basis of <span class="math inline"><em>R</em><sup>2</sup></span>. This implies that the point <span class="math inline">(4, 2)</span> can be reached by some linear combination <span class="math inline"><em>a</em>(1, 1) + <em>b</em>( − 1, 2) = (4, 2)</span></p>
+<p>This can be rewritten as a SOLE:</p>
+<p><br /><span class="math display">$$
+\begin{pmatrix}
+1 &amp; -1 \\
+1 &amp; 1 \\
+\end{pmatrix}
+\begin{pmatrix}
+c \\
+d \\
+\end{pmatrix} = 
+\begin{pmatrix}
+4 \\
+2 \\
+\end{pmatrix}
+$$</span><br /></p>
+<p>The unique solution to this is <span class="math inline"><em>c</em> = 3, <em>d</em> =  − 1</span>. No other combination of c and d will get you to this point. You have 0 degrees of freedom in the solution space.</p>
+<h2 id="part-2-calculus">Part 2: Calculus</h2>
+<ul>
+<li>Calculus is the study of <em>continuous change</em></li>
+<li>If we have an equation that calculates a cumulative value at a given point in time (say, distance), the <em>derivative</em> of that function provides another equation that describes a <em>rate of change</em> (speed) of that cumulative function at a point in time.</li>
+<li>The reverse of this operation (<code>f: rate-fn -&gt; cumulative-fn</code>) is the <em>integral</em></li>
+<li>Chapter 8 sets up intuition for these things</li>
+<li>Chapter 9 extends the ideas to multiple dimensions.</li>
+<li>Chapter 10 covers the mechanics, and introduces a tool for automating the process using symbolic programming</li>
+<li>Chapter 11 returns to multiple dimensions with the new tool</li>
+<li>Chapter 12 covers function optimization (find the input which returns the highest output).</li>
+<li>Chapter 13 covers Fourier Series: using integration to compare function similarity, with an application to sound waves.</li>
+</ul>
 </body>
 </html>
