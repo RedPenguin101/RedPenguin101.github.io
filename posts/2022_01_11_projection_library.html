@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>A program for projecting 3d polyhedrons to 2d images</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">A program for projecting 3d polyhedrons to 2d images</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#part-1-a-dsl-for-drawing-2d-images">Part 1: A DSL for drawing 2d images</a></li>
+<li><a href="#projection-fundamentals">Projection Fundamentals</a></li>
+</ul>
+</nav>
+<h1 id="introduction">Introduction</h1>
+<p>Inspired by <a href="https://redpenguin101.github.io/books/book_mathematics_for_programmers.html">Mathematics for Programmers</a> I want a Clojure library that can project 3 dimensional polyhedrons onto 2 dimensional images.</p>
+<p>The actual displaying will be done with <a href="https://clojure2d.github.io/clojure2d/">Clojure2d</a>, which I’ll write a thin DSL around.</p>
+<p>The book <em>partially</em> described a method for this, but with some significant limitations. My goal is to generalize the approach.</p>
+<p>This is the list of functionality I want, as well as things I don’t want:</p>
+<ul>
+<li>You can specify a 3d shape, and some other parameters, and the program will display a 2d image of the shape from a particular position, without perception warping.</li>
+<li>You can give a color to a polygon, and the projection will shade them according to a light source, but only a <em>single</em> light source</li>
+<li>3d models can be stored in standardize format.</li>
+<li>ONLY allow triangular polygons. I don’t know how to get Clojure2d to draw shapes with an arbitrary number of vertices, and figuring that out isn’t the goal here.</li>
+<li>No generalizing projection from higher dimensions (though I think that might be pretty easy).</li>
+</ul>
+<h1 id="part-1-a-dsl-for-drawing-2d-images">Part 1: A DSL for drawing 2d images</h1>
+<p>First we need a simple program to define and draw 2d images using Clojure2d.</p>
+<p>The ideal is to have a simple function <code>display: image</code> which has the side effect of drawing the image to the screen.</p>
+<p>The specification of image I’ve started with is:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1"><span class="co">;; image spec</span></a>
+<a class="sourceLine" id="cb1-2" title="2">{<span class="at">:image-size</span> [<span class="dv">1000</span> <span class="dv">1000</span>]</a>
+<a class="sourceLine" id="cb1-3" title="3"> <span class="at">:canvas-size</span> {<span class="at">:x-max</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb1-4" title="4">               <span class="at">:x-min</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-5" title="5">               <span class="at">:y-max</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb1-6" title="6">               <span class="at">:y-min</span> <span class="dv">0</span>}</a>
+<a class="sourceLine" id="cb1-7" title="7"> <span class="at">:triangles</span> [,,,]}</a>
+<a class="sourceLine" id="cb1-8" title="8"></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co">;; triangle spec</span></a>
+<a class="sourceLine" id="cb1-10" title="10">{<span class="at">:vertices</span> #{[<span class="dv">1</span> <span class="dv">2</span>] [<span class="dv">3</span> <span class="dv">4</span>] [<span class="dv">5</span> <span class="dv">6</span>]} <span class="at">:color</span> [<span class="dv">123</span> <span class="dv">123</span> <span class="dv">123</span>]}</a></code></pre></div>
+<p><code>canvas-size</code> is the size of the image using the coordinate system of the shapes. Values can be positive or negative.</p>
+<p><code>image-size</code> defines the size of the image in pixels. One constraint I haven’t implemented is that the coordinate representation in pixels should be square. That is, the size in pixels of one grid in the x direction is the same as one grid in the y direction. The reason I’ve held off on this is because I’m not sure yet if this is actually <em>true</em> when projecting from 3d. Your perspective obviously can lead to things being ‘stretched’. But should this be handled here or in the projection mechanism? Not sure yet.</p>
+<p>A <code>triangle</code> is a set of three 2d vectors and a color in <code>[r g b (a)]</code> format.</p>
+<p>The code to implement <code>display</code> is fortunately pretty trivial:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1"><span class="co">;; We need a way to navigate between the coordinates of the triangles and the pixels of the screen.</span></a>
+<a class="sourceLine" id="cb2-2" title="2">(<span class="bu">defn-</span><span class="fu"> coord-&gt;px </span>[{<span class="at">:keys</span> [image-size canvas-size]} [x y]]</a>
+<a class="sourceLine" id="cb2-3" title="3">  (<span class="kw">let</span> [{<span class="at">:keys</span> [x-max x-min y-max y-min]} canvas-size</a>
+<a class="sourceLine" id="cb2-4" title="4">        [x-image y-image] image-size]</a>
+<a class="sourceLine" id="cb2-5" title="5">    [(<span class="kw">*</span> (<span class="kw">/</span> x-image (<span class="kw">-</span> x-max x-min)) (<span class="kw">-</span> x x-min))</a>
+<a class="sourceLine" id="cb2-6" title="6">     (<span class="kw">-</span> y-image (<span class="kw">*</span> (<span class="kw">/</span> y-image (<span class="kw">-</span> y-max y-min)) (<span class="kw">-</span> y y-min)))]))</a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8">(<span class="bu">defn-</span><span class="fu"> draw-triangle </span>[canvas image {<span class="at">:keys</span> [vertices color]}]</a>
+<a class="sourceLine" id="cb2-9" title="9">  (c2d/with-canvas [c canvas]</a>
+<a class="sourceLine" id="cb2-10" title="10">    (<span class="kw">let</span> [[[x1 y1] [x2 y2] [x3 y3]] (<span class="kw">map</span> #(coord-&gt;px image <span class="va">%</span>) vertices)]</a>
+<a class="sourceLine" id="cb2-11" title="11">      (c2d/set-color c color)</a>
+<a class="sourceLine" id="cb2-12" title="12">      (c2d/triangle c x1 y1 x2 y2 x3 y3)</a>
+<a class="sourceLine" id="cb2-13" title="13">      (c2d/set-color c <span class="at">:black</span>)</a>
+<a class="sourceLine" id="cb2-14" title="14">      (c2d/triangle c x1 y1 x2 y2 x3 y3 <span class="va">true</span>))))</a>
+<a class="sourceLine" id="cb2-15" title="15"></a>
+<a class="sourceLine" id="cb2-16" title="16">(<span class="bu">defn</span><span class="fu"> display </span>[image]</a>
+<a class="sourceLine" id="cb2-17" title="17">  (<span class="kw">let</span> [[x-image y-image] (<span class="at">:image-size</span> image)</a>
+<a class="sourceLine" id="cb2-18" title="18">        canvas (c2d/canvas x-image y-image)]</a>
+<a class="sourceLine" id="cb2-19" title="19">    (<span class="kw">doseq</span> [t (<span class="at">:triangles</span> image)] (draw-triangle canvas image t))</a>
+<a class="sourceLine" id="cb2-20" title="20">    (c2d/show-window canvas <span class="st">&quot;Drawing&quot;</span>)))</a>
+<a class="sourceLine" id="cb2-21" title="21"></a>
+<a class="sourceLine" id="cb2-22" title="22">(<span class="kw">comment</span></a>
+<a class="sourceLine" id="cb2-23" title="23">  <span class="co">;; usage</span></a>
+<a class="sourceLine" id="cb2-24" title="24">  (display {<span class="at">:image-size</span> [<span class="dv">1000</span> <span class="dv">1000</span>]</a>
+<a class="sourceLine" id="cb2-25" title="25">            <span class="at">:canvas-size</span> {<span class="at">:x-max</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb2-26" title="26">                          <span class="at">:x-min</span> <span class="dv">-100</span></a>
+<a class="sourceLine" id="cb2-27" title="27">                          <span class="at">:y-max</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb2-28" title="28">                          <span class="at">:y-min</span> <span class="dv">-100</span>}</a>
+<a class="sourceLine" id="cb2-29" title="29">            <span class="at">:triangles</span> #{{<span class="at">:vertices</span> [[-<span class="dv">50</span> <span class="dv">-75</span>] [-<span class="dv">30</span> <span class="dv">60</span>] [<span class="dv">50</span> <span class="dv">0</span>]] </a>
+<a class="sourceLine" id="cb2-30" title="30">                          <span class="at">:color</span> [<span class="dv">155</span> <span class="dv">155</span> <span class="dv">155</span>]}</a>
+<a class="sourceLine" id="cb2-31" title="31">                         {<span class="at">:vertices</span> [[-<span class="dv">25</span> <span class="dv">-16</span>] [-<span class="dv">22</span> <span class="dv">40</span>] [<span class="dv">100</span> <span class="dv">15</span>]] </a>
+<a class="sourceLine" id="cb2-32" title="32">                          <span class="at">:color</span> [<span class="dv">50</span> <span class="dv">50</span> <span class="dv">50</span>]}}}))</a></code></pre></div>
+<p>Now that’s out of the way let’s move to the actual projection mechanics.</p>
+<h1 id="projection-fundamentals">Projection Fundamentals</h1>
+<p>In essence, we have a set of 3d vectors we need to transform into a set of 2d vectors. This is a linear map: <span class="math inline"><em>M</em> ⋅ <em>v⃗</em> = <em>w⃗</em></span>, where <span class="math inline"><em>M</em></span> is a 2x3 matrix, <span class="math inline"><em>v⃗</em></span> is a 3d vector, and <span class="math inline"><em>w⃗</em></span> is a 2d vector.</p>
+<p>The question is, what is the appropriate matrix to use?</p>
+<p>The question, clearly, is the perspective of the viewer. If the viewer is ‘at’ coordinates <span class="math inline">(<em>a</em>, <em>b</em>, <em>c</em>)</span> and looking in direction <span class="math inline">(<em>d</em>, <em>e</em>, <em>f</em>)</span>, that is going to impact how the image ‘looks’ in the 2d plane.</p>
+<p>Let’s encapsulate this idea of a viewer into a <strong>camera</strong>. A camera is defined with 2 vectors: the first stating its position, the second stating the direction it is looking in. There are probably other important things that need to be in here, like field of view, but I’ll ignore that for now.</p>
+</body>
+</html>
