@@ -114,7 +114,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#counting-solutions">Counting solutions</a></li>
 <li><a href="#changing-basis-by-solving-soles">Changing basis by solving SOLEs</a></li>
 </ul></li>
-<li><a href="#part-2-calculus">Part 2: Calculus</a></li>
+</ul></li>
+<li><a href="#part-2-calculus">Part 2: Calculus</a><ul>
+<li><a href="#rates-of-change">Rates of change</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -536,7 +538,7 @@ d \\
 \end{pmatrix}
 $$</span><br /></p>
 <p>The unique solution to this is <span class="math inline"><em>c</em> = 3, <em>d</em> =  − 1</span>. No other combination of c and d will get you to this point. You have 0 degrees of freedom in the solution space.</p>
-<h2 id="part-2-calculus">Part 2: Calculus</h2>
+<h1 id="part-2-calculus">Part 2: Calculus</h1>
 <ul>
 <li>Calculus is the study of <em>continuous change</em></li>
 <li>If we have an equation that calculates a cumulative value at a given point in time (say, distance), the <em>derivative</em> of that function provides another equation that describes a <em>rate of change</em> (speed) of that cumulative function at a point in time.</li>
@@ -548,5 +550,82 @@ $$</span><br /></p>
 <li>Chapter 12 covers function optimization (find the input which returns the highest output).</li>
 <li>Chapter 13 covers Fourier Series: using integration to compare function similarity, with an application to sound waves.</li>
 </ul>
+<h2 id="rates-of-change">Rates of change</h2>
+<p>We will consider derivation and integration in physical terms: processes that translate relationships between volume and flow rates, in something like an oil tank.</p>
+<p>We will define functions <code>get-flow-rate: vol-fn -&gt; flow-fn</code> and <code>get-volume: flow-fn -&gt; vol-fn</code>.</p>
+<p>Let’s say you have a volume function. Start by writing a function to get the average flow rate between two points. This is done by dividing the change in volume by the change in time.</p>
+<p><br /><span class="math display">$$
+\text{average flow rate} = \frac{\text{change in volume}}{\text{change in time}}
+$$</span><br /></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb19-1" title="1">(<span class="bu">defn</span><span class="fu"> average-flow-rate </span>[v-fn, t1, t2]</a>
+<a class="sourceLine" id="cb19-2" title="2">  (<span class="kw">/</span> (<span class="kw">-</span> (v-fn t2) (v-fn t1)) (<span class="kw">-</span> t2 t1)))</a></code></pre></div>
+<p>To get a better view of how the flow rate changes over time, we can break down the time into windows and calculate the average flow rate over each of those windows:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb20-1" title="1">(<span class="kw">map</span> #(<span class="kw">vector</span> <span class="va">%</span> (average-flow-rate volume <span class="va">%</span> (<span class="kw">inc</span> <span class="va">%</span>))) (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="co">;; =&gt; ([0 0.578125]</span></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="co">;;     [1 0.296875]</span></a>
+<a class="sourceLine" id="cb20-4" title="4"><span class="co">;;     [2 0.109375]</span></a>
+<a class="sourceLine" id="cb20-5" title="5"><span class="co">;;     [3 0.015625]</span></a>
+<a class="sourceLine" id="cb20-6" title="6"><span class="co">;;     [4 0.015625]</span></a>
+<a class="sourceLine" id="cb20-7" title="7"><span class="co">;;     [5 0.109375]</span></a>
+<a class="sourceLine" id="cb20-8" title="8"><span class="co">;;     [6 0.296875]</span></a>
+<a class="sourceLine" id="cb20-9" title="9"><span class="co">;;     [7 0.578125]</span></a>
+<a class="sourceLine" id="cb20-10" title="10"><span class="co">;;     [8 0.953125]</span></a>
+<a class="sourceLine" id="cb20-11" title="11"><span class="co">;;     [9 1.421875])</span></a>
+<a class="sourceLine" id="cb20-12" title="12"></a>
+<a class="sourceLine" id="cb20-13" title="13">(draw [<span class="at">:scatter</span> (<span class="kw">map</span> #(<span class="kw">vector</span> <span class="va">%</span> (average-flow-rate volume <span class="va">%</span> (<span class="kw">inc</span> <span class="va">%</span>))) (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">10</span>))])</a></code></pre></div>
+<p>We can get a more accurate picture by decreasing the interval</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb21-1" title="1">(draw [<span class="at">:scatter</span> (<span class="kw">map</span> #(<span class="kw">vector</span> <span class="va">%</span> (average-flow-rate volume <span class="va">%</span> (<span class="kw">inc</span> <span class="va">%</span>))) (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">10</span> <span class="fl">0.1</span>))])</a></code></pre></div>
+<p>Following this train of thought, the most accurate possible view of flow rate would be if the time interval we were using is infinitely small. This would, in effect, mean we are dividing by zero, which won’t work.</p>
+<p>One way around this is to set a ‘tolerance’, where we say “this is close enough”. We do this be calculating average flow rates at progressively smaller intervals, until the difference between the flow rate at those intervals is below our tolerance:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb22-1" title="1">(<span class="bu">defn</span><span class="fu"> instantaneous-flow-rate </span>[f t]</a>
+<a class="sourceLine" id="cb22-2" title="2">  (<span class="kw">-&gt;&gt;</span> (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">-7</span> <span class="dv">-1</span>) <span class="co">; range of numbers from 0 -&gt; -6</span></a>
+<a class="sourceLine" id="cb22-3" title="3">       (<span class="kw">map</span> ten-to-the)</a>
+<a class="sourceLine" id="cb22-4" title="4">       (<span class="kw">map</span> #(average-flow-rate f (<span class="kw">-</span> t <span class="va">%</span>) (<span class="kw">+</span> t <span class="va">%</span>)))</a>
+<a class="sourceLine" id="cb22-5" title="5">       (<span class="kw">partition</span> <span class="dv">2</span> <span class="dv">1</span>) <span class="co">; examine pairs of flow rates</span></a>
+<a class="sourceLine" id="cb22-6" title="6">       (<span class="kw">remove</span> #(<span class="kw">&gt;</span> (Math/abs (<span class="kw">apply</span> <span class="kw">-</span> <span class="va">%</span>)) (Math/pow <span class="dv">10</span> <span class="dv">-6</span>)))</a>
+<a class="sourceLine" id="cb22-7" title="7">       <span class="kw">first</span> <span class="kw">last</span>)) <span class="co">; find the first which is below our tolerance</span></a>
+<a class="sourceLine" id="cb22-8" title="8"></a>
+<a class="sourceLine" id="cb22-9" title="9">(instantaneous-flow-rate volume <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb22-10" title="10"><span class="co">;; =&gt; 0.42187500015393936</span></a>
+<a class="sourceLine" id="cb22-11" title="11"></a>
+<a class="sourceLine" id="cb22-12" title="12">(draw [<span class="at">:scatter</span> (<span class="kw">map</span> #(<span class="kw">vector</span> <span class="va">%</span> (instantaneous-flow-rate volume <span class="va">%</span>)) (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">10</span> <span class="fl">0.1</span>))])</a></code></pre></div>
+<p>We can curry this to make it behave like a function:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb23-1" title="1">(<span class="bu">defn</span><span class="fu"> flow-rate </span>[f]</a>
+<a class="sourceLine" id="cb23-2" title="2">  (<span class="kw">fn</span> [t] (instantaneous-flow-rate f t)))</a>
+<a class="sourceLine" id="cb23-3" title="3"></a>
+<a class="sourceLine" id="cb23-4" title="4">(draw [<span class="at">:function</span> (flow-rate volume) <span class="dv">0</span> <span class="dv">10</span>])</a></code></pre></div>
+<p>This flow rate function is the <em>derivative</em> of the function.</p>
+<p>The derivative of a function <span class="math inline"><em>f</em></span> is called or “f-prime”.</p>
+<p><br /><span class="math display">$$
+f'(x) = \frac{df}{dx}=\frac{d}{dx}f(x)
+$$</span><br /></p>
+<p>Where the “<span class="math inline"><em>d</em></span>” signifies infinitely small change in <span class="math inline"><em>f</em></span>/<span class="math inline"><em>x</em></span>. You’ll often see <span class="math inline">$\frac{d}{dx}$</span> used as shorthand for “The operation taking the derivative with respect to <span class="math inline"><em>x</em></span>”.</p>
+<p>We’ve achieved the first objective of the chapter: going from a volume function to a flow-rate function (derivation). The second objective is to do the opposite: Integration.</p>
+<p>The first step will be the same: make a function that calculates volume change over a period, given the flow function</p>
+<p>How do we do this? Consider a car that is moving at 60mph. How must ground does it cover over a period of 2 hours? Obviously 120 miles: <code>velocity * time</code></p>
+<p>What about if we know that at <span class="math inline"><em>t</em><sub>0</sub></span> the car is traveling at 50mph, and at <span class="math inline"><em>t</em><sub>1</sub></span> (an hour later) at 100mph: What distance is traveled? The best we can do is assume the average speed is 75mph. The distance is therefore assumed to be 75 miles: <code>average velocity * time</code></p>
+<p><br /><span class="math display">$$
+\text{estimated volume change} = 
+\frac{f(t_2) + f(t_1)}{2}(t_2-t_1)
+$$</span><br /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb24-1" title="1">(<span class="bu">defn</span><span class="fu"> estimated-volume-change </span>[flow-fn, t1, t2]</a>
+<a class="sourceLine" id="cb24-2" title="2">  (<span class="kw">*</span> (<span class="kw">/</span> (<span class="kw">+</span> (flow-fn t2) (flow-fn t1)) <span class="dv">2</span>) (<span class="kw">-</span> t2 t1)))</a>
+<a class="sourceLine" id="cb24-3" title="3"></a>
+<a class="sourceLine" id="cb24-4" title="4">(estimated-volume-change (<span class="kw">fn</span> [_] <span class="dv">60</span>) <span class="dv">0</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-5" title="5">(estimated-volume-change (<span class="kw">fn</span> [x] (<span class="kw">if</span> (<span class="kw">zero?</span> x) <span class="dv">50</span> <span class="dv">100</span>)) <span class="dv">0</span> <span class="dv">1</span>)</a></code></pre></div>
+<p>The smaller the time-deltas, the more accurate the average will be. Taking the above example, if instead of reading the velocity at only 0 and 1 hour, we could calculate it every 1 minute during that period, and add all the results together.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb25-1" title="1">(<span class="bu">defn</span><span class="fu"> volume-change </span>[f]</a>
+<a class="sourceLine" id="cb25-2" title="2">  (<span class="kw">fn</span> [t1 t2 step]</a>
+<a class="sourceLine" id="cb25-3" title="3">    (<span class="kw">-&gt;&gt;</span> (<span class="kw">range</span> t1 t2 step)</a>
+<a class="sourceLine" id="cb25-4" title="4">         (<span class="kw">partition</span> <span class="dv">2</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb25-5" title="5">         (<span class="kw">map</span> #(<span class="kw">apply</span> estimated-volume-change f <span class="va">%</span>))</a>
+<a class="sourceLine" id="cb25-6" title="6">         (<span class="kw">apply</span> <span class="kw">+</span>))))</a>
+<a class="sourceLine" id="cb25-7" title="7"></a>
+<a class="sourceLine" id="cb25-8" title="8">((volume-change flow) <span class="dv">0</span> <span class="dv">10</span> <span class="fl">0.0001</span>)</a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="co">;; =&gt; 4.375000002326983</span></a>
+<a class="sourceLine" id="cb25-10" title="10"></a>
+<a class="sourceLine" id="cb25-11" title="11"><span class="co">;; We can check our result against the actual volume fn</span></a>
+<a class="sourceLine" id="cb25-12" title="12">(<span class="kw">-</span> (volume <span class="dv">10</span>) (volume <span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb25-13" title="13"><span class="co">;; =&gt; 4.375</span></a></code></pre></div>
 </body>
 </html>

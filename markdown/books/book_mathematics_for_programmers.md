@@ -692,7 +692,7 @@ $$
 
 The unique solution to this is $c=3, d=-1$. No other combination of c and d will get you to this point. You have 0 degrees of freedom in the solution space.
 
-## Part 2: Calculus
+# Part 2: Calculus
 
 * Calculus is the study of _continuous change_
 * If we have an equation that calculates a cumulative value at a given point in time (say, distance), the _derivative_ of that function provides another equation that describes a _rate of change_ (speed) of that cumulative function at a point in time.
@@ -703,3 +703,121 @@ The unique solution to this is $c=3, d=-1$. No other combination of c and d will
 * Chapter 11 returns to multiple dimensions with the new tool
 * Chapter 12 covers function optimization (find the input which returns the highest output).
 * Chapter 13 covers Fourier Series: using integration to compare function similarity, with an application to sound waves.
+
+## Rates of change
+
+We will consider derivation and integration in physical terms: processes that translate relationships between volume and flow rates, in something like an oil tank.
+
+We will define functions `get-flow-rate: vol-fn -> flow-fn` and `get-volume: flow-fn -> vol-fn`.
+
+Let's say you have a volume function. Start by writing a function to get the average flow rate between two points. This is done by dividing the change in volume by the change in time.
+
+$$
+\text{average flow rate} = \frac{\text{change in volume}}{\text{change in time}}
+$$
+
+```clojure
+(defn average-flow-rate [v-fn, t1, t2]
+  (/ (- (v-fn t2) (v-fn t1)) (- t2 t1)))
+```
+
+To get a better view of how the flow rate changes over time, we can break down the time into windows and calculate the average flow rate over each of those windows:
+
+```clojure
+(map #(vector % (average-flow-rate volume % (inc %))) (range 0 10))
+;; => ([0 0.578125]
+;;     [1 0.296875]
+;;     [2 0.109375]
+;;     [3 0.015625]
+;;     [4 0.015625]
+;;     [5 0.109375]
+;;     [6 0.296875]
+;;     [7 0.578125]
+;;     [8 0.953125]
+;;     [9 1.421875])
+
+(draw [:scatter (map #(vector % (average-flow-rate volume % (inc %))) (range 0 10))])
+```
+
+We can get a more accurate picture by decreasing the interval
+
+```clojure
+(draw [:scatter (map #(vector % (average-flow-rate volume % (inc %))) (range 0 10 0.1))])
+```
+
+Following this train of thought, the most accurate possible view of flow rate would be if the time interval we were using is infinitely small. This would, in effect, mean we are dividing by zero, which won't work.
+
+One way around this is to set a 'tolerance', where we say "this is close enough". We do this be calculating average flow rates at progressively smaller intervals, until the difference between the flow rate at those intervals is below our tolerance:
+
+```clojure
+(defn instantaneous-flow-rate [f t]
+  (->> (range 0 -7 -1) ; range of numbers from 0 -> -6
+       (map ten-to-the)
+       (map #(average-flow-rate f (- t %) (+ t %)))
+       (partition 2 1) ; examine pairs of flow rates
+       (remove #(> (Math/abs (apply - %)) (Math/pow 10 -6)))
+       first last)) ; find the first which is below our tolerance
+
+(instantaneous-flow-rate volume 1)
+;; => 0.42187500015393936
+
+(draw [:scatter (map #(vector % (instantaneous-flow-rate volume %)) (range 0 10 0.1))])
+```
+
+We can curry this to make it behave like a function:
+
+```clojure
+(defn flow-rate [f]
+  (fn [t] (instantaneous-flow-rate f t)))
+
+(draw [:function (flow-rate volume) 0 10])
+```
+
+This flow rate function is the _derivative_ of the function.
+
+The derivative of a function $f$ is called or "f-prime".
+
+$$
+f'(x) = \frac{df}{dx}=\frac{d}{dx}f(x)
+$$
+
+Where the "$d$" signifies infinitely small change in $f$/$x$. You'll often see $\frac{d}{dx}$ used as shorthand for "The operation taking the derivative with respect to $x$".
+
+We've achieved the first objective of the chapter: going from a volume function to a flow-rate function (derivation). The second objective is to do the opposite: Integration.
+
+The first step will be the same: make a function that calculates volume change over a period, given the flow function
+
+How do we do this? Consider a car that is moving at 60mph. How must ground does it cover over a period of 2 hours? Obviously 120 miles: `velocity * time`
+
+What about if we know that at $t_0$ the car is traveling at 50mph, and at $t_1$ (an hour later) at 100mph: What distance is traveled? The best we can do is assume the average speed is 75mph. The distance is therefore assumed to be 75 miles: `average velocity * time`
+
+$$
+\text{estimated volume change} = 
+\frac{f(t_2) + f(t_1)}{2}(t_2-t_1)
+$$
+
+```clojure
+(defn estimated-volume-change [flow-fn, t1, t2]
+  (* (/ (+ (flow-fn t2) (flow-fn t1)) 2) (- t2 t1)))
+
+(estimated-volume-change (fn [_] 60) 0 1)
+(estimated-volume-change (fn [x] (if (zero? x) 50 100)) 0 1)
+```
+
+The smaller the time-deltas, the more accurate the average will be. Taking the above example, if instead of reading the velocity at only 0 and 1 hour, we could calculate it every 1 minute during that period, and add all the results together.
+
+```clojure
+(defn volume-change [f]
+  (fn [t1 t2 step]
+    (->> (range t1 t2 step)
+         (partition 2 1)
+         (map #(apply estimated-volume-change f %))
+         (apply +))))
+
+((volume-change flow) 0 10 0.0001)
+;; => 4.375000002326983
+
+;; We can check our result against the actual volume fn
+(- (volume 10) (volume 0))
+;; => 4.375
+```
