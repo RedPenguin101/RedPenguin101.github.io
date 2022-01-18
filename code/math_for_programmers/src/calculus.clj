@@ -104,3 +104,27 @@
 (- (volume 10) (volume 0))
 ;; => 4.375
 
+(comment
+  (map (juxt identity volume) (range 0 10))
+  ;; => ([0 2.3] [1 2.878125] [2 3.175] [3 3.284375] [4 3.3] [5 3.315625] [6 3.425] [7 3.721875] [8 4.3] [9 5.253125])
+
+  (reductions + 0 (map #((volume-change flow) %1 %2 0.0001) (range 0 10) (drop 1 (range 0 10))))
+
+  (draw [:function volume 0 10]
+        [:scatter (map vector (range 0 10 0.1)
+                       (reductions + 0 (map #((volume-change flow) %1 %2 0.0001) (range 0 11 0.1) (drop 1 (range 0 11 0.1)))))]))
+
+(defn volume-from-flow [f c]
+  (fn [t]
+    (reduce + c (map #((volume-change f) %1 %2 0.0001)
+                     (range 0 t 0.1)
+                     (drop 1 (range 0 t 0.1))))))
+
+(comment
+  ((volume-from-flow flow 2.3) 10)
+;; => 6.674812911913465
+  (volume 10)
+
+;; => 6.675
+  (draw [:function volume 0 10]
+        [:scatter (map (juxt identity (volume-from-flow flow 0)) (range 0 11 0.5))]))

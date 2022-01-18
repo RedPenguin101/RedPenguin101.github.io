@@ -821,3 +821,62 @@ The smaller the time-deltas, the more accurate the average will be. Taking the a
 (- (volume 10) (volume 0))
 ;; => 4.375
 ```
+Considered geometrically, what we are doing with the formula $
+\frac{f(t_2) + f(t_1)}{2}(t_2-t_1)$ is estimating the area under the graph by breaking it into quadrilaterals and finding the area of those quadrilaterals.
+
+To calculate the volume at a point, we need to find the cumulative area under the graph using that method:
+
+```clojure
+(defn volume-from-flow [f]
+  (fn [t]
+    (reduce + 0 (map #((volume-change f) %1 %2 0.0001) 
+                     (range 0 t 0.1) 
+                     (drop 1 (range 0 t 0.1))))))
+
+(draw [:function volume 0 10]
+      [:scatter (map (juxt identity (volume-from-flow flow)) (range 0 11 0.5))])
+```
+
+If we plot the actual volume function against our calculated function, we can see that the _shape_ is about right. But it's shifted downwards: the actual volume starts at 2, our function starts at 0.
+
+This makes intuitive sense. If all you have to go on is the speed of the car, you can tell how far it has traveled _relative_ to the place it was when you started watching it. But unless you know where it was to begin with you don't know where it _actually_ is unless you know where it was when it started. That it, at $t=0$.
+
+We know (`(volume 0)`) that the starting volume is 2.3, so we need to modify our cumulative calculation so that it starts there.
+
+```clojure
+(defn volume-from-flow [f c]
+  (fn [t]
+    (reduce + c (map #((volume-change f) %1 %2 0.0001)
+                     (range 0 t 0.1)
+                     (drop 1 (range 0 t 0.1))))))
+(draw [:function volume 0 10]
+      [:scatter (map (juxt identity (volume-from-flow flow 2.3)) (range 0 11 0.5))])
+```
+
+Now we're (nearly) dead on.
+
+You have _definite integrals_, which tell you the total change in a function on some interval $a$ to $b$ (called the _bounds_) from it's derivative:
+
+$$
+\int_a^b{f'(x)dx} = f(b)-f(a)
+$$
+
+Our volume calculation is of this type.
+
+The _indefinite integral_ takes the derivative of a function and recovers the original function:
+
+$$
+\int{f'(x)dx} = f(x)
+$$
+
+## Simulating moving objects
+
+We will use Newtonian physics to simulate moving objects.
+
+The position of an object moving in (2d) space is a function of time: $x(t)$ and $y(t)$. The derivative of the position is the velocity (just like with the car). The derivative of the _velocity_ is the acceleration.
+
+We will use _Euler's Method_ to approximate integrals.
+
+Consider a game of Asteroids. The asteroids themselves have 0 acceleration: they move at a constant velocity (at least until they are hit), which changes their position over time. The ship, on the other hand, _does_ accelerate, when the player hits the up arrow. This changes its velocity and its position.
+
+First, we will consider objects with zero acceleration, or constant velocity. Position will be represented as a vector. Velocity will be a (constant) vector.

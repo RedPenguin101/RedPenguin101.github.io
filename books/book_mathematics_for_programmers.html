@@ -117,6 +117,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="#part-2-calculus">Part 2: Calculus</a><ul>
 <li><a href="#rates-of-change">Rates of change</a></li>
+<li><a href="#simulating-moving-objects">Simulating moving objects</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -627,5 +628,37 @@ $$</span><br /></p>
 <a class="sourceLine" id="cb25-11" title="11"><span class="co">;; We can check our result against the actual volume fn</span></a>
 <a class="sourceLine" id="cb25-12" title="12">(<span class="kw">-</span> (volume <span class="dv">10</span>) (volume <span class="dv">0</span>))</a>
 <a class="sourceLine" id="cb25-13" title="13"><span class="co">;; =&gt; 4.375</span></a></code></pre></div>
+<p>Considered geometrically, what we are doing with the formula $ (t_2-t_1)$ is estimating the area under the graph by breaking it into quadrilaterals and finding the area of those quadrilaterals.</p>
+<p>To calculate the volume at a point, we need to find the cumulative area under the graph using that method:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb26-1" title="1">(<span class="bu">defn</span><span class="fu"> volume-from-flow </span>[f]</a>
+<a class="sourceLine" id="cb26-2" title="2">  (<span class="kw">fn</span> [t]</a>
+<a class="sourceLine" id="cb26-3" title="3">    (<span class="kw">reduce</span> <span class="kw">+</span> <span class="dv">0</span> (<span class="kw">map</span> #((volume-change f) <span class="va">%1</span> <span class="va">%2</span> <span class="fl">0.0001</span>) </a>
+<a class="sourceLine" id="cb26-4" title="4">                     (<span class="kw">range</span> <span class="dv">0</span> t <span class="fl">0.1</span>) </a>
+<a class="sourceLine" id="cb26-5" title="5">                     (<span class="kw">drop</span> <span class="dv">1</span> (<span class="kw">range</span> <span class="dv">0</span> t <span class="fl">0.1</span>))))))</a>
+<a class="sourceLine" id="cb26-6" title="6"></a>
+<a class="sourceLine" id="cb26-7" title="7">(draw [<span class="at">:function</span> volume <span class="dv">0</span> <span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb26-8" title="8">      [<span class="at">:scatter</span> (<span class="kw">map</span> (<span class="kw">juxt</span> <span class="kw">identity</span> (volume-from-flow flow)) (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">11</span> <span class="fl">0.5</span>))])</a></code></pre></div>
+<p>If we plot the actual volume function against our calculated function, we can see that the <em>shape</em> is about right. But it’s shifted downwards: the actual volume starts at 2, our function starts at 0.</p>
+<p>This makes intuitive sense. If all you have to go on is the speed of the car, you can tell how far it has traveled <em>relative</em> to the place it was when you started watching it. But unless you know where it was to begin with you don’t know where it <em>actually</em> is unless you know where it was when it started. That it, at <span class="math inline"><em>t</em> = 0</span>.</p>
+<p>We know (<code>(volume 0)</code>) that the starting volume is 2.3, so we need to modify our cumulative calculation so that it starts there.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb27-1" title="1">(<span class="bu">defn</span><span class="fu"> volume-from-flow </span>[f c]</a>
+<a class="sourceLine" id="cb27-2" title="2">  (<span class="kw">fn</span> [t]</a>
+<a class="sourceLine" id="cb27-3" title="3">    (<span class="kw">reduce</span> <span class="kw">+</span> c (<span class="kw">map</span> #((volume-change f) <span class="va">%1</span> <span class="va">%2</span> <span class="fl">0.0001</span>)</a>
+<a class="sourceLine" id="cb27-4" title="4">                     (<span class="kw">range</span> <span class="dv">0</span> t <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb27-5" title="5">                     (<span class="kw">drop</span> <span class="dv">1</span> (<span class="kw">range</span> <span class="dv">0</span> t <span class="fl">0.1</span>))))))</a>
+<a class="sourceLine" id="cb27-6" title="6">(draw [<span class="at">:function</span> volume <span class="dv">0</span> <span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb27-7" title="7">      [<span class="at">:scatter</span> (<span class="kw">map</span> (<span class="kw">juxt</span> <span class="kw">identity</span> (volume-from-flow flow <span class="fl">2.3</span>)) (<span class="kw">range</span> <span class="dv">0</span> <span class="dv">11</span> <span class="fl">0.5</span>))])</a></code></pre></div>
+<p>Now we’re (nearly) dead on.</p>
+<p>You have <em>definite integrals</em>, which tell you the total change in a function on some interval <span class="math inline"><em>a</em></span> to <span class="math inline"><em>b</em></span> (called the <em>bounds</em>) from it’s derivative:</p>
+<p><br /><span class="math display">∫<sub><em>a</em></sub><sup><em>b</em></sup><em>f</em>′(<em>x</em>)<em>d</em><em>x</em> = <em>f</em>(<em>b</em>) − <em>f</em>(<em>a</em>)</span><br /></p>
+<p>Our volume calculation is of this type.</p>
+<p>The <em>indefinite integral</em> takes the derivative of a function and recovers the original function:</p>
+<p><br /><span class="math display">∫<em>f</em>′(<em>x</em>)<em>d</em><em>x</em> = <em>f</em>(<em>x</em>)</span><br /></p>
+<h2 id="simulating-moving-objects">Simulating moving objects</h2>
+<p>We will use Newtonian physics to simulate moving objects.</p>
+<p>The position of an object moving in (2d) space is a function of time: <span class="math inline"><em>x</em>(<em>t</em>)</span> and <span class="math inline"><em>y</em>(<em>t</em>)</span>. The derivative of the position is the velocity (just like with the car). The derivative of the <em>velocity</em> is the acceleration.</p>
+<p>We will use <em>Euler’s Method</em> to approximate integrals.</p>
+<p>Consider a game of Asteroids. The asteroids themselves have 0 acceleration: they move at a constant velocity (at least until they are hit), which changes their position over time. The ship, on the other hand, <em>does</em> accelerate, when the player hits the up arrow. This changes its velocity and its position.</p>
+<p>First, we will consider objects with zero acceleration, or constant velocity. Position will be represented as a vector. Velocity will be a (constant) vector.</p>
 </body>
 </html>
