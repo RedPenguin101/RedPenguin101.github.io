@@ -4,7 +4,6 @@
 
 * Flexibility in Nature and Design
 * DSLs
-    * Combinators
     * Regular expressions
     * Wrappers
     * Domain abstraction
@@ -131,8 +130,6 @@ We therefore want the return value of our combiners to 'advertise' their arities
 One restriction of our implementation of our combiners is that the 'second level' (`h` in spread and parallel, `g` in compose) are limited to arity 1 functions, because the preceding functions return single value. If we have a _multiple-value return mechanism_ we can get around this. Scheme has one, Clojure doesn't. Or rather, we can just return a list and get the same functionality I think.
 
 We'll use this to separate `spread-combine` into two components: `spread-apply` and then just the compose we've already seen.
-
-`spread-apply`
 
 ```
 Given:
