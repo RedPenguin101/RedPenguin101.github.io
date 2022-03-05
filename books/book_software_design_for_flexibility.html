@@ -105,7 +105,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Flexibility in Nature and Design</li>
 <li>DSLs
 <ul>
-<li>Combinators</li>
 <li>Regular expressions</li>
 <li>Wrappers</li>
 <li>Domain abstraction</li>
@@ -195,7 +194,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-21" title="21"><span class="co">;;    Assert failed: (= (count args) arity)</span></a></code></pre></div>
 <p>One restriction of our implementation of our combiners is that the ‘second level’ (<code>h</code> in spread and parallel, <code>g</code> in compose) are limited to arity 1 functions, because the preceding functions return single value. If we have a <em>multiple-value return mechanism</em> we can get around this. Scheme has one, Clojure doesn’t. Or rather, we can just return a list and get the same functionality I think.</p>
 <p>We’ll use this to separate <code>spread-combine</code> into two components: <code>spread-apply</code> and then just the compose we’ve already seen.</p>
-<p><code>spread-apply</code></p>
 <pre><code>Given:
   f :: n -&gt; p
   g :: m -&gt; q

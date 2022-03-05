@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Spelunking: Barski’s EconIsle</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Spelunking: Barski’s EconIsle</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-economic-model-or-engine">The economic model, or engine</a><ul>
+<li><a href="#work">Work</a></li>
+<li><a href="#eat">Eat</a></li>
+<li><a href="#sleep">Sleep</a></li>
+<li><a href="#back-to-the-burger-calculation">Back to the burger calculation</a></li>
+<li><a href="#summary-of-and-thoughts-on-the-economic-model">Summary of and thoughts on the economic model</a></li>
+</ul></li>
+<li><a href="#other-namespaces">Other namespaces</a></li>
+</ul>
+</nav>
+<p>Today I’m looking at Conrad Barski’s EconIsle - a simple economic model.</p>
+<ul>
+<li><a href="https://github.com/drcode/EconIsle">Original Repo</a></li>
+<li><a href="https://github.com/RedPenguin101/EconIsle">My Fork</a></li>
+<li><a href="https://www.youtube.com/watch?v=Rx_URujI3pw">Conrad’s video</a></li>
+</ul>
+<p>The premise is that there is a Stone Age island with 40 people in it. Each person gathers a resources (Mammoth, Ketchup, Lettuce, Bread), and trades for that resource in a marketplace, aiming to get enough of each to make Mammoth Burgers. The program tracks the price of each resource and the number of burgers made each day.</p>
+<h1 id="the-economic-model-or-engine">The economic model, or engine</h1>
+<p>I think the first thing to look at is the <code>engine</code> namespace. This contains the actual economic model</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(<span class="kw">ns</span> elon-tusk.engine</a>
+<a class="sourceLine" id="cb1-2" title="2">  <span class="pp">#?</span>(<span class="at">:cljs</span> (<span class="at">:require-macros</span> [snek.core <span class="at">:refer</span> [defsnek <span class="bu">defn</span><span class="fu">]]</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="fu">                            </span>[fbc-utils.core <span class="at">:refer</span> [forv]]))</a>
+<a class="sourceLine" id="cb1-4" title="4">  (<span class="at">:refer-clojure</span> <span class="at">:rename</span> {<span class="bu">defn</span><span class="fu">      core-defn</span></a>
+<a class="sourceLine" id="cb1-5" title="5">                           <span class="bu">defmethod</span><span class="fu"> core-defmethod</span>})</a>
+<a class="sourceLine" id="cb1-6" title="6">  (<span class="at">:require</span> [fbc-utils.core <span class="at">:as</span> ut]</a>
+<a class="sourceLine" id="cb1-7" title="7">            [fbc-utils.debug <span class="at">:as</span> db]</a>
+<a class="sourceLine" id="cb1-8" title="8">            [clojure.pprint <span class="at">:as</span> pp]</a>
+<a class="sourceLine" id="cb1-9" title="9">            [snek.core <span class="at">:as</span> sn]</a>
+<a class="sourceLine" id="cb1-10" title="10">            <span class="pp">#?</span>(<span class="at">:clj</span> [snek.core <span class="at">:refer</span> [defsnek <span class="bu">defn</span><span class="fu">]])</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="fu">            </span><span class="pp">#?</span>(<span class="at">:clj</span> [fbc-utils.core <span class="at">:refer</span> [forv]])))</a></code></pre></div>
+<ul>
+<li><code>fbc-utils</code> and <code>snek</code> are Conrad’s own libraries</li>
+<li><code>fbc-utils</code> seems to be a lot of mostly mathematical functions for both JVM and JS implementations: <code>degrees-&gt;rad</code>, <code>acos</code>, etc.</li>
+<li><code>snek</code> seems like a sort of static typing/validation library. Lots of macros for rewriting and checking. Might try and pull this out, seems confusing for my purposes.</li>
+</ul>
+<p>The require after removing <code>snek</code> and <code>forv</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="kw">ns</span> elon-tusk.engine</a>
+<a class="sourceLine" id="cb2-2" title="2">  (<span class="at">:require</span> [fbc-utils.core <span class="at">:as</span> ut]</a>
+<a class="sourceLine" id="cb2-3" title="3">            [fbc-utils.debug <span class="at">:as</span> db]</a>
+<a class="sourceLine" id="cb2-4" title="4">            [snek.core <span class="at">:as</span> sn]</a>
+<a class="sourceLine" id="cb2-5" title="5">            [clojure.pprint <span class="at">:as</span> pp]))</a></code></pre></div>
+<p>(<code>sn/modify</code> is left in, didn’t seem to be a good way to remove it).</p>
+<p>Foods are defined like this:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">def</span><span class="fu"> foods </span>{<span class="at">:mammoth</span> {<span class="at">:id</span>    <span class="at">:mammoth</span></a>
+<a class="sourceLine" id="cb3-2" title="2">                      <span class="at">:ease</span>  <span class="dv">4</span></a>
+<a class="sourceLine" id="cb3-3" title="3">                      <span class="at">:order</span> <span class="dv">0</span>}</a>
+<a class="sourceLine" id="cb3-4" title="4">            <span class="at">:ketchup</span> {<span class="at">:id</span>    <span class="at">:ketchup</span></a>
+<a class="sourceLine" id="cb3-5" title="5">                      <span class="at">:ease</span>  <span class="dv">8</span></a>
+<a class="sourceLine" id="cb3-6" title="6">                      <span class="at">:order</span> <span class="dv">1</span>}</a>
+<a class="sourceLine" id="cb3-7" title="7">            <span class="at">:lettuce</span> {<span class="at">:id</span>    <span class="at">:lettuce</span></a>
+<a class="sourceLine" id="cb3-8" title="8">                      <span class="at">:ease</span>  <span class="dv">6</span></a>
+<a class="sourceLine" id="cb3-9" title="9">                      <span class="at">:order</span> <span class="dv">2</span>}</a>
+<a class="sourceLine" id="cb3-10" title="10">            <span class="at">:bread</span>   {<span class="at">:id</span>    <span class="at">:bread</span></a>
+<a class="sourceLine" id="cb3-11" title="11">                      <span class="at">:ease</span>  <span class="dv">6</span></a>
+<a class="sourceLine" id="cb3-12" title="12">                      <span class="at">:order</span> <span class="dv">3</span>}})</a></code></pre></div>
+<p>Ease is presumably how easy each food is to collect. Order is an increasing integer, presumably something to do with the order in which the collection actions are fired.</p>
+<p>Next are some words:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">def</span><span class="fu"> stonage-word-1 </span>[<span class="at">:saber</span> <span class="at">:rock</span> <span class="at">:arrow</span> <span class="at">:mammoth</span> <span class="at">:fur</span> <span class="at">:sling</span>])</a>
+<a class="sourceLine" id="cb4-2" title="2">(<span class="bu">def</span><span class="fu"> stonage-word-2 </span>[<span class="at">:skull</span> <span class="at">:head</span> <span class="at">:chest</span> <span class="at">:foot</span> <span class="at">:nose</span> <span class="at">:arms</span>])</a>
+<a class="sourceLine" id="cb4-3" title="3">(<span class="bu">def</span><span class="fu"> stonage-full-names </span>[<span class="at">:elon-tusk</span> <span class="at">:king-fred</span> <span class="at">:yakyak</span> <span class="at">:ogg</span> <span class="at">:biggo</span> <span class="at">:berf</span> <span class="at">:snuud</span> <span class="at">:yikyik</span> <span class="at">:rokko</span> <span class="at">:yukko</span>])</a></code></pre></div>
+<p>These just seem to be used to generate the names of the people on the island.</p>
+<p>These people are defined as ‘agents’, and created with</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="bu">defn</span><span class="fu"> gen-agent </span>[]</a>
+<a class="sourceLine" id="cb5-2" title="2">  {<span class="at">:money</span> money-supply-per-agent}) </a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="co">;; money supply is set to 1000, and the number of agents is 40</span></a></code></pre></div>
+<p>Init state…creates the initial state. It has 4 keys:</p>
+<ul>
+<li><strong>agents</strong> (people on the island), each having an id 0-39</li>
+<li><strong>foods</strong>, which contains the price, order-cur, and order-num, whatever they are.</li>
+<li><strong>agent-foods</strong>, which seems to be a map where keys are a tuple of <code>(agent-id, food)</code>. Each agent-food has a productivity score, which is randomly rolled based on ‘ease’ in the food definition</li>
+<li><strong>orders</strong>, an empty map</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="kw">comment</span></a>
+<a class="sourceLine" id="cb6-2" title="2">  ((<span class="at">:agents</span> (init-state)) <span class="dv">5</span>) <span class="co">; {:money 1000, :name &quot;berf&quot;, :id 5}</span></a>
+<a class="sourceLine" id="cb6-3" title="3">  (<span class="kw">first</span> (<span class="at">:agent-foods</span> (init-state))) <span class="co">; [[39 :lettuce] {:id [39 :lettuce], :productivity 2, :owned 0}]</span></a>
+<a class="sourceLine" id="cb6-4" title="4">  (<span class="at">:ketchup</span> (<span class="at">:foods</span> (init-state))) <span class="co">; {:id :ketchup, :price 150, :order-cur 0, :order-num 0}</span></a>
+<a class="sourceLine" id="cb6-5" title="5">  )</a></code></pre></div>
+<p><code>target-formula</code> is a long equation, which takes 4 numbers and returns another number.</p>
+<p><br /><span class="math display">$$
+c = \text{cost others}
+\newline
+a = \text{max amount}
+\newline
+m = \text{money}
+\newline
+p = \text{max price}
+\newline
+\text{}
+\newline
+t = \frac{\sqrt{p^2 + 4acp + 4cm} - p}{2c}
+$$</span><br /></p>
+<p>This is used in <code>target-burgers-optimum-formula</code>, which has a helpful comment: “How many burgers can the agent expect to make, given owned food &amp; money, assuming agent doesn’t buy their most abundant food.”</p>
+<p>This function is passed the model state and an agent id.</p>
+<p><strong>NOTE from later:</strong> optimum formula is totally not used anywhere.</p>
+<p>In addition there is a <code>target-burgers-as-much-as-affordable</code> which seems to do the same thing in a different way.</p>
+<p>Next we have some pretty gnarly functions for <code>work</code>, <code>eat</code>, and <code>sleep</code>, culminating in:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> turn </span>[state options]</a>
+<a class="sourceLine" id="cb7-2" title="2">  (<span class="kw">-&gt;</span> state</a>
+<a class="sourceLine" id="cb7-3" title="3">      (work options)</a>
+<a class="sourceLine" id="cb7-4" title="4">      eat</a>
+<a class="sourceLine" id="cb7-5" title="5">      (sleep options)))</a></code></pre></div>
+<p>This is clearly an implementation of the main game loop.</p>
+<p>Next you have a couple of helper functions <code>money-total</code> and <code>food-total</code>.</p>
+<p>And finally a <code>main</code></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(<span class="bu">defn</span><span class="fu"> main </span>[]</a>
+<a class="sourceLine" id="cb8-2" title="2">  (<span class="kw">let</span> [k (<span class="kw">iterate</span> (<span class="kw">fn</span> [state]</a>
+<a class="sourceLine" id="cb8-3" title="3">                     (<span class="kw">let</span> [state (turn state {})</a>
+<a class="sourceLine" id="cb8-4" title="4">                           log (purge-log)]</a>
+<a class="sourceLine" id="cb8-5" title="5">                       (<span class="kw">println</span> <span class="st">&quot;burgers &quot;</span> (<span class="kw">apply</span> <span class="kw">+</span> (keep <span class="at">:burgers</span> log)))</a>
+<a class="sourceLine" id="cb8-6" title="6">                       state))</a>
+<a class="sourceLine" id="cb8-7" title="7">                   (init-state))</a>
+<a class="sourceLine" id="cb8-8" title="8">        states (<span class="kw">take</span> <span class="dv">60</span> k)]</a>
+<a class="sourceLine" id="cb8-9" title="9">    (<span class="kw">doseq</span> [state states]</a>
+<a class="sourceLine" id="cb8-10" title="10">    (pp/pprint (sn/query {<span class="at">:foods</span> {:_ {<span class="at">:id</span>     <span class="va">nil</span></a>
+<a class="sourceLine" id="cb8-11" title="11">                                      <span class="at">:price</span> <span class="va">nil</span>}}}</a>
+<a class="sourceLine" id="cb8-12" title="12">                         (<span class="kw">last</span> states)))</a>
+<a class="sourceLine" id="cb8-13" title="13">    <span class="va">nil</span>))</a></code></pre></div>
+<p>Which simulates the first 60 turns, printing the number of burgers produced at each turn.</p>
+<p>So in summary, the NS has the following parts:</p>
+<ol type="1">
+<li>Logging helpers</li>
+<li>Config</li>
+<li>State Initialization</li>
+<li>Burger making calculations</li>
+<li>Model loop</li>
+</ol>
+<p>The meat (no pun intended) is clearly in the last two.</p>
+<p>Let’s create a couple of helpers so we can look at the state:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">def</span><span class="fu"> turn-no-opt </span>#(turn <span class="va">%</span> {}))</a>
+<a class="sourceLine" id="cb9-2" title="2">(<span class="bu">defn</span><span class="fu"> main2 </span>[]</a>
+<a class="sourceLine" id="cb9-3" title="3">  (<span class="kw">take</span> <span class="dv">10</span> (<span class="kw">iterate</span> turn-no-opt (init-state))))</a>
+<a class="sourceLine" id="cb9-4" title="4"></a>
+<a class="sourceLine" id="cb9-5" title="5">(<span class="kw">last</span> (main2))</a>
+<a class="sourceLine" id="cb9-6" title="6">{<span class="at">:agents</span></a>
+<a class="sourceLine" id="cb9-7" title="7"> {<span class="dv">0</span> {<span class="at">:money</span> <span class="fl">1337.3949335957013</span>, <span class="at">:name</span> <span class="st">&quot;elon-tusk&quot;</span>, <span class="at">:id</span> <span class="dv">0</span>},,,}</a>
+<a class="sourceLine" id="cb9-8" title="8"></a>
+<a class="sourceLine" id="cb9-9" title="9"> <span class="at">:agent-foods</span></a>
+<a class="sourceLine" id="cb9-10" title="10"> {[<span class="dv">39</span> <span class="at">:lettuce</span>] {<span class="at">:id</span> [<span class="dv">39</span> <span class="at">:lettuce</span>], <span class="at">:productivity</span> <span class="dv">7</span>, <span class="at">:owned</span> <span class="dv">0</span>}} ,,,</a>
+<a class="sourceLine" id="cb9-11" title="11"> </a>
+<a class="sourceLine" id="cb9-12" title="12"> <span class="at">:orders</span> {},</a>
+<a class="sourceLine" id="cb9-13" title="13"> <span class="at">:foods</span></a>
+<a class="sourceLine" id="cb9-14" title="14"> {<span class="at">:mammoth</span></a>
+<a class="sourceLine" id="cb9-15" title="15">  {<span class="at">:id</span> <span class="at">:mammoth</span>,</a>
+<a class="sourceLine" id="cb9-16" title="16">   <span class="at">:order-cur</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb9-17" title="17">   <span class="at">:order-num</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb9-18" title="18">   <span class="at">:price</span> <span class="fl">210.53740073994146</span>},</a>
+<a class="sourceLine" id="cb9-19" title="19">  <span class="at">:ketchup</span></a>
+<a class="sourceLine" id="cb9-20" title="20">  {<span class="at">:id</span> <span class="at">:ketchup</span>,</a>
+<a class="sourceLine" id="cb9-21" title="21">   <span class="at">:order-cur</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb9-22" title="22">   <span class="at">:order-num</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb9-23" title="23">   <span class="at">:price</span> <span class="fl">104.48871792802733</span>},,,}}</a></code></pre></div>
+<p>Seems simple enough, but the devil will be in the implementation. Let’s look at the first two states instead: <code>(take 2 (main2))</code></p>
+<p>It seems like ‘owned’ goes down to zero at the end of each turn, and all ‘orders’ get filled (since orders remain empty). Lets slice the lettuce a bit finer, and examine the impact on state of the individual turn steps:</p>
+<p>First define some helpers to summarise the state. We’ll look at a single agent, 6:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(<span class="bu">defn</span><span class="fu"> get-agents-foods </span>[state agent-id]</a>
+<a class="sourceLine" id="cb10-2" title="2">  (<span class="kw">into</span> {} (<span class="kw">filter</span> (<span class="kw">fn</span> [[[k]]] (<span class="kw">=</span> agent-id k)) (<span class="at">:agent-foods</span> state))))</a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4">(<span class="bu">defn</span><span class="fu"> get-agents-orders </span>[state lookup-agent-id]</a>
+<a class="sourceLine" id="cb10-5" title="5">  (<span class="kw">filter</span> (<span class="kw">fn</span> [{<span class="at">:keys</span> [id agent-id]}]</a>
+<a class="sourceLine" id="cb10-6" title="6">            (<span class="kw">or</span> (<span class="kw">=</span> lookup-agent-id (<span class="kw">second</span> (id)))</a>
+<a class="sourceLine" id="cb10-7" title="7">                (<span class="kw">=</span> lookup-agent-id agent-id))) </a>
+<a class="sourceLine" id="cb10-8" title="8">          (<span class="kw">vals</span> (<span class="at">:orders</span> state))))</a>
+<a class="sourceLine" id="cb10-9" title="9"></a>
+<a class="sourceLine" id="cb10-10" title="10">(<span class="bu">defn</span><span class="fu"> summarize-agent-6 </span>[state]</a>
+<a class="sourceLine" id="cb10-11" title="11">  {<span class="at">:agent</span> (<span class="kw">get-in</span> state [<span class="at">:agents</span> <span class="dv">6</span>])</a>
+<a class="sourceLine" id="cb10-12" title="12">   <span class="at">:agent-food</span> (get-agents-foods state <span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb10-13" title="13">   <span class="at">:orders</span> (get-agents-orders state <span class="dv">6</span>)})</a></code></pre></div>
+<p>Next we simulate 10 turns to give ourselves a baseline, then do one ‘work’ step, and examine the states at both points:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb11-1" title="1">(<span class="bu">def</span><span class="fu"> ten-turns </span>(<span class="kw">last</span> (<span class="kw">take</span> <span class="dv">10</span> (<span class="kw">iterate</span> turn-no-opt (init-state)))))</a>
+<a class="sourceLine" id="cb11-2" title="2">(<span class="bu">def</span><span class="fu"> after-working </span>(work ten-turns {}))</a>
+<a class="sourceLine" id="cb11-3" title="3"></a>
+<a class="sourceLine" id="cb11-4" title="4">(summarize-agent<span class="dv">-6</span> ten-turns)</a>
+<a class="sourceLine" id="cb11-5" title="5">{<span class="at">:agent</span> {<span class="at">:money</span> <span class="fl">1151.994712556641</span>, <span class="at">:name</span> <span class="st">&quot;snuud&quot;</span>, <span class="at">:id</span> <span class="dv">6</span>},</a>
+<a class="sourceLine" id="cb11-6" title="6"> <span class="at">:agent-food</span></a>
+<a class="sourceLine" id="cb11-7" title="7"> {[<span class="dv">6</span> <span class="at">:bread</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:bread</span>], <span class="at">:productivity</span> <span class="dv">6</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb11-8" title="8">  [<span class="dv">6</span> <span class="at">:lettuce</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:lettuce</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb11-9" title="9">  [<span class="dv">6</span> <span class="at">:ketchup</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:ketchup</span>], <span class="at">:productivity</span> <span class="dv">11</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb11-10" title="10">  [<span class="dv">6</span> <span class="at">:mammoth</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:mammoth</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>}},</a>
+<a class="sourceLine" id="cb11-11" title="11"> <span class="at">:orders</span> ()}</a>
+<a class="sourceLine" id="cb11-12" title="12"></a>
+<a class="sourceLine" id="cb11-13" title="13">(summarize-agent<span class="dv">-6</span> after-working)</a>
+<a class="sourceLine" id="cb11-14" title="14">{<span class="at">:agent</span> {<span class="at">:money</span> <span class="fl">1151.994712556641</span>, <span class="at">:name</span> <span class="st">&quot;snuud&quot;</span>, <span class="at">:id</span> <span class="dv">6</span>},</a>
+<a class="sourceLine" id="cb11-15" title="15"> <span class="at">:agent-food</span></a>
+<a class="sourceLine" id="cb11-16" title="16"> {[<span class="dv">6</span> <span class="at">:bread</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:bread</span>], <span class="at">:productivity</span> <span class="dv">6</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb11-17" title="17">  [<span class="dv">6</span> <span class="at">:lettuce</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:lettuce</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb11-18" title="18">  [<span class="dv">6</span> <span class="at">:ketchup</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:ketchup</span>], <span class="at">:productivity</span> <span class="dv">11</span>, <span class="at">:owned</span> <span class="dv">11</span>},</a>
+<a class="sourceLine" id="cb11-19" title="19">  [<span class="dv">6</span> <span class="at">:mammoth</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:mammoth</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>}},</a>
+<a class="sourceLine" id="cb11-20" title="20"> <span class="at">:orders</span></a>
+<a class="sourceLine" id="cb11-21" title="21"> ({<span class="at">:id</span> [<span class="at">:lettuce</span> <span class="dv">6</span>], <span class="at">:agent-id</span> <span class="dv">5</span>, <span class="at">:amount</span> <span class="dv">6</span>}</a>
+<a class="sourceLine" id="cb11-22" title="22">  {<span class="at">:id</span> [<span class="at">:bread</span> <span class="dv">6</span>], <span class="at">:agent-id</span> <span class="dv">15</span>, <span class="at">:amount</span> <span class="dv">7</span>}</a>
+<a class="sourceLine" id="cb11-23" title="23">  {<span class="at">:id</span> [<span class="at">:ketchup</span> <span class="dv">0</span>], <span class="at">:agent-id</span> <span class="dv">6</span>, <span class="at">:amount</span> <span class="dv">9</span>}</a>
+<a class="sourceLine" id="cb11-24" title="24">  {<span class="at">:id</span> [<span class="at">:mammoth</span> <span class="dv">6</span>], <span class="at">:agent-id</span> <span class="dv">24</span>, <span class="at">:amount</span> <span class="dv">2</span>})}</a></code></pre></div>
+<p>We can see that agent 6’s ketchup amount has gone up by 11. Presumably their work involved gathering ketchup. There are also some orders. From what they are we can infer that agent 6 has ordered 6 lettuce from agent 5, 7 bread from agent 15, and 2 mammoth from agent 24. Agent 0 has ordered 9 ketchup from agent 6.</p>
+<p><strong>NOTE from later:</strong> This is incorrect. Looking into the work function more closely: the syntax for orders is <code>{:id [food ORDER_NUMBER] :agent_id id-of-agent-PLACING-order :amount amount}</code>, where order number is just a unique (to that food type) identifier for the order, not a reference to an agent.</p>
+<p>So the work phase clearly adds to the amount of an agents resources and decides what orders to place.</p>
+<p>Next, after eating and after sleeping.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb12-1" title="1">(<span class="bu">def</span><span class="fu"> after-eating </span>(eat after-working))</a>
+<a class="sourceLine" id="cb12-2" title="2">(summarize-agent<span class="dv">-6</span> after-eating)</a>
+<a class="sourceLine" id="cb12-3" title="3">{<span class="at">:agent</span> {<span class="at">:money</span> <span class="fl">1117.4909533834962</span>, <span class="at">:name</span> <span class="st">&quot;snuud&quot;</span>, <span class="at">:id</span> <span class="dv">6</span>},</a>
+<a class="sourceLine" id="cb12-4" title="4"> <span class="at">:agent-food</span></a>
+<a class="sourceLine" id="cb12-5" title="5"> {[<span class="dv">6</span> <span class="at">:bread</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:bread</span>], <span class="at">:productivity</span> <span class="dv">6</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb12-6" title="6">  [<span class="dv">6</span> <span class="at">:lettuce</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:lettuce</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb12-7" title="7">  [<span class="dv">6</span> <span class="at">:ketchup</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:ketchup</span>], <span class="at">:productivity</span> <span class="dv">11</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb12-8" title="8">  [<span class="dv">6</span> <span class="at">:mammoth</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:mammoth</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>}},</a>
+<a class="sourceLine" id="cb12-9" title="9"> <span class="at">:orders</span> ()}</a>
+<a class="sourceLine" id="cb12-10" title="10"></a>
+<a class="sourceLine" id="cb12-11" title="11">(<span class="bu">def</span><span class="fu"> after-sleeping </span>(sleep after-eating {}))</a>
+<a class="sourceLine" id="cb12-12" title="12">(summarize-agent<span class="dv">-6</span> after-sleeping)</a>
+<a class="sourceLine" id="cb12-13" title="13">{<span class="at">:agent</span> {<span class="at">:money</span> <span class="fl">1117.4909533834962</span>, <span class="at">:name</span> <span class="st">&quot;snuud&quot;</span>, <span class="at">:id</span> <span class="dv">6</span>},</a>
+<a class="sourceLine" id="cb12-14" title="14"> <span class="at">:agent-food</span></a>
+<a class="sourceLine" id="cb12-15" title="15"> {[<span class="dv">6</span> <span class="at">:bread</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:bread</span>], <span class="at">:productivity</span> <span class="dv">6</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb12-16" title="16">  [<span class="dv">6</span> <span class="at">:lettuce</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:lettuce</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb12-17" title="17">  [<span class="dv">6</span> <span class="at">:ketchup</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:ketchup</span>], <span class="at">:productivity</span> <span class="dv">11</span>, <span class="at">:owned</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb12-18" title="18">  [<span class="dv">6</span> <span class="at">:mammoth</span>] {<span class="at">:id</span> [<span class="dv">6</span> <span class="at">:mammoth</span>], <span class="at">:productivity</span> <span class="dv">0</span>, <span class="at">:owned</span> <span class="dv">0</span>}},</a>
+<a class="sourceLine" id="cb12-19" title="19"> <span class="at">:orders</span> ()}</a></code></pre></div>
+<p>After eating, agent 6’s money has gone down, they own nothing again, and there are no orders. Presumably the eat phase fills the order, has the agent make and eat the burgers.</p>
+<p>Sleeping doesn’t seem to change the state at all. But a glance at the <code>sleep</code> function shows that this is where prices are recalculated (see below code snips showing foods before and after sleeping), and any ‘surplus’ owned foods are set to 0. Interesting that the simulation doesn’t allow the creation of surplus. I wonder what that would do.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="at">:foods</span> after-eating)</a>
+<a class="sourceLine" id="cb13-2" title="2"> {<span class="at">:mammoth</span></a>
+<a class="sourceLine" id="cb13-3" title="3">  {<span class="at">:id</span> <span class="at">:mammoth</span>,</a>
+<a class="sourceLine" id="cb13-4" title="4">   <span class="at">:order-cur</span> <span class="dv">14</span>,</a>
+<a class="sourceLine" id="cb13-5" title="5">   <span class="at">:order-num</span> <span class="dv">14</span>,</a>
+<a class="sourceLine" id="cb13-6" title="6">   <span class="at">:price</span> <span class="fl">210.53740073994146</span>},</a>
+<a class="sourceLine" id="cb13-7" title="7">  <span class="at">:ketchup</span></a>
+<a class="sourceLine" id="cb13-8" title="8">  {<span class="at">:id</span> <span class="at">:ketchup</span>, <span class="at">:order-cur</span> <span class="dv">5</span>, <span class="at">:order-num</span> <span class="dv">5</span>, <span class="at">:price</span> <span class="fl">94.53741145869138</span>},</a>
+<a class="sourceLine" id="cb13-9" title="9">  <span class="at">:lettuce</span></a>
+<a class="sourceLine" id="cb13-10" title="10">  {<span class="at">:id</span> <span class="at">:lettuce</span>,</a>
+<a class="sourceLine" id="cb13-11" title="11">   <span class="at">:order-cur</span> <span class="dv">8</span>,</a>
+<a class="sourceLine" id="cb13-12" title="12">   <span class="at">:order-num</span> <span class="dv">11</span>,</a>
+<a class="sourceLine" id="cb13-13" title="13">   <span class="at">:price</span> <span class="fl">127.64411248271482</span>},</a>
+<a class="sourceLine" id="cb13-14" title="14">  <span class="at">:bread</span></a>
+<a class="sourceLine" id="cb13-15" title="15">  {<span class="at">:id</span> <span class="at">:bread</span>, <span class="at">:order-cur</span> <span class="dv">8</span>, <span class="at">:order-num</span> <span class="dv">10</span>, <span class="at">:price</span> <span class="fl">104.48871792802733</span>}}</a>
+<a class="sourceLine" id="cb13-16" title="16">(<span class="at">:foods</span> after-sleeping)</a>
+<a class="sourceLine" id="cb13-17" title="17"> {<span class="at">:mammoth</span></a>
+<a class="sourceLine" id="cb13-18" title="18">  {<span class="at">:id</span> <span class="at">:mammoth</span>, <span class="at">:order-cur</span> <span class="dv">0</span>, <span class="at">:order-num</span> <span class="dv">0</span>, <span class="at">:price</span> <span class="fl">221.06427077693854</span>},</a>
+<a class="sourceLine" id="cb13-19" title="19">  <span class="at">:ketchup</span></a>
+<a class="sourceLine" id="cb13-20" title="20">  {<span class="at">:id</span> <span class="at">:ketchup</span>, <span class="at">:order-cur</span> <span class="dv">0</span>, <span class="at">:order-num</span> <span class="dv">0</span>, <span class="at">:price</span> <span class="fl">99.26428203162595</span>},</a>
+<a class="sourceLine" id="cb13-21" title="21">  <span class="at">:lettuce</span></a>
+<a class="sourceLine" id="cb13-22" title="22">  {<span class="at">:id</span> <span class="at">:lettuce</span>, <span class="at">:order-cur</span> <span class="dv">0</span>, <span class="at">:order-num</span> <span class="dv">0</span>, <span class="at">:price</span> <span class="fl">121.26190685857907</span>},</a>
+<a class="sourceLine" id="cb13-23" title="23">  <span class="at">:bread</span></a>
+<a class="sourceLine" id="cb13-24" title="24">  {<span class="at">:id</span> <span class="at">:bread</span>, <span class="at">:order-cur</span> <span class="dv">0</span>, <span class="at">:order-num</span> <span class="dv">0</span>, <span class="at">:price</span> <span class="fl">99.26428203162595</span>}}</a></code></pre></div>
+<p>OK, I think that’s the basics. The questions that came up during that run:</p>
+<ul>
+<li>How are agents deciding what resource to collect during the eat phase?</li>
+<li>How are they deciding which orders to place, and with whom?</li>
+<li>How are they deciding how much of what they collected can go to market?</li>
+<li>In <code>:foods</code> what do <code>:order-cur</code> and <code>order-num</code> mean? In some cases they are the same, in some cases different (though order-num seems to always be &gt;= order-cur)</li>
+<li>How does the price of the foods change?</li>
+<li>What happens when an agent runs out of money?</li>
+</ul>
+<h2 id="work">Work</h2>
+<p>A lot of these get answered in the “Work” stage. So let’s look at that.</p>
+<p>At the top level, <code>work</code> is a reduction over <code>state</code> and the agents, with the reduction function being this</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb14-1" title="1">(<span class="kw">let</span> [[food produced] <span class="co">;; snipped for concision</span></a>
+<a class="sourceLine" id="cb14-2" title="2">      owned           (<span class="kw">get-in</span> acc [<span class="at">:agent-foods</span> [id food] <span class="at">:owned</span>])</a>
+<a class="sourceLine" id="cb14-3" title="3">      amount          (<span class="kw">+</span> owned produced)</a>
+<a class="sourceLine" id="cb14-4" title="4">      acc             (<span class="kw">assoc-in</span> acc [<span class="at">:agent-foods</span> [id food] <span class="at">:owned</span>] amount)</a>
+<a class="sourceLine" id="cb14-5" title="5">      burgers         (target-burgers-as-much-as-affordable acc id)</a>
+<a class="sourceLine" id="cb14-6" title="6">      order-num       (<span class="kw">get-in</span> acc [<span class="at">:foods</span> food <span class="at">:order-num</span>])]</a>
+<a class="sourceLine" id="cb14-7" title="7">  (log {<span class="at">:cmd</span>      <span class="at">:work</span></a>
+<a class="sourceLine" id="cb14-8" title="8">        <span class="at">:agent-id</span> id</a>
+<a class="sourceLine" id="cb14-9" title="9">        <span class="at">:food</span>     food</a>
+<a class="sourceLine" id="cb14-10" title="10">        <span class="at">:produced</span> produced})</a>
+<a class="sourceLine" id="cb14-11" title="11">  (<span class="kw">-&gt;</span> acc</a>
+<a class="sourceLine" id="cb14-12" title="12">      (<span class="kw">assoc-in</span> [<span class="at">:orders</span> [food order-num]]</a>
+<a class="sourceLine" id="cb14-13" title="13">                {<span class="at">:id</span>       [food order-num]</a>
+<a class="sourceLine" id="cb14-14" title="14">                 <span class="at">:agent-id</span> id</a>
+<a class="sourceLine" id="cb14-15" title="15">                 <span class="at">:amount</span>   (<span class="kw">max</span> <span class="dv">0</span> (<span class="kw">-</span> amount burgers))})</a>
+<a class="sourceLine" id="cb14-16" title="16">      (<span class="kw">update-in</span> [<span class="at">:foods</span> food <span class="at">:order-num</span>] <span class="kw">inc</span>)))</a></code></pre></div>
+<p><code>[food produced]</code> just gets the most valuable thing each agent can collect (productive * price) and collects as much as they can. Then the accumulator (<code>:agent-foods</code>) is updated with with newly produced food.</p>
+<p><code>burgers</code> is calculated by <code>target-burgers-as-much-as-affordable</code> (which I’ll look at in a bit). Then an order is placed for the surplus of the food they produced (i.e. that won’t be used in making burgers). This changes how I thought orders worked. I’d assumed that the agent placed an order for things they wanted. In fact it’s like they are ‘bringing things to market’ and putting them out on stalls, so others can buy them. Orders is kind of a funny name for it. Maybe ‘marketplace availability’ or something.</p>
+<p>The only other thing being done here is handling the incrementing of the unique identifier for the order.</p>
+<p>OK, so <code>target-burgers...</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb15-1" title="1">(<span class="bu">defn</span><span class="fu"> calc-affordability </span>[ownership money]</a>
+<a class="sourceLine" id="cb15-2" title="2">  (<span class="kw">let</span> [min-food-owned (<span class="at">:owned</span> (<span class="kw">apply</span> <span class="kw">min-key</span> <span class="at">:owned</span> ownership))]</a>
+<a class="sourceLine" id="cb15-3" title="3">    (<span class="kw">loop</span> [min-food-owned min-food-owned</a>
+<a class="sourceLine" id="cb15-4" title="4">           money          money]</a>
+<a class="sourceLine" id="cb15-5" title="5">      (<span class="kw">let</span> [next-min-food-owned (<span class="kw">when-let</span> [k (<span class="kw">seq</span> (<span class="kw">filter</span> (<span class="kw">fn</span> [{<span class="at">:keys</span> [owned] <span class="at">:as</span> food}]</a>
+<a class="sourceLine" id="cb15-6" title="6">                                                            (<span class="kw">&lt;</span> min-food-owned owned))</a>
+<a class="sourceLine" id="cb15-7" title="7">                                                          ownership))]</a>
+<a class="sourceLine" id="cb15-8" title="8">                                  (<span class="kw">apply</span> <span class="kw">min</span> (<span class="kw">map</span> <span class="at">:owned</span> k)))</a>
+<a class="sourceLine" id="cb15-9" title="9">            cost                (<span class="kw">apply</span> <span class="kw">+</span></a>
+<a class="sourceLine" id="cb15-10" title="10">                                       (<span class="kw">map</span> <span class="at">:price</span></a>
+<a class="sourceLine" id="cb15-11" title="11">                                            (<span class="kw">filter</span> (<span class="kw">fn</span> [{<span class="at">:keys</span> [owned] <span class="at">:as</span> food}]</a>
+<a class="sourceLine" id="cb15-12" title="12">                                                      (<span class="kw">&gt;=</span> min-food-owned owned))</a>
+<a class="sourceLine" id="cb15-13" title="13">                                                    ownership)))</a>
+<a class="sourceLine" id="cb15-14" title="14">            max-units           (<span class="kw">int</span> (<span class="kw">/</span> money cost))</a>
+<a class="sourceLine" id="cb15-15" title="15">            max-level           (<span class="kw">+</span> min-food-owned max-units)]</a>
+<a class="sourceLine" id="cb15-16" title="16">        (<span class="kw">if</span> (<span class="kw">or</span> (<span class="kw">not</span> next-min-food-owned) (<span class="kw">&gt;=</span> next-min-food-owned max-level))</a>
+<a class="sourceLine" id="cb15-17" title="17">          max-level</a>
+<a class="sourceLine" id="cb15-18" title="18">          (<span class="kw">recur</span> next-min-food-owned (<span class="kw">-</span> money (<span class="kw">*</span> (<span class="kw">-</span> next-min-food-owned min-food-owned) cost))))))))</a>
+<a class="sourceLine" id="cb15-19" title="19"></a>
+<a class="sourceLine" id="cb15-20" title="20">(<span class="bu">defn</span><span class="fu"> target-burgers-as-much-as-affordable</span></a>
+<a class="sourceLine" id="cb15-21" title="21">  [{<span class="at">:keys</span> [foods]</a>
+<a class="sourceLine" id="cb15-22" title="22">    <span class="at">:as</span>   state}</a>
+<a class="sourceLine" id="cb15-23" title="23">   agent-id]</a>
+<a class="sourceLine" id="cb15-24" title="24">  (<span class="kw">let</span> [ownership (<span class="kw">for</span> [food-id (<span class="kw">keys</span> foods)]</a>
+<a class="sourceLine" id="cb15-25" title="25">                    {<span class="at">:food-id</span> food-id</a>
+<a class="sourceLine" id="cb15-26" title="26">                     <span class="at">:owned</span>   (<span class="kw">get-in</span> state [<span class="at">:agent-foods</span> [agent-id food-id] <span class="at">:owned</span>])</a>
+<a class="sourceLine" id="cb15-27" title="27">                     <span class="at">:price</span>   (<span class="kw">get-in</span> state [<span class="at">:foods</span> food-id <span class="at">:price</span>])})</a>
+<a class="sourceLine" id="cb15-28" title="28">        money     (<span class="kw">get-in</span> state [<span class="at">:agents</span> agent-id <span class="at">:money</span>])]</a>
+<a class="sourceLine" id="cb15-29" title="29">    (calc-affordability ownership money)))</a></code></pre></div>
+<p>Yikes!</p>
+<p>So <code>target</code> is passed the state and agent id. It creates an ‘ownership’ maps, with how much the agent owns of each food type, and gets the amount of money they have. Then both of these are passed to <code>calculate</code>. Which, gotta be honest, not going to dissect it. It’s pretty clear what it does: Given a) the food you own, b) the money you have and c) the price of each food on the market, what is the maximum number of burgers you can make? The additional question I have is “do they factor in the selling of their surplus into the calculation of the number of burgers?”</p>
+<p>So let’s see how many questions I’ve answered:</p>
+<ul>
+<li><strong><em>How are agents deciding what resource to collect during the eat phase?</em></strong></li>
+<li>They decide based on what would make them the most money if they were to sell on the marketplace.</li>
+<li><strong><em>How are they deciding which orders to place, and with whom?</em></strong></li>
+<li>They are not! At least not here. Instead, they are taking their surplus food to the marketplace and ‘offering’ it to any buyers, like they’re setting out a stall.</li>
+<li><strong><em>How are they deciding how much of what they collected can go to market?</em></strong></li>
+<li>They figure out the maximum number of burgers they can make, and anything they own that is not required to make those burgers, they sell.</li>
+<li><strong><em>In <code>:foods</code> what do <code>:order-cur</code> and <code>order-num</code> mean? In some cases they are the same, in some cases different (though order-num seems to always be &gt;= order-cur)</em></strong></li>
+<li><code>order-num</code> is a unique and monotonically increasing identifier for the order. I still don’t know what <code>order-cur</code> is. I could probably guess, but will probably come across it in <code>eat</code></li>
+</ul>
+<h2 id="eat">Eat</h2>
+<p>Is a monster, about 50 lines, nested reduces, there’s a <em>very</em> deep <code>recur</code> in there. I’m pretty much going to guess what it does.</p>
+<ul>
+<li>The top level is a reduce which accumulates the state, and iterates over the agents.</li>
+<li>The first step for each agent is to calculate the max number of burgers again</li>
+<li><p>For each food, figure out how many you need to make those burgers and then run through every order (in the order they were placed - that’s what ‘order-cur’ is doing I think), buying them until you have enough. This will decrease the buying agents money and increase the seller’s money. Vice versa for the amount of the food in each agents pocket.</p></li>
+<li><p><strong><em>What happens when an agent runs out of money?</em></strong> Nothing, I don’t think - there doesn’t seem to be a check on whether the buyer has enough money. I guess it’s limited by the ‘calculate burgers’ formula.</p></li>
+</ul>
+<h2 id="sleep">Sleep</h2>
+<p>This one is more manageable. First, all food inventories are set to zero (I guess they rot overnight). Orders are also zeroed. If there are surplus orders in the marketplace (i.e. there were orders that didn’t sell out), the price is multiplied by 0.95. Otherwise by 1.05. This is another place <code>order-cur</code> is used.</p>
+<ul>
+<li><strong><em>In <code>:foods</code> what does <code>:order-cur</code> mean?</em></strong> Basically “earliest un-bought order” It’s used so that, when a buyer is trying to buy, they will buy from the earliest one. It’s also used to check if there is a surplus of the food in the marketplace, so the price can be adjusted.</li>
+<li><strong><em>How does the price of the foods change?</em></strong> If there is a surplus of a food in the marketplace, the price is 95%, otherwise it’s 105%.</li>
+</ul>
+<h2 id="back-to-the-burger-calculation">Back to the burger calculation</h2>
+<p>I’m still a bit in the dark how they calculate the number of burgers they want to produce.</p>
+<p>To get some insight, I threw in a quick <code>debug</code> to capture the inputs:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb16-1" title="1">(<span class="bu">defn</span><span class="fu"> calc-affordability </span>[ownership money]</a>
+<a class="sourceLine" id="cb16-2" title="2">  (<span class="bu">def</span><span class="fu"> debug </span>{<span class="at">:ownership</span> ownership <span class="at">:money</span> money})</a>
+<a class="sourceLine" id="cb16-3" title="3">  (<span class="kw">let</span> [min-food-owned (<span class="at">:owned</span> (<span class="kw">apply</span> <span class="kw">min-key</span> <span class="at">:owned</span> ownership))]</a>
+<a class="sourceLine" id="cb16-4" title="4">    ,,,))</a>
+<a class="sourceLine" id="cb16-5" title="5"></a>
+<a class="sourceLine" id="cb16-6" title="6">debug</a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="co">;; =&gt; {:ownership</span></a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="co">;;     ({:food-id :mammoth, :owned 6, :price 210.53740073994146}</span></a>
+<a class="sourceLine" id="cb16-9" title="9"><span class="co">;;      {:food-id :ketchup, :owned 0, :price 94.53741145869138}</span></a>
+<a class="sourceLine" id="cb16-10" title="10"><span class="co">;;      {:food-id :lettuce, :owned 0, :price 141.08033484931636}</span></a>
+<a class="sourceLine" id="cb16-11" title="11"><span class="co">;;      {:food-id :bread, :owned 0, :price 127.64411248271485}),</span></a>
+<a class="sourceLine" id="cb16-12" title="12"></a>
+<a class="sourceLine" id="cb16-13" title="13">(calc-affordability (<span class="at">:ownership</span> debug) (<span class="at">:money</span> debug))</a>
+<a class="sourceLine" id="cb16-14" title="14"><span class="co">;; =&gt; 3;     :money 1114.1311429257821}</span></a></code></pre></div>
+<p>So the mathematical problem is: given the prices, what is the maximum number of burgers that can be made? (I think you need one of each to make a burger).</p>
+<p>So the problem is to maximize <span class="math inline"><em>a</em></span> in the formula</p>
+<p><br /><span class="math display">$$
+a(p_m + p_k + p_l + p_b) \le m
+\newline
+a p \le m
+\newline
+a \le \frac{m}{p}
+$$</span><br /></p>
+<p>We’re solving for <span class="math inline"><em>a</em></span> (amount of burgers) where <span class="math inline"><em>m</em></span> is (adjusted) money and <span class="math inline"><em>p</em></span> is the total price of the burger (the sum of the individual prices).</p>
+<p>Note: to simplify this, ‘sell’ all of your ownership and add the proceeds to your money.</p>
+<p>A couple of quick calcs:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb17-1" title="1">(calc-affordability (<span class="at">:ownership</span> debug) (<span class="at">:money</span> debug))</a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="co">;; Conrads calc</span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="co">;; =&gt; 3</span></a>
+<a class="sourceLine" id="cb17-4" title="4"></a>
+<a class="sourceLine" id="cb17-5" title="5">(<span class="bu">defn</span><span class="fu"> my-affordability </span>[ownership money]</a>
+<a class="sourceLine" id="cb17-6" title="6">  (<span class="kw">let</span> [prices (<span class="kw">into</span> {} (<span class="kw">map</span> (<span class="kw">fn</span> [m] [(<span class="at">:food-id</span> m) (<span class="at">:price</span> m)]) ownership))</a>
+<a class="sourceLine" id="cb17-7" title="7">        owned-resources (<span class="kw">into</span> {} (<span class="kw">map</span> (<span class="kw">fn</span> [m] [(<span class="at">:food-id</span> m) (<span class="at">:owned</span> m)]) ownership))</a>
+<a class="sourceLine" id="cb17-8" title="8">        adjusted-money (<span class="kw">+</span> money (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">vals</span> (<span class="kw">merge-with</span> <span class="kw">*</span> prices owned-resources))))</a>
+<a class="sourceLine" id="cb17-9" title="9">        burger-price (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">vals</span> prices))]</a>
+<a class="sourceLine" id="cb17-10" title="10">    (<span class="kw">int</span> (<span class="kw">/</span> adjusted-money burger-price))))</a>
+<a class="sourceLine" id="cb17-11" title="11"></a>
+<a class="sourceLine" id="cb17-12" title="12">(my-affordability (<span class="at">:ownership</span> debug) (<span class="at">:money</span> debug))</a>
+<a class="sourceLine" id="cb17-13" title="13"><span class="co">;; =&gt; 4</span></a></code></pre></div>
+<p>So clearly:</p>
+<ul>
+<li><strong><em>Do they factor in the selling of their surplus into the calculation of the number of burgers?</em></strong></li>
+<li>No. Presumably the agent is being conservative, assuming they won’t be able to sell their surplus. I think it would also make the ‘clearing’ of transactions in the market much more complicated!</li>
+</ul>
+<p>OK, that’s probably enough on the <code>engine</code> namespace. But before moving on I’ll take a moment to describe the economic model concisely, and in general terms:</p>
+<h2 id="summary-of-and-thoughts-on-the-economic-model">Summary of and thoughts on the economic model</h2>
+<p>The parts of the model are:</p>
+<ul>
+<li><strong>Agents</strong>: individuals who have
+<ul>
+<li><em>desires</em>, some goal, some gauge of ‘satisfaction’ or ‘happiness’ - here expressed in number of burgers, a view not dissimilar to my own.</li>
+<li>have the ability to <em>produce</em>, with differing capabilities, resources, and in effect act to maximize their productivity.</li>
+<li><em>possessions</em>, though only of inventory, not of capital, and with the exception of money, the current simulation doesn’t allow for creation of surplus.</li>
+<li>The ability to <em>trade</em> on…</li>
+</ul></li>
+<li>A <strong>Marketplace</strong> where goods can be exchanged, and a price mechanism for adjusting prices in response to supply and demand. It works by sellers placing ‘sell’ orders (which all have the same price) and buyers meeting them.</li>
+<li>A <strong>Currency</strong>, or medium of exchange, which avoids barter economy</li>
+</ul>
+<p>This is clearly a very simplistic and pedagogical model. In his video, Conrad gives two examples of the ‘scenarios’ that can be examined: centralized price controls, and the impact of productivity improvements on jobs. This is done via the ‘options’ map that has popped up a couple of times.</p>
+<p>We can see the outcome of this by running the simulations:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb18-1" title="1">(<span class="bu">defn</span><span class="fu"> run </span>[options]</a>
+<a class="sourceLine" id="cb18-2" title="2">  (<span class="kw">-&gt;&gt;</span> (init-state)</a>
+<a class="sourceLine" id="cb18-3" title="3">       (<span class="kw">iterate</span> (<span class="kw">fn</span> [state]</a>
+<a class="sourceLine" id="cb18-4" title="4">                  (<span class="kw">let</span> [state (turn state options) log (purge-log)]</a>
+<a class="sourceLine" id="cb18-5" title="5">                    (<span class="kw">update</span> state <span class="at">:total-burgers</span> <span class="kw">conj</span> (<span class="kw">apply</span> <span class="kw">+</span> (keep <span class="at">:burgers</span> log))))))</a>
+<a class="sourceLine" id="cb18-6" title="6">       (<span class="kw">take</span> <span class="dv">60</span>)</a>
+<a class="sourceLine" id="cb18-7" title="7">       (<span class="kw">last</span>)))</a>
+<a class="sourceLine" id="cb18-8" title="8"></a>
+<a class="sourceLine" id="cb18-9" title="9">(<span class="kw">let</span> [outcome (run {})]</a>
+<a class="sourceLine" id="cb18-10" title="10">  {<span class="at">:burgers</span> (<span class="kw">apply</span> <span class="kw">+</span> (<span class="at">:total-burgers</span> outcome))</a>
+<a class="sourceLine" id="cb18-11" title="11">   <span class="at">:mammoth-price</span> (<span class="kw">get-in</span> outcome [<span class="at">:foods</span> <span class="at">:mammoth</span> <span class="at">:price</span>])})</a>
+<a class="sourceLine" id="cb18-12" title="12"><span class="co">;; =&gt; {:burgers 3417, :mammoth-price 267.0231698987345}</span></a>
+<a class="sourceLine" id="cb18-13" title="13"></a>
+<a class="sourceLine" id="cb18-14" title="14">(<span class="kw">let</span> [outcome (run {<span class="at">:mammoth-price</span> <span class="dv">100</span>})]</a>
+<a class="sourceLine" id="cb18-15" title="15">  {<span class="at">:burgers</span> (<span class="kw">apply</span> <span class="kw">+</span> (<span class="at">:total-burgers</span> outcome))</a>
+<a class="sourceLine" id="cb18-16" title="16">   <span class="at">:mammoth-price</span> (<span class="kw">get-in</span> outcome [<span class="at">:foods</span> <span class="at">:mammoth</span> <span class="at">:price</span>])})</a>
+<a class="sourceLine" id="cb18-17" title="17"><span class="co">;; =&gt; {:burgers 661, :mammoth-price 100}</span></a>
+<a class="sourceLine" id="cb18-18" title="18"></a>
+<a class="sourceLine" id="cb18-19" title="19">(<span class="kw">let</span> [outcome (run {<span class="at">:vacuum</span> <span class="va">true</span>})]</a>
+<a class="sourceLine" id="cb18-20" title="20">  {<span class="at">:burgers</span> (<span class="kw">apply</span> <span class="kw">+</span> (<span class="at">:total-burgers</span> outcome))</a>
+<a class="sourceLine" id="cb18-21" title="21">   <span class="at">:mammoth-price</span> (<span class="kw">get-in</span> outcome [<span class="at">:foods</span> <span class="at">:mammoth</span> <span class="at">:price</span>])})</a>
+<a class="sourceLine" id="cb18-22" title="22"><span class="co">;; =&gt; {:burgers 4073, :mammoth-price 241.59239181314067}</span></a></code></pre></div>
+<p>The outcome is clear: price controls cause overall ‘happiness’ (burgers) to go down. Technology improvements which increase productivity make happiness go up. (Remember, this is a very simple model, and no real-world conclusions should be drawn from this!)</p>
+<p>Conrad also says the model can be used to illustrate the market mechanism (supply and demand) and comparative advantage.</p>
+<h1 id="other-namespaces">Other namespaces</h1>
+<p>To be honest, most of the other NS are web rendering using qlkit, a React web framework inspired by OmNext, and using graph queries for state management. Sounds interesting, but seems too alpha to dig into at this point.</p>
+</body>
+</html>
