@@ -121,6 +121,8 @@ file.reader().skipUntilDelimiterOrEof(&#39;\n&#39;);</code></pre>
 <h2 id="string-formatting">String formatting</h2>
 <pre class="zig"><code>std.debug.print(&quot;vent counts: {}\n&quot;, .{vent_counts.len});</code></pre>
 <h2 id="arrays">Arrays</h2>
+<p>Initialize an array</p>
+<pre class="zig"><code>var vent_counts = [_]u8{1,2,3,4};</code></pre>
 <p>Initialize an array of zeros</p>
 <pre class="zig"><code>var vent_counts = [_]i32{0} ** (1000 * 500);</code></pre>
 <p>Slice array with <code>array[0..3]</code>. The slice type is a pointer and a size. <code>array[0..]</code> is a slice to the end.</p>
