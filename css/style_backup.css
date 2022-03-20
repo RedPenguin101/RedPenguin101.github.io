@@ -2,24 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400&display=swap');
 
 body {
-  font: 0.8em "Vollkorn", Palatino, Times;
+  font: 1.3em "Vollkorn", Palatino, Times;
 	padding:1em;
+	max-width:42em;
 	line-height: 1.4;
 	background:#fefefe;
 	text-align: justify;
-}
-
-.section {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.main-text {
-	flex: 42em;
-}
-
-.sidenotes {
-	flex: 42em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -28,11 +16,13 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
 	color: #000000;
+	font-size: 28pt;
 }
 
 h2 {
 	border-bottom: 1px solid #CCCCCC;
 	color: #000000;
+	font-size: 24px;
 }
 
 h3 {
@@ -60,14 +50,6 @@ hr {
 	background-color: #CCCCCC;
 }
 
-p {
-	max-width: 40em;
-}
-
-blockquote {
-	max-width: 40em;
-}
-
 p, blockquote, ul, ol, dl, li, table, pre {
 	margin: 15px 0;
 }
@@ -77,6 +59,10 @@ blockquote {
   margin:0;
   padding-left: 1em;
   border-left: 0.2em #EEE solid;
+}
+
+img {
+	max-width: 100%;
 }
 
 table {
@@ -136,10 +122,6 @@ img {
   width: 60%;
   margin: auto;
   display: block;
-}
-
-figure {
-	max-width: 40%
 }
 
 figcaption {
