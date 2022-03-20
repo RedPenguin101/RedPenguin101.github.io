@@ -23,10 +23,7 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (defn get-file-paths [path]
-  (println "GETFILEPATHS" path)
-  (let [x (mapv #(str path %) (str/split-lines (:out (sh "ls" path))))]
-    (println x)
-    x))
+  (mapv #(str path %) (str/split-lines (:out (sh "ls" path)))))
 
 (defn file-first-line [path]
   (with-open [rdr (io/reader path)]
@@ -61,7 +58,6 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (defn post-title [file-path]
-  (println "POSTTITLE" file-path)
   (subs (file-first-line file-path) 2))
 
 (defn path-from-html
@@ -69,30 +65,17 @@
   to find and return the path to the corresponding
   mardown or adoc file."
   [file-path extension folder-paths]
-  (println "PFHTML")
-  (println "FiP" file-path "EXT" extension)
-  (println "FoP" folder-paths)
-  (println "fpEXT" (extension folder-paths))
-  (println "RETVAL" (str (extension folder-paths)
-       (str/replace (last (str/split file-path #"/"))
-                    ".html"
-                    (if (= extension :adoc) ".adoc" ".md"))))
   (str (extension folder-paths)
        (str/replace (last (str/split file-path #"/"))
                     ".html"
                     (if (= extension :adoc) ".adoc" ".md"))))
 
 (defn get-title [file-path folder-paths]
-  (println "GET TITLE")
-  (println "FiP" file-path)
-  (println "FoP" folder-paths)
   (try (post-title (path-from-html file-path :markdown folder-paths))
        (catch Exception _
         (post-title (path-from-html file-path :adoc folder-paths)))))
 
 (defn entry-from-post [raw-paths file-path]
-  (println "RAW" raw-paths)
-  (println "FP" file-path)
   (let [filename (last (str/split file-path #"/"))
         [y m d] (re-seq #"\d+" filename)]
     {:date (str/join "-" [y m d])
@@ -100,8 +83,6 @@
      :title (get-title file-path raw-paths)}))
 
 (defn build-index [entries]
-  (println "BUILDINDEX")
-  (println "ENTRIES:" entries)
   [:div
    [:h1 "Joe's Blog"]
    [:h2 "Other stuff"]
