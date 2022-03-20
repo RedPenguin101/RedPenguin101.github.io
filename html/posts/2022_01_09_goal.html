@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>The Scout Troupe hike, Matchsticks, Balanced Plants and the Theory of constraints</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">The Scout Troupe hike, Matchsticks, Balanced Plants and the Theory of constraints</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-hike">The hike</a></li>
+<li><a href="#interregnum-the-matchstick-game">Interregnum: The Matchstick game</a><ul>
+<li><a href="#the-matchstick-game-model">The matchstick game model</a></li>
+</ul></li>
+<li><a href="#back-to-scouts">Back to scouts</a></li>
+<li><a href="#the-analogy-to-the-factory.">The analogy to the factory.</a></li>
+<li><a href="#solving-the-scout-problem">Solving the scout problem</a></li>
+<li><a href="#bottlenecks-and-the-theory-of-constraints">Bottlenecks and the theory of constraints</a></li>
+</ul>
+</nav>
+<p>The book <a href="https://www.amazon.co.uk/Goal-Process-Ongoing-Improvement/dp/0566086654/ref=sr_1_1?crid=3VN7WAK51PKS8&amp;keywords=the+goal&amp;qid=1641741392&amp;sprefix=the+goal%2Caps%2C99&amp;sr=8-1">The Goal</a> has a story of the protagonist taking a group of scouts on a hike as a way to explain some of the theories of the book. The story contains a sub-plot of a game involving matchsticks to further illustrate it. I think the reason the author did this was to introduce the ideas with different levels of mathematical specificity. I’m going to try to use these stories to explain the ideas, maybe write a bit of code to simulate the game, then try to generalize the model.</p>
+<h1 id="the-hike">The hike</h1>
+<p>Alex Rogo is leading a group of scouts on a 10 mile hike. He is at the front with the scouts strung out single file behind him, walking at 2 miles per hour, so he figures he will finish the hike in 5 hours.</p>
+<p>After a while he notices that big gaps are starting to form in the line. He decides he should be at the <em>back</em> of the line instead of the front, so the boys don’t straggle. After half an hour of this he looks ahead to see the front of the line, and realizes he can’t see it: big gaps have again formed in the line. He passes up a message to the leader to wait until everyone catches up and get the line bunched up. They stop for a break.</p>
+<p>Starting off again, it’s not long before big gaps again appear. He looks to the front and sees the leader is not walking too fast. So why are the gaps appearing?</p>
+<p>First, he notices that some gaps ahead of the slowest kid. He moves that kid to the back, with him, and tells him to speed up a bit. They set off again, and the slow kid, by putting in more effort, is keeping pace with the boy in front of him.</p>
+<p>But again, gaps start to appear in the line. This time, there doesn’t seem to be anyone who is obviously walking slower than anyone else. So what’s up? Alex watches for a while, and sees the kid at the front adjust his backpack straps. This means everyone behind him has to pause a step. The gaps close a bit. Then one of the kids a few from the front has to adjust <em>his</em> pack. This causes everyone behind <em>him</em> to pause a step, or catch up a step if there is a gap. But in front of him, a one step gap has now appeared.</p>
+<p>Alex comes to the conclusion that every scout has to compensate for every pause in every scout in front of him. The boy at the front is fine, but the person at the back has to compensate for the pauses of every scout in the Troupe.</p>
+<p>At this point they stop for lunch. They have averaged about 1 mile per hour.</p>
+<h1 id="interregnum-the-matchstick-game">Interregnum: The Matchstick game</h1>
+<p>During lunch Alex comes up with the matchstick game. It works like this:</p>
+<p>There are 6 scouts. Each scout is at a ‘station’, sequentially arranges, with a small bowl in front of them. The first bowl has all the matches in it. To start the game, the first scout rolls a die. The number on the die is the number of matchsticks they can pass on to the next station, up to six. The second scout takes his turn rolling. In the same way, they pass on as many matches as they roll, but <em>capped</em> to the number of matches at their station. So if they roll a 6 but only have 3 matches, they can only pass on 3 matches. This continues down the line of 6 scouts, with a pile of matches forming at the ‘finished’ bowl.</p>
+<p>Alex expects that after 10 rounds, they will have 35 matches in the finished bowl. But he discovers that they end up with much less than this. Before looking at the theory of why, let’s model it out.</p>
+<h2 id="the-matchstick-game-model">The matchstick game model</h2>
+<p>We want the game-state to have the bowls and the number of the station whose turn it is. I’ll also add in a “rolls”, so we can pass in a list of rolls for repeatability. Last I’ll have a countdown timer of the rounds, since the goals is to measure the number of matchsticks out the other side after 10 rounds (60 rolls of the dice)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(<span class="bu">defn</span><span class="fu"> start </span>[rolls]</a>
+<a class="sourceLine" id="cb1-2" title="2">  {<span class="at">:bowls</span> [<span class="dv">100</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb1-3" title="3">   <span class="at">:round</span> (<span class="kw">min</span> <span class="dv">100</span> (<span class="kw">count</span> rolls))</a>
+<a class="sourceLine" id="cb1-4" title="4">   <span class="at">:station</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-5" title="5">   <span class="at">:rolls</span> rolls})</a></code></pre></div>
+<p>Next I want the simplest model: How many matches do you process after 10 rounds?</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="bu">defn</span><span class="fu"> step </span>[{<span class="at">:keys</span> [station rolls bowls] <span class="at">:as</span> state}]</a>
+<a class="sourceLine" id="cb2-2" title="2">  (<span class="kw">let</span> [matches-passed (<span class="kw">min</span> (<span class="kw">first</span> rolls) (<span class="kw">get</span> bowls station))]</a>
+<a class="sourceLine" id="cb2-3" title="3">    (<span class="kw">-&gt;</span> state</a>
+<a class="sourceLine" id="cb2-4" title="4">        (<span class="kw">update-in</span> [<span class="at">:bowls</span> station]       <span class="kw">-</span> matches-passed)</a>
+<a class="sourceLine" id="cb2-5" title="5">        (<span class="kw">update-in</span> [<span class="at">:bowls</span> (<span class="kw">inc</span> station)] <span class="kw">+</span> matches-passed)</a>
+<a class="sourceLine" id="cb2-6" title="6">        (<span class="kw">update</span> <span class="at">:rolls</span> <span class="kw">rest</span>)</a>
+<a class="sourceLine" id="cb2-7" title="7">        (<span class="kw">update</span> <span class="at">:round</span> <span class="kw">dec</span>)</a>
+<a class="sourceLine" id="cb2-8" title="8">        (<span class="kw">assoc</span> <span class="at">:station</span> (<span class="kw">mod</span> (<span class="kw">inc</span> station) <span class="dv">6</span>)))))</a>
+<a class="sourceLine" id="cb2-9" title="9"></a>
+<a class="sourceLine" id="cb2-10" title="10">(<span class="bu">defn</span><span class="fu"> play </span>[state]</a>
+<a class="sourceLine" id="cb2-11" title="11">  (<span class="kw">if</span> (<span class="kw">zero?</span> (<span class="at">:round</span> state)) (<span class="kw">last</span> (<span class="at">:bowls</span> state))</a>
+<a class="sourceLine" id="cb2-12" title="12">      (<span class="kw">recur</span> (step state))))</a>
+<a class="sourceLine" id="cb2-13" title="13"></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="co">;; putting in one rounds worth of 3s and 6s puts 3 and 6 out the other side, as expected.</span></a>
+<a class="sourceLine" id="cb2-15" title="15">(play (start [<span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span> <span class="dv">3</span>]))</a>
+<a class="sourceLine" id="cb2-16" title="16"><span class="co">;; =&gt; 3</span></a>
+<a class="sourceLine" id="cb2-17" title="17">(play (start [<span class="dv">6</span> <span class="dv">6</span> <span class="dv">6</span> <span class="dv">6</span> <span class="dv">6</span> <span class="dv">6</span> <span class="dv">6</span>]))</a>
+<a class="sourceLine" id="cb2-18" title="18"><span class="co">;; =&gt; 6</span></a>
+<a class="sourceLine" id="cb2-19" title="19"></a>
+<a class="sourceLine" id="cb2-20" title="20">(<span class="bu">defn</span><span class="fu"> ten-rounds </span>[]</a>
+<a class="sourceLine" id="cb2-21" title="21">  (play (start (<span class="kw">repeatedly</span> (<span class="kw">*</span> <span class="dv">6</span> <span class="dv">10</span>) roll))))</a>
+<a class="sourceLine" id="cb2-22" title="22"></a>
+<a class="sourceLine" id="cb2-23" title="23">(ten-rounds)  <span class="co">;; =&gt; 19</span></a>
+<a class="sourceLine" id="cb2-24" title="24"></a>
+<a class="sourceLine" id="cb2-25" title="25">(<span class="kw">float</span> (<span class="kw">/</span> (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">repeatedly</span> <span class="dv">1000</span> ten-rounds)) <span class="dv">1000</span>))</a>
+<a class="sourceLine" id="cb2-26" title="26"><span class="co">;; =&gt; 21.998</span></a></code></pre></div>
+<p>So it looks like under these conditions you get out 22 parts on average, NOT the 35 you might expect.</p>
+<p>One of the other things they do in the story is to keep score of how many matches each station passes on. The base score is 3.5, so we measure any deviation from that. For implementation we add in a <code>scores</code> to our game state. <code>(update-in [:scores station] + matches-passed -3.5)</code></p>
+<p>After 1000 games we get the following averaged results:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">{<span class="at">:scores</span>  (-<span class="fl">0.174</span> <span class="fl">-5.002</span> <span class="fl">-7.883</span> <span class="fl">-10.004</span> <span class="fl">-11.718</span> <span class="fl">-13.033</span>), </a>
+<a class="sourceLine" id="cb3-2" title="2"> <span class="at">:produced</span> <span class="fl">21.967</span>}</a></code></pre></div>
+<p>Some observations from this:</p>
+<ul>
+<li>The first station’s score is approximately 0.</li>
+<li>The last station’s score is equal to the difference between the ‘expected’ result (35) and the actual result (22). This is presumably not a coincidence.</li>
+<li>The average score decreases from station to station</li>
+<li>The decrease in score from station to station is <code>[5, 3, 2, 1.5 1.5]</code>. So the rate of reduction reduces. Does the value</li>
+</ul>
+<p>This is as far as the game goes in the book, though there are more directions we can take it.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<h1 id="back-to-scouts">Back to scouts</h1>
+<p>How does the game correspond to the scout troupe?</p>
+<p>The stations correspond to scouts. The matchsticks are the ground walked. The observations above, that station 1 manages about the expected average, corresponds to the scout at the front of the line being free from constraints. The last person in the line (Alex) in effect having to compensate for the statistical variations of all the scouts in front of him is also preserved here.</p>
+<p>Can we generalize our model to match the scout troupe? To some extent: We don’t have the concept of variable scout speeds in our model. We will stick with a 10 mile hike, and a uniformly distributed walking speed of scouts of between 1 and 3mph. I can’t recall if the book specifies, but we’ll say 30 scouts in total. Let’s say our ‘step’ is a 10 minute interval, or 1/6 of an hour. In that period, a scout can walk anywhere between 1 and 3mph.</p>
+<p>So under these conditions (30 scouts, average speed of scouts 2mph) we might expect that in 5 hours we walk 10 miles. The results of simulation this 1000 times are<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">{<span class="at">:scores</span></a>
+<a class="sourceLine" id="cb4-2" title="2"> (<span class="fl">9.795364</span></a>
+<a class="sourceLine" id="cb4-3" title="3">  <span class="fl">9.460915</span></a>
+<a class="sourceLine" id="cb4-4" title="4">  <span class="fl">9.128752</span></a>
+<a class="sourceLine" id="cb4-5" title="5">  ,,,</a>
+<a class="sourceLine" id="cb4-6" title="6">  <span class="fl">6.851614</span></a>
+<a class="sourceLine" id="cb4-7" title="7">  <span class="fl">6.815948</span></a>
+<a class="sourceLine" id="cb4-8" title="8">  <span class="fl">6.781275</span>)</a>
+<a class="sourceLine" id="cb4-9" title="9"> <span class="at">:produced</span> <span class="fl">6.781275</span>}</a></code></pre></div>
+<p>The first scout does in fact walk about 10 miles in the 5 hours. The <em>last</em> scout walks less than 7 miles.</p>
+<p>One of the key points of the Goal is that <em>local optima</em> are irrelevant. It is the performance of the system as a whole (or <strong>throughput</strong>) that matters. In this case, it doesn’t matter that the first scout got to the finish point of the hike in 5 hours. What matters is what time <em>all</em> the scouts finished, which would be around 6 or 7 hours I guess.</p>
+<h1 id="the-analogy-to-the-factory.">The analogy to the factory.</h1>
+<p>In the context of The Goal, if the Matchstick game is a means to an end of making the behavior of the scout group concrete, the scout group is a means to an end of illustrating the flow of work in a factory.</p>
+<p>Key to this is the idea of the <em>balanced plant</em>. This is the (incorrect) idea that an ideal plant is one where capacity of each machine in the plant is balanced so that capacity is exactly matched to the demand on that machine.</p>
+<p>The point of the scout troupe and matchstick game is to illustrate why the balanced plant idea is incorrect. In both analogies, the stations are balanced with respect to the average demand on each station. In the scout example, each scout moves at an average of 2mph. In the balanced plant theory this means that all scouts would finish the 10 mile hike in 5 hours. The reason this doesn’t work can be reasoned out as follows</p>
+<ol type="1">
+<li>Each station is subject to stochastic variation. The scouts may move <em>on average</em> at 2mph, but in reality they move at between 1 and 3mph.</li>
+<li>The machines in the plant, the scouts in the line, and the stations in the matchstick game are <em>dependent processes</em>. You can only move as many matchsticks as are provided by the upstream station. A Scout can only move as far as the distance to the next scout. A machine can only work with as many materials as are provided by the machine that supplies it.</li>
+<li>The combination of these 2 facts creates the phenomenon we observed, where the ‘first’ machine is unconstrained, but every machine that is dependent on another one is subject to the statistical variations of the production of that machine</li>
+<li>If the machines are sequentially dependent, a machine is impacted by the <em>cumulative</em> statistical variation of every machine in the sequence.</li>
+</ol>
+<p>The implication of that is the machines later in the sequence must have more capacity than, in isolation, you would think it should.</p>
+<h1 id="solving-the-scout-problem">Solving the scout problem</h1>
+<p>Setting off after lunch, the gaps soon open up again. Alex notices that the scouts have gotten tired of bumping into one-another, and have started overtaking each other instead. The result of this is that the line is now in order of the average speed of the scouts.</p>
+<p>We don’t have different average scout speeds in our model, so let’s add that real quick. Let’s say that each scout has a speed modifier of between 0.7 and 1.3, which gets multiplies by the result of the distance traveled roll.</p>
+<p>Adding this into our scout simulation and running 100 times, we get the following:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">{<span class="at">:scores</span> (<span class="fl">9.476591</span></a>
+<a class="sourceLine" id="cb5-2" title="2">          <span class="fl">9.024029</span></a>
+<a class="sourceLine" id="cb5-3" title="3">          <span class="fl">8.677951</span></a>
+<a class="sourceLine" id="cb5-4" title="4">          ,,,</a>
+<a class="sourceLine" id="cb5-5" title="5">          <span class="fl">6.5198445</span></a>
+<a class="sourceLine" id="cb5-6" title="6">          <span class="fl">6.48402</span></a>
+<a class="sourceLine" id="cb5-7" title="7">          <span class="fl">6.4502735</span>)</a>
+<a class="sourceLine" id="cb5-8" title="8"> <span class="at">:produced</span> <span class="fl">6.4502735</span>}</a></code></pre></div>
+<p>The throughput has dropped a bit. But the variability is about the same.</p>
+<p>Now what happens if we model the ‘shake-out’ sort that Alex saw, where the fastest scouts are at the front of the line and the slowest are at the back?</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">{<span class="at">:scores</span></a>
+<a class="sourceLine" id="cb6-2" title="2"> (<span class="fl">9.999849</span></a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="fl">9.997611</span></a>
+<a class="sourceLine" id="cb6-4" title="4">  <span class="fl">9.985884</span></a>
+<a class="sourceLine" id="cb6-5" title="5">  ,,,</a>
+<a class="sourceLine" id="cb6-6" title="6">  <span class="fl">6.651349</span></a>
+<a class="sourceLine" id="cb6-7" title="7">  <span class="fl">6.553503</span></a>
+<a class="sourceLine" id="cb6-8" title="8">  <span class="fl">6.4588137</span>)</a>
+<a class="sourceLine" id="cb6-9" title="9"> <span class="at">:produced</span> <span class="fl">6.4588137</span>}</a></code></pre></div>
+<p>You end up with more scouts actually getting to the end of the hike (about 7 with a distance of &gt; 9.5 miles). But in effect this just means the gaps are greater (about 3.5 miles). And the goals here are <em>not</em> to have as many individual scouts finish in 5 hours, they are to have <em>all</em> the scouts finish, and avoid gaps in the line.</p>
+<p>In the story, what Alex does is to <em>reverse</em> the line, so the slowest are at the front, and the fastest are at the back. What are the results of this according to our model?</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">{<span class="at">:scores</span> (<span class="fl">8.16072</span></a>
+<a class="sourceLine" id="cb7-2" title="2">          <span class="fl">7.7867303</span></a>
+<a class="sourceLine" id="cb7-3" title="3">          <span class="fl">7.5512805</span></a>
+<a class="sourceLine" id="cb7-4" title="4">          ,,,</a>
+<a class="sourceLine" id="cb7-5" title="5">          <span class="fl">6.467999</span></a>
+<a class="sourceLine" id="cb7-6" title="6">          <span class="fl">6.459559</span></a>
+<a class="sourceLine" id="cb7-7" title="7">          <span class="fl">6.454627</span>)</a>
+<a class="sourceLine" id="cb7-8" title="8"> <span class="at">:produced</span> <span class="fl">6.454627</span>}</a></code></pre></div>
+<p>The throughput is the same, but the variation between first and last is much smaller, about 1.5 miles.</p>
+<h1 id="bottlenecks-and-the-theory-of-constraints">Bottlenecks and the theory of constraints</h1>
+<p>So far we have seen how to reduce gaps in production. Why you want to do this in the context of a factory is tied to the cost of carrying inventory and I won’t talk about it here.</p>
+<p>What about improving throughput?</p>
+<p>In the scout troupe, the slowest kid (Herbie) is <em>really</em> slow, because he is carrying a lot of stuff. Let’s model the impact of that by giving one scout a capacity of 0.5, while all the others have the same modifier of 0.8-1.2. Herbie will be at the front of the line to reduce variability.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">{<span class="at">:scores</span></a>
+<a class="sourceLine" id="cb8-2" title="2"> (<span class="fl">5.004114</span></a>
+<a class="sourceLine" id="cb8-3" title="3">  <span class="fl">4.997528</span></a>
+<a class="sourceLine" id="cb8-4" title="4">  <span class="fl">4.9902554</span></a>
+<a class="sourceLine" id="cb8-5" title="5">  ,,,</a>
+<a class="sourceLine" id="cb8-6" title="6">  <span class="fl">4.9459114</span></a>
+<a class="sourceLine" id="cb8-7" title="7">  <span class="fl">4.945744</span></a>
+<a class="sourceLine" id="cb8-8" title="8">  <span class="fl">4.9456553</span>)</a>
+<a class="sourceLine" id="cb8-9" title="9"> <span class="at">:produced</span> <span class="fl">4.9456553</span>}</a></code></pre></div>
+<p>This produces a throughput of about 5 miles (to be expected: 0.5 x 2mph is a 1mph average). And a very low variability.</p>
+<p>Notice it doesn’t matter where we put Herbie in the queue. The throughput will always be the same. If Herbie is at the back, then the scouts in <em>front</em> will still finish much quicker, but that’s not useful to us, and gaps will be very large.</p>
+<p>Notice as well that we can make all the other scouts as fast as we want, for example give them a 2x speed multiplier:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">{<span class="at">:scores</span></a>
+<a class="sourceLine" id="cb9-2" title="2"> (<span class="fl">10.0</span></a>
+<a class="sourceLine" id="cb9-3" title="3">  <span class="fl">10.0</span></a>
+<a class="sourceLine" id="cb9-4" title="4">  <span class="fl">10.0</span></a>
+<a class="sourceLine" id="cb9-5" title="5">  ,,,</a>
+<a class="sourceLine" id="cb9-6" title="6">  <span class="fl">10.0</span></a>
+<a class="sourceLine" id="cb9-7" title="7">  <span class="fl">10.0</span></a>
+<a class="sourceLine" id="cb9-8" title="8">  <span class="fl">5.0165467</span>),</a>
+<a class="sourceLine" id="cb9-9" title="9"> <span class="at">:produced</span> <span class="fl">5.0165467</span>}</a></code></pre></div>
+<p>Throughput is the same.</p>
+<p>The point here is that Herbie is a <em>bottleneck to throughput</em>. Improvements to any stations that are <em>not</em> the bottleneck will not improve throughput. The only way to improve throughput is to improve throughput at the bottleneck.</p>
+<p>In the Goal, Alex takes the content of Herbie’s pack and distributes it to the rest of the troupe. Herbie can move faster, and while the other scouts move marginally slower, overall throughput is improved.</p>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>For example: extending the number of stations and seeing if the values converge, replacing uniform for other probability distributions, introducing different distribution parameters for stations, having multiple component types. A limited use ‘super roll’ where stations can boost their scores analagous to the scouts ‘running to catch up’.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>The code has been generalized away from the matchstick game specific implementation. See the repo for this code.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
+</body>
+</html>

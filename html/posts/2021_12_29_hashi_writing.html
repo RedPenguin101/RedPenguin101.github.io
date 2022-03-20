@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Hashicorp Writing Practices and Culture</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Hashicorp Writing Practices and Culture</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#why-write-proposals-and-solution-documents">Why write proposals and solution documents?</a></li>
+<li><a href="#what-do-they-write">What do they write?</a></li>
+<li><a href="#prd">PRD</a><ul>
+<li><a href="#template-content">Template content</a></li>
+</ul></li>
+<li><a href="#rfc">RFC</a></li>
+<li><a href="#tips-for-writing-and-feedback">Tips for writing and feedback</a></li>
+<li><a href="#other-stuff">Other stuff</a></li>
+</ul>
+</nav>
+<p><a href="https://works.hashicorp.com/articles/writing-practices-and-culture">link</a></p>
+<blockquote>
+<p>we write to clarify our ideas, to articulate concepts to our colleagues both within and beyond our teams, and to gather the feedback we need to make those ideas better.</p>
+</blockquote>
+<h1 id="why-write-proposals-and-solution-documents">Why write proposals and solution documents?</h1>
+<ul>
+<li>Clarify ideas</li>
+<li>articulate concepts to colleagues</li>
+<li>Gather feedback</li>
+<li>Encourage thoughtfulness</li>
+<li>Easy access to context on what a decision is, how it was made</li>
+<li>Ease of operation across timezones</li>
+<li>Equalizing force: change proposal process is same for engineers and founders</li>
+<li>Allows proper credit for ideas</li>
+<li>Allows people less likely to speak up in meetings to be heard</li>
+<li>Avoids long, circular meetings</li>
+<li>Makes decisions more efficient: Come to the meeting having read the doc, yay or nay vote is often enough</li>
+</ul>
+<h1 id="what-do-they-write">What do they write?</h1>
+<p>Problem Requirements Document (PRD): Defines the problem. The ‘Why’. Request for Comment (RFC): Proposes the solution</p>
+<h1 id="prd">PRD</h1>
+<p><a href="https://works.hashicorp.com/articles/prd-template">PRD Template</a></p>
+<ul>
+<li>Usually PMs will write the PRD</li>
+<li>Helps team members fully understand a problem and define what’s needed to address it.</li>
+<li>Helpful for working through an ambiguous challenge with many stakeholders</li>
+<li>Curating information, not creating it.</li>
+<li><em>Before</em> a PRD, you should do research.</li>
+<li>Offer a clear problem statement and insight into the problem</li>
+</ul>
+<blockquote>
+<p>A PRD reader should clearly understand what the problem is, who it affects, and why it is important to solve.</p>
+</blockquote>
+<h2 id="template-content">Template content</h2>
+<ol type="1">
+<li><strong>Introduction</strong>: Explains the goal of the PRD. Summarizes the content. <em>Do this last</em></li>
+<li><strong>Background</strong>: Provide useful context about the problem domain. Context is essential for understanding content. Use visuals if possible</li>
+<li><strong>Problem Statements</strong>: The heart of the PRD. Include <em>Personas</em></li>
+<li><strong>Phases and requirements</strong>: Break the problem into phases to allow iterative development.
+<ul>
+<li>Phases should be independently valuable</li>
+<li>Each phase should have one or more requirements / success criteria.</li>
+<li>1 sentence description for each phase and each requirement</li>
+<li>Requirements should have an acceptance criteria, written like test cases. Make as unambiguous as possble</li>
+<li>Requirements should have considerations section, to be used by the RFC writer. Almost always a question.</li>
+<li>Each phase should build on the previous ones.</li>
+<li>State in decreasing order of value.</li>
+</ul></li>
+<li><strong>User research</strong>: The most important section. Grounds the PRD in real experience. One section for each customer. Include a link to interview notes, and a para summarizing state of workflow and key takeaways.</li>
+<li><strong>Approvals</strong>: All stakeholders must approve the PRD before it goes for RFC.</li>
+</ol>
+<h1 id="rfc">RFC</h1>
+<p><a href="https://works.hashicorp.com/articles/rfc-template">RFC Template</a></p>
+<ul>
+<li>Usually Engineers will write the RFC</li>
+<li>Again, articulate and get feedback on solution</li>
+<li>Not <em>Mandatory</em> to have an RFC. Generally for bigger, more complex work, or requiring buy-in from many stakeholders</li>
+</ul>
+<h1 id="tips-for-writing-and-feedback">Tips for writing and feedback</h1>
+<ul>
+<li>Write with a buddy if you haven’t written one before</li>
+<li>Collaborate early and often</li>
+<li>Don’t worry about it being perfect</li>
+<li>Follow the template. The consistency will make it easier for reviewers to review</li>
+<li><strong>Don’t put too much detail</strong>. Be concise</li>
+<li>Acknowledge and resolve each comment, even those you decide not to act on.</li>
+<li>If feedback seems off, ask questions about what the commenter meant</li>
+<li>Feel free to have brainstorming sessions before writing. The PRD is the artifact, not the process</li>
+<li>For RFC, sometimes an ‘options exploration’ step after PRD is good.</li>
+<li>If comments are not resolving, get on a Zoom. Easier to do in person.</li>
+</ul>
+<h1 id="other-stuff">Other stuff</h1>
+<p><a href="https://drive.google.com/file/d/1zyt0RMCDEwmTEPQQ2yiAxW_NZ1dNOOID/view">Technical writing workshop</a></p>
+</body>
+</html>
