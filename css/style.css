@@ -20,7 +20,8 @@ section, .section {
 }
 
 .sidenotes {
-	flex: 42em;
+	flex: 28em;
+	max-width: 38em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -132,8 +133,14 @@ img {
   display: block;
 }
 
+figure > img {
+  width: 100%;
+  margin: auto;
+	border: 1px solid #EAEAEA;
+  display: block;
+}
+
 figure {
-	max-width: 40%
 }
 
 figcaption {
@@ -144,6 +151,10 @@ pre {
 	border: 1px solid #CCCCCC;
 	overflow: auto;
 	padding: 4px 8px;
+}
+
+div.sourceCode > pre {
+	overflow: auto;
 }
 
 pre > code {
