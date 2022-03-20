@@ -86,6 +86,7 @@
   [:html
    [:head
     [:title "Joe's Blog"]
+    [:link {:rel "icon" :type "image/x-icon" :href "./favicon.ico"}]
     [:link {:rel "stylesheet" :href "./css/style.css"}]]
    [:body
     [:div
@@ -117,6 +118,7 @@
   [:html
    [:head
     [:title "Book Notes"]
+    [:link {:rel "icon" :type "image/x-icon" :href "./favicon.ico"}]
     [:link {:rel "stylesheet" :href "./css/style.css"}]]
    [:body
     [:div
