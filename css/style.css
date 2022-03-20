@@ -16,6 +16,7 @@ section, .section {
 
 .main-text {
 	flex: 42em;
+	max-width: 42em
 }
 
 .sidenotes {
@@ -57,7 +58,11 @@ blockquote {
 	max-width: 40em;
 }
 
-p, blockquote, ul, ol, dl, li, table, pre {
+li > ul {
+	padding-left: 1em;
+}
+
+p, blockquote, dl, table, pre {
 	margin: 15px 0;
 }
 
