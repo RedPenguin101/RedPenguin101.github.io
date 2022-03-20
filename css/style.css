@@ -2,26 +2,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400&display=swap');
 
 body {
-  font: 0.8em "Vollkorn", Palatino, Times;
+  font: 1em "Vollkorn", Palatino, Times;
 	padding:1em;
 	line-height: 1.4;
 	background:#fefefe;
 	text-align: justify;
 }
 
-section, .section {
+.tufte-section {
 	display: flex;
 	flex-wrap: wrap;
 }
 
 .main-text {
-	flex: 42em;
-	max-width: 42em
+	flex: 30em;
+	max-width: 30em;
+	margin-right: 3em;
 }
 
 .sidenotes {
-	flex: 28em;
-	max-width: 38em;
+	font-size: 0.8em;
+	flex: 18em;
+	max-width: 30em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -45,22 +47,22 @@ h3 {
 }
 
 hr {
-	height: 0.2em;
+	height: 0.1em;
 	border: 0;
 	color: #CCCCCC;
 	background-color: #CCCCCC;
 }
 
 p {
-	max-width: 40em;
+	max-width: 30em;
 }
 
-ul {
-	max-width: 36em;
+ul, ol {
+	max-width: 26em;
 }
 
 blockquote {
-	max-width: 40em;
+	max-width: 30em;
 }
 
 li > ul {

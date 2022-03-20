@@ -19,47 +19,56 @@
 </header>
 <nav id="TOC">
 <ul>
-<li><a href="#gloss">Gloss</a></li>
-<li><a href="#criticism">Criticism</a></li>
-<li><a href="#notes">Notes</a></li>
+<li><a href="#trip-lets">Trip-Lets</a></li>
+<li><a href="#criticism">Criticism</a><ul>
+<li><a href="#an-alternative-third-shadow">An Alternative Third Shadow</a></li>
+</ul></li>
+<li><a href="#raw-notes">Raw Notes</a></li>
 </ul>
 </nav>
-<p>Notes on a <a href="https://www.geepawhill.org/2022/02/15/the-shadows-of-software-design">post</a> by GeePaw Hill</p>
-<h1 id="gloss">Gloss</h1>
-<p>The post is about a metaphor. Software is compared to the trip-let: a single three dimensional sculpture that, when light is shone on it from multiple directions, casts different recognizable shadows. In this case the letters G, E and B.</p>
+<h2 id="trip-lets">Trip-Lets</h2>
+<div class="tufte-section">
+<div class="main-text">
+<p>The post is about a metaphor.<sup>1</sup></p>
+<p>In the metaphor, Software is compared to the trip-let: a single three dimensional sculpture that, when light is shone on it from multiple directions, casts different recognizable shadows. In this case the letters G, E and B.</p>
 <p>In the metaphor, the sculpture itself is the software, the machine, the system. GPH refers to it as the ‘artifact’. The shadows are the outcomes, or the characteristics of the machine. How it can be interacted with.</p>
 <p>GPH identifies three shadows without claiming they are exhaustive:</p>
 <ol type="1">
-<li>Behavioral characteristics: The experience of those who interact with the running system</li>
-<li>Interpretive characteristics: How easily the workings of the system can be understood</li>
-<li>Reactive characteristics: How easily the system can be changed to accommodate change</li>
+<li><em>Behavioral</em> characteristics: The experience of those who interact with the running system</li>
+<li><em>Interpretive</em> characteristics: How easily the workings of the system can be understood</li>
+<li><em>Reactive</em> characteristics: How easily the system can be changed to accommodate change</li>
 </ol>
-<p>The metaphor works on the basis of a couple of similarities.</p>
-<p>First, you can’t change the shadows of the trip-let directly, you can only affect them indirectly by changing the artifact.</p>
-<p>Secondly, the shadows are not independent. By changing the sculpture with the aim of affecting one shadow, it is likely (without proper care) to affect the others.</p>
+<p>The metaphor works on the basis of a couple of similarities. First, you can’t change the shadows of the trip-let directly, you can only affect them indirectly by changing the artifact. Second, the shadows are not independent. By changing the sculpture with the aim of affecting one shadow, it is likely (without proper care) to affect the others.</p>
 <p>GPH provides examples of ‘images’ of each of the three shadows. User stories for behavioral, class diagrams for interpretive, but not really anything for reactive. I don’t <em>think</em> he is saying these images are the shadows themselves, at least it doesn’t make sense to me that they are. Rather the shadows are the intangible behavior. The images are maybe the shadow of the shadows.</p>
-<h1 id="criticism">Criticism</h1>
+</div>
+<div class="sidenotes">
+<p><sup>1</sup> <a href="https://www.geepawhill.org/2022/02/15/the-shadows-of-software-design"><em>The shadows of Software Design</em></a>, GeePaw Hill, 2022-02-15</p>
+<p><img src="../../images/2022_03_19_hill_sd_shadow/geb.png" /></p>
+<p>The trip-let sculpture is from the cover of Hofstadter’s <em>Godel, Escher, Bach: an Eternal Golden Braid</em>.</p>
+</div>
+</div>
+<h2 id="criticism">Criticism</h2>
 <p>I like the metaphor. It possibly starts to break down if you try to unpick it too much, but that’s not a criticism, so does almost any analogy. It does enough to be useful.</p>
-<p>The issue is that one of the shadows is not like the others. The “Reactive” shadow is a bit of an odd-one-out.</p>
-<p>The other two shadows are about how things outside the system interact with it. In one case the things that depend on the outcomes of the system (the “users”), and in the other case the things that need to understand the mechanism of the artifact. GPH says this in the context of the engineers who are building it, but I think it can be generalized to anything that needs to know how the system works. The two can be equated with the “what” and the “how”, which GPH wisely separates.</p>
-<p>The reactive shadow is a little more tough to fit into that mold. The motivating question is “can we change the program?”. The inclusion of this in one of the three shadows is understandable given it’s centrality in software design. How easy it is to change is really <em>the</em> thing that separates good software from bad. But it sits uncomfortably alongside the other shadows.</p>
+<p>The only issue I have is that one of the shadows is not like the others. The “Reactive” shadow is a bit of an odd-one-out.</p>
+<p>The other two shadows are about how things <em>outside</em> the system interact with the system itself. In one case, the things that depend on the outcomes of the system (the “users”), and in the other case the things that need to understand the <em>mechanism</em> of the artifact. GPH says this in the context of the engineers who are building it, but I think it can be generalized to anything that needs to know how the system works. The two can be equated with the “what” and the “how”, which GPH wisely separates.</p>
+<p>The reactive shadow is a little more tough to fit into that mold. The motivating question is <em>“can we change the program?”</em> The inclusion of this in one of the three shadows is understandable, given it’s centrality in software design. How easy it is to change is really <em>the</em> thing that separates good software from bad. But it sits uncomfortably alongside the other shadows.</p>
 <p>It bleeds into the behavioral: <em>why</em> does the software need to change? Because (probably) the users want its behavior to change.</p>
 <p>It bleeds into the interpretive: the interpretive shadow is about <em>how</em> the machine does what it does, from the perspective of the people who are going to change it. This can’t be separated from the organization of the machine.</p>
 <p>The slightly awkward fit of the reactive shadow is shown in how GPH writes about it</p>
 <blockquote>
 <p>The ways we envision the reactive shadow are the least well-known and coherent. Though class diagrams capture some of it, so do backlogs and to-do lists. The tools we use here are nearly all just “in our minds”. It’s a particularly fruitful area of study just now.</p>
 </blockquote>
-<p>Try this: part of what GPH calls the reactive shadow is actually part of the behavioral shadow, part is the interpretive. But some of it is part of neither of these too. What is the remainder?</p>
-<p>Another option for verbalizing the third shadow is to stay with the theme of the interactors with the system.</p>
-<ol type="1">
-<li>The actors who interact with the machine to achieve outcomes. Mostly what GPH call the users. These are people who are interested in the “what”</li>
-<li>The actors who interact with the machine to build and maintain it. They are interested in the “how”</li>
-<li>the actors who interact with the machine incidentally. They do not want anything from the system, may not even know about it, but who do impact it. You might call this the environment in which the system is situated.</li>
-</ol>
-<p>The “Environment”, then, is the third interactor.</p>
+<h3 id="an-alternative-third-shadow">An Alternative Third Shadow</h3>
+<p>Some of what GPH calls the reactive shadow is actually part of the behavioral shadow, and some is part is the interpretive. But some of it is part of neither of these too. What is the remainder?</p>
+<p>Another option for verbalizing the third shadow is to stay with the theme of the <em>interactors</em> with the system.</p>
+<p>Some actors interact with the machine to achieve outcomes. Mostly what GPH call the users. These are people who are interested in the “what”. This is equivalent to GPH’s <em>behavioural</em> shadow.</p>
+<p>Some actors interact with the machine to build and maintain it. They are interested in the “how”. This is GPH’s <em>interpretive</em> shadow.</p>
+<p>There are some actors who interact with the machine incidentally. They do not want anything from the system, they may not even know about it. But they do impact it. You might call this the <em>environment</em> in which the system is situated.</p>
+<p>The <em>“Environment”</em>, then, is the third interactor.</p>
 <p>The problem is that it breaks the metaphor! In the trip-let, the shadows are ‘one way’. The artifact casts them, but shadows can never impact the artifact itself. The shadows are perceptions of a thing from a particular perspective.</p>
 <p>What is the perception of the artifact from the perspective of the environment? How does the environment see the artifact? It sees it from the perspective of its own system. It might not see it at all. So, if you think about it, do the other interactors. Systems, interacting with systems, which are all part of systems.</p>
-<h1 id="notes">Notes</h1>
+<hr />
+<h2 id="raw-notes">Raw Notes</h2>
 <ul>
 <li>Hofstadter’s “GEB” trip-let. Three shadows, all different letters.</li>
 <li>A program is a trip-let. The shadows are: behavioral, interpretive, reactive.</li>

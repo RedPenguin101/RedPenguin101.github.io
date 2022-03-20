@@ -92,7 +92,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </nav>
 <h2 id="the-tufte-style">The Tufte style</h2>
-<section>
+<div class="tufte-section">
 <div class="main-text">
 <p>The Tufte style is named for Edward Tufte.</p>
 <p>The Tufte style (for example, <a href="https://www.inf.ed.ac.uk/teaching/courses/pi/2016_2017/phil/tufte-powerpoint.pdf?utm_source=pocket_mylist">this</a> or <a href="https://www-uxsup.csx.cam.ac.uk/pub/tex-archive/macros/latex/contrib/tufte-latex/sample-handout.pdf">this</a>) is known for its ‘split’ format. One column, on the left hand side, takes up about 60 percent of the page, and contains the main text. The second column is a ‘margin’ to the main text, and contains sidenotes (as opposed to footnotes), images, and other content supportive of the main text.</p>
@@ -106,7 +106,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <img src="../../images/2022_03_20_tufte/pp_format.png" alt="Example of Tufte paper" /><figcaption>Example of Tufte paper</figcaption>
 </figure>
 </div>
-</section>
+</div>
 <h2 id="adaptation-for-a-blog-format">Adaptation for a blog format</h2>
 <p>After reading a few things about the format, I like it a lot, and I’d like to see if I can use it on my blog.</p>
 <p>The Tufte style is used in handouts and books, which of course have pages, and which are generally fairly narrow.</p>
@@ -123,7 +123,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>I like the 2-level sections, which would translate to an H1 for the title, an H2 for A-header and H3 for B-Headers.</p>
 <p>For the H2, I like the current format I have for the blog of a underline border. In this document, it would span the page, across both columns, which I also like. I don’t think I actually use H3s in my writing much, but Tufte uses Non-bolded, Italisized fonts for both heading levels. Maybe I should do the same for H3s.</p>
 <h2 id="html-structure">HTML Structure</h2>
-<section>
+<div class="tufte-section">
 <div class="main-text">
 <p>I think the way to adapt the format to a HTML hierarchical document is like this</p>
 <pre><code>BODY
@@ -203,9 +203,9 @@ This is a paragraphs in the main text block...</code></pre>
 <div class="sidenotes">
 
 </div>
-</section>
+</div>
 <h2 id="some-tests">Some tests</h2>
-<section>
+<div class="tufte-section">
 <div class="main-text">
 <p>This is a paragraphs in the main text block. In corporate and government bureacracies, the standard method for making a presentation is to talk about a list of point organized onto slides projected up on the wall. For many years, overhead projectors lit up transparencies, and slide projectors showed high-resolution 35mm slides. Now “slideware” computer programs for presentations are nearly everywhere. Early in the 21st century, several hundred million copies of Microsoft were turning our trillions of slides each year.<sup>1</sup></p>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae tristique lectus. Vestibulum enim lorem, tempor ut rutrum in, lobortis quis augue. Integer auctor dolor sed mi interdum vulputate. Nam ornare turpis sed dui porttitor aliquam. Vivamus placerat tellus sit amet euismod gravida. Proin aliquet faucibus quam nec fermentum. Maecenas iaculis lorem sit amet nunc feugiat, ultricies interdum est molestie. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
@@ -213,8 +213,8 @@ This is a paragraphs in the main text block...</code></pre>
 <div class="sidenotes">
 <p><sup>1</sup> This is a para in the margin</p>
 </div>
-</section>
-<section>
+</div>
+<div class="tufte-section">
 <div class="main-text">
 <p>Phasellus sed orci nibh. Phasellus ultricies euismod bibendum. Integer ut erat condimentum, suscipit felis lacinia, aliquet nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus interdum purus quis quam pharetra, sit amet ultrices eros egestas. Etiam justo dui, maximus in quam ut, pulvinar rhoncus velit. Vestibulum elit arcu, gravida eget nulla a, lobortis gravida nunc. Maecenas ullamcorper tellus sed purus posuere, at lacinia neque suscipit. Etiam elementum turpis vitae egestas vehicula. Nulla ac consequat lorem, eu pharetra augue. Curabitur faucibus lectus eget nisi fermentum, eget sollicitudin ipsum consectetur. Nulla auctor nibh sed massa hendrerit dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum consequat tempor eros. Vivamus iaculis, ante ut volutpat semper, sem nisi finibus est, sit amet pellentesque est ligula quis augue.<sup>2</sup></p>
 <p>Curabitur varius in lectus eget vestibulum. Ut a nisi faucibus, vestibulum quam interdum, congue augue. Fusce ut consectetur dolor, sit amet condimentum justo. Praesent gravida tortor fringilla libero placerat, ac mollis lacus auctor. Aenean sit amet hendrerit tortor. Cras tempor ac tellus sed venenatis. Integer tempor volutpat nibh vitae ultricies. Mauris gravida, urna eget accumsan egestas, ligula nunc gravida velit, in maximus sem dui rhoncus tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id ante malesuada, lacinia nunc eu, lacinia turpis. Nam sed orci est. Integer efficitur sapien eget dignissim mollis.</p>
@@ -227,7 +227,7 @@ This is a paragraphs in the main text block...</code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn</span><span class="fu"> hello-world </span>[a b c]</a>
 <a class="sourceLine" id="cb6-2" title="2">  (blah blah blah))</a></code></pre></div>
 </div>
-</section>
+</div>
 <figure>
 <img src="../../images/2022_03_20_tufte/long.png" alt="Spanning inline image, outside a section" /><figcaption>Spanning inline image, outside a section</figcaption>
 </figure>
