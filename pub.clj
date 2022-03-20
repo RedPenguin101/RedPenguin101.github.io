@@ -124,12 +124,12 @@
        (spit books)))
 
 (defn -main []
-  (println "Publishing Adoc Posts")
-  (publish! publish-ascii (:adoc post-paths) (:html post-paths))
+  ;;(println "Publishing Adoc Posts")
+  ;;(publish! publish-ascii (:adoc post-paths) (:html post-paths))
   (println "Publishing markdown Posts")
   (publish! publish-markdown (:markdown post-paths) (:html post-paths))
-  (println "Publishing Adoc Books")
-  (publish! publish-ascii (:adoc book-paths) (:html book-paths))
+  ;;(println "Publishing Adoc Books")
+  ;;(publish! publish-ascii (:adoc book-paths) (:html book-paths))
   (println "Publishing markdown Books")
   (publish! publish-markdown (:markdown book-paths) (:html book-paths))
   (println "Creating Post index")
