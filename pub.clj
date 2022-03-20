@@ -105,7 +105,7 @@
   [:div
    [:h1 "Joe's Blog"]
    [:h2 "Other stuff"]
-   [:ul [:li [:a {:href (:html book-paths)} "Notes on books"]]]
+   [:ul [:li [:a {:href books} "Notes on books"]]]
    [:h2 "Blog posts"]
    [:table
     [:tr [:th "Date"] [:th "Title"]]
