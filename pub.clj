@@ -83,18 +83,23 @@
      :title (get-title file-path raw-paths)}))
 
 (defn build-index [entries]
-  [:div
-   [:h1 "Joe's Blog"]
-   [:h2 "Other stuff"]
-   [:ul [:li [:a {:href books} "Notes on books"]]]
-   [:h2 "Blog posts"]
-   [:table
-    [:tr [:th "Date"] [:th "Title"]]
-    (for [entry (reverse (sort-by :date entries))]
-      [:tr
-       [:td (:date entry)]
-       [:td [:a {:href (str (:html post-paths) (:filename entry))}
-             (:title entry)]]])]])
+  [:html
+   [:head
+    [:title "Joe's Blog"]
+    [:link {:rel "stylesheet" :href "./css/style.css"}]]
+   [:body
+    [:div
+     [:h1 "Joe's Blog"]
+     [:h2 "Other stuff"]
+     [:ul [:li [:a {:href books} "Notes on books"]]]
+     [:h2 "Blog posts"]
+     [:table
+      [:tr [:th "Date"] [:th "Title"]]
+      (for [entry (reverse (sort-by :date entries))]
+        [:tr
+         [:td (:date entry)]
+         [:td [:a {:href (str (:html post-paths) (:filename entry))}
+               (:title entry)]]])]]]])
 
 (defn create-post-index! []
   (->> (get-file-paths (:html post-paths))
@@ -109,12 +114,18 @@
      :title (get-title file-path raw-paths)}))
 
 (defn book-index [entries]
-  [:div
-   [:h1 "Books"]
-   [:ul
-    (for [entry (sort-by :title entries)]
-      [:li [:a {:href (str (:html book-paths) (:filename entry))}
-            (:title entry)]])]])
+  [:html
+   [:head
+    [:title "Book Notes"]
+    [:link {:rel "stylesheet" :href "./css/style.css"}]]
+   [:body
+    [:div
+     [:h1 "Books"]
+     [:ul
+      (for [entry (sort-by :title entries)]
+        [:li [:a {:href (str (:html book-paths) (:filename entry))}
+              (:title entry)]])]]]]
+  )
 
 (defn create-book-index! []
   (->> (get-file-paths (:html book-paths))

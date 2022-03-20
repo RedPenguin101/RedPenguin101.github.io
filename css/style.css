@@ -55,6 +55,10 @@ p {
 	max-width: 40em;
 }
 
+ul {
+	max-width: 36em;
+}
+
 blockquote {
 	max-width: 40em;
 }
