@@ -8,15 +8,15 @@
 (def index "./index.html")
 (def books "./books.html")
 
-(def post-paths {:html "./posts/"
+(def post-paths {:html "./html/posts/"
                  :adoc "./asciidocs/posts/"
                  :markdown "./markdown/posts/"})
 
-(def book-paths {:html "./books/"
+(def book-paths {:html "./html/books/"
                  :adoc "./asciidocs/books/"
                  :markdown "./markdown/books/"})
 
-(def css-path "../css/style.css")
+(def css-path "../../css/style.css")
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; file operations
@@ -60,7 +60,11 @@
 (defn post-title [file-path]
   (subs (file-first-line file-path) 2))
 
-(defn path-from-html [file-path extension folder-paths]
+(defn path-from-html
+  "When given a path to an html file, will attempt
+  to find and return the path to the corresponding
+  mardown or adoc file."
+  [file-path extension folder-paths]
   (str (extension folder-paths)
        (str/replace (last (str/split file-path #"/"))
                     ".html"
@@ -82,7 +86,7 @@
   [:div
    [:h1 "Joe's Blog"]
    [:h2 "Other stuff"]
-   [:ul [:li [:a {:href "./books.html"} "Notes on books"]]]
+   [:ul [:li [:a {:href books} "Notes on books"]]]
    [:h2 "Blog posts"]
    [:table
     [:tr [:th "Date"] [:th "Title"]]
@@ -120,17 +124,17 @@
        (spit books)))
 
 (defn -main []
-  (println "Publishing Adoc Posts")
-  (publish! publish-ascii (:adoc post-paths) (:html post-paths))
+  ;;(println "Publishing Adoc Posts")
+  ;;(publish! publish-ascii (:adoc post-paths) (:html post-paths))
   (println "Publishing markdown Posts")
   (publish! publish-markdown (:markdown post-paths) (:html post-paths))
-  (println "Publishing Adoc Books")
-  (publish! publish-ascii (:adoc book-paths) (:html book-paths))
+  ;;(println "Publishing Adoc Books")
+  ;;(publish! publish-ascii (:adoc book-paths) (:html book-paths))
   (println "Publishing markdown Books")
   (publish! publish-markdown (:markdown book-paths) (:html book-paths))
-  (println "Creating index")
+  (println "Creating Post index")
   (create-post-index!)
-  (println "Book Index")
+  (println "Creating Book Index")
   (create-book-index!))
 
 (-main)
