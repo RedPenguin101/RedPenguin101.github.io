@@ -74,12 +74,23 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="css/tufte.css" />
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">Tufte-style layouts</h1>
 </header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-tufte-style">The Tufte style</a></li>
+<li><a href="#adaptation-for-a-blog-format">Adaptation for a blog format</a></li>
+<li><a href="#screen-document-layout">Screen Document Layout</a><ul>
+<li><a href="#headers">Headers</a></li>
+</ul></li>
+<li><a href="#html-structure">HTML Structure</a></li>
+<li><a href="#some-tests">Some tests</a></li>
+</ul>
+</nav>
 <h2 id="the-tufte-style">The Tufte style</h2>
 <p>The Tufte style is named for Edward Tufte.</p>
 <p>The Tufte style (for example, <a href="https://www.inf.ed.ac.uk/teaching/courses/pi/2016_2017/phil/tufte-powerpoint.pdf?utm_source=pocket_mylist">this</a> or <a href="https://www-uxsup.csx.cam.ac.uk/pub/tex-archive/macros/latex/contrib/tufte-latex/sample-handout.pdf">this</a>) is known for its ‘split’ format. One column, on the left hand side, takes up about 60 percent of the page, and contains the main text. The second column is a ‘margin’ to the main text, and contains sidenotes (as opposed to footnotes), images, and other content supportive of the main text.</p>
@@ -169,8 +180,11 @@ This is some more main text, but with a reference[^1]
 This is a paragraphs in the main text block...</code></pre>
 <p>This works, but is has some pretty significant problems:</p>
 <ol type="1">
-<li>It doesn’t work well with the</li>
+<li>It makes the markdown in the editor look naff</li>
+<li>It doesn’t work well with the markdown preview</li>
+<li>You have to manage your own references (and use <code>&lt;sup&gt;</code> to boot)</li>
 </ol>
+<p>Re-writing the Markdown would be better.</p>
 <h2 id="some-tests">Some tests</h2>
 <section>
 <div class="main-text">
@@ -179,7 +193,7 @@ This is a paragraphs in the main text block...</code></pre>
 <div class="sidenotes">
 <p><sup>1</sup> This is a para in the margin</p>
 <figure>
-<img src="./images/ppfluff.png" alt="A picture with a caption" /><figcaption>A picture with a caption</figcaption>
+<img src="../images/ppfluff.png" alt="A picture with a caption" /><figcaption>A picture with a caption</figcaption>
 </figure>
 </div>
 </section>
@@ -188,7 +202,7 @@ This is a paragraphs in the main text block...</code></pre>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae tristique lectus. Vestibulum enim lorem, tempor ut rutrum in, lobortis quis augue. Integer auctor dolor sed mi interdum vulputate. Nam ornare turpis sed dui porttitor aliquam. Vivamus placerat tellus sit amet euismod gravida. Proin aliquet faucibus quam nec fermentum. Maecenas iaculis lorem sit amet nunc feugiat, ultricies interdum est molestie. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.<sup>2</sup></p>
 <p>Phasellus sed orci nibh. Phasellus ultricies euismod bibendum. Integer ut erat condimentum, suscipit felis lacinia, aliquet nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus interdum purus quis quam pharetra, sit amet ultrices eros egestas. Etiam justo dui, maximus in quam ut, pulvinar rhoncus velit. Vestibulum elit arcu, gravida eget nulla a, lobortis gravida nunc. Maecenas ullamcorper tellus sed purus posuere, at lacinia neque suscipit. Etiam elementum turpis vitae egestas vehicula. Nulla ac consequat lorem, eu pharetra augue. Curabitur faucibus lectus eget nisi fermentum, eget sollicitudin ipsum consectetur. Nulla auctor nibh sed massa hendrerit dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum consequat tempor eros. Vivamus iaculis, ante ut volutpat semper, sem nisi finibus est, sit amet pellentesque est ligula quis augue.</p>
 <figure>
-<img src="./images/long.png" alt="Spanning inline image" /><figcaption>Spanning inline image</figcaption>
+<img src="../images/long.png" alt="Spanning inline image" /><figcaption>Spanning inline image</figcaption>
 </figure>
 <p>Curabitur varius in lectus eget vestibulum. Ut a nisi faucibus, vestibulum quam interdum, congue augue. Fusce ut consectetur dolor, sit amet condimentum justo. Praesent gravida tortor fringilla libero placerat, ac mollis lacus auctor. Aenean sit amet hendrerit tortor. Cras tempor ac tellus sed venenatis. Integer tempor volutpat nibh vitae ultricies. Mauris gravida, urna eget accumsan egestas, ligula nunc gravida velit, in maximus sem dui rhoncus tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id ante malesuada, lacinia nunc eu, lacinia turpis. Nam sed orci est. Integer efficitur sapien eget dignissim mollis.</p>
 <p>Mauris vitae arcu dolor. Nullam ullamcorper sollicitudin massa, ac dapibus magna scelerisque non. Proin non sapien vitae eros interdum ornare sed vitae ligula. Nunc commodo lobortis sodales. Nulla placerat posuere lacus, eu egestas erat dignissim et. Fusce tristique, neque non blandit pretium, nulla nisl aliquam eros, ac vestibulum ex magna eget ipsum. Nunc dapibus nibh non orci tristique dictum. Integer varius nunc sit amet venenatis pellentesque. Proin quis velit eget odio pharetra scelerisque vitae nec mauris.</p>
