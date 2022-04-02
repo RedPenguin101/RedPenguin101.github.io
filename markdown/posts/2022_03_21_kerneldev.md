@@ -203,11 +203,178 @@ mov byte al, [es:32]
 
 This will move the byte located in `es:32` into `al`.
 
+One thing we need to do with our bootloader is to make sure all the segment registered are initialized to the values we want. The BIOS and interrupts can sometimes mess with these. Change the origin to 0. Give a `jmp` instruction to `0x7c0`, which changes the instruction pointer. Change data and extra segments to `0x7c0`. Change the stack segment to `0x00` and the stack _pointer_ to `0x7c00`.
+
+```assembly
+ORG 0
+BITS 16
+
+jmp 0x7c0:start
+
+start:
+    cli ; clear interrupts
+    mov ax, 0x7C0
+    mov ds, ax
+    mov es, ax
+    mov ax, 0x00
+    mov ss, ax
+    mov sp, 0x7c00
+    sti ; enables interrupts again
+    mov si, message
+    call print
+```
+
+To reiterate what our code is now doing:
+
+1. The CPU (running the BIOS) finds the value `0x55AA` in our binary 'hard drive'
+2. It loads that sector (0-512 bytes) into RAM starting at address `0x7c00`, and starts executing
+3. The first instruction jumps to `0x7c0:start`<sup>2</sup>
+
 </div>
 <div class="sidenotes">
 
 <sup>1</sup> Note that `ORG` or origin is also factored in.
 
+<sup>2</sup> Frankly I don't get why - isn't this redundant?
+
+</div>
+</div>
+
+## Interrupts and the Interrupt Vector Table
+
+<div class="tufte-section">
+<div class="main-text">
+
+Interrupts are like subroutines that you call through 'interrupt numbers' rather than memory addresses. There are interrupts in the BIOS - we saw `10h 0eh` prints a character to the screen - or they can be set up by the programmer. Interrupts are special because they halt the processor, save the current state (meaning what? the registers?) to the stack, execute the interrupt, then restore the pre-interrupt state. 
+
+The code for these interrupts are stored in RAM. The locations of the code are stored in the _interrupt vector table_<sup>1</sup>, which starts right at the beginning of RAM at address `0x00`. There are 256 entries in numerical order, `0x00` to `0xFF`, and each contains a 4 bytes: a 2 byte OFFSET and a 2 byte SEGMENT. This means you can calculate the location in the IVT of any interrupt code with `code * 0x04`. Interrupt `0x13` is at `0x46`.
+
+The processor can throw exceptions with interrupts. For example, if you try to divide by zero in an Intel processor, it will call interrupt 0.<sup>2</sup>
+
+In the following code, we _replace_ interrupt 0 with our own subroutine, by replacing the entries in the IVT to point to the subroutine in memory. Running our bootloader in this state will cause the screen to show `AHello World!A` - the first `A` comes from our manual call to the `int 0`, and the second comes from our attempt to divide by zero, which causes the processor to run interrupt 0.
+
+```assembly
+start:
+    ; snip
+    mov word[ss:0x00], handle_zero ; Set offset to handle_word address
+    mov word[ss:0x02], 0x07C0      ; set segment to 0x07c0 
+
+    int 0 ; call interupt 0
+
+    mov si, message
+    call print
+
+    mov ax, 0x00
+    div ax ; try to divide by 0
+
+    jmp $
+
+handle_zero:
+    mov ah, 0eh
+    mov al, 'A'
+    mov bx, 0x00
+    int 0x10
+    iret
+
+; snip
+```
+
+
+</div>
+<div class="sidenotes">
+
+![Interrupt Vector Table](../../images/2021_03_21_kerneldev/IVT.png)
+
+<sup>1</sup> All of this only applies to Real Mode. In Protected Mode, an "Interrupt Descriptor Table" is used instead. More on this later
+
+<sup>2</sup> wiki.osdev.org/exceptions is a great resource for learning more
+
+</div>
+</div>
+
+## Reading from disk
+
+<div class="tufte-section">
+<div class="main-text">
+
+Next we will see how we can read data from a hard disk. Note that we're not talking about accessing _files_. Files and the file system are implemented in the Kernel. Or to be more specific, the disk is 'formatted' with a particular file system data structure (FAT, EXT4 etc.), and the kernel has drivers which are able to interpret that data structure as files. As far as we are concerned, the disk consists of blocks of data called _sectors_<sup>1</sup>. A sector consists of 512 contiguous bytes. These sectors are read and written in sector blocks, not by accessing individual bytes.
+
+The old way of addressing disk sectors is the _Cylinder Head Sector_ (CHS) system. This is from when disks were spinning magnetic plates arranged in cylinders. You need to specify the cylinder, head, sector and track you want to read from. This was pretty complicated, and it is no longer really used. The modern way is called _Logical Block Address_ (LBA). In LBA you just specify the sector number you want to get. LBA 0 is the first sector on the disk, etc.<sup>2</sup>
+
+### Some housekeeping before we actually read from the disk
+
+First create a text file and put in it whatever you want. This is going to be the thing that gets read from the disk. Create a _Makefile_<sup>3</sup>.
+
+```make
+all:
+	nasm -f bin ./boot.asm -o ./boot.bin
+	dd if=./message.txt >> ./boot.bin
+	dd if=/dev/zero bs=512 count=1 >> ./boot.bin
+```
+
+The first line is same assemble command we've already been using. The second line puts the content of _message.txt_ onto the end of our binary, and the third pads the binary out with null characters until it's 512 bytes, and therefore a valid sector. You can type `make` at the command line to compile the project. You can see the content of the binary with `hexdump -C ./boot.bin > hex.txt`, and opening the text file.
+
+```
+00000000  ea 05 00 c0 07 fa b8 c0  07 8e d8 8e c0 b8 00 00  |................|
+00000010  8e d0 bc 00 7c fb b4 02  b0 01 b5 00 b6 00 b1 02  |....|...........|
+00000020  bb 00 02 cd 13 72 08 be  00 02 e8 0a 00 eb fe be  |.....r..........|
+00000030  4a 00 e8 02 00 eb fe bb  00 00 ac 3c 00 74 05 e8  |J..........<.t..|
+00000040  03 00 eb f6 c3 b4 0e cd  10 c3 46 61 69 6c 65 64  |..........Failed|
+00000050  20 74 6f 20 6c 6f 61 64  20 73 65 63 74 6f 72 00  | to load sector.|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
+00000200  48 65 6c 6c 6f 20 77 6f  72 6c 64 2c 20 74 68 69  |Hello world, thi|
+00000210  73 20 69 73 20 6d 79 20  6d 65 73 73 61 67 65 00  |s is my message.|
+00000220  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+0000041f
+```
+
+### Time to actually read from the disk
+
+We'll be using interrupt `13h/02h`: "Disk - Read Sectors into Memory". Looking at the expected register values that [Ralph Brown](http://www.ctyme.com/intr/rb-0607.htm) provides<sup>4</sup> we can get to the follow code:
+
+
+```assembly
+    mov ah, 02h
+    mov al, 1
+    mov ch, 0
+    mov dh, 0
+    mov cl, 2
+    mov bx, buffer
+    int 0x13
+    jc error ; if carry flag is set, meaning load failed
+
+    mov si, buffer
+    call print
+
+; snip to end of file
+
+error_message: db 'Failed to load sector', 0
+
+times 510-($ - $$) db 0 ; Pad to 510th byte
+dw 0xAA55 ; dw=define word. Puts bootloader signal
+
+buffer:
+```
+
+Here we set up the registers as they need to be to read our message from the 2nd sector (`cl`) of the disk into the `buffer` label in memory<sup>5</sup>. Then we call the interrupt `0x13`. `jc` handles the error condition.
+
+</div>
+<div class="sidenotes">
+
+<sup>1</sup> We already encountered sectors when talking about how the bootloader is loaded.
+
+![Disk](../../images/2021_03_21_kerneldev/disk.png)
+
+<sup>2</sup> Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by `58376/512=114`, and the offset as `58376%512=8`
+
+<sup>3</sup> Make is a language unto itself, intended to simplify the compilation of project with multiple files.
+
+<sup>4</sup> `AH` = 02h, `AL` = number of sectors to read, `CH` = cylinder number, `CL` = sector number, `DH` = head number, `ES:BX` -> data buffer. Return: `CF` set on error
+
+<sup>5</sup> Note that the data is put into `ES:BX`, the Extra Segment. We have set this to `0x7c0`, which is the right place.
 </div>
 </div>
 
@@ -283,20 +450,16 @@ This will move the byte located in `es:32` into `al`.
 </div>
 </div>
 
+## Bits, byte, binary and hex
 
-<div class="tufte-section">
-<div class="main-text">
-</div>
-<div class="sidenotes">
-</div>
-</div>
-
-
-<div class="tufte-section">
-<div class="main-text">
-</div>
-<div class="sidenotes">
-</div>
-</div>
-
-
+* A bit is a single binary digit 0 or 1.
+* 2 binary digits can represent 4 unique values: `00`, `01`, `10`, `11`
+* n binary digits can represent 2^n unique values.
+* 4 binary digits can represent 2^4 = 16 unique values
+* 8 binary digits can represent 2^8 = 256 values.
+* 8 bits, represented by an 8 digit binary, is a byte, which can take one of 256 values.
+* A hex digit can take the values `0-F`, or 16 possible values
+* A single hex digit is equivalent to 4 binary digits
+* Two hex digits (`00` to `FF`) represent 16^2 = 256 values. Therefore 2 hex digits represents one byte.
+* 4 hex digits (`0000` to `FFFF`) represent 2 bytes, or 16 bits.
+* Each memory location can hold a single byte, or 2 digit hex number.

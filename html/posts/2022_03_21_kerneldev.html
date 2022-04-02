@@ -88,6 +88,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#assembly-language">Assembly language</a></li>
 <li><a href="#a-hello-world-bootloader">A Hello World Bootloader</a></li>
 <li><a href="#segmentation-memory-model">Segmentation Memory Model</a></li>
+<li><a href="#interrupts-and-the-interrupt-vector-table">Interrupts and the Interrupt Vector Table</a></li>
+<li><a href="#reading-from-disk">Reading from disk</a></li>
+<li><a href="#bits-byte-binary-and-hex">Bits, byte, binary and hex</a></li>
 </ul>
 </nav>
 <p>This is based on a <a href="https://dragonzap.com/course/developing-a-multithreaded-kernel-from-scratch?coupon=YOUTUBEKERNEL2022">course</a> which guides the reader through the development of a full OS kernel, from a Hello World Bootloader to a multitasking kernel with a FAT16 file system. The first 11 lessons are available for free on <a href="https://www.youtube.com/watch?v=HNIg3TXfdX8&amp;list=PLrGN1Qi7t67V-9uXzj4VSQCffntfvn42v">YouTube</a></p>
@@ -229,9 +232,133 @@ dw 0xAA55 ; dw=define word. Puts bootloader signal</code></pre>
 <p>Segment registers can be used in source using the following convention:</p>
 <pre class="assembly"><code>mov byte al, [es:32]</code></pre>
 <p>This will move the byte located in <code>es:32</code> into <code>al</code>.</p>
+<p>One thing we need to do with our bootloader is to make sure all the segment registered are initialized to the values we want. The BIOS and interrupts can sometimes mess with these. Change the origin to 0. Give a <code>jmp</code> instruction to <code>0x7c0</code>, which changes the instruction pointer. Change data and extra segments to <code>0x7c0</code>. Change the stack segment to <code>0x00</code> and the stack <em>pointer</em> to <code>0x7c00</code>.</p>
+<pre class="assembly"><code>ORG 0
+BITS 16
+
+jmp 0x7c0:start
+
+start:
+    cli ; clear interrupts
+    mov ax, 0x7C0
+    mov ds, ax
+    mov es, ax
+    mov ax, 0x00
+    mov ss, ax
+    mov sp, 0x7c00
+    sti ; enables interrupts again
+    mov si, message
+    call print</code></pre>
+<p>To reiterate what our code is now doing:</p>
+<ol type="1">
+<li>The CPU (running the BIOS) finds the value <code>0x55AA</code> in our binary ‘hard drive’</li>
+<li>It loads that sector (0-512 bytes) into RAM starting at address <code>0x7c00</code>, and starts executing</li>
+<li>The first instruction jumps to <code>0x7c0:start</code><sup>2</sup></li>
+</ol>
 </div>
 <div class="sidenotes">
 <p><sup>1</sup> Note that <code>ORG</code> or origin is also factored in.</p>
+<p><sup>2</sup> Frankly I don’t get why - isn’t this redundant?</p>
+</div>
+</div>
+<h2 id="interrupts-and-the-interrupt-vector-table">Interrupts and the Interrupt Vector Table</h2>
+<div class="tufte-section">
+<div class="main-text">
+<p>Interrupts are like subroutines that you call through ‘interrupt numbers’ rather than memory addresses. There are interrupts in the BIOS - we saw <code>10h 0eh</code> prints a character to the screen - or they can be set up by the programmer. Interrupts are special because they halt the processor, save the current state (meaning what? the registers?) to the stack, execute the interrupt, then restore the pre-interrupt state.</p>
+<p>The code for these interrupts are stored in RAM. The locations of the code are stored in the <em>interrupt vector table</em><sup>1</sup>, which starts right at the beginning of RAM at address <code>0x00</code>. There are 256 entries in numerical order, <code>0x00</code> to <code>0xFF</code>, and each contains a 4 bytes: a 2 byte OFFSET and a 2 byte SEGMENT. This means you can calculate the location in the IVT of any interrupt code with <code>code * 0x04</code>. Interrupt <code>0x13</code> is at <code>0x46</code>.</p>
+<p>The processor can throw exceptions with interrupts. For example, if you try to divide by zero in an Intel processor, it will call interrupt 0.<sup>2</sup></p>
+<p>In the following code, we <em>replace</em> interrupt 0 with our own subroutine, by replacing the entries in the IVT to point to the subroutine in memory. Running our bootloader in this state will cause the screen to show <code>AHello World!A</code> - the first <code>A</code> comes from our manual call to the <code>int 0</code>, and the second comes from our attempt to divide by zero, which causes the processor to run interrupt 0.</p>
+<pre class="assembly"><code>start:
+    ; snip
+    mov word[ss:0x00], handle_zero ; Set offset to handle_word address
+    mov word[ss:0x02], 0x07C0      ; set segment to 0x07c0 
+
+    int 0 ; call interupt 0
+
+    mov si, message
+    call print
+
+    mov ax, 0x00
+    div ax ; try to divide by 0
+
+    jmp $
+
+handle_zero:
+    mov ah, 0eh
+    mov al, &#39;A&#39;
+    mov bx, 0x00
+    int 0x10
+    iret
+
+; snip</code></pre>
+</div>
+<div class="sidenotes">
+<figure>
+<img src="../../images/2021_03_21_kerneldev/IVT.png" alt="Interrupt Vector Table" /><figcaption>Interrupt Vector Table</figcaption>
+</figure>
+<p><sup>1</sup> All of this only applies to Real Mode. In Protected Mode, an “Interrupt Descriptor Table” is used instead. More on this later</p>
+<p><sup>2</sup> wiki.osdev.org/exceptions is a great resource for learning more</p>
+</div>
+</div>
+<h2 id="reading-from-disk">Reading from disk</h2>
+<div class="tufte-section">
+<div class="main-text">
+<p>Next we will see how we can read data from a hard disk. Note that we’re not talking about accessing <em>files</em>. Files and the file system are implemented in the Kernel. Or to be more specific, the disk is ‘formatted’ with a particular file system data structure (FAT, EXT4 etc.), and the kernel has drivers which are able to interpret that data structure as files. As far as we are concerned, the disk consists of blocks of data called <em>sectors</em><sup>1</sup>. A sector consists of 512 contiguous bytes. These sectors are read and written in sector blocks, not by accessing individual bytes.</p>
+<p>The old way of addressing disk sectors is the <em>Cylinder Head Sector</em> (CHS) system. This is from when disks were spinning magnetic plates arranged in cylinders. You need to specify the cylinder, head, sector and track you want to read from. This was pretty complicated, and it is no longer really used. The modern way is called <em>Logical Block Address</em> (LBA). In LBA you just specify the sector number you want to get. LBA 0 is the first sector on the disk, etc.<sup>2</sup></p>
+<h3 id="some-housekeeping-before-we-actually-read-from-the-disk">Some housekeeping before we actually read from the disk</h3>
+<p>First create a text file and put in it whatever you want. This is going to be the thing that gets read from the disk. Create a <em>Makefile</em><sup>3</sup>.</p>
+<pre class="make"><code>all:
+    nasm -f bin ./boot.asm -o ./boot.bin
+    dd if=./message.txt &gt;&gt; ./boot.bin
+    dd if=/dev/zero bs=512 count=1 &gt;&gt; ./boot.bin</code></pre>
+<p>The first line is same assemble command we’ve already been using. The second line puts the content of <em>message.txt</em> onto the end of our binary, and the third pads the binary out with null characters until it’s 512 bytes, and therefore a valid sector. You can type <code>make</code> at the command line to compile the project. You can see the content of the binary with <code>hexdump -C ./boot.bin &gt; hex.txt</code>, and opening the text file.</p>
+<pre><code>00000000  ea 05 00 c0 07 fa b8 c0  07 8e d8 8e c0 b8 00 00  |................|
+00000010  8e d0 bc 00 7c fb b4 02  b0 01 b5 00 b6 00 b1 02  |....|...........|
+00000020  bb 00 02 cd 13 72 08 be  00 02 e8 0a 00 eb fe be  |.....r..........|
+00000030  4a 00 e8 02 00 eb fe bb  00 00 ac 3c 00 74 05 e8  |J..........&lt;.t..|
+00000040  03 00 eb f6 c3 b4 0e cd  10 c3 46 61 69 6c 65 64  |..........Failed|
+00000050  20 74 6f 20 6c 6f 61 64  20 73 65 63 74 6f 72 00  | to load sector.|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
+00000200  48 65 6c 6c 6f 20 77 6f  72 6c 64 2c 20 74 68 69  |Hello world, thi|
+00000210  73 20 69 73 20 6d 79 20  6d 65 73 73 61 67 65 00  |s is my message.|
+00000220  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+0000041f</code></pre>
+<h3 id="time-to-actually-read-from-the-disk">Time to actually read from the disk</h3>
+<p>We’ll be using interrupt <code>13h/02h</code>: “Disk - Read Sectors into Memory”. Looking at the expected register values that <a href="http://www.ctyme.com/intr/rb-0607.htm">Ralph Brown</a> provides<sup>4</sup> we can get to the follow code:</p>
+<pre class="assembly"><code>    mov ah, 02h
+    mov al, 1
+    mov ch, 0
+    mov dh, 0
+    mov cl, 2
+    mov bx, buffer
+    int 0x13
+    jc error ; if carry flag is set, meaning load failed
+
+    mov si, buffer
+    call print
+
+; snip to end of file
+
+error_message: db &#39;Failed to load sector&#39;, 0
+
+times 510-($ - $$) db 0 ; Pad to 510th byte
+dw 0xAA55 ; dw=define word. Puts bootloader signal
+
+buffer:</code></pre>
+<p>Here we set up the registers as they need to be to read our message from the 2nd sector (<code>cl</code>) of the disk into the <code>buffer</code> label in memory<sup>5</sup>. Then we call the interrupt <code>0x13</code>. <code>jc</code> handles the error condition.</p>
+</div>
+<div class="sidenotes">
+<p><sup>1</sup> We already encountered sectors when talking about how the bootloader is loaded.</p>
+<figure>
+<img src="../../images/2021_03_21_kerneldev/disk.png" alt="Disk" /><figcaption>Disk</figcaption>
+</figure>
+<p><sup>2</sup> Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by <code>58376/512=114</code>, and the offset as <code>58376%512=8</code></p>
+<p><sup>3</sup> Make is a language unto itself, intended to simplify the compilation of project with multiple files.</p>
+<p><sup>4</sup> <code>AH</code> = 02h, <code>AL</code> = number of sectors to read, <code>CH</code> = cylinder number, <code>CL</code> = sector number, <code>DH</code> = head number, <code>ES:BX</code> -&gt; data buffer. Return: <code>CF</code> set on error</p>
+<p><sup>5</sup> Note that the data is put into <code>ES:BX</code>, the Extra Segment. We have set this to <code>0x7c0</code>, which is the right place.</p>
 </div>
 </div>
 <div class="tufte-section">
@@ -306,21 +433,19 @@ dw 0xAA55 ; dw=define word. Puts bootloader signal</code></pre>
 
 </div>
 </div>
-<div class="tufte-section">
-<div class="main-text">
-
-</div>
-<div class="sidenotes">
-
-</div>
-</div>
-<div class="tufte-section">
-<div class="main-text">
-
-</div>
-<div class="sidenotes">
-
-</div>
-</div>
+<h2 id="bits-byte-binary-and-hex">Bits, byte, binary and hex</h2>
+<ul>
+<li>A bit is a single binary digit 0 or 1.</li>
+<li>2 binary digits can represent 4 unique values: <code>00</code>, <code>01</code>, <code>10</code>, <code>11</code></li>
+<li>n binary digits can represent 2^n unique values.</li>
+<li>4 binary digits can represent 2^4 = 16 unique values</li>
+<li>8 binary digits can represent 2^8 = 256 values.</li>
+<li>8 bits, represented by an 8 digit binary, is a byte, which can take one of 256 values.</li>
+<li>A hex digit can take the values <code>0-F</code>, or 16 possible values</li>
+<li>A single hex digit is equivalent to 4 binary digits</li>
+<li>Two hex digits (<code>00</code> to <code>FF</code>) represent 16^2 = 256 values. Therefore 2 hex digits represents one byte.</li>
+<li>4 hex digits (<code>0000</code> to <code>FFFF</code>) represent 2 bytes, or 16 bits.</li>
+<li>Each memory location can hold a single byte, or 2 digit hex number.</li>
+</ul>
 </body>
 </html>
