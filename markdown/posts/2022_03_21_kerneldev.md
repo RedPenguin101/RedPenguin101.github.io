@@ -49,7 +49,7 @@ The BIOS contains routines that the bootloader uses to boot the kernel. The inte
 
 <div class="tufte-section">
 <div class="main-text">
-All development will be done on Ubuntu Linux. First, make sure your repositories are up to date with. Then, install nasm<sup>1</sup>. Finally, we will use the QEmu emulator to run our bootloader and kernel. Test that it runs using the below commands. A new window will pop up, but since there are no disks attached it won't be able to boot.
+All development will be done on Ubuntu Linux. First, make sure your repositories are up to date. Then, install nasm<sup>1</sup>. Finally, we will use the QEmu emulator to run our bootloader and kernel. Test that it runs using the below commands. A new window will pop up, but since there are no disks attached it won't be able to boot.
 
 ```
 sudo apt update
@@ -191,7 +191,7 @@ qemu-system-x86_64 -hda ./boot.bin
 
 We have seen that the pointer registers in the processor are 2 bytes. That means your instruction pointer for example, which is 2 bytes, can point to memory locations _(addresses)_ between bytes number 0 and (2^16) 65,535. However we've seen that in real mode, the processor has access to 1Mb of memory, or 1,048,576 bytes. How can we get our pointers to point to values above 65,535?
 
-The answer is the _Segmentation Memory Model_. Memory is accessed by the combination of a _segment_ and an _offset_. This is what the _segment registers_. There are 4 in the 8086: Code segment `cs`, Data segment `ds`, Extra segment `es` and Stack segment `ss`. The segment and offset can be combined to calculate the _absolute offset_ (the actual memory location in RAM) by multiplying the segment by 16 (A left shift in hex) and adding the offset<sup>1</sup>. For example, if your segment is `0x7C0` and your offset (instruction pointer) and origin are both zero. The absolute memory address your program will start executing at is `0x7C0 * 16 = 0x7C00`. If your offset is `0xFF`, the absolute address will be `0x7CFF`. If segment is `0xF000` and offset is `0xFFFF`, the absolute memory address is `FFFFF`, or 1,048,575. This is how you address a megabyte of memory using two 16bit registers. Note that this model means that you can get to an address in multiple ways. For example, if your segment is `0x7CF` and offset is `0x0F`, the absolute address is also `0x7CFF`.
+The answer is the _Segmentation Memory Model_. Memory is accessed by the combination of a _segment_ and an _offset_. This is what the _segment registers_ are for. There are 4 in the 8086: Code segment `cs`, Data segment `ds`, Extra segment `es` and Stack segment `ss`. The segment and offset can be combined to calculate the _absolute offset_ (the actual memory location in RAM) by multiplying the segment by 16 (A left shift in hex) and adding the offset<sup>1</sup>. For example, if your segment is `0x7C0` and your offset (instruction pointer) and origin are both zero. The absolute memory address your program will start executing at is `0x7C0 * 16 = 0x7C00`. If your offset is `0xFF`, the absolute address will be `0x7CFF`. If segment is `0xF000` and offset is `0xFFFF`, the absolute memory address is `FFFFF`, or 1,048,575. This is how you address a megabyte of memory using two 16bit registers. Note that this model means that you can get to an address in multiple ways. For example, if your segment is `0x7CF` and offset is `0x0F`, the absolute address is also `0x7CFF`.
 
 Different instructions in the processor's instruction set use different combinations of registers to determine which absolute address to look at. For example, `lodsb` which we've already seen uses the data segment register and the source index register (shorthanded to `ds:si`).
 
@@ -314,27 +314,9 @@ all:
 
 The first line is same assemble command we've already been using. The second line puts the content of _message.txt_ onto the end of our binary, and the third pads the binary out with null characters until it's 512 bytes, and therefore a valid sector. You can type `make` at the command line to compile the project. You can see the content of the binary with `hexdump -C ./boot.bin > hex.txt`, and opening the text file.
 
-```
-00000000  ea 05 00 c0 07 fa b8 c0  07 8e d8 8e c0 b8 00 00  |................|
-00000010  8e d0 bc 00 7c fb b4 02  b0 01 b5 00 b6 00 b1 02  |....|...........|
-00000020  bb 00 02 cd 13 72 08 be  00 02 e8 0a 00 eb fe be  |.....r..........|
-00000030  4a 00 e8 02 00 eb fe bb  00 00 ac 3c 00 74 05 e8  |J..........<.t..|
-00000040  03 00 eb f6 c3 b4 0e cd  10 c3 46 61 69 6c 65 64  |..........Failed|
-00000050  20 74 6f 20 6c 6f 61 64  20 73 65 63 74 6f 72 00  | to load sector.|
-00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
-00000200  48 65 6c 6c 6f 20 77 6f  72 6c 64 2c 20 74 68 69  |Hello world, thi|
-00000210  73 20 69 73 20 6d 79 20  6d 65 73 73 61 67 65 00  |s is my message.|
-00000220  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-0000041f
-```
-
 ### Time to actually read from the disk
 
 We'll be using interrupt `13h/02h`: "Disk - Read Sectors into Memory". Looking at the expected register values that [Ralph Brown](http://www.ctyme.com/intr/rb-0607.htm) provides<sup>4</sup> we can get to the follow code:
-
 
 ```assembly
     mov ah, 02h

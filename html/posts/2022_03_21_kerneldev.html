@@ -129,7 +129,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="getting-setup-for-kernel-development">Getting setup for Kernel development</h2>
 <div class="tufte-section">
 <div class="main-text">
-<p>All development will be done on Ubuntu Linux. First, make sure your repositories are up to date with. Then, install nasm<sup>1</sup>. Finally, we will use the QEmu emulator to run our bootloader and kernel. Test that it runs using the below commands. A new window will pop up, but since there are no disks attached it won’t be able to boot.</p>
+<p>All development will be done on Ubuntu Linux. First, make sure your repositories are up to date. Then, install nasm<sup>1</sup>. Finally, we will use the QEmu emulator to run our bootloader and kernel. Test that it runs using the below commands. A new window will pop up, but since there are no disks attached it won’t be able to boot.</p>
 <pre><code>sudo apt update
 sudo apt install nasm
 
@@ -227,7 +227,7 @@ dw 0xAA55 ; dw=define word. Puts bootloader signal</code></pre>
 <div class="tufte-section">
 <div class="main-text">
 <p>We have seen that the pointer registers in the processor are 2 bytes. That means your instruction pointer for example, which is 2 bytes, can point to memory locations <em>(addresses)</em> between bytes number 0 and (2^16) 65,535. However we’ve seen that in real mode, the processor has access to 1Mb of memory, or 1,048,576 bytes. How can we get our pointers to point to values above 65,535?</p>
-<p>The answer is the <em>Segmentation Memory Model</em>. Memory is accessed by the combination of a <em>segment</em> and an <em>offset</em>. This is what the <em>segment registers</em>. There are 4 in the 8086: Code segment <code>cs</code>, Data segment <code>ds</code>, Extra segment <code>es</code> and Stack segment <code>ss</code>. The segment and offset can be combined to calculate the <em>absolute offset</em> (the actual memory location in RAM) by multiplying the segment by 16 (A left shift in hex) and adding the offset<sup>1</sup>. For example, if your segment is <code>0x7C0</code> and your offset (instruction pointer) and origin are both zero. The absolute memory address your program will start executing at is <code>0x7C0 * 16 = 0x7C00</code>. If your offset is <code>0xFF</code>, the absolute address will be <code>0x7CFF</code>. If segment is <code>0xF000</code> and offset is <code>0xFFFF</code>, the absolute memory address is <code>FFFFF</code>, or 1,048,575. This is how you address a megabyte of memory using two 16bit registers. Note that this model means that you can get to an address in multiple ways. For example, if your segment is <code>0x7CF</code> and offset is <code>0x0F</code>, the absolute address is also <code>0x7CFF</code>.</p>
+<p>The answer is the <em>Segmentation Memory Model</em>. Memory is accessed by the combination of a <em>segment</em> and an <em>offset</em>. This is what the <em>segment registers</em> are for. There are 4 in the 8086: Code segment <code>cs</code>, Data segment <code>ds</code>, Extra segment <code>es</code> and Stack segment <code>ss</code>. The segment and offset can be combined to calculate the <em>absolute offset</em> (the actual memory location in RAM) by multiplying the segment by 16 (A left shift in hex) and adding the offset<sup>1</sup>. For example, if your segment is <code>0x7C0</code> and your offset (instruction pointer) and origin are both zero. The absolute memory address your program will start executing at is <code>0x7C0 * 16 = 0x7C00</code>. If your offset is <code>0xFF</code>, the absolute address will be <code>0x7CFF</code>. If segment is <code>0xF000</code> and offset is <code>0xFFFF</code>, the absolute memory address is <code>FFFFF</code>, or 1,048,575. This is how you address a megabyte of memory using two 16bit registers. Note that this model means that you can get to an address in multiple ways. For example, if your segment is <code>0x7CF</code> and offset is <code>0x0F</code>, the absolute address is also <code>0x7CFF</code>.</p>
 <p>Different instructions in the processor’s instruction set use different combinations of registers to determine which absolute address to look at. For example, <code>lodsb</code> which we’ve already seen uses the data segment register and the source index register (shorthanded to <code>ds:si</code>).</p>
 <p>Segment registers can be used in source using the following convention:</p>
 <pre class="assembly"><code>mov byte al, [es:32]</code></pre>
@@ -312,20 +312,6 @@ handle_zero:
     dd if=./message.txt &gt;&gt; ./boot.bin
     dd if=/dev/zero bs=512 count=1 &gt;&gt; ./boot.bin</code></pre>
 <p>The first line is same assemble command we’ve already been using. The second line puts the content of <em>message.txt</em> onto the end of our binary, and the third pads the binary out with null characters until it’s 512 bytes, and therefore a valid sector. You can type <code>make</code> at the command line to compile the project. You can see the content of the binary with <code>hexdump -C ./boot.bin &gt; hex.txt</code>, and opening the text file.</p>
-<pre><code>00000000  ea 05 00 c0 07 fa b8 c0  07 8e d8 8e c0 b8 00 00  |................|
-00000010  8e d0 bc 00 7c fb b4 02  b0 01 b5 00 b6 00 b1 02  |....|...........|
-00000020  bb 00 02 cd 13 72 08 be  00 02 e8 0a 00 eb fe be  |.....r..........|
-00000030  4a 00 e8 02 00 eb fe bb  00 00 ac 3c 00 74 05 e8  |J..........&lt;.t..|
-00000040  03 00 eb f6 c3 b4 0e cd  10 c3 46 61 69 6c 65 64  |..........Failed|
-00000050  20 74 6f 20 6c 6f 61 64  20 73 65 63 74 6f 72 00  | to load sector.|
-00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
-00000200  48 65 6c 6c 6f 20 77 6f  72 6c 64 2c 20 74 68 69  |Hello world, thi|
-00000210  73 20 69 73 20 6d 79 20  6d 65 73 73 61 67 65 00  |s is my message.|
-00000220  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-0000041f</code></pre>
 <h3 id="time-to-actually-read-from-the-disk">Time to actually read from the disk</h3>
 <p>We’ll be using interrupt <code>13h/02h</code>: “Disk - Read Sectors into Memory”. Looking at the expected register values that <a href="http://www.ctyme.com/intr/rb-0607.htm">Ralph Brown</a> provides<sup>4</sup> we can get to the follow code:</p>
 <pre class="assembly"><code>    mov ah, 02h

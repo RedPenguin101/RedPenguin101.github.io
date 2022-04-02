@@ -53,6 +53,10 @@ p {
 	margin-top: 0;
 }
 
+.sidenotes > p {
+	margin-bottom: 1em;
+}
+
 ul, ol {
 	max-width: 26em;
 }
@@ -131,18 +135,15 @@ code {
 
 img {
   width: 100%;
-  margin: auto;
-  display: block;
+}
+
+figure {
+	margin: 0;
 }
 
 figure > img {
   width: 100%;
-  margin: auto;
 	border: 1px solid #EAEAEA;
-  display: block;
-}
-
-figure {
 }
 
 figcaption {
