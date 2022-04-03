@@ -113,8 +113,6 @@ The line `message: db 'Hello World!', 0`, puts a block of data representing the 
 
 Main has been changed to move register `si` ("Source index", used as a data pointer) to the address of our message. The it calls `print`. The `print` subroutine is an elaboration on the "print character" code. The first instructions are the `lodsb` ("load string byte"), which loads the character at `si` into `al`, and increments `si`, moving it to the address of the next character. `cmp` "compares" the value in `al` to 0, and if it is 0 (meaning we are at the end of the string), it jumps to done and returns. Otherwise it jumps back to the loop label
 
-
-
 </div>
 <div class="sidenotes">
 <sup>2</sup> For linux users, it works fine with Wine.
@@ -128,10 +126,12 @@ Main has been changed to move register `si` ("Source index", used as a data poin
 </div>
 </div>
 
-## A Hello World Bootloader
+## Real Mode
 
 <div class="tufte-section">
 <div class="main-text">
+
+### Turning our hello world program into a hello world bootloader
 
 Next we will turn our "hello world" program into a bootloader. That is, the program will be loaded by the BIOS and, when we boot the machine, it will show "Hello World!" on the screen.
 
@@ -184,7 +184,7 @@ qemu-system-x86_64 -hda ./boot.bin
 </div>
 </div>
 
-## Segmentation Memory Model
+### Working with the Segmentation Memory Model
 
 <div class="tufte-section">
 <div class="main-text">
@@ -240,7 +240,7 @@ To reiterate what our code is now doing:
 </div>
 </div>
 
-## Interrupts and the Interrupt Vector Table
+### Interrupts and the Interrupt Vector Table
 
 <div class="tufte-section">
 <div class="main-text">
@@ -292,7 +292,7 @@ handle_zero:
 </div>
 </div>
 
-## Reading from disk
+### Reading from disk
 
 <div class="tufte-section">
 <div class="main-text">
@@ -360,11 +360,35 @@ Here we set up the registers as they need to be to read our message from the 2nd
 </div>
 </div>
 
+## Protected Mode
 
 <div class="tufte-section">
 <div class="main-text">
+
+Up to now we have been working in "Real Mode" or "Compatibility Mode". This is a very limited mode which the processor initially boots into. It executes 16 bit instructions and registers, can only address 1Mb of RAM, and has no memory protection.
+
+Our next step will be to change into _"Protected Mode"_. We move to 32bit instructions and registers, and have 4Gb address space. Most importantly it significantly changes the memory model, and _protects_ that memory, limiting how programs can access memory and hardware. _Ring 0_ is the most privileged, and is where the kernel operates. There are few limits imposed here. You put the processor into _Ring 3_ when running user applications, limiting them to changing memory in their own 'block', preventing them from accessing hardware directly, and limiting the instructions they can run, such as IO.
+
+User programs communicate with the kernel by causing an interrupt. The interrupt will pass control to the kernel, which will switch back to Ring 0, do what it has to do, then pass control back to the user application after switching back to Ring 3.
+
+### Memory schemes change when you are in Protected Mode
+
+In Real Mode, our memory scheme was the Segmentation Model, using the 16bit segment registers to address memory. Protected Mode uses the _Paging Model_. The paging model is an abstraction on top of physical memory. You work with 'virtual' blocks (pages) of memory that map back to different physical locations in RAM. As a result, different programs can 'believe' they are loaded at the same address, so they don't need to think about where other programs are, because they can't see or access them. Programs are effectively sandboxed to the memory space that the kernel has assigned them.<sup>1</sup>
+
+We also switching from using segment registers to _selector_ registers for addressing memory. Each selector points to a data structure which describes a memory range and the permissions of that range.
+
+### Switching to Protected Mode
+
+
 </div>
 <div class="sidenotes">
+
+![Rings](../../images/2021_03_21_kerneldev/rings.png)
+
+![Selectors](../../images/2021_03_21_kerneldev/selectors.png)
+
+<sup>1</sup> Any virtual and physical address need to be divisible by 4,096, which is the basic block size.
+
 </div>
 </div>
 

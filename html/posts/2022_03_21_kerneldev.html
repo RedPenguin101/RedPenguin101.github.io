@@ -86,10 +86,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#the-boot-process">The Boot Process</a></li>
 <li><a href="#getting-setup-for-kernel-development">Getting setup for Kernel development</a></li>
 <li><a href="#assembly-language">Assembly language</a></li>
-<li><a href="#a-hello-world-bootloader">A Hello World Bootloader</a></li>
-<li><a href="#segmentation-memory-model">Segmentation Memory Model</a></li>
+<li><a href="#real-mode">Real Mode</a><ul>
+<li><a href="#working-with-the-segmentation-memory-model">Working with the Segmentation Memory Model</a></li>
 <li><a href="#interrupts-and-the-interrupt-vector-table">Interrupts and the Interrupt Vector Table</a></li>
 <li><a href="#reading-from-disk">Reading from disk</a></li>
+</ul></li>
+<li><a href="#protected-mode">Protected Mode</a></li>
 <li><a href="#bits-byte-binary-and-hex">Bits, byte, binary and hex</a></li>
 </ul>
 </nav>
@@ -180,9 +182,10 @@ main:
 <p><sup>5</sup> Specifically, 10h is a <em>BIOS routine</em>: A function that is defined in the BIOs, and can only be used in compatibility mode.</p>
 </div>
 </div>
-<h2 id="a-hello-world-bootloader">A Hello World Bootloader</h2>
+<h2 id="real-mode">Real Mode</h2>
 <div class="tufte-section">
 <div class="main-text">
+<h3 id="turning-our-hello-world-program-into-a-hello-world-bootloader">Turning our hello world program into a hello world bootloader</h3>
 <p>Next we will turn our “hello world” program into a bootloader. That is, the program will be loaded by the BIOS and, when we boot the machine, it will show “Hello World!” on the screen.</p>
 <p>Create a new folder / project <em>PeachOS</em>. Make a new file <em>boot.asm</em>, and add the following code:</p>
 <pre class="assembly"><code>ORG 0x7c00
@@ -223,7 +226,7 @@ dw 0xAA55 ; dw=define word. Puts bootloader signal</code></pre>
 <p><sup>1</sup> Note that we say <code>0xAA55</code> in the code. This is because bytes are loaded ‘backwards’, with <code>55h</code> being loaded first.</p>
 </div>
 </div>
-<h2 id="segmentation-memory-model">Segmentation Memory Model</h2>
+<h3 id="working-with-the-segmentation-memory-model">Working with the Segmentation Memory Model</h3>
 <div class="tufte-section">
 <div class="main-text">
 <p>We have seen that the pointer registers in the processor are 2 bytes. That means your instruction pointer for example, which is 2 bytes, can point to memory locations <em>(addresses)</em> between bytes number 0 and (2^16) 65,535. However we’ve seen that in real mode, the processor has access to 1Mb of memory, or 1,048,576 bytes. How can we get our pointers to point to values above 65,535?</p>
@@ -261,7 +264,7 @@ start:
 <p><sup>2</sup> Frankly I don’t get why - isn’t this redundant?</p>
 </div>
 </div>
-<h2 id="interrupts-and-the-interrupt-vector-table">Interrupts and the Interrupt Vector Table</h2>
+<h3 id="interrupts-and-the-interrupt-vector-table">Interrupts and the Interrupt Vector Table</h3>
 <div class="tufte-section">
 <div class="main-text">
 <p>Interrupts are like subroutines that you call through ‘interrupt numbers’ rather than memory addresses. There are interrupts in the BIOS - we saw <code>10h 0eh</code> prints a character to the screen - or they can be set up by the programmer. Interrupts are special because they halt the processor, save the current state (meaning what? the registers?) to the stack, execute the interrupt, then restore the pre-interrupt state.</p>
@@ -300,7 +303,7 @@ handle_zero:
 <p><sup>2</sup> wiki.osdev.org/exceptions is a great resource for learning more</p>
 </div>
 </div>
-<h2 id="reading-from-disk">Reading from disk</h2>
+<h3 id="reading-from-disk">Reading from disk</h3>
 <div class="tufte-section">
 <div class="main-text">
 <p>Next we will see how we can read data from a hard disk. Note that we’re not talking about accessing <em>files</em>. Files and the file system are implemented in the Kernel. Or to be more specific, the disk is ‘formatted’ with a particular file system data structure (FAT, EXT4 etc.), and the kernel has drivers which are able to interpret that data structure as files. As far as we are concerned, the disk consists of blocks of data called <em>sectors</em><sup>1</sup>. A sector consists of 512 contiguous bytes. These sectors are read and written in sector blocks, not by accessing individual bytes.</p>
@@ -347,12 +350,25 @@ buffer:</code></pre>
 <p><sup>5</sup> Note that the data is put into <code>ES:BX</code>, the Extra Segment. We have set this to <code>0x7c0</code>, which is the right place.</p>
 </div>
 </div>
+<h2 id="protected-mode">Protected Mode</h2>
 <div class="tufte-section">
 <div class="main-text">
-
+<p>Up to now we have been working in “Real Mode” or “Compatibility Mode”. This is a very limited mode which the processor initially boots into. It executes 16 bit instructions and registers, can only address 1Mb of RAM, and has no memory protection.</p>
+<p>Our next step will be to change into <em>“Protected Mode”</em>. We move to 32bit instructions and registers, and have 4Gb address space. Most importantly it significantly changes the memory model, and <em>protects</em> that memory, limiting how programs can access memory and hardware. <em>Ring 0</em> is the most privileged, and is where the kernel operates. There are few limits imposed here. You put the processor into <em>Ring 3</em> when running user applications, limiting them to changing memory in their own ‘block’, preventing them from accessing hardware directly, and limiting the instructions they can run, such as IO.</p>
+<p>User programs communicate with the kernel by causing an interrupt. The interrupt will pass control to the kernel, which will switch back to Ring 0, do what it has to do, then pass control back to the user application after switching back to Ring 3.</p>
+<h3 id="memory-schemes-change-when-you-are-in-protected-mode">Memory schemes change when you are in Protected Mode</h3>
+<p>In Real Mode, our memory scheme was the Segmentation Model, using the 16bit segment registers to address memory. Protected Mode uses the <em>Paging Model</em>. The paging model is an abstraction on top of physical memory. You work with ‘virtual’ blocks (pages) of memory that map back to different physical locations in RAM. As a result, different programs can ‘believe’ they are loaded at the same address, so they don’t need to think about where other programs are, because they can’t see or access them. Programs are effectively sandboxed to the memory space that the kernel has assigned them.<sup>1</sup></p>
+<p>We also switching from using segment registers to <em>selector</em> registers for addressing memory. Each selector points to a data structure which describes a memory range and the permissions of that range.</p>
+<h3 id="switching-to-protected-mode">Switching to Protected Mode</h3>
 </div>
 <div class="sidenotes">
-
+<figure>
+<img src="../../images/2021_03_21_kerneldev/rings.png" alt="Rings" /><figcaption>Rings</figcaption>
+</figure>
+<figure>
+<img src="../../images/2021_03_21_kerneldev/selectors.png" alt="Selectors" /><figcaption>Selectors</figcaption>
+</figure>
+<p><sup>1</sup> Any virtual and physical address need to be divisible by 4,096, which is the basic block size.</p>
 </div>
 </div>
 <div class="tufte-section">
