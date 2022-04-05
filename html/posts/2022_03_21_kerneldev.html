@@ -91,7 +91,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#interrupts-and-the-interrupt-vector-table">Interrupts and the Interrupt Vector Table</a></li>
 <li><a href="#reading-from-disk">Reading from disk</a></li>
 </ul></li>
-<li><a href="#protected-mode">Protected Mode</a></li>
+<li><a href="#protected-mode">Protected Mode</a><ul>
+<li><a href="#switching-to-protected-mode">Switching to Protected Mode</a></li>
+</ul></li>
+<li><a href="#building-a-c-compiler">Building a C Compiler</a></li>
 <li><a href="#bits-byte-binary-and-hex">Bits, byte, binary and hex</a></li>
 </ul>
 </nav>
@@ -359,7 +362,6 @@ buffer:</code></pre>
 <h3 id="memory-schemes-change-when-you-are-in-protected-mode">Memory schemes change when you are in Protected Mode</h3>
 <p>In Real Mode, our memory scheme was the Segmentation Model, using the 16bit segment registers to address memory. Protected Mode uses the <em>Paging Model</em>. The paging model is an abstraction on top of physical memory. You work with ‘virtual’ blocks (pages) of memory that map back to different physical locations in RAM. As a result, different programs can ‘believe’ they are loaded at the same address, so they don’t need to think about where other programs are, because they can’t see or access them. Programs are effectively sandboxed to the memory space that the kernel has assigned them.<sup>1</sup></p>
 <p>We also switching from using segment registers to <em>selector</em> registers for addressing memory. Each selector points to a data structure which describes a memory range and the permissions of that range.</p>
-<h3 id="switching-to-protected-mode">Switching to Protected Mode</h3>
 </div>
 <div class="sidenotes">
 <figure>
@@ -371,17 +373,125 @@ buffer:</code></pre>
 <p><sup>1</sup> Any virtual and physical address need to be divisible by 4,096, which is the basic block size.</p>
 </div>
 </div>
+<h3 id="switching-to-protected-mode">Switching to Protected Mode</h3>
 <div class="tufte-section">
 <div class="main-text">
+<p>We will use the instructions per the <a href="https://wiki.osdev.org/Protected_Mode">OSDev wiki</a>. The instruction called <code>lgdt</code> is the critical one. This stands for “Load Global Descriptor Table”.</p>
+<pre class="assembly"><code>cli            ; disable interrupts
+lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
+mov eax, cr0 
+or al, 1       ; set PE (Protection Enable) bit in CR0 (Control Register 0)
+mov cr0, eax
+ 
+; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor) 
+; to load CS with proper PM32 descriptor)
+jmp 08h:PModeMain
+ 
+PModeMain:
+; load DS, ES, FS, GS, SS, ESP</code></pre>
+<p>The <a href="https://wiki.osdev.org/Global_Descriptor_Table"><em>Global Descriptor Table</em></a> (GDT) contains entries telling the CPU about memory Segments. The GDT contains pointers to GDT Entries - the descriptors themselves. The GDT entries describe the memory and the access rights. While we will need to set this up, we’re going gloss over a lot of the detail and use default values, because our kernel is going to use paging, meaning after a point this will no longer be relevant. The following is the relevant code, which starts after the <code>start</code> block.</p>
+<pre class="assembly"><code>.load_protected:
+    cli
+    lgdt[gdt_descriptor]
+    mov eax, cr0
+    or eax, 0x1
+    mov cr0, eax
+    jmp CODE_SEG:load32 ; we&#39;ll define what CODE_SEG is later
 
+gdt_start:
+gdt_null:
+    dd 0x0
+    dd 0x0
+
+; offset 0x8
+gdt_code:     ; CS should point to this
+    dw 0xFFFF ; Seg Limit first 0-15 bits
+    dw 0      ; base first 0-15 bits
+    db 0      ; base 16-23 bits
+    db 0x9a   ; access byte
+    db 11001111b ; hi+lo 4bit flags
+    db 0
+
+; offset 0x10
+gdt_data:     ; DS/SS/ES/FS/GS
+    dw 0xFFFF ; Seg Limit first 0-15 bits
+    dw 0      ; base first 0-15 bits
+    db 0      ; base 16-23 bits
+    db 0x92   ; access byte
+    db 11001111b ; hi+lo 4bit flags
+    db 0
+
+gdt_end:
+gdt_descriptor:
+    dw gdt_end - gdt_start-1
+    dd gdt_start</code></pre>
+<p>Starting from the <code>gdt_start</code> label: The first entry in the GDT is <code>NULL</code>. The two <code>dd 0x0</code> creates a “null segment” 8 bytes/64bits of nulls. From <code>gdt_code</code> we create our entry, which is the selector which will link to our <em>Code Segment</em>. Again, don’t worry too much about what these are for now, they are basically default values. The access byte is a bitmask containing flags. We put in another entry, <code>gdt_data</code>, which will be linked to all of our other Segments: Data, Stack, Extra, and two General Segments, G and F. It’s identical with the exception of the access byte.</p>
+<p>Next we provide some descriptors, firstly the size of our GDT, and secondly the location of the GDT in the program. These will be used by <code>lgdt</code>. Finally we set up our <code>load_protected</code> block. This loads the GDT, defaults the control register <code>cr0</code> to <code>0x1</code> if null, and jumps to <code>CODE_SEG:load32</code>.</p>
+<p>Before actually writing <code>load32</code> we need to do a couple of things. One thing we need to change is our origin, which is our offset. Currently this is set to 0. Previously this was fine, since we jumped straight to where the code was being loaded in memory: segment <code>0x7c0</code>. Now, however, our GDT descriptor will point to <code>0:gdt_descriptor</code>. So change the ORG to <code>0x7C00</code>. A couple of other things will need to change in sympathy. We also want to define <code>CODE_SEG</code> and <code>DATA_SEG</code>, which will point to entries in our GDT.</p>
+<pre class="assembly"><code>ORG 0x7C00 ; changed from 0
+BITS 16
+
+CODE_SEG equ gdt_code - gdt_start ; defines CODE_SEG as the offset from GDT start
+DATA_SEG equ gdt_data - gdt_start ; same for DATA_SEG
+
+jmp 0:start ; absolute 0x7c0 (start is at 0x7c05)
+
+; since our origin is now 0x7c00, our segments need to 0x00 (???)
+start: 
+    cli 
+    mov ax, 0x00
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7c00
+    sti </code></pre>
+<p>Now for <code>load32</code>. First, change into 32bit mode. Here we mostly just setup registers (Code segment register is already set by the origin?). We also point the stack frame/stack pointer registers <code>ebp</code> and <code>esp</code>.</p>
+<pre class="assembly"><code>[BITS 32]
+load32:
+    mov ax, DATA_SEG
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    mov ebp, 0x00200000
+    mov esp, ebp
+    jmp $</code></pre>
+<h3 id="testing">Testing</h3>
+<p>We can test this with the GNU Debugger, gdp. You might need to install it.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb15-1" title="1">$ <span class="fu">gdb</span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="kw">(</span><span class="fu">gdb</span><span class="kw">)</span> <span class="ex">target</span> remote <span class="kw">|</span> <span class="ex">qemu-system-x86_64</span> -hda ./bin/boot.bin -S -gbd stdio</a></code></pre></div>
+<p>Enter <code>c</code> to continue, your <code>qemu</code> should boot. Send a <code>SIGINT</code> with <code>Ctrl+c</code>. You should see: <code>Program received signal SIGINT, Interrupt. 0x0000000000007c5b in ?? ()</code>. This indicates the program is currently executing at RAM location <code>0x7c5b</code>. If you type <code>layout asm</code>, you can see the value in memory at <code>0x7c5b</code>, and see that it is the infinite jump <code>jmp $</code> at the end of our load routine. You can also type <code>info registers</code> and see that your code segment register is set to 8, and the other ones to 16 (<code>0x10</code>).</p>
+<p>You are now in protected / 32 bit mode! Note that this means you can’t talk to the BIOS directly anymore.</p>
+<h3 id="enabling-a20-line">Enabling A20 Line</h3>
+<p>The <a href="https://wiki.osdev.org/A20_Line">A20 Line</a> is necessary to access the 21st bit (bit 20) of any 32bit/4byte block. The reason that this is disabled by default is some obscure compatibility issue, which isn’t important. You can read more about it at the above link if you want. The method for doing this is very simple: 3 instructions in the <code>load32</code> section. The <code>in</code> and <code>out</code> instructions read and write to processor bus respectively. Test this with gdb.</p>
+<pre class="assemly"><code>    ;snip
+    mov esp, ebp
+
+    ; enable A20 line
+    in al, 0x92
+    or al, 2
+    out 0x92, al
+
+    jmp $</code></pre>
 </div>
 <div class="sidenotes">
-
+<figure>
+<img src="../../images/2021_03_21_kerneldev/gdt.png" alt="GDT Entry" /><figcaption>GDT Entry</figcaption>
+</figure>
 </div>
 </div>
+<h2 id="building-a-c-compiler">Building a C Compiler</h2>
 <div class="tufte-section">
 <div class="main-text">
-
+<p>Assembly is all well and good, but it’s a pain to write an OS using it. Ideally we want to write it in C. To do this, we need a C compiler, which will turn C into Assembly and then into machine code. We will be compiling the GCC compiler. We can’t use GCC directly, because it’s compiled for linux. What we need is a <a href="https://wiki.osdev.org/GCC_Cross-Compiler"><em>cross compiler</em></a>. That page has a full guide, and the video goes through the steps, so I won’t replicate it here, but bear in mind it takes a <strong>long time</strong>, like 1 hour plus.</p>
+<p>Next we need to write a build script that will make working with C directly easier by setting the path variable. Create a <code>build.sh</code>, and add the following, and make it executable with <code>chmod +x build.sh</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1"><span class="co">#/bin/bash</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="bu">export</span> <span class="va">PREFIX=</span><span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/opt/cross&quot;</span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="bu">export</span> <span class="va">TARGET=</span>i686-elf</a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="bu">export</span> <span class="va">PATH=</span><span class="st">&quot;</span><span class="va">$PREFIX</span><span class="st">/bin:</span><span class="va">$PATH</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb17-5" title="5"></a>
+<a class="sourceLine" id="cb17-6" title="6"><span class="fu">make</span> all</a></code></pre></div>
 </div>
 <div class="sidenotes">
 
