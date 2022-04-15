@@ -492,6 +492,132 @@ load32:
 <a class="sourceLine" id="cb17-4" title="4"><span class="bu">export</span> <span class="va">PATH=</span><span class="st">&quot;</span><span class="va">$PREFIX</span><span class="st">/bin:</span><span class="va">$PATH</span><span class="st">&quot;</span></a>
 <a class="sourceLine" id="cb17-5" title="5"></a>
 <a class="sourceLine" id="cb17-6" title="6"><span class="fu">make</span> all</a></code></pre></div>
+<p>The rest of this section is going to revolve around breaking out our kernel into it’s own file. We’ll end up with a <code>boot.asm</code> and <code>kernel.asm</code>, and then we will combine the output binaries of these two into an <code>os.bin</code>, which will be our final image, with the bootloader being the first sector and the kernel being the remainder, with the booloader loading the kernel into memory.</p>
+<pre class="ld"><code>ENTRY(_start)
+OUTPUT_FORMAT(binary)
+SECTIONS
+{
+  . = 1M;
+  .text : 
+  {
+    *(.text)
+  }
+
+  .rodata :
+  {
+    *(.rodata)
+  }
+
+  .data :
+  {
+    *(.data)
+  }
+
+  .bss :
+  {
+    *(COMMON)
+    *(.bss)
+  }
+}</code></pre>
+<p>Don’t worry too much about what all this does for now, but in summary we are saying that our sections (and therefore our kernel) will start at memory address <code>1M</code>: address at 1Mb, 1,048,576 in decimal or 100,000 hex.</p>
+<p>Next we modify our makefile so it builds the whole project:</p>
+<pre class="make"><code>FILES = ./build/kernel.asm.o
+
+all: ./bin/boot.bin ./bin/kernel.bin
+    rm -f ./bin/os.bin
+    dd if=./bin/boot.bin &gt;&gt; ./bin/os.bin
+    dd if=./bin/kernel.bin &gt;&gt; ./bin/os.bin
+    dd if=/dev/zero bs=512 count=100 &gt;&gt; ./bin/os.bin
+
+./bin/kernel.bin: $(FILES)
+    i686-elf-ld -g -relocatable $(FILES) -o ./build/kernelfull.o
+    i686-elf-gcc -T ./src/linker.ld -o ./bin/kernel.bin -ffreestanding -O0 -nostdlib ./build/kernelfull.o
+
+./bin/boot.bin: ./src/boot/boot.asm
+    nasm -f bin ./src/boot/boot.asm -o ./bin/boot.bin
+
+./build/kernel.asm.o: ./src/kernel.asm
+    nasm -f elf -g ./src/kernel.asm -o ./build/kernel.asm.o
+
+clean:
+    rm -f ./bin/boot.bin
+    rm -f ./bin/kernel.bin
+    rm -f $(FILES)
+    rm -f ./build/kernelfull.o</code></pre>
+<p>Again, the details of how make works are not in scope of this course, but in summary we are building the kernel asm into an <code>asm.o</code> (an “object file”), building that into a <code>kernel.bin</code> using gcc and our linker, building <code>boot.bin</code> and finally combining those two bins into <code>os.bin</code>. Note in particular the <code>-g</code> flag that is used a couple of times. This will allow us to use debugging symbols later on. Note also the padding of nulls we add to the end of <code>os.bin</code>: out to 100 sectors of 512 bytes. This will allow our kernel to grow without us having to change anything.</p>
+<p>Back in <code>kernel.asm</code>, there is a reference to <code>DATA_SEG</code>, but this is no longer defined. So add it in. Recall that the addresses correspond to the entries in the Global Descriptor Table. The <code>global _start</code> corresponds to our <code>ENTRY(_start)</code> in the linker:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb20-1" title="1">[BITS <span class="dv">32</span>]</a>
+<a class="sourceLine" id="cb20-2" title="2">global _start</a>
+<a class="sourceLine" id="cb20-3" title="3">CODE_SEG <span class="pp">equ</span><span class="bn"> 0x08</span></a>
+<a class="sourceLine" id="cb20-4" title="4">DATA_SEG <span class="pp">equ</span><span class="bn"> 0x10</span></a>
+<a class="sourceLine" id="cb20-5" title="5"></a>
+<a class="sourceLine" id="cb20-6" title="6"><span class="fu">_start:</span></a>
+<a class="sourceLine" id="cb20-7" title="7">    <span class="bu">mov</span> <span class="kw">ax</span>, DATA_SEG</a>
+<a class="sourceLine" id="cb20-8" title="8">    <span class="co">; snip</span></a></code></pre></div>
+<h3 id="next-we-need-to-write-a-driver-and-load-the-kernel-into-memory">Next we need to write a driver and load the Kernel into memory</h3>
+<p>We need to load the Kernel into memory. Given we are now in protected mode, we can’t access the BIOS function like we did earlier, so we need to write a quick disk driver, which will tell our bootloader how to interact with the ATA Protocol disk controller by spitting data onto the processor bus. Add the following to your <code>boot.asm</code>. Don’t worry too much about the detail beyond the comments</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb21-1" title="1">[BITS <span class="dv">32</span>]</a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="fu">load32:</span></a>
+<a class="sourceLine" id="cb21-3" title="3">    <span class="bu">mov</span> <span class="kw">eax</span>, <span class="dv">1</span>         <span class="co">; LBA: starting sector we want to load from disk, 1</span></a>
+<a class="sourceLine" id="cb21-4" title="4">    <span class="bu">mov</span> <span class="kw">ecx</span>, <span class="dv">100</span>       <span class="co">; sector we want to load to, because we wrote 100 sectors of nulls in make</span></a>
+<a class="sourceLine" id="cb21-5" title="5">    <span class="bu">mov</span> <span class="kw">edi</span><span class="bn">, 0x0100000 </span><span class="co">; 1Mb in hex, where we want to load our Kernel into RAM </span></a>
+<a class="sourceLine" id="cb21-6" title="6">    <span class="bu">call</span> ata_lba_read  <span class="co">; load the kernel to memory</span></a>
+<a class="sourceLine" id="cb21-7" title="7">    <span class="bu">jmp</span> CODE_SEG:<span class="bn">0x0100000 </span><span class="co">; jump to the memory address to where we loaded the kernel</span></a>
+<a class="sourceLine" id="cb21-8" title="8"></a>
+<a class="sourceLine" id="cb21-9" title="9"><span class="co">; this is like a &#39;dummy disk driver&#39; to load our kernel. We&#39;ll write a proper one in C later</span></a>
+<a class="sourceLine" id="cb21-10" title="10"><span class="fu">ata_lba_read:</span></a>
+<a class="sourceLine" id="cb21-11" title="11">    <span class="bu">mov</span> <span class="kw">ebx</span>, <span class="kw">eax</span> <span class="co">; backup LBA</span></a>
+<a class="sourceLine" id="cb21-12" title="12">    <span class="co">; Send highest 8 bits of LBA to hard disk controller</span></a>
+<a class="sourceLine" id="cb21-13" title="13">    <span class="bu">shr</span> <span class="kw">eax</span>, <span class="dv">24</span>   <span class="co">; shift eax 24 bits to the right</span></a>
+<a class="sourceLine" id="cb21-14" title="14">    <span class="bu">or</span> <span class="kw">eax</span>, <span class="bn">0xE0</span>  <span class="co">; selects the master drive</span></a>
+<a class="sourceLine" id="cb21-15" title="15">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1F6 </span><span class="co">; port on the Hard Disk</span></a>
+<a class="sourceLine" id="cb21-16" title="16">    <span class="bu">out</span> <span class="kw">dx</span>, <span class="kw">al</span></a>
+<a class="sourceLine" id="cb21-17" title="17"></a>
+<a class="sourceLine" id="cb21-18" title="18">    <span class="co">; Send total sectors</span></a>
+<a class="sourceLine" id="cb21-19" title="19">    <span class="bu">mov</span> <span class="kw">eax</span>, <span class="kw">ecx</span></a>
+<a class="sourceLine" id="cb21-20" title="20">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1F2</span></a>
+<a class="sourceLine" id="cb21-21" title="21">    <span class="bu">out</span> <span class="kw">dx</span>, <span class="kw">al</span></a>
+<a class="sourceLine" id="cb21-22" title="22"></a>
+<a class="sourceLine" id="cb21-23" title="23">    <span class="co">; send some more bits to the disk controller</span></a>
+<a class="sourceLine" id="cb21-24" title="24">    <span class="bu">mov</span> <span class="kw">eax</span>, <span class="kw">ebx</span> <span class="co">; restore backup LBA</span></a>
+<a class="sourceLine" id="cb21-25" title="25">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1F3</span></a>
+<a class="sourceLine" id="cb21-26" title="26">    <span class="bu">out</span> <span class="kw">dx</span>, <span class="kw">al</span></a>
+<a class="sourceLine" id="cb21-27" title="27"></a>
+<a class="sourceLine" id="cb21-28" title="28">    <span class="bu">mov</span> <span class="kw">eax</span>, <span class="kw">ebx</span></a>
+<a class="sourceLine" id="cb21-29" title="29">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1F4</span></a>
+<a class="sourceLine" id="cb21-30" title="30">    <span class="bu">shr</span> <span class="kw">eax</span>, <span class="dv">8</span></a>
+<a class="sourceLine" id="cb21-31" title="31">    <span class="bu">out</span> <span class="kw">dx</span>, <span class="kw">al</span></a>
+<a class="sourceLine" id="cb21-32" title="32"></a>
+<a class="sourceLine" id="cb21-33" title="33">    <span class="co">; send upper 16 bits of LBA</span></a>
+<a class="sourceLine" id="cb21-34" title="34">    <span class="bu">mov</span> <span class="kw">eax</span>, <span class="kw">ebx</span></a>
+<a class="sourceLine" id="cb21-35" title="35">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1F5</span></a>
+<a class="sourceLine" id="cb21-36" title="36">    <span class="bu">shr</span> <span class="kw">eax</span>, <span class="dv">16</span></a>
+<a class="sourceLine" id="cb21-37" title="37">    <span class="bu">out</span> <span class="kw">dx</span>, <span class="kw">al</span></a>
+<a class="sourceLine" id="cb21-38" title="38"></a>
+<a class="sourceLine" id="cb21-39" title="39">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1f7</span></a>
+<a class="sourceLine" id="cb21-40" title="40">    <span class="bu">mov</span> <span class="kw">al</span><span class="bn">, 0x20</span></a>
+<a class="sourceLine" id="cb21-41" title="41">    <span class="bu">out</span> <span class="kw">dx</span>, <span class="kw">al</span></a>
+<a class="sourceLine" id="cb21-42" title="42"></a>
+<a class="sourceLine" id="cb21-43" title="43">    <span class="co">; read sectors</span></a>
+<a class="sourceLine" id="cb21-44" title="44"><span class="fu">.next_sector:</span></a>
+<a class="sourceLine" id="cb21-45" title="45">    <span class="bu">push</span> <span class="kw">ecx</span></a>
+<a class="sourceLine" id="cb21-46" title="46"></a>
+<a class="sourceLine" id="cb21-47" title="47">    <span class="co">;checking if we need to read</span></a>
+<a class="sourceLine" id="cb21-48" title="48"><span class="fu">.try_again:</span></a>
+<a class="sourceLine" id="cb21-49" title="49">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1f7</span></a>
+<a class="sourceLine" id="cb21-50" title="50">    <span class="bu">in</span> <span class="kw">al</span>, <span class="kw">dx</span></a>
+<a class="sourceLine" id="cb21-51" title="51">    <span class="bu">test</span> <span class="kw">al</span>, <span class="dv">8</span></a>
+<a class="sourceLine" id="cb21-52" title="52">    <span class="bu">jz</span> .try_again</a>
+<a class="sourceLine" id="cb21-53" title="53"></a>
+<a class="sourceLine" id="cb21-54" title="54">    <span class="co">; read 256 words at a time</span></a>
+<a class="sourceLine" id="cb21-55" title="55">    <span class="bu">mov</span> <span class="kw">ecx</span>, <span class="dv">256</span></a>
+<a class="sourceLine" id="cb21-56" title="56">    <span class="bu">mov</span> <span class="kw">dx</span><span class="bn">, 0x1F0</span></a>
+<a class="sourceLine" id="cb21-57" title="57">    rep <span class="bu">insw</span> <span class="co">; input word from port per DX into memloc ES:EDI - we&#39;ve set EDI to 1Mb</span></a>
+<a class="sourceLine" id="cb21-58" title="58">    <span class="bu">pop</span> <span class="kw">ecx</span></a>
+<a class="sourceLine" id="cb21-59" title="59">    <span class="bu">loop</span> .next_sector</a>
+<a class="sourceLine" id="cb21-60" title="60">    <span class="co">; end of reading sectors into memory</span></a>
+<a class="sourceLine" id="cb21-61" title="61">    <span class="bu">ret</span></a></code></pre></div>
+<h3 id="alignment-and-solving-alignment-issues-with-c-code-and-asm.">Alignment and solving alignment issues with C code and ASM.</h3>
 </div>
 <div class="sidenotes">
 

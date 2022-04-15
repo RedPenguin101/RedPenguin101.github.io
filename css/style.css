@@ -48,7 +48,7 @@ p {
 	margin-top: 0;
 }
 
-.main-text > p + p {
+p + p {
 	text-indent: 1.5em;
 	margin-top: 0;
 }

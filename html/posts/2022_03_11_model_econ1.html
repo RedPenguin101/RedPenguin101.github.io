@@ -82,80 +82,92 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 <nav id="TOC">
 <ul>
-<li><a href="#the-basics">The basics</a></li>
-<li><a href="#deciding-what-to-produce">Deciding what to produce</a></li>
+<li><a href="#the-model">The model</a><ul>
+<li><a href="#a-day-in-the-life-of-an-agent">A day in the life of an agent</a></li>
+<li><a href="#an-agent-decides-what-to-produce-on-a-given-day-by-what-will-create-for-them-the-most-value">An agent decides what to produce on a given day by what will create for them the most value</a></li>
 <li><a href="#consumption-goals-and-burgers">Consumption goals and burgers</a></li>
 <li><a href="#the-market-matching-trades">The market: Matching trades</a></li>
 <li><a href="#the-market-price-adjustment">The market: Price adjustment</a></li>
-<li><a href="#the-api">The API</a></li>
+<li><a href="#does-inventory-have-a-shelf-life">Does inventory have a shelf life?</a></li>
+</ul></li>
+<li><a href="#running-the-model">Running the model</a></li>
 </ul>
 </nav>
-<p>This model economy is based on Conrad Barski’s <a href="https://github.com/drcode/EconIsle">EconIsle</a>.</p>
-<h1 id="the-basics">The basics</h1>
-<p>The model has:</p>
-<ul>
-<li><strong>Agents</strong>: individuals who have
-<ul>
-<li><em>desires</em>, some goal, some gauge of ‘satisfaction’ or ‘happiness’ - here expressed in number of burgers, a view not dissimilar to my own.</li>
-<li>have the ability to <em>produce</em>, with differing capabilities, resources, and in effect act to maximize their productivity.</li>
-<li><em>possessions</em>, though only of inventory, not of capital, and with the exception of money, the current simulation doesn’t allow for creation of surplus.</li>
-<li>The ability to <em>trade</em> on…</li>
-</ul></li>
-<li>A <strong>Marketplace</strong> where goods can be exchanged, and a price mechanism for adjusting prices in response to supply and demand. It works by sellers placing ‘sell’ orders (which all have the same price) and buyers meeting them.</li>
-</ul>
+<p>This model economy is based on Conrad Barski’s <a href="https://github.com/drcode/EconIsle">EconIsle</a>. The Code for the model is in <a href="https://github.com/RedPenguin101/model-economy-1">this repo</a>.</p>
+<h2 id="the-model">The model</h2>
+<p>The model has <strong>Agents</strong>: individuals who have <em>desires</em>. Some goal, some gauge of ‘satisfaction’ or ‘happiness’. Here it is expressed in number of burgers, a view not dissimilar to my own<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.Burgers are made by combining one unit of each of a set of resources, Mammoth, Lettuce, Bread, and Ketchup. Agents have the ability to <em>produce</em>, with differing capabilities, these resources, and in effect act to maximize their productivity. They have <em>possessions</em>, though only of inventory, not of capital.</p>
+<p>They have the ability to <em>trade</em> on a <strong>Marketplace</strong> where goods can be exchanged, and there is a price mechanism for adjusting prices in response to supply and demand. It works by sellers placing ‘sell’ orders (which all have the same price) and buyers meeting them.</p>
+<h3 id="a-day-in-the-life-of-an-agent">A day in the life of an agent</h3>
 <p>The sequence of events in this model is:</p>
 <ol type="1">
 <li>Agents decide what to produce during the day</li>
-<li>They produce resources</li>
-<li>They decide how much of the produced resource to sell on the market, and how much for</li>
-<li>They decide on their ‘consumption goals’</li>
-<li>They go to market and buy things to meet those consumption goals</li>
-<li>They consume</li>
+<li>They produce the resources</li>
+<li>They decide how many burgers they want to aim to consume</li>
+<li>They make buy orders and sell orders based on that aim</li>
+<li>They go to market to trade</li>
+<li>They make and consume the burgers.</li>
 </ol>
 <p>Or more broadly, 3 phases: produce, trade, consume.</p>
-<h1 id="deciding-what-to-produce">Deciding what to produce</h1>
-<p>Assume there are 4 resources, against taken from Barski’s model: bread, mammoth, ketchup and lettuce. Each has a ‘difficulty’ associated with farming it. The lower the number, the harder it is to farm.</p>
-<p>Every agent can produce any resource, but the number of units of a resource each agent can produce varies. For example, agent 1 might be able to produce 5 units of mammoth per day, another can produce only 3.</p>
+<h3 id="an-agent-decides-what-to-produce-on-a-given-day-by-what-will-create-for-them-the-most-value">An agent decides what to produce on a given day by what will create for them the most value</h3>
+<p>Assume there are 4 resources, against taken from Barski’s model: bread, mammoth, ketchup and lettuce. Each has a ‘ease’ associated with farming it. The lower the number, the harder it is to farm. Each Agent, in initialization of the simulation, is assigned a <em>capability</em>: how good they are at farming a given resource. Every agent can produce any resource, but the number of units of a resource each agent can produce varies. For example, agent 1 might be able to produce 5 units of mammoth per day, another can produce only 3.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(<span class="bu">def</span><span class="fu"> resources </span>{<span class="at">:mammoth</span> {<span class="at">:id</span> <span class="at">:mammoth</span> <span class="at">:ease</span> <span class="dv">4</span> <span class="at">:initial-price</span> <span class="dv">200</span>}</a>
+<a class="sourceLine" id="cb1-2" title="2">                <span class="at">:ketchup</span> {<span class="at">:id</span> <span class="at">:ketchup</span> <span class="at">:ease</span> <span class="dv">8</span> <span class="at">:initial-price</span> <span class="dv">200</span>}</a>
+<a class="sourceLine" id="cb1-3" title="3">                <span class="at">:lettuce</span> {<span class="at">:id</span> <span class="at">:lettuce</span> <span class="at">:ease</span> <span class="dv">6</span> <span class="at">:initial-price</span> <span class="dv">200</span>}</a>
+<a class="sourceLine" id="cb1-4" title="4">                <span class="at">:bread</span>   {<span class="at">:id</span> <span class="at">:bread</span>   <span class="at">:ease</span> <span class="dv">6</span> <span class="at">:initial-price</span> <span class="dv">200</span>}})</a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">(create-agent <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb1-7" title="7">=&gt;</a>
+<a class="sourceLine" id="cb1-8" title="8">{<span class="at">:id</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb1-9" title="9"> <span class="at">:money</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb1-10" title="10"> <span class="at">:inventory</span>             {<span class="at">:mammoth</span> <span class="dv">0</span>, <span class="at">:ketchup</span> <span class="dv">0</span>, <span class="at">:lettuce</span> <span class="dv">0</span>, <span class="at">:bread</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb1-11" title="11"> <span class="at">:production-efficiency</span> {<span class="at">:mammoth</span> <span class="dv">7</span>, <span class="at">:ketchup</span> <span class="dv">6</span>, <span class="at">:lettuce</span> <span class="dv">8</span>, <span class="at">:bread</span> <span class="dv">3</span>}}]</a></code></pre></div>
 <p>In this circumstance, how does an agent decide what to produce on a given day? The ‘optimal’ answer is whatever will give them the most money if they sell it on the open market. So if mammoth has a price of $400, and they can produce 3 mammoth, the value is $1200. If the price of bread is $200 but the agent can produce 7, that’s $1400, so the agent should produce bread.</p>
 <p>The general idea is that the agent has a concept of ‘value’ that they are trying to maximize, and can look at the state of the world to figure out what action maximizes that value.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(production-strategy state) =&gt; <span class="at">:bread</span></a></code></pre></div>
-<h1 id="consumption-goals-and-burgers">Consumption goals and burgers</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(agent-decide-production</a>
+<a class="sourceLine" id="cb2-2" title="2"> {<span class="at">:id</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb2-3" title="3">  <span class="at">:money</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb2-4" title="4">  <span class="at">:inventory</span> {<span class="at">:mammoth</span> <span class="dv">0</span>, <span class="at">:ketchup</span> <span class="dv">0</span>, <span class="at">:lettuce</span> <span class="dv">0</span>, <span class="at">:bread</span> <span class="dv">0</span>},</a>
+<a class="sourceLine" id="cb2-5" title="5">  <span class="at">:production-efficiency</span> {<span class="at">:mammoth</span> <span class="dv">7</span>, <span class="at">:ketchup</span> <span class="dv">6</span>, <span class="at">:lettuce</span> <span class="dv">8</span>, <span class="at">:bread</span> <span class="dv">3</span>}}</a>
+<a class="sourceLine" id="cb2-6" title="6"> {<span class="at">:mammoth</span> <span class="dv">200</span>, <span class="at">:ketchup</span> <span class="dv">200</span>, <span class="at">:lettuce</span> <span class="dv">200</span>, <span class="at">:bread</span> <span class="dv">200</span>})</a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">;; =&gt; :lettuce</span></a></code></pre></div>
+<h3 id="consumption-goals-and-burgers">Consumption goals and burgers</h3>
 <p>The production decision uses ‘money’ as a value measure. While this is convenient, in this model money is only a proximate value. The real goal of the agents is something else: to produce burgers. Money is just a means to that end.</p>
 <p>A burger is produced by combining one of each of the four resources. An agent therefore needs to be able to figure out how many burgers they can produce, and buy the necessary ingredients on the open market.</p>
 <p>The agent needs to be able to generate actions (market buys/sells) based on a strategy that they have.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(generate-actions state strategy) =&gt; [[<span class="at">:buy</span> <span class="at">:mammoth</span> <span class="dv">5</span>], ,,,]</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(generate-orders state agent-id) =&gt; [[<span class="at">:buy</span> <span class="at">:mammoth</span> <span class="dv">0</span> <span class="dv">5</span>], ,,,]</a></code></pre></div>
 <p>Our initial strategy will be:</p>
 <ol type="1">
 <li>The agent figures out, based on their current money, inventory, and resource prices, how many burgers they could make if they were to buy resources on the open market</li>
 <li>They calculate their surplus: their remaining resources if they were to make the burgers from step 1 - e.g. If they have 5 lettuce and plan to make 3 burgers, they will have a surplus of 2 unused lettuce</li>
 <li>They create buy orders for the former, and sell orders from the latter.</li>
 </ol>
-<h1 id="the-market-matching-trades">The market: Matching trades</h1>
-<p>Key to this is the functioning of the marketplace.</p>
-<p>This model makes the simplification that there is a single daily price for each resource, and that any buy and sell transactions are made at that price.</p>
-<p>The market then goes through a process of…reconciliation? There must be a better word for it than that. Buys are matched against sells.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(match-trades trades) =&gt; {<span class="dv">0</span> {<span class="at">:mammoth</span> <span class="dv">3</span>, ,,,},,,}</a></code></pre></div>
-<p>The return value here is the resources that each agent (the key-value) ends up with after matching.</p>
-<h1 id="the-market-price-adjustment">The market: Price adjustment</h1>
-<h1 id="the-api">The API</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(turn state)</a>
-<a class="sourceLine" id="cb4-2" title="2"></a>
-<a class="sourceLine" id="cb4-3" title="3">(<span class="bu">defn</span><span class="fu"> turn </span>[state]</a>
-<a class="sourceLine" id="cb4-4" title="4">  (<span class="kw">-&gt;</span> state</a>
-<a class="sourceLine" id="cb4-5" title="5">      produce</a>
-<a class="sourceLine" id="cb4-6" title="6">      trade</a>
-<a class="sourceLine" id="cb4-7" title="7">      consume))</a>
-<a class="sourceLine" id="cb4-8" title="8"></a>
-<a class="sourceLine" id="cb4-9" title="9">(<span class="bu">defn</span><span class="fu"> produce </span>[state]</a>
-<a class="sourceLine" id="cb4-10" title="10">  (<span class="kw">reduce</span> agent-produce state (<span class="kw">range</span> <span class="dv">0</span> agent-quant)))</a>
-<a class="sourceLine" id="cb4-11" title="11"></a>
-<a class="sourceLine" id="cb4-12" title="12">(<span class="bu">defn</span><span class="fu"> agent-produce </span>[state agent-id]</a>
-<a class="sourceLine" id="cb4-13" title="13">  (<span class="kw">let</span> [<span class="kw">agent</span> (<span class="kw">get-in</span> state [<span class="at">:agents</span> agent-id])</a>
-<a class="sourceLine" id="cb4-14" title="14">        resouce ((<span class="at">:production-strategy</span> <span class="kw">agent</span>) state)</a>
-<a class="sourceLine" id="cb4-15" title="15">        production (<span class="kw">get-in</span> <span class="kw">agent</span> [<span class="at">:skills</span> resource])]</a>
-<a class="sourceLine" id="cb4-16" title="16">    (<span class="kw">assoc-in</span> state [<span class="at">:agents</span> agent-id <span class="at">:inventory</span> resource] production)))</a>
-<a class="sourceLine" id="cb4-17" title="17"></a>
-<a class="sourceLine" id="cb4-18" title="18">(<span class="bu">defn</span><span class="fu"> trade </span>[state]</a>
-<a class="sourceLine" id="cb4-19" title="19">  (<span class="kw">let</span> [trades (<span class="kw">mapcat</span> #(actions state <span class="va">%</span>) </a></code></pre></div>
+<h3 id="the-market-matching-trades">The market: Matching trades</h3>
+<p>Key to this is the functioning of the marketplace. This model makes the simplification that there is a single daily price for each resource, and that any buy and sell transactions are made at that price. The market then goes through a process of order matching, where buy trades and sell trades are matched against each other to create trades.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(find-trades orders)</a>
+<a class="sourceLine" id="cb4-2" title="2">=&gt; {<span class="at">:trades</span>    ([<span class="dv">2</span> <span class="dv">3</span> <span class="at">:mammoth</span> <span class="dv">1</span>] [<span class="dv">2</span> <span class="dv">0</span> <span class="at">:mammoth</span> <span class="dv">1</span>] ,,,)</a>
+<a class="sourceLine" id="cb4-3" title="3">    <span class="at">:unmatched</span> ([<span class="at">:buy</span> <span class="at">:mammoth</span> <span class="dv">1</span> <span class="dv">2</span>] [<span class="at">:buy</span> <span class="at">:lettuce</span> <span class="dv">1</span> <span class="dv">1</span>] ,,,)}</a></code></pre></div>
+<h3 id="the-market-price-adjustment">The market: Price adjustment</h3>
+<p>The return value of find trades has the trades themselves, but also the ‘unmatched’ orders: buy orders which have no corresponding sell order and vice versa. Considered on a resource-wise basis, these constitute the <em>surplus</em> of demand (if there are more sells than buys) or the <em>shortfall</em> of supply (of there are more buys than sells). The basis of the market economy is that, when demand exceeds supply, the price of the resource will increase.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(price-adjust current-prices unmatched-trades) =&gt; new-prices</a></code></pre></div>
+<p>The model has two mechanisms for price adjustment: one is a ‘flat’ price adjustment, where prices increase by 10% when there is a shortfall, and decrease by 10% when there is a surplus. The second is more dynamic: the size of the adjustment is determined by the amount of the shortfall or surplus, up to a maximum adjustment of 50%.</p>
+<h3 id="does-inventory-have-a-shelf-life">Does inventory have a shelf life?</h3>
+<p>One of the things that seemed to cause a lot of problems when I was building the model was whether the harvested resources that are not used in making burgers disappear overnight, in effect simulating ‘wastage’. The model seems to work well when there is wastage, but very poorly when agents get to keep resources they don’t use in the making of burgers. We will see some of this in the results.</p>
+<h2 id="running-the-model">Running the model</h2>
+<p>The model can be run from the repl with the <code>(run config)</code> function. The result of the simulation can be summarized and visualized with the <code>(visualize-simulation data)</code> function, which takes the results of a simulation and creates line graphs of burgers made, prices, market surplus/shortfall, trades and production.</p>
+<p>The config passed to run is a map of pairs, all of which are optional, with the following options:</p>
+<ul>
+<li><strong>turns</strong>: number of turns / days to run the simulation. Defaults to 1000</li>
+<li><strong>agents</strong>: number of agents. Defaults to 40</li>
+<li><strong>price-adjustment</strong>: The function which will be used to adjust prices. Defaults to flat.</li>
+<li><strong>reset</strong>: whether inventories reset overnight and agents lose unused resources. Defaults to false</li>
+<li><strong>fix-prices</strong>: if set, this flag will results in mammoth prices being fixed at $200 between turns 250 and 500</li>
+<li><strong>elon-tusk</strong>: if set, this flag will result in one of the agents being able to produce 100 ketchup a day, from turn 750.</li>
+</ul>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The ‘number of burgers produced’ can be thought of as the “GDP” of the model.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
 </body>
 </html>
