@@ -1,4 +1,0 @@
-{:path ["src"]
- :deps {hiccup/hiccup {:mvn/version "1.0.5"}
-        com.github.seancorfield/next.jdbc {:mvn/version "1.2.689"}
-        org.xerial/sqlite-jdbc {:mvn/version "3.36.0"}}}
