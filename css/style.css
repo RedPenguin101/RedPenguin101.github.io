@@ -63,6 +63,8 @@ ul, ol {
 
 blockquote {
 	max-width: 30em;
+	margin-top 10;
+	margin-bottom 10;
 }
 
 li > ul {
