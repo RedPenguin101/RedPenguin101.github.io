@@ -2,22 +2,13 @@
 
 ## Phase 1: To the end of WWI - innovation, friendships
 
-<div class="tufte-section">
-<div class="main-text">
-
 The early career narrative of Eisenhower is one of rapid advancement without spectacular events. He consistently impressed, but at this phase in his career did not uniformly receive 'Superior' ratings like he would in the next phase. He was for the most part in junior but responsible positions.
 
 His early relationship with Patton was notable, as was his interest in tank warfare. Though he was not so evangelical as Patton, he was very quick to see the opportunities the tank offered, and championed it.
 
 He was notable in his personal relations for always getting along with people. His 'fiery temper' is not often on full display as it would be later.
 
-</div>
-</div>
-
 ## Phase 2: To the start of WWII - Pershing, Conner, MacArthur, luck
-
-<div class="tufte-section">
-<div class="main-text">
 
 After the end of WWI he was tapped to write the official American history of the war, working closely with Pershing in this capacity. Pershing was most complimentary about his diligence and thoroughness in the endeavor, which was often subject to tight deadlines.
 
@@ -30,15 +21,10 @@ Eishenhower next went to the Philippines to work under MacArthur. At this time t
 During Eisenhower's time in the Philippines, MacArthur began to display the traits that would typify him in later years. He was impulsive, refused to listen to others, and became wildly flamboyant in his language. He would rage when others disagreed with him. Eisenhower extracted himself from the situation when he had had enough, and when MacArthur had had enough of him. In doing this he skillfully managed to avoid the perception that there had been any break - the first time that his political nous was on full display.
 
 After MacArthur, Eisenhower held several posts, all prestigious, and excelled in all of them. He went to multiple command preparation academies, and worked in the office of the Army Chief of Staff. He continued to develop and maintain excellent relationships with important people, including at this time General George Marshall.
-</div>
-</div>
 
 ## Phase 3: WW2 before OVERLORD - Marshall, TORCH, GYMNAST and Lessons in theatre command
 
 ### TORCH
-
-<div class="tufte-section">
-<div class="main-text">
 
 Eisenhower was chosen as the commander of the TORCH operation, despite having no experience of commanding troops or being in a war. The intention was that he would also prepare the way for OVERLORD, which was earmarked for command by either Marshall or the British General Alan Brooke.
 
@@ -50,41 +36,27 @@ Throughout the conflict, Eisenhower displayed consummate political skill in hand
 
 Throughout the war, Eisenhower absolutely charmed the pants of everyone. Every quote from those he worked closely with is drenched with praise. It speaks volumes that the famously difficult and aloof De Gaulle loved Eisenhower, while he disliked or was disdainful of almost everyone else.
 
-</div></div>
-
 ### Italy
 
-<div class="tufte-section">
-<div class="main-text">
 
-After the troubles in North Africa, the Sicily invasion was better planning and executed, with Eisenhower largely out of the planning, and the planners learning the lessons from TORCH <sup>1</sup>
+After the troubles in North Africa, the Sicily invasion was better planning and executed, with Eisenhower largely out of the planning, and the planners learning the lessons from TORCH[^1].
+
+[^1]: the blot on the copy book was letting several excellent German divisions escape unmolested across the straights of Messina. 
 
 The Italy invasion went less well. The expectation was that the Italians were ready to fold, and resistance would be light. Instead, Germany under Model resisted fiercely and in strength. Eisenhower made quick corrections, but the Italian campaign was never especially successful. However, Eisenhower displayed the other skill he had in abundance: the subtle fudging of the record to make things appear better than they were, and in particular to shift the blame away from himself. In this case a lot of the blame was shifted to Montgomery's battlefield conduct, when in fact the fault was in the planning.
 
 Marshall, during this entire time and going forward, was a dream superior. His confidence in Ike never waivered. He was supportive of Eisenhower's decisions, but never got directly involved or micromanaged.
-</div>
-
-<div class="sidenotes">
-<sup>1</sup> the blot on the copy book was letting several excellent German divisions escape unmolested across the straights of Messina. 
-</div>
-</div>
 
 ## Phase 4: OVERLORD - Executive mastery, Churchill FDR and De Gaulle
 
-<div class="tufte-section">
-<div class="main-text">
-
 Eisenhower was moved over to act as supreme commander of the Channel Crossing. Learning his lessons, he put Montgomery in charge of planning the invasion, and also had him command the ground forces in the field. Monty was very good at this, and Ike let him get on with it, despite an often difficult relationship.
 
-Eisenhower's responsibilities were mainly conciliating personalities, and convincing various people to hand over authority to him. On the latter, he managed to get the Strategic Bomber commands of both UK and US under his umbrella, despite great resistance from their respective commanders. Much of his effort was spent persuading Churchill, who was still less than enthusiastic about invading France<sup>2</sup>, and trying to prepare for the post-invasion administration of France.
+Eisenhower's responsibilities were mainly conciliating personalities, and convincing various people to hand over authority to him. On the latter, he managed to get the Strategic Bomber commands of both UK and US under his umbrella, despite great resistance from their respective commanders. Much of his effort was spent persuading Churchill, who was still less than enthusiastic about invading France[^2] and trying to prepare for the post-invasion administration of France.
+
+[^2]: Churchill's preference was to continue to focus on Italy and attack Germany from the south - the famous "soft belly of the crocodile".
 
 Resolving the question of who would rule France was made infinitely more difficult by FDR's resistance. Ike was convinced by this point that De Gaulle was the only one who could really manage a post-German France. The alternative, favored by the President, was that Vichy officials would remain in key positions, with a de facto occupation by UK and American forces. Not only did Eisenhower not believe this would work politically, but he didn't want to have to assume the burden of himself managing France. Through very fancy footwork indeed, Eisenhower managed to make it clear to De Gaulle that he expected him to take over in France, and would assist him in it, but also managed to keep FDR to a large degree onside.
 
-Though by now supremely effective at delegating, Eisenhower made the big decisions when he needed to, and was careful to emphasize that the responsibility for the consequences were on him alone<sup>3</sup>. The two main examples of the big decisions Ike made are the airborne drops on the Cherbourg Peninsula, and the Go decision for Overlord. In the first, one of his generals came to him with concerns that the two airbourne divisions that were due to support the Utah and Omaha landings would get torn to pieces by anti-aircraft fire and air cover. Eisenhower told him to put his concerns in writing, then after thinking about for a while he decided to go ahead with the drops and confirmed the same to the general, also in writing. The basis for his decision seems to have been based on his similar experience in Italy, where paratroopers got through OK. In the event they did in Normandy too.
-</div>
-<div class="sidenotes">
-<sup>2</sup> Churchill's preference was to continue to focus on Italy and attack Germany from the south - the famous "soft belly of the crocodile".
+Though by now supremely effective at delegating, Eisenhower made the big decisions when he needed to, and was careful to emphasize that the responsibility for the consequences were on him alone[^3]. The two main examples of the big decisions Ike made are the airborne drops on the Cherbourg Peninsula, and the Go decision for Overlord. In the first, one of his generals came to him with concerns that the two airbourne divisions that were due to support the Utah and Omaha landings would get torn to pieces by anti-aircraft fire and air cover. Eisenhower told him to put his concerns in writing, then after thinking about for a while he decided to go ahead with the drops and confirmed the same to the general, also in writing. The basis for his decision seems to have been based on his similar experience in Italy, where paratroopers got through OK. In the event they did in Normandy too.
 
-<sup>3</sup> though when things went badly he was phenomenally good at shaping the narrative in his favor
-</div>
-</div>
+[^3]: though when things went badly he was phenomenally good at shaping the narrative in his favor
