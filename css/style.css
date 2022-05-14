@@ -53,6 +53,11 @@ p + p {
 	margin-top: 0;
 }
 
+.sidenotes > p + p {
+	text-indent: 0em;
+	margin-top: 0;
+}
+
 .sidenotes > p {
 	margin-bottom: 1em;
 }
