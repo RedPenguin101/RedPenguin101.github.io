@@ -12,7 +12,9 @@ The boot process has three steps:
 
 1. The BIOS[^1] program is executed from ROM/BIOS Chip
 2. The BIOS loads the _Bootloader_ into special memory address `0x7C00`
-3. The Bootloader loads the Kernel
+3. The Bootloader loads the _Kernel_
+
+![booting](../../images/2022_03_21_kerneldev/booting.png)
 
 [^1]: Basic Input Output System
 
@@ -24,9 +26,8 @@ The final thing the BIOS does is try to find a Bootloader. It searches all avail
 
 When a computer first boots, it does so in _"Real Mode"_. This is a very limited 'compatibility' mode, with access to only 1Mb of memory, and it can only execute 16 bit code. The Bootloader is a small program whose job is to put the computer into _"Protected Mode"_, which allows 32 bit code and access to 4Gb of memory, and then to load the kernel of an operating system.
 
-The BIOS contains routines that the bootloader uses to boot the kernel. The interfaces of BIOS routines are generic and standardized across manufacturers.[^3]
+The BIOS contains routines that the bootloader uses to boot the kernel. The interfaces of BIOS routines are generic and standardized across manufacturers.
 
-[^3]: ![booting](../../images/2022_03_21_kerneldev/booting.png)
 
 ## Getting setup for Kernel development
 
