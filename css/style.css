@@ -66,23 +66,20 @@ ul, ol {
 	max-width: 26em;
 }
 
-blockquote {
-	max-width: 30em;
-	margin-top 10;
-	margin-bottom 10;
-}
-
 li > ul {
 	padding-left: 1em;
 }
 
-blockquote, dl, table, pre {
+dl, table, pre {
 	margin: 15px 0;
 }
 
 blockquote {
   color:#666666;
-  margin:0;
+	max-width: 29em;
+	margin-top: 10;
+	margin-bottom: 10;
+	margin-left: 0;
   padding-left: 1em;
   border-left: 0.2em #EEE solid;
 }
