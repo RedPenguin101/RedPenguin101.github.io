@@ -1,0 +1,243 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><meta content="pandoc" name="generator" /><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" /><title>2022_08_22_tictactoe</title><style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style><style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style><link href="../../css/style.css" rel="stylesheet" /></head><body><h1 id="a-short-design-exercise-tic-tac-toe-in-clojure">A short design exercise: Tic-Tac-Toe in Clojure</h1><div class="tufte-section"><div class="main-text"><p>Inspired by <a href="https://old.reddit.com/r/Clojure/comments/wulfen/i_updated_my_first_clojure_program_based_on/">this thread</a>, where a programmer implemented tic-tac-toe in about 100 LOC.</p><p>A 2 player, no-ai implementation of Tic Tac Toe. Playable through the command line. The user inputs one of <code>TL, TC, TR, L, C, R, BL, BC, BR</code> to indicate where they want to put their piece.</p><p>a sample game:</p><pre><code>&gt; _|_|_
+&gt; _|_|_
+&gt;  | |
+&gt; X's turn. Where do you want to go?
+&gt; C
+&gt; _|_|_
+&gt; _|X|_
+&gt;  | |
+&gt; O's turn. Where to you want to go?
+&gt; TC
+&gt; _|0|_
+&gt; _|X|_
+&gt;  | |
+,,,
+&gt; _|O|_
+&gt; X|X|X
+&gt; O| |
+&gt; X wins!</code></pre></div><div class="sidenotes"></div></div><h2 id="game-logic">Game logic</h2><div class="tufte-section"><div class="main-text"><p>Start with the game logic. I’ll need a <code>place :: board position -&gt; board</code> (place will have to detect if a move is legal) and a <code>won? board -&gt; \X \O or nil</code> (won will have to check if there are 3 in a row). I’ll need to print the board</p><p>A 9-length array is probably the simplest structure for the board. The board will be initialized as <code>nil</code>s, and have “X” or “O” put in positions.</p><div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="bu">def</span><span class="fu"> places </span>(<span class="kw">zipmap</span> [<span class="st">&quot;TL&quot;</span> <span class="st">&quot;TC&quot;</span> <span class="st">&quot;TR&quot;</span> <span class="st">&quot;L&quot;</span> <span class="st">&quot;C&quot;</span> <span class="st">&quot;R&quot;</span> <span class="st">&quot;BL&quot;</span> <span class="st">&quot;BC&quot;</span> <span class="st">&quot;BR&quot;</span>] (<span class="kw">range</span>)))</a>
+<a class="sourceLine" id="cb2-2" title="2">(<span class="bu">defn</span><span class="fu"> place </span>[board position player] (<span class="kw">assoc</span> board (places position) player))</a>
+<a class="sourceLine" id="cb2-3" title="3">(<span class="bu">def</span><span class="fu"> init-board </span>(<span class="kw">vec</span> (<span class="kw">repeat</span> <span class="dv">9</span> <span class="va">nil</span>)))</a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5">(place init-board <span class="st">&quot;C&quot;</span> <span class="st">&quot;X&quot;</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="co">;; [nil nil nil </span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">;;  nil &quot;X&quot; nil </span></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="co">;;  nil nil nil]</span></a>
+<a class="sourceLine" id="cb2-9" title="9">(place init-board <span class="st">&quot;TL&quot;</span> <span class="st">&quot;O&quot;</span>)</a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="co">;; [&quot;O&quot; nil nil </span></a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="co">;;  nil nil nil</span></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="co">;;  nil nil nil]</span></a></code></pre></div><p>To detect if a board is won (has three of the same symbol in a row), you need to pull out the rows, columns and diagonals.</p><div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">defn</span><span class="fu"> rows </span>[board] (<span class="kw">partition</span> <span class="dv">3</span> board))</a>
+<a class="sourceLine" id="cb3-2" title="2">(<span class="bu">defn</span><span class="fu"> cols </span>[board] (<span class="kw">apply</span> <span class="kw">map</span> <span class="kw">vector</span> (rows board)))</a>
+<a class="sourceLine" id="cb3-3" title="3">(<span class="bu">defn</span><span class="fu"> diags </span>[[a _ b _ c _ d _ <span class="kw">e</span>]] [[a c <span class="kw">e</span>] [b c d]])</a>
+<a class="sourceLine" id="cb3-4" title="4">(<span class="bu">defn</span><span class="fu"> all-trips </span>[board] (<span class="kw">mapcat</span> #(<span class="va">%</span> board) [rows cols diags]))</a>
+<a class="sourceLine" id="cb3-5" title="5">(<span class="bu">defn</span><span class="fu"> won? </span>[board] (<span class="kw">some</span> #(<span class="kw">or</span> (<span class="kw">apply</span> <span class="kw">=</span> <span class="st">&quot;X&quot;</span> <span class="va">%</span>) (<span class="kw">apply</span> <span class="kw">=</span> <span class="st">&quot;O&quot;</span> <span class="va">%</span>)) (all-trips board)))</a>
+<a class="sourceLine" id="cb3-6" title="6"></a>
+<a class="sourceLine" id="cb3-7" title="7"></a>
+<a class="sourceLine" id="cb3-8" title="8">(won? [<span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-9" title="9">       <span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-10" title="10">       <span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span>])</a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">;; =&gt; nil</span></a>
+<a class="sourceLine" id="cb3-12" title="12">(won? [<span class="st">&quot;X&quot;</span> <span class="st">&quot;X&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb3-13" title="13">       <span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-14" title="14">       <span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span>])</a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="co">;; =&gt; true</span></a>
+<a class="sourceLine" id="cb3-16" title="16">(won? [<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb3-17" title="17">       <span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-18" title="18">       <span class="va">nil</span> <span class="va">nil</span> <span class="va">nil</span>])</a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="co">;; =&gt; nil</span></a>
+<a class="sourceLine" id="cb3-20" title="20">(won? [<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb3-21" title="21">       <span class="st">&quot;X&quot;</span> <span class="va">nil</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-22" title="22">       <span class="st">&quot;X&quot;</span> <span class="va">nil</span> <span class="va">nil</span>])</a>
+<a class="sourceLine" id="cb3-23" title="23"><span class="co">;; =&gt; true</span></a>
+<a class="sourceLine" id="cb3-24" title="24">(won? [<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb3-25" title="25">       <span class="st">&quot;O&quot;</span> <span class="va">nil</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-26" title="26">       <span class="st">&quot;X&quot;</span> <span class="va">nil</span> <span class="va">nil</span>])</a>
+<a class="sourceLine" id="cb3-27" title="27"><span class="co">;; =&gt; nil</span></a>
+<a class="sourceLine" id="cb3-28" title="28">(won? [<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb3-29" title="29">       <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span> <span class="va">nil</span></a>
+<a class="sourceLine" id="cb3-30" title="30">       <span class="st">&quot;X&quot;</span> <span class="va">nil</span> <span class="va">nil</span>])</a>
+<a class="sourceLine" id="cb3-31" title="31"><span class="co">;; =&gt; true</span></a></code></pre></div><p>And a draw is just when every slot is filled and the board isn’t won:</p><div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">defn</span><span class="fu"> draw? </span>[board] (<span class="kw">and</span> (<span class="kw">not</span> (won? board)) (<span class="kw">every?</span> #{<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>} board)))</a>
+<a class="sourceLine" id="cb4-2" title="2"></a>
+<a class="sourceLine" id="cb4-3" title="3">(draw? [<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb4-4" title="4">        <span class="st">&quot;O&quot;</span> <span class="st">&quot;O&quot;</span> <span class="st">&quot;X&quot;</span></a>
+<a class="sourceLine" id="cb4-5" title="5">        <span class="st">&quot;X&quot;</span> <span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>])</a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">;; =&gt; true</span></a></code></pre></div><p>A move is legal if it’s one of the recognized positions, and the slot isn’t already filled:</p><div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1"></a>
+<a class="sourceLine" id="cb5-2" title="2">(<span class="bu">defn</span><span class="fu"> legal? </span>[board position]</a>
+<a class="sourceLine" id="cb5-3" title="3">  (<span class="kw">and</span> ((<span class="kw">set</span> (<span class="kw">keys</span> places)) position)</a>
+<a class="sourceLine" id="cb5-4" title="4">       (<span class="kw">nil?</span> (<span class="kw">get</span> board (places position)))))</a>
+<a class="sourceLine" id="cb5-5" title="5"></a>
+<a class="sourceLine" id="cb5-6" title="6">(legal? init-board <span class="st">&quot;C&quot;</span>) <span class="co">;; =&gt; true</span></a>
+<a class="sourceLine" id="cb5-7" title="7">(legal? init-board <span class="st">&quot;BBL&quot;</span>) <span class="co">;; =&gt; nil</span></a>
+<a class="sourceLine" id="cb5-8" title="8">(legal? (place init-board <span class="st">&quot;C&quot;</span> <span class="st">&quot;X&quot;</span>) <span class="st">&quot;C&quot;</span>) <span class="co">;; =&gt; false</span></a></code></pre></div></div><div class="sidenotes"></div></div><h2 id="gameloop-and-io">Gameloop and IO</h2><div class="tufte-section"><div class="main-text"><p>Now a quick way to print the board<sup>1</sup></p><div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn</span><span class="fu"> print-board </span>[board]</a>
+<a class="sourceLine" id="cb6-2" title="2">  (<span class="kw">println</span> (<span class="kw">join</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> (<span class="kw">map</span> #(<span class="kw">join</span> <span class="st">&quot; &quot;</span> <span class="va">%</span>) (<span class="kw">partition</span> <span class="dv">3</span> board)))))</a></code></pre></div><p>You could definately get fancier, but this does the job.</p><p>I found it better to have <code>_</code> as the empty character, as that maintains spacing more easily. That caused a problem with <code>legal</code>, since I’m relying on the fact that empties are <code>nil</code>. This is probably a bad idea anyway: I’ve decided what constitutes a ‘placed’ character (X or O), so I really shouldn’t care what an empty space is. It’s just “not X or O”. so Take 2.</p><div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> legal? </span>[board position]</a>
+<a class="sourceLine" id="cb7-2" title="2">  (<span class="kw">and</span> ((<span class="kw">set</span> (<span class="kw">keys</span> places)) position)</a>
+<a class="sourceLine" id="cb7-3" title="3">       (<span class="kw">not</span> (#{<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>} (<span class="kw">get</span> board (places position))))))</a></code></pre></div><p>Luckily that’s the only place I put an explicit <code>nil</code>.</p><p>I think that’s all I need to implement the game itself. It’s going to be a recursive function that:</p><ul>
+<li>Prints the board state</li>
+<li>Checks if the game is won or drawn, and if so terminates with a message</li>
+<li>Otherwise, gets a new move, checks it, and recurs with that move. I am going to iterate a bit.</li>
+</ul><div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(<span class="bu">defn</span><span class="fu"> play </span>[board player off-turn moves])</a></code></pre></div><p>The initial signature. Player and offturn will be X and O, since having these to hand is useful. Moves is a temp counter to prevent infinite loops, always a good idea when implementing a recursive function</p><div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> play2 </span>[board player off-player moves]</a>
+<a class="sourceLine" id="cb9-2" title="2">  (print-board board)</a>
+<a class="sourceLine" id="cb9-3" title="3">  (<span class="kw">cond</span> (<span class="kw">&gt;</span> moves <span class="dv">9</span>) <span class="at">:break</span></a>
+<a class="sourceLine" id="cb9-4" title="4">        (won? board) (<span class="kw">println</span> (<span class="kw">str</span> off-player <span class="st">&quot; wins!&quot;</span>))</a>
+<a class="sourceLine" id="cb9-5" title="5">        (draw? board) (<span class="kw">println</span> <span class="st">&quot;Game is drawn&quot;</span>)</a>
+<a class="sourceLine" id="cb9-6" title="6">        <span class="at">:else</span> <span class="at">:unmpl</span>))</a></code></pre></div><p>Implementing the break and termination conditions. Not the <em>off-player</em> wins in the case of a won board, because they’re the last person to place a piece.</p><pre><code>(play2 [&quot;X&quot; &quot;X&quot; &quot;X&quot;
+        &quot;_&quot; &quot;O&quot; &quot;_&quot;
+        &quot;O&quot; &quot;_&quot; &quot;O&quot;] &quot;O&quot; &quot;X&quot; 0)
+;; =&gt;
+;; X X X
+;; _ O _
+;; O _ O
+;; X wins!</code></pre><div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb11-1" title="1">(<span class="bu">defn</span><span class="fu"> play </span>[board player off-player moves]</a>
+<a class="sourceLine" id="cb11-2" title="2">  (print-board board)</a>
+<a class="sourceLine" id="cb11-3" title="3">  (<span class="kw">cond</span> (<span class="kw">&gt;</span> moves <span class="dv">9</span>) <span class="at">:break</span></a>
+<a class="sourceLine" id="cb11-4" title="4">        (won? board) (<span class="kw">println</span> (<span class="kw">str</span> off-player <span class="st">&quot; wins!&quot;</span>))</a>
+<a class="sourceLine" id="cb11-5" title="5">        (draw? board) (<span class="kw">println</span> <span class="st">&quot;Game is drawn&quot;</span>)</a>
+<a class="sourceLine" id="cb11-6" title="6">        <span class="at">:else</span></a>
+<a class="sourceLine" id="cb11-7" title="7">        (<span class="kw">do</span> (<span class="kw">println</span> (<span class="kw">str</span> player <span class="st">&quot;'s turn. Enter (tb)/(lcr)&quot;</span>))</a>
+<a class="sourceLine" id="cb11-8" title="8">            (<span class="kw">recur</span> (place board (<span class="kw">read-line</span>) player)</a>
+<a class="sourceLine" id="cb11-9" title="9">                   off-player player</a>
+<a class="sourceLine" id="cb11-10" title="10">                   (<span class="kw">inc</span> moves)))))</a></code></pre></div><p>Implementing the recursion, getting input from the player. The problem here it there’s no way to validate the input. So put a separate function here:</p><div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb12-1" title="1">(<span class="bu">defn</span><span class="fu"> get-legal-move </span>[board]</a>
+<a class="sourceLine" id="cb12-2" title="2">  (<span class="kw">let</span> [move (upper-case (<span class="kw">read-line</span>))]</a>
+<a class="sourceLine" id="cb12-3" title="3">    (<span class="kw">if</span> (legal? board move) move</a>
+<a class="sourceLine" id="cb12-4" title="4">        (<span class="kw">do</span> (<span class="kw">println</span> <span class="st">&quot;That's an illegal move!&quot;</span>)</a>
+<a class="sourceLine" id="cb12-5" title="5">            (<span class="kw">recur</span> board)))))</a>
+<a class="sourceLine" id="cb12-6" title="6"></a>
+<a class="sourceLine" id="cb12-7" title="7">(<span class="bu">defn</span><span class="fu"> play </span>[board player off-player moves]</a>
+<a class="sourceLine" id="cb12-8" title="8">  (print-board board)</a>
+<a class="sourceLine" id="cb12-9" title="9">  (<span class="kw">cond</span> (<span class="kw">&gt;</span> moves <span class="dv">9</span>) <span class="at">:break</span></a>
+<a class="sourceLine" id="cb12-10" title="10">        (won? board) (<span class="kw">println</span> (<span class="kw">str</span> off-player <span class="st">&quot; wins!&quot;</span>))</a>
+<a class="sourceLine" id="cb12-11" title="11">        (draw? board) (<span class="kw">println</span> <span class="st">&quot;Game is drawn&quot;</span>)</a>
+<a class="sourceLine" id="cb12-12" title="12">        <span class="at">:else</span></a>
+<a class="sourceLine" id="cb12-13" title="13">        (<span class="kw">do</span> (<span class="kw">println</span> (<span class="kw">str</span> player <span class="st">&quot;'s turn. Enter (tb)/(lcr)&quot;</span>))</a>
+<a class="sourceLine" id="cb12-14" title="14">            (<span class="kw">recur</span> (place board (get-legal-move board) player)</a>
+<a class="sourceLine" id="cb12-15" title="15">                   off-player player</a>
+<a class="sourceLine" id="cb12-16" title="16">                   (<span class="kw">inc</span> moves)))))</a></code></pre></div><p>Note I also put an upper-case function in here, so the program itself will be scoped for upper case letters.</p><p>This is now a complete implementation. Some cleaning up:</p><div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(<span class="bu">defn</span><span class="fu"> play</span></a>
+<a class="sourceLine" id="cb13-2" title="2">  ([] (play init-board <span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>))</a>
+<a class="sourceLine" id="cb13-3" title="3">  ([board player off-player]</a>
+<a class="sourceLine" id="cb13-4" title="4">   (print-board board)</a>
+<a class="sourceLine" id="cb13-5" title="5">   (<span class="kw">cond</span> (won? board) (<span class="kw">println</span> (<span class="kw">str</span> off-player <span class="st">&quot; wins!&quot;</span>))</a>
+<a class="sourceLine" id="cb13-6" title="6">         (draw? board) (<span class="kw">println</span> <span class="st">&quot;Game is drawn&quot;</span>)</a>
+<a class="sourceLine" id="cb13-7" title="7">         <span class="at">:else</span></a>
+<a class="sourceLine" id="cb13-8" title="8">         (<span class="kw">do</span> (<span class="kw">println</span> (<span class="kw">str</span> player <span class="st">&quot;'s turn. Enter (tb)/(lcr)&quot;</span>))</a>
+<a class="sourceLine" id="cb13-9" title="9">             (<span class="kw">recur</span> (place board (get-legal-move board) player)</a>
+<a class="sourceLine" id="cb13-10" title="10">                    off-player player)))))</a>
+<a class="sourceLine" id="cb13-11" title="11"></a>
+<a class="sourceLine" id="cb13-12" title="12">(<span class="bu">defn</span><span class="fu"> -main </span>[] (play))</a></code></pre></div><ul>
+<li>A 0-arity function for convenience</li>
+<li>Remove the recursion-break-check</li>
+<li>A main wrapper for play.</li>
+</ul><p>Here’s the full program. It’s about 35 LOC in total, with about 14 (down to <code>legal?</code>) for the game logic itself, and the rest being orchestration. There are probably some bugs in there, and I never actually compiled it to a jar file. But I think it’s good enough for an exercise.</p><div class="sourceCode" id="cb14"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb14-1" title="1">(<span class="kw">ns</span> tictactoe</a>
+<a class="sourceLine" id="cb14-2" title="2">  (<span class="at">:require</span> [clojure.string <span class="at">:refer</span> [upper-case <span class="kw">join</span>]]))</a>
+<a class="sourceLine" id="cb14-3" title="3"></a>
+<a class="sourceLine" id="cb14-4" title="4">(<span class="bu">def</span><span class="fu"> places </span>(<span class="kw">zipmap</span> [<span class="st">&quot;TL&quot;</span> <span class="st">&quot;TC&quot;</span> <span class="st">&quot;TR&quot;</span> <span class="st">&quot;L&quot;</span> <span class="st">&quot;C&quot;</span> <span class="st">&quot;R&quot;</span> <span class="st">&quot;BL&quot;</span> <span class="st">&quot;BC&quot;</span> <span class="st">&quot;BR&quot;</span>] (<span class="kw">range</span>)))</a>
+<a class="sourceLine" id="cb14-5" title="5">(<span class="bu">defn</span><span class="fu"> place </span>[board position player] (<span class="kw">assoc</span> board (places position) player))</a>
+<a class="sourceLine" id="cb14-6" title="6">(<span class="bu">def</span><span class="fu"> init-board </span>(<span class="kw">vec</span> (<span class="kw">repeat</span> <span class="dv">9</span> <span class="st">&quot;_&quot;</span>)))</a>
+<a class="sourceLine" id="cb14-7" title="7"></a>
+<a class="sourceLine" id="cb14-8" title="8">(<span class="bu">defn</span><span class="fu"> rows </span>[board] (<span class="kw">partition</span> <span class="dv">3</span> board))</a>
+<a class="sourceLine" id="cb14-9" title="9">(<span class="bu">defn</span><span class="fu"> cols </span>[board] (<span class="kw">apply</span> <span class="kw">map</span> <span class="kw">vector</span> (rows board)))</a>
+<a class="sourceLine" id="cb14-10" title="10">(<span class="bu">defn</span><span class="fu"> diags </span>[[a _ b _ c _ d _ <span class="kw">e</span>]] [[a c <span class="kw">e</span>] [b c d]])</a>
+<a class="sourceLine" id="cb14-11" title="11">(<span class="bu">defn</span><span class="fu"> all-trips </span>[board] (<span class="kw">mapcat</span> #(<span class="va">%</span> board) [rows cols diags]))</a>
+<a class="sourceLine" id="cb14-12" title="12">(<span class="bu">defn</span><span class="fu"> won? </span>[board] (<span class="kw">some</span> #(<span class="kw">or</span> (<span class="kw">apply</span> <span class="kw">=</span> <span class="st">&quot;X&quot;</span> <span class="va">%</span>) (<span class="kw">apply</span> <span class="kw">=</span> <span class="st">&quot;O&quot;</span> <span class="va">%</span>)) (all-trips board)))</a>
+<a class="sourceLine" id="cb14-13" title="13">(<span class="bu">defn</span><span class="fu"> draw? </span>[board] (<span class="kw">and</span> (<span class="kw">not</span> (won? board)) (<span class="kw">every?</span> #{<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>} board)))</a>
+<a class="sourceLine" id="cb14-14" title="14"></a>
+<a class="sourceLine" id="cb14-15" title="15">(<span class="bu">defn</span><span class="fu"> legal? </span>[board position]</a>
+<a class="sourceLine" id="cb14-16" title="16">  (<span class="kw">and</span> ((<span class="kw">set</span> (<span class="kw">keys</span> places)) position)</a>
+<a class="sourceLine" id="cb14-17" title="17">       (<span class="kw">not</span> (#{<span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>} (<span class="kw">get</span> board (places position))))))</a>
+<a class="sourceLine" id="cb14-18" title="18"></a>
+<a class="sourceLine" id="cb14-19" title="19">(<span class="bu">defn</span><span class="fu"> print-board </span>[board]</a>
+<a class="sourceLine" id="cb14-20" title="20">  (<span class="kw">println</span> (<span class="kw">join</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> (<span class="kw">map</span> #(<span class="kw">join</span> <span class="st">&quot; &quot;</span> <span class="va">%</span>) (<span class="kw">partition</span> <span class="dv">3</span> board)))))</a>
+<a class="sourceLine" id="cb14-21" title="21"></a>
+<a class="sourceLine" id="cb14-22" title="22">(<span class="bu">defn</span><span class="fu"> get-legal-move </span>[board]</a>
+<a class="sourceLine" id="cb14-23" title="23">  (<span class="kw">let</span> [move (upper-case (<span class="kw">read-line</span>))]</a>
+<a class="sourceLine" id="cb14-24" title="24">    (<span class="kw">if</span> (legal? board move) move</a>
+<a class="sourceLine" id="cb14-25" title="25">        (<span class="kw">do</span> (<span class="kw">println</span> <span class="st">&quot;That's an illegal move!&quot;</span>)</a>
+<a class="sourceLine" id="cb14-26" title="26">            (<span class="kw">recur</span> board)))))</a>
+<a class="sourceLine" id="cb14-27" title="27"></a>
+<a class="sourceLine" id="cb14-28" title="28">(<span class="bu">defn</span><span class="fu"> play</span></a>
+<a class="sourceLine" id="cb14-29" title="29">  ([] (play init-board <span class="st">&quot;X&quot;</span> <span class="st">&quot;O&quot;</span>))</a>
+<a class="sourceLine" id="cb14-30" title="30">  ([board player off-turn]</a>
+<a class="sourceLine" id="cb14-31" title="31">   (print-board board)</a>
+<a class="sourceLine" id="cb14-32" title="32">   (<span class="kw">cond</span> (won? board) (<span class="kw">println</span> (<span class="kw">str</span> off-turn <span class="st">&quot; wins!&quot;</span>))</a>
+<a class="sourceLine" id="cb14-33" title="33">         (draw? board) (<span class="kw">println</span> <span class="st">&quot;Game is drawn&quot;</span>)</a>
+<a class="sourceLine" id="cb14-34" title="34">         <span class="at">:else</span></a>
+<a class="sourceLine" id="cb14-35" title="35">         (<span class="kw">do</span> (<span class="kw">println</span> (<span class="kw">str</span> player <span class="st">&quot;'s turn. Enter (tb)/(lcr)&quot;</span>))</a>
+<a class="sourceLine" id="cb14-36" title="36">             (<span class="kw">recur</span> (place board (get-legal-move board) player)</a>
+<a class="sourceLine" id="cb14-37" title="37">                    off-turn player)))))</a>
+<a class="sourceLine" id="cb14-38" title="38"></a>
+<a class="sourceLine" id="cb14-39" title="39">(<span class="bu">defn</span><span class="fu"> -main </span>[] (play))</a></code></pre></div><p>Comparing this against the link that started this post, I have the following observations:</p><ul>
+<li>Being much shorter is better.</li>
+<li>But the redditors code is very clear</li>
+<li>I chose not to use <code>nil</code> to indicate an empty space. The comparison code does, and it works well. But using <code>nil</code> like this makes me nervous about overloading it. If it’s an empty square, and that has particular semantics, I’d prefer to make it explicit.</li>
+<li>The comparison has much more in the way of user feedback than mine. Better printing, allows user to pick their mark etc. But I think the simplicity of mine is better.</li>
+<li>I like the comparisons way of just declaring the index of winning positions in <code>winning-configs</code>. “Config” is a funny word to use for it, but this could definately replace my <code>rows</code> <code>cols</code> and <code>diags</code>, and there would just be a map get over them. Something like</li>
+</ul><div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb15-1" title="1">(<span class="bu">def</span><span class="fu"> trips </span>[<span class="dv">0</span> <span class="dv">1</span> <span class="dv">2</span> <span class="dv">0</span> <span class="dv">4</span> <span class="dv">8</span> ,,,])</a>
+<a class="sourceLine" id="cb15-2" title="2">(<span class="bu">defn</span><span class="fu"> get-trips </span>[board] (<span class="kw">partition</span> <span class="dv">3</span> (<span class="kw">map</span> #(<span class="kw">get</span> board <span class="va">%</span>) trips)))</a></code></pre></div></div><div class="sidenotes"><p class="footnote">
+1: Join is imported from Clojure.String - I don’t love the unqualified import because the common idiom here is <code>str/join</code>. But it’s OK for this small program.
+</p></div></div></body></html>
