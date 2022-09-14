@@ -1,9 +1,20 @@
-<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><meta content="pandoc" name="generator" /><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" /><title>2022_05_14_chess</title><style type="text/css">
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2022_05_14_chess</title>
+  <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style><link href="../../css/style.css" rel="stylesheet" /></head><body><h1 id="chess-white-vs.-computer-1200-14th-may-2022-win-0-blunders-1-mistake">Chess: White vs. Computer (1200) 14th May 2022: Win, 0 blunders, 1 mistake</h1><div class="tufte-section"><div class="main-text"><p>An OK game. I was playing quite fast and missed a lot of best moves, so accuracy was quite low.</p><ul>
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="chess-white-vs.-computer-1200-14th-may-2022-win-0-blunders-1-mistake">Chess: White vs. Computer (1200) 14th May 2022: Win, 0 blunders, 1 mistake</h1>
+<p>An OK game. I was playing quite fast and missed a lot of best moves, so accuracy was quite low.</p>
+<ul>
 <li>accuracy 84.8</li>
 <li>Moves 35</li>
 <li>Best 11 (31%)</li>
@@ -12,14 +23,29 @@
 <li>Innac 0</li>
 <li>mist 1 (3%)</li>
 <li>Book 3</li>
-</ul></div><div class="sidenotes"></div></div><h2 id="analysis">Analysis</h2><div class="tufte-section"><div class="main-text"></div><div class="sidenotes"></div></div><h3 id="opening-kings-pawn-latvian-gambit">Opening: King’s pawn, Latvian gambit</h3><div class="tufte-section"><div class="main-text"><p>Unusual opening, only about 700 games in the database. White wins 53%. Most common response is Nxe5.</p></div><div class="sidenotes"></div></div><h3 id="mistake">Mistake</h3><div class="tufte-section"><div class="main-text"><p>15.Qxc5 is a mistake, probably the worst possible move, losing white a piece.</p><p>After 15..Nxc6 16.Nxh7 Rxh7 White is now equal in material again. Fortunately Black didn’t take the knight, letting me off the hook.</p><p>The right move here was to retreat the queen to d3, d2 or e3. I don’t recall exactly why I din’t do this, and chose to trade queens and potentially lose a piece. This is after 15.Qd3 c4 16.Bxc4 bxc4 17.Qxc4 Qe7 18.Nd5 Bxd5 19.exd5, which is up only 1 point in material, but 13 points in position according to stockfish.</p><p>I think the position is so strong it’s because black is very hemmed in, and white is dominating all the squares around the king. I’m threatening a pin with Rfe1 which would win the queen, so she needs to retreat, leaving the king open to checks on the e file.</p></div><div class="sidenotes"><figure>
+</ul>
+<h2 id="analysis">Analysis</h2>
+<h3 id="opening-kings-pawn-latvian-gambit">Opening: King’s pawn, Latvian gambit</h3>
+<p>Unusual opening, only about 700 games in the database. White wins 53%. Most common response is Nxe5.</p>
+<h3 id="mistake">Mistake</h3>
+<p>15.Qxc5 is a mistake, probably the worst possible move, losing white a piece.</p>
+<figure>
 <img alt="15.Qxc5" src="../../images/2022_05_14_chess/queen_mistake.png" /><figcaption>15.Qxc5</figcaption>
-</figure><figure>
+</figure>
+<p>After 15..Nxc6 16.Nxh7 Rxh7 White is now equal in material again. Fortunately Black didn’t take the knight, letting me off the hook.</p>
+<p>The right move here was to retreat the queen to d3, d2 or e3. I don’t recall exactly why I din’t do this, and chose to trade queens and potentially lose a piece. This is after 15.Qd3 c4 16.Bxc4 bxc4 17.Qxc4 Qe7 18.Nd5 Bxd5 19.exd5, which is up only 1 point in material, but 13 points in position according to stockfish.</p>
+<figure>
 <img alt="Up 10 points" src="../../images/2022_05_14_chess/ten_points_up.png" /><figcaption>Up 10 points</figcaption>
-</figure></div></div><h2 id="move-list">Move list</h2><div class="tufte-section"><div class="main-text"><pre><code>1. e4 e5 2. Nf3 f5 3. Nc3 Qf6?? 4. d4 f4?! 5. dxe5 Qe7 
+</figure>
+<p>I think the position is so strong it’s because black is very hemmed in, and white is dominating all the squares around the king. I’m threatening a pin with Rfe1 which would win the queen, so she needs to retreat, leaving the king open to checks on the e file.</p>
+<h2 id="move-list">Move list</h2>
+<pre><code>1. e4 e5 2. Nf3 f5 3. Nc3 Qf6?? 4. d4 f4?! 5. dxe5 Qe7 
 6. Bxf4 a6 7. Bc4 c6 8. O-O h5 9. Qd4 g6 10. Rad1 b5 
 11. Bb3 Bb7 12. e6 Qh7 13. Ng5 c5 14. exd7+ Nxd7 15. Qxc5? Nxc5 
 16. Nxh7 Be7 17. Ng5 Nf6 18. Rd4 Ncd7 19. Ne6 Kf7 20. Nc7+ Kg7 
 21. Nxa8 Bc6 22. Nc7 Ne8 23. Nxe8+ Rxe8 24. Bd5 Nb8 25. Bxb8 Bc5 
 26. Rd3 Rxb8 27. Bxc6 Bf8 28. Rd7+ Kf6 29. Nd5+ Kg5 30. f4+ Kh6 
-31. Nf6 Bc5+ 32. Kh1 g5 33. e5 Bb4 34. Rh7+ Kg6 35. f5# 1-0</code></pre></div><div class="sidenotes"></div></div></body></html>
+31. Nf6 Bc5+ 32. Kh1 g5 33. e5 Bb4 34. Rh7+ Kg6 35. f5# 1-0</code></pre>
+
+
+</body></html>

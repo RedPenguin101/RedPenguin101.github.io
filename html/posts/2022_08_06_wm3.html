@@ -1,9 +1,15 @@
-<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><meta content="pandoc" name="generator" /><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" /><title>2022_08_06_wm3</title><style type="text/css">
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2022_08_06_wm3</title>
+  <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style><style type="text/css">
+  </style>
+  <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -65,9 +71,19 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style><link href="../../css/style.css" rel="stylesheet" /></head><body><h1 id="linux-window-manager-part-3-building-a-window-manager">Linux Window Manager Part 3: Building a Window Manager</h1><div class="tufte-section"><div class="main-text"><p>In the previous posts in this series I’ve talked about graphical interfaces, the role that window managers play in them, the X protocol and X11 library. In this post we will bring those things together and build a simple window manager. Sort of.</p></div><div class="sidenotes"></div></div><h2 id="the-singleton-window-manager">The Singleton Window Manager</h2><div class="tufte-section"><div class="main-text"><p>I say “sort of”, because the program we build is <em>barely</em> going to actually manage windows. We are going to build an innovative new type of window manager called the <em>Singleton</em> window manager, <strong>SWM</strong>. The idea behind it is that, hey, you don’t <em>need</em> all those windows on the screen at the same time. You only have one pair of eyes, one mouse pointer, right? One app on screen is enough. Anything else is just distraction.<sup>1</sup></p><p>Now, obviously this isn’t true. There are plenty of reasons you might want multiple windows on screen. But the intention here is only to show you how a window manager works. Other simplifications we will make is that we will consider only one monitor, and will not have any concepts of multiple ‘workspaces’ or ‘tags’.</p></div><div class="sidenotes"><p class="footnote">
-1: Oh, and you don’t need any status bars either. Wasted real estate.
-</p></div></div><h2 id="the-behavior-of-swm">The behavior of SWM</h2><div class="tufte-section"><div class="main-text"><p>Here is what we will be implementing:</p><ul>
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="linux-window-manager-part-3-building-a-window-manager">Linux Window Manager Part 3: Building a Window Manager</h1>
+<p>In the previous posts in this series I’ve talked about graphical interfaces, the role that window managers play in them, the X protocol and X11 library. In this post we will bring those things together and build a simple window manager. Sort of.</p>
+<h2 id="the-singleton-window-manager">The Singleton Window Manager</h2>
+<p>I say “sort of”, because the program we build is <em>barely</em> going to actually manage windows. We are going to build an innovative new type of window manager called the <em>Singleton</em> window manager, <strong>SWM</strong>. The idea behind it is that, hey, you don’t <em>need</em> all those windows on the screen at the same time. You only have one pair of eyes, one mouse pointer, right? One app on screen is enough. Anything else is just distraction.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> Oh, and you don’t need any status bars either. Wasted real estate. </span></p>
+
+<p>Now, obviously this isn’t true. There are plenty of reasons you might want multiple windows on screen. But the intention here is only to show you how a window manager works. Other simplifications we will make is that we will consider only one monitor, and will not have any concepts of multiple ‘workspaces’ or ‘tags’.</p>
+<h2 id="the-behavior-of-swm">The behavior of SWM</h2>
+<p>Here is what we will be implementing:</p>
+<ul>
 <li>The WM opens on a blank screen</li>
 <li>The user can quit out of the WM with a shortcut</li>
 <li>The user can open a terminal with a shortcut</li>
@@ -77,7 +93,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>The user can launch a window containing any graphical application on their computer</li>
 <li>When a user opens a second window, it also fills the screen, replacing the previous one.</li>
 <li>If the user closes the second window, the first window will be shown, full screen. (In this sense, the windows work like a stack, with new windows ‘pushed’ onto the top of the stack, and ‘popped’ off the top when they are closed.)</li>
-</ul><p>We will be implementing the first two requirements today.</p></div><div class="sidenotes"></div></div><h2 id="getting-set-up-for-wm-development">Getting set up for WM development</h2><div class="tufte-section"><div class="main-text"><p>The key thing you need is a linux machine with X11 dev libraries installed. I won’t go into how to do that, but on Ubuntu something like <code>sudo apt install libx11-dev</code> should do the trick.</p></div><div class="sidenotes"></div></div><h2 id="swmv0-the-core-loop">SWMv0: The core loop</h2><div class="tufte-section"><div class="main-text"><p>Our first goal is to create a window manager that can be loaded by our machine. We will verify it’s working by making sure it’s picking up key presses. We also need to be able to exit out of it.</p><p>We start by creating the file <em>swm0.c</em><sup>2</sup> with the imports and globals.</p><div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="pp">#include </span><span class="im">&lt;X11/Xlib.h&gt;</span></a>
+</ul>
+<p>We will be implementing the first two requirements today.</p>
+<h2 id="getting-set-up-for-wm-development">Getting set up for WM development</h2>
+<p>The key thing you need is a linux machine with X11 dev libraries installed. I won’t go into how to do that, but on Ubuntu something like <code>sudo apt install libx11-dev</code> should do the trick.</p>
+<h2 id="swmv0-the-core-loop">SWMv0: The core loop</h2>
+<p>Our first goal is to create a window manager that can be loaded by our machine. We will verify it’s working by making sure it’s picking up key presses. We also need to be able to exit out of it.</p>
+<p>We start by creating the file <em>swm0.c</em><sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> See the full file at <a href="https://github.com/RedPenguin101/swm/blob/main/swm0.c">the swm github repo</a> </span> with the imports and globals.</p>
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="pp">#include </span><span class="im">&lt;X11/Xlib.h&gt;</span></a>
 <a class="sourceLine" id="cb1-2" title="2"><span class="pp">#include </span><span class="im">&lt;X11/cursorfont.h&gt;</span></a>
 <a class="sourceLine" id="cb1-3" title="3"><span class="pp">#include </span><span class="im">&lt;X11/keysym.h&gt;</span></a>
 <a class="sourceLine" id="cb1-4" title="4"><span class="pp">#include </span><span class="im">&lt;stdbool.h&gt;</span></a>
@@ -92,7 +116,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-13" title="13">Cursor cursor;</a>
 <a class="sourceLine" id="cb1-14" title="14"></a>
 <a class="sourceLine" id="cb1-15" title="15"><span class="dt">FILE</span>* logfile;</a>
-<a class="sourceLine" id="cb1-16" title="16"><span class="dt">const</span> <span class="dt">char</span>* logpath = <span class="st">&quot;/home/joe/programming/projects/swm/log_swm0.txt&quot;</span>;</a></code></pre></div><p>We are loading 3 X11 libraries, the use of which will be clear from the name and how we will use them later.</p><p>For globals we will have an X Display pointer, and slots to put the identifier of the screen and “root” window of that screen. We’ll also store the width and height of that screen, since we will need to refer to it often.</p><p>Finally there is a boolean ‘running’ which we’ll use as our loop terminator, a Cursor (an X Object) and a file and path for logging.</p><p>Our main function is like this:</p><div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" title="1"><span class="dt">int</span> main(<span class="dt">int</span> args, <span class="dt">char</span>* argv[]) {</a>
+<a class="sourceLine" id="cb1-16" title="16"><span class="dt">const</span> <span class="dt">char</span>* logpath = <span class="st">&quot;/home/joe/programming/projects/swm/log_swm0.txt&quot;</span>;</a></code></pre></div>
+<p>We are loading 3 X11 libraries, the use of which will be clear from the name and how we will use them later.</p>
+<p>For globals we will have an X Display pointer, and slots to put the identifier of the screen and “root” window of that screen. We’ll also store the width and height of that screen, since we will need to refer to it often.</p>
+<p>Finally there is a boolean ‘running’ which we’ll use as our loop terminator, a Cursor (an X Object) and a file and path for logging.</p>
+<p>Our main function is like this:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" title="1"><span class="dt">int</span> main(<span class="dt">int</span> args, <span class="dt">char</span>* argv[]) {</a>
 <a class="sourceLine" id="cb2-2" title="2">  <span class="cf">if</span> (!(display = XOpenDisplay(NULL)))</a>
 <a class="sourceLine" id="cb2-3" title="3">    <span class="cf">return</span> <span class="dv">1</span>;</a>
 <a class="sourceLine" id="cb2-4" title="4">  setup();</a>
@@ -100,9 +129,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb2-6" title="6">  cleanup();</a>
 <a class="sourceLine" id="cb2-7" title="7">  XCloseDisplay(display);</a>
 <a class="sourceLine" id="cb2-8" title="8">  <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb2-9" title="9">}</a></code></pre></div><p>This is pretty standard, and will change not at all during the build. We open the connection to the Xorg display, we set ourselves up and enter the run loop. Then when we are finished we clean up and close the display.</p></div><div class="sidenotes"><p class="footnote">
-2: See the full file at <a href="https://github.com/RedPenguin101/swm/blob/main/swm0.c">the swm github repo</a>
-</p></div></div><h3 id="setup-and-substructure">Setup and Substructure</h3><div class="tufte-section"><div class="main-text"><p>The setup function is a bit more complicated.</p><div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">static</span> <span class="dt">void</span> setup() {</a>
+<a class="sourceLine" id="cb2-9" title="9">}</a></code></pre></div>
+<p>This is pretty standard, and will change not at all during the build. We open the connection to the Xorg display, we set ourselves up and enter the run loop. Then when we are finished we clean up and close the display.</p>
+<h3 id="setup-and-substructure">Setup and Substructure</h3>
+<p>The setup function is a bit more complicated.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">static</span> <span class="dt">void</span> setup() {</a>
 <a class="sourceLine" id="cb3-2" title="2">  <span class="co">//1. logging</span></a>
 <a class="sourceLine" id="cb3-3" title="3">  logfile = fopen(logpath, <span class="st">&quot;w&quot;</span>);</a>
 <a class="sourceLine" id="cb3-4" title="4">  fprintf(logfile, <span class="st">&quot;START SESSION LOG</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
@@ -124,7 +155,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb3-20" title="20"></a>
 <a class="sourceLine" id="cb3-21" title="21">  XMoveResizeWindow(display, root, <span class="dv">0</span>, <span class="dv">0</span>, screen_w, screen_h);</a>
 <a class="sourceLine" id="cb3-22" title="22">  XChangeWindowAttributes(display, root, CWEventMask | CWCursor, &amp;wa);</a>
-<a class="sourceLine" id="cb3-23" title="23">}</a></code></pre></div><p>The screen setup is pretty standard stuff: you get the screen from the display (and the dimensions of the screen), and get the root window of the screen.</p><p>Next we reconfigure the root window so it acts as the base of a window manager. In X re-configuring windows is done with an <code>XSetWindowAttributes</code> that is then applied to the window with <code>XChangeWindowAttributes</code>. For now we are changing two things: We are setting the cursor, and we are setting the ‘event_mask’.</p><p>The first is important but not interesting - you have to set up a cursor or the program won’t work.</p><p>The second is important and also crucial to the operation of a window manager. As we saw in part 2, an event mask is just a bit mask which tells which tell XOrg which events are ‘listened’ for in this window. Previously we’d seen things like <code>KeyPressMask</code> and <code>MouseMotionMask</code>. Here we have the <code>SubstructureRedirectMask</code> and <code>SubstructureNotifyMask</code>. What these two do is to tell XOrg that whenever windows under the root emit events, to not process them directly but <em>send them to our program</em> to deal with. This is what allows our WM to work: Xorg routes any event traffic from other programs to us, and the vast bulk of our program will be deciding how to handle these events.</p><p>A critical thing here is that Xorg will only allow <em>one</em> window to have this substructure redirect and notify settings at once. This means you can only have one WM running on a Linux session - for obvious reasons. A proper window manager will check for this, and fail elegantly if we try to launch a second WM, but for now we’ll just let it ride.</p></div><div class="sidenotes"></div></div><h3 id="the-loop-and-event-handlers">The loop and event handlers</h3><div class="tufte-section"><div class="main-text"><div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" title="1"><span class="dt">static</span> <span class="dt">void</span> run() {</a>
+<a class="sourceLine" id="cb3-23" title="23">}</a></code></pre></div>
+<p>The screen setup is pretty standard stuff: you get the screen from the display (and the dimensions of the screen), and get the root window of the screen.</p>
+<p>Next we reconfigure the root window so it acts as the base of a window manager. In X re-configuring windows is done with an <code>XSetWindowAttributes</code> that is then applied to the window with <code>XChangeWindowAttributes</code>. For now we are changing two things: We are setting the cursor, and we are setting the ‘event_mask’.</p>
+<p>The first is important but not interesting - you have to set up a cursor or the program won’t work.</p>
+<p>The second is important and also crucial to the operation of a window manager. As we saw in part 2, an event mask is just a bit mask which tells which tell XOrg which events are ‘listened’ for in this window. Previously we’d seen things like <code>KeyPressMask</code> and <code>MouseMotionMask</code>. Here we have the <code>SubstructureRedirectMask</code> and <code>SubstructureNotifyMask</code>. What these two do is to tell XOrg that whenever windows under the root emit events, to not process them directly but <em>send them to our program</em> to deal with. This is what allows our WM to work: Xorg routes any event traffic from other programs to us, and the vast bulk of our program will be deciding how to handle these events.</p>
+<p>A critical thing here is that Xorg will only allow <em>one</em> window to have this substructure redirect and notify settings at once. This means you can only have one WM running on a Linux session - for obvious reasons. A proper window manager will check for this, and fail elegantly if we try to launch a second WM, but for now we’ll just let it ride.</p>
+<h3 id="the-loop-and-event-handlers">The loop and event handlers</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" title="1"><span class="dt">static</span> <span class="dt">void</span> run() {</a>
 <a class="sourceLine" id="cb4-2" title="2">  XEvent event;</a>
 <a class="sourceLine" id="cb4-3" title="3">  <span class="cf">while</span> (running &amp;&amp; XNextEvent(display, &amp;event) == <span class="dv">0</span>) {</a>
 <a class="sourceLine" id="cb4-4" title="4">    <span class="cf">switch</span> (event.type) {</a>
@@ -143,12 +181,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-17" title="17">  fprintf(logfile, <span class="st">&quot;Keypress </span><span class="sc">\t\t</span><span class="st"> KeySym: %ld modifier = 0x%x</span><span class="sc">\n</span><span class="st">&quot;</span>, keysym, ev-&gt;state);</a>
 <a class="sourceLine" id="cb4-18" title="18">  <span class="cf">if</span> (keysym == XK_q)</a>
 <a class="sourceLine" id="cb4-19" title="19">    running = false;</a>
-<a class="sourceLine" id="cb4-20" title="20">}</a></code></pre></div><p>This is the same for the X11 program examples we saw in part 2, and for most X11 programs: We enter a loop where we get the event (with <code>XNextEvent</code>), match on the <code>event.type</code>, and for each event we have a ‘handler’ function which determines how we deal with the event.</p><p>In this case, we have a single handler for keypresses<sup>3</sup>. Otherwise we’ll log our the event type so we can see what messages we’re getting. The keypress handler detects if the button we have pressed is a lowercase <code>q</code>, and if it is, sets <code>running</code> to false, which will quit the program.</p><p>Finally we have ‘cleanup’. Right now there’s nothing to clean up, so we are just closing the log file.</p><div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" title="1"><span class="dt">static</span> <span class="dt">void</span> cleanup() {</a>
+<a class="sourceLine" id="cb4-20" title="20">}</a></code></pre></div>
+<p>This is the same for the X11 program examples we saw in part 2, and for most X11 programs: We enter a loop where we get the event (with <code>XNextEvent</code>), match on the <code>event.type</code>, and for each event we have a ‘handler’ function which determines how we deal with the event.</p>
+<p>In this case, we have a single handler for keypresses<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3"> <a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> Note that the ‘keysym’ way of handling is deprecated, and you’ll get a warning every time you compile. But that’s what dwm does, and if it’s good enough for them, it’s good enough for this. </span>. Otherwise we’ll log our the event type so we can see what messages we’re getting. The keypress handler detects if the button we have pressed is a lowercase <code>q</code>, and if it is, sets <code>running</code> to false, which will quit the program.</p>
+
+<p>Finally we have ‘cleanup’. Right now there’s nothing to clean up, so we are just closing the log file.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" title="1"><span class="dt">static</span> <span class="dt">void</span> cleanup() {</a>
 <a class="sourceLine" id="cb5-2" title="2">  fprintf(logfile, <span class="st">&quot;END SESSION LOG</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
 <a class="sourceLine" id="cb5-3" title="3">  fclose(logfile);</a>
-<a class="sourceLine" id="cb5-4" title="4">}</a></code></pre></div></div><div class="sidenotes"><p class="footnote">
-3: Note that the ‘keysym’ way of handling is deprecated, and you’ll get a warning every time you compile. But that’s what dwm does, and if it’s good enough for them, it’s good enough for this.
-</p></div></div><h2 id="running-your-window-manager">Running your window manager</h2><div class="tufte-section"><div class="main-text"><p>First, compile your program with:</p><pre><code>cc swm0.c -lX11 -o swm0</code></pre><p>Once you have your binary <code>swm0</code>, move it to <code>/usr/bin/</code></p><p>Next you need to get yourself into a linux session that doesn’t have another WM running. One way to do this is to have your OS set up so it doesn’t launch a WM by default, and loads you into a command line prompt. If you don’t have this, and you are in a graphical environment already (which if you are reading this you presumably are), you can switch to another tty session. Usually this is done with the command <code>Ctrl+Alt+Fx</code>, where x is the number of the tty you want to switch to<sup>4</sup> <sup>5</sup>.</p><p>Using either of the above methods you should be looking at a linux session where Xorg isn’t loaded. To start your X session using your WM, in the command prompt put:</p><div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1">➜ <span class="ex">startx</span> /etc/X11/Xsession swm0</a></code></pre></div><p>Assuming this worked, congratulations, you have a working WM. Admittedly it’s just a blank screen. Try typing ‘hello’, then hit ‘q’, and it’ll dump you back to the tty. Now, if you look at the log file you configured, you should see something like this, indicating your WM is listening to your key commands.</p><pre><code>START SESSION LOG
+<a class="sourceLine" id="cb5-4" title="4">}</a></code></pre></div>
+<h2 id="running-your-window-manager">Running your window manager</h2>
+<p>First, compile your program with:</p>
+<pre><code>cc swm0.c -lX11 -o swm0</code></pre>
+<p>Once you have your binary <code>swm0</code>, move it to <code>/usr/bin/</code></p>
+<p>Next you need to get yourself into a linux session that doesn’t have another WM running. One way to do this is to have your OS set up so it doesn’t launch a WM by default, and loads you into a command line prompt. If you don’t have this, and you are in a graphical environment already (which if you are reading this you presumably are), you can switch to another tty session. Usually this is done with the command <code>Ctrl+Alt+Fx</code>, where x is the number of the tty you want to switch to<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4"> <a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> having two X sessions running at once, even on different ttys, can cause some weirdness, even when the WM has proper error handling, which ours assuredly does not. Be prepared to restart your machine if things go wonky. </span> <sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5"> <a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> A third method, and one which will be used when you are done with development and actually want to <em>use</em> your WM, is to create a <code>swm.desktop</code> file in <code>/usr/share/xsessions</code>. This will be used by your display manager so you can load into our new WM as opposed to your normal one. </span>.</p>
+
+
+<p>Using either of the above methods you should be looking at a linux session where Xorg isn’t loaded. To start your X session using your WM, in the command prompt put:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1">➜ <span class="ex">startx</span> /etc/X11/Xsession swm0</a></code></pre></div>
+<p>Assuming this worked, congratulations, you have a working WM. Admittedly it’s just a blank screen. Try typing ‘hello’, then hit ‘q’, and it’ll dump you back to the tty. Now, if you look at the log file you configured, you should see something like this, indicating your WM is listening to your key commands.</p>
+<pre><code>START SESSION LOG
 Root window 1980
 Keypress        KeySym: 104 state = 0x0
 Keypress        KeySym: 101 state = 0x0
@@ -157,15 +209,18 @@ Keypress        KeySym: 108 state = 0x0
 Keypress        KeySym: 111 state = 0x0
 Keypress        KeySym: 119 state = 0x0
 Keypress        KeySym: 113 state = 0x0
-END SESSION LOG</code></pre><p>This is step one in our WM creation journey. In this session we have implemented the following points of our requirements list:</p><ul>
+END SESSION LOG</code></pre>
+<p>This is step one in our WM creation journey. In this session we have implemented the following points of our requirements list:</p>
+<ul>
 <li>The WM opens on a blank screen</li>
 <li>The user can quit out of the WM with a shortcut</li>
-</ul><p>In the next post, we will do the next ones:</p><ul>
+</ul>
+<p>In the next post, we will do the next ones:</p>
+<ul>
 <li>The user can open a terminal with a shortcut</li>
 <li>When a user opens a window, it fills the screen.</li>
 <li>The user can close any opened window with a shortcut</li>
-</ul></div><div class="sidenotes"><p class="footnote">
-4: having two X sessions running at once, even on different ttys, can cause some weirdness, even when the WM has proper error handling, which ours assuredly does not. Be prepared to restart your machine if things go wonky.
-</p><p class="footnote">
-5: A third method, and one which will be used when you are done with development and actually want to <em>use</em> your WM, is to create a <code>swm.desktop</code> file in <code>/usr/share/xsessions</code>. This will be used by your display manager so you can load into our new WM as opposed to your normal one.
-</p></div></div></body></html>
+</ul>
+
+
+</body></html>

@@ -3,138 +3,173 @@
 
 body {
   font: 1em "Vollkorn", Palatino, Times;
-	padding:1em;
-	line-height: 1.4;
-	background:#fefefe;
-	text-align: justify;
+  padding: 1em;
+  line-height: 1.4;
+  background: #fefefe;
+  text-align: justify;
 }
 
-.tufte-section {
-	display: flex;
-	flex-wrap: wrap;
+.fnref {
+  vertical-align: baseline;
+  position: relative;
+  font-size: 0.8em;
+  bottom: 1.25ex;
+  font-style: normal;
 }
 
-.main-text {
-	flex: 30em;
-	max-width: 30em;
-	margin-right: 3em;
+a.fnref,
+.fnref a {
+  color: #222222;
+  text-decoration: none;
 }
 
-.sidenotes {
-	font-size: 0.8em;
-	flex: 18em;
-	max-width: 30em;
+.footnote,
+.figure .caption,
+.aside {
+  font-size: 0.8em;
+  float: right;
+  clear: right;
+  width: 18.75em;
+  margin-left: -18.75em;
+  left: 21.25em;
+  position: relative;
+  line-height: 1.875em;
+  margin-bottom: 1.875em;
+  text-indent: 0em;
+  font-style: normal;
+  text-align: left;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	font-weight: bold;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
 }
 
-h2, h3 {
-	font-weight: normal;
-	font-style: italic;
+h2,
+h3 {
+  font-weight: normal;
+  font-style: italic;
 }
 
 hr {
-	height: 0.1em;
-	border: 0;
-	color: #CCCCCC;
-	background-color: #CCCCCC;
+  height: 0.1em;
+  border: 0;
+  color: #CCCCCC;
+  background-color: #CCCCCC;
 }
 
 p {
-	max-width: 30em;
-	margin-bottom: 0;
-	margin-top: 0;
+  max-width: 30em;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
-p + p {
-	text-indent: 1.5em;
-	margin-top: 0;
+p+p {
+  text-indent: 1.5em;
+  margin-top: 0;
 }
 
-.sidenotes > p + p {
-	text-indent: 0em;
-	margin-top: 0;
+p+p {
+  text-indent: 0em;
+  margin-top: 0;
 }
 
-.sidenotes > p {
-	margin-bottom: 1em;
+p {
+  margin-bottom: 1em;
 }
 
-ul, ol {
-	max-width: 26em;
+ul,
+ol {
+  max-width: 26em;
 }
 
-li > ul {
-	padding-left: 1em;
+li>ul {
+  padding-left: 1em;
 }
 
-dl, table, pre {
-	margin: 15px 0;
+dl,
+table,
+pre {
+  margin: 15px 0;
 }
 
 blockquote {
-  color:#666666;
-	max-width: 29em;
-	margin-top: 10;
-	margin-bottom: 10;
-	margin-left: 0;
+  color: #666666;
+  max-width: 29em;
+  margin-top: 10;
+  margin-bottom: 10;
+  margin-left: 0;
   padding-left: 1em;
   border-left: 0.2em #EEE solid;
 }
 
 table {
-	border-collapse: collapse;
-	width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-table, th, td {
-	border: 1px solid #EAEAEA;
+table,
+th,
+td {
+  border: 1px solid #EAEAEA;
 
-	border-radius: 3px;
-	padding: 5px;
+  border-radius: 3px;
+  padding: 5px;
 }
 
 tr:nth-child(even) {
   background-color: #F8F8F8;
 }
 
-a, a:visited {
-	color: #4183C4;
-	background-color: inherit;
-	text-decoration: none;
+a,
+a:visited {
+  color: #4183C4;
+  background-color: inherit;
+  text-decoration: none;
 }
 
 #message {
-	border-radius: 6px;
-	border: 1px solid #ccc;
-	display:block;
-	width:100%;
-	height:60px;
-	margin:6px 0px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  display: block;
+  width: 100%;
+  height: 60px;
+  margin: 6px 0px;
 }
 
-button, #ws {
-	font-size: 10pt;
-	padding: 4px 6px;
-	border-radius: 5px;
-	border: 1px solid #bbb;
-	background-color: #eee;
+button,
+#ws {
+  font-size: 10pt;
+  padding: 4px 6px;
+  border-radius: 5px;
+  border: 1px solid #bbb;
+  background-color: #eee;
 }
 
-code, pre, #ws, #message {
-	font-family: 'Fira Code', monospace;
-	font-size: 10pt;
-	border-radius: 3px;
-	background-color: #F8F8F8;
-	color: inherit;
+code,
+pre,
+#ws,
+#message {
+  font-family: 'Fira Code', monospace;
+  font-size: 10pt;
+  border-radius: 3px;
+  background-color: #F8F8F8;
+  color: inherit;
+}
+
+pre {
+  max-width: 35em;
 }
 
 code {
-	border: 1px solid #EAEAEA;
-	margin: 0 2px;
-	padding: 0 5px;
+  border: 1px solid #EAEAEA;
+  margin: 0 2px;
+  padding: 0 5px;
 }
 
 img {
@@ -142,36 +177,50 @@ img {
 }
 
 figure {
-	margin: 0;
+  margin: 0;
 }
 
-figure > img {
+figure>img {
   width: 100%;
-	border: 1px solid #EAEAEA;
+  border: 1px solid #EAEAEA;
 }
 
 figcaption {
-	text-align: center;
+  text-align: center;
 }
 
 pre {
-	border: 1px solid #CCCCCC;
-	overflow: auto;
-	padding: 4px 8px;
+  border: 1px solid #CCCCCC;
+  overflow: auto;
+  padding: 4px 8px;
 }
 
-div.sourceCode > pre {
-	overflow: auto;
+.sourceCode {
+  max-width: 35em;
 }
 
-pre > code {
-	border: 0;
-	margin: 0;
-	padding: 0;
+div.sourceCode>pre {
+  overflow: auto;
 }
 
-#ws { background-color: #f8f8f8; }
+pre>code {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
 
-.send { color:#77bb77; }
-.server { color:#7799bb; }
-.error { color:#AA0000; }
+#ws {
+  background-color: #f8f8f8;
+}
+
+.send {
+  color: #77bb77;
+}
+
+.server {
+  color: #7799bb;
+}
+
+.error {
+  color: #AA0000;
+}

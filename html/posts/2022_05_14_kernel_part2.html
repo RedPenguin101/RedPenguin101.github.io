@@ -1,9 +1,15 @@
-<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><meta content="pandoc" name="generator" /><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" /><title>2022_05_14_kernel_part2</title><style type="text/css">
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2022_05_14_kernel_part2</title>
+  <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style><style type="text/css">
+  </style>
+  <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -65,7 +71,19 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style><link href="../../css/style.css" rel="stylesheet" /></head><body><h1 id="kernel-development-part-2-the-interrupt-vector-table-and-real-mode-io">Kernel Development Part 2: The Interrupt Vector Table and Real Mode IO</h1><div class="tufte-section"><div class="main-text"><p>Interrupts are like subroutines that you call through ‘interrupt numbers’ rather than memory addresses. There are interrupts pre-defined in the BIOS - in the previous post we saw <code>10h 0eh</code> prints a character to the screen - or they can be set up by the programmer. Interrupts are special because they halt the processor, save the current state (meaning what? the registers?) to the stack, execute the interrupt, then restore the pre-interrupt state.</p><p>The code for these interrupts are stored in RAM. The locations of the code are stored in the <em>interrupt vector table</em> (IVT)<sup>1</sup>, which starts <em>right at the beginning</em> of RAM at address <code>0x00</code>. There are 256 entries in numerical order, <code>0x00</code> to <code>0xFF</code>, and each contains a 4 bytes: a 2 byte OFFSET and a 2 byte SEGMENT. This means you can calculate the location in the IVT of any interrupt code with <code>code * 0x04</code>. Interrupt <code>0x13</code> is at <code>0x46</code>.<sup>2</sup></p><p>The processor can throw exceptions with interrupts. For example, if you try to divide by zero in an Intel processor, it will call interrupt 0.<sup>3</sup></p><p>In the following code, we <em>replace</em> interrupt 0 with our own subroutine, by replacing the entries in the IVT to point to the subroutine in memory. Running our bootloader in this state will cause the screen to show <code>AHello World!A</code> - the first <code>A</code> comes from our manual call to the <code>int 0</code>, and the second comes from our attempt to divide by zero, which causes the processor to run interrupt 0.</p><div class="sourceCode" id="cb1"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">start:</span></a>
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="kernel-development-part-2-the-interrupt-vector-table-and-real-mode-io">Kernel Development Part 2: The Interrupt Vector Table and Real Mode IO</h1>
+<p>Interrupts are like subroutines that you call through ‘interrupt numbers’ rather than memory addresses. There are interrupts pre-defined in the BIOS - in the previous post we saw <code>10h 0eh</code> prints a character to the screen - or they can be set up by the programmer. Interrupts are special because they halt the processor, save the current state (meaning what? the registers?) to the stack, execute the interrupt, then restore the pre-interrupt state.</p>
+<p>The code for these interrupts are stored in RAM. The locations of the code are stored in the <em>interrupt vector table</em> (IVT)<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> All of this only applies to Real Mode. In Protected Mode, an “Interrupt Descriptor Table” is used instead. More on this later </span>, which starts <em>right at the beginning</em> of RAM at address <code>0x00</code>. There are 256 entries in numerical order, <code>0x00</code> to <code>0xFF</code>, and each contains a 4 bytes: a 2 byte OFFSET and a 2 byte SEGMENT. This means you can calculate the location in the IVT of any interrupt code with <code>code * 0x04</code>. Interrupt <code>0x13</code> is at <code>0x46</code>.<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> Layout of the IVT: <img alt="Interrupt Vector Table" src="../../images/2022_03_21_kerneldev/IVT.png" /> </span></p>
+
+
+<p>The processor can throw exceptions with interrupts. For example, if you try to divide by zero in an Intel processor, it will call interrupt 0.<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3"> <a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> wiki.osdev.org/exceptions is a great resource for learning more </span></p>
+
+<p>In the following code, we <em>replace</em> interrupt 0 with our own subroutine, by replacing the entries in the IVT to point to the subroutine in memory. Running our bootloader in this state will cause the screen to show <code>AHello World!A</code> - the first <code>A</code> comes from our manual call to the <code>int 0</code>, and the second comes from our attempt to divide by zero, which causes the processor to run interrupt 0.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">start:</span></a>
 <a class="sourceLine" id="cb1-2" title="2">    <span class="co">; snip</span></a>
 <a class="sourceLine" id="cb1-3" title="3">    <span class="bu">mov</span> <span class="dt">word</span>[<span class="kw">ss</span>:<span class="bn">0x00</span>], handle_zero <span class="co">; Set offset to handle_word address</span></a>
 <a class="sourceLine" id="cb1-4" title="4">    <span class="bu">mov</span> <span class="dt">word</span>[<span class="kw">ss</span>:<span class="bn">0x02</span>]<span class="bn">, 0x07C0      </span><span class="co">; set segment to 0x07c0 </span></a>
@@ -87,24 +105,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-20" title="20">    <span class="bu">int</span><span class="bn"> 0x10</span></a>
 <a class="sourceLine" id="cb1-21" title="21">    <span class="bu">iret</span></a>
 <a class="sourceLine" id="cb1-22" title="22"></a>
-<a class="sourceLine" id="cb1-23" title="23"><span class="co">; snip</span></a></code></pre></div></div><div class="sidenotes"><p class="footnote">
-1: All of this only applies to Real Mode. In Protected Mode, an “Interrupt Descriptor Table” is used instead. More on this later
-</p><p class="footnote">
-2: Layout of the IVT: <img alt="Interrupt Vector Table" src="../../images/2022_03_21_kerneldev/IVT.png" />
-</p><p class="footnote">
-3: wiki.osdev.org/exceptions is a great resource for learning more
-</p></div></div><h2 id="reading-from-disk">Reading from disk</h2><div class="tufte-section"><div class="main-text"><p>Next we will see how we can read data from a hard disk. Note that we’re not talking about accessing <em>files</em>. Files and the file system are implemented in the Kernel. Or to be more specific, the disk is ‘formatted’ with a particular file system data structure (FAT, EXT4 etc.), and the kernel has drivers which are able to interpret that data structure as files. As far as we are concerned, the disk consists of blocks of data called <em>sectors</em><sup>4</sup>. A sector consists of 512 contiguous bytes. These sectors are read and written in sector blocks, not by accessing individual bytes.<sup>5</sup></p><p>The old way of addressing disk sectors is the <em>Cylinder Head Sector</em> (CHS) system. This is from when disks were spinning magnetic plates arranged in cylinders. You need to specify the cylinder, head, sector and track you want to read from. This was pretty complicated, and it is no longer really used. The modern way is called <em>Logical Block Address</em> (LBA). In LBA you just specify the sector number you want to get. LBA 0 is the first sector on the disk, etc.<sup>5</sup></p></div><div class="sidenotes"><p class="footnote">
-4: We already encountered sectors when talking about how the bootloader is loaded.
-</p><figure>
+<a class="sourceLine" id="cb1-23" title="23"><span class="co">; snip</span></a></code></pre></div>
+<h2 id="reading-from-disk">Reading from disk</h2>
+<p>Next we will see how we can read data from a hard disk. Note that we’re not talking about accessing <em>files</em>. Files and the file system are implemented in the Kernel. Or to be more specific, the disk is ‘formatted’ with a particular file system data structure (FAT, EXT4 etc.), and the kernel has drivers which are able to interpret that data structure as files. As far as we are concerned, the disk consists of blocks of data called <em>sectors</em><sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4"> <a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> We already encountered sectors when talking about how the bootloader is loaded. </span>. A sector consists of 512 contiguous bytes. These sectors are read and written in sector blocks, not by accessing individual bytes.<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5"> <a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by <code>58376/512=114</code>, and the offset as <code>58376%512=8</code> </span></p>
+
+<figure>
 <img alt="Disk" src="../../images/2022_03_21_kerneldev/disk.png" /><figcaption>Disk</figcaption>
-</figure><p class="footnote">
-5: Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by <code>58376/512=114</code>, and the offset as <code>58376%512=8</code>
-</p></div></div><h3 id="some-housekeeping-before-we-actually-read-from-the-disk">Some housekeeping before we actually read from the disk</h3><div class="tufte-section"><div class="main-text"><p>First create a text file and put in it whatever you want. This is going to be the thing that gets read from the disk. Create a <em>Makefile</em><sup>6</sup>.</p><pre class="make"><code>all:
+</figure>
+<p>The old way of addressing disk sectors is the <em>Cylinder Head Sector</em> (CHS) system. This is from when disks were spinning magnetic plates arranged in cylinders. You need to specify the cylinder, head, sector and track you want to read from. This was pretty complicated, and it is no longer really used. The modern way is called <em>Logical Block Address</em> (LBA). In LBA you just specify the sector number you want to get. LBA 0 is the first sector on the disk, etc.<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5"> <a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by <code>58376/512=114</code>, and the offset as <code>58376%512=8</code> </span></p>
+
+<h3 id="some-housekeeping-before-we-actually-read-from-the-disk">Some housekeeping before we actually read from the disk</h3>
+<p>First create a text file and put in it whatever you want. This is going to be the thing that gets read from the disk. Create a <em>Makefile</em><sup class="fnref"><a href="#fn6" id="note6" title="Footnote 6">6</a></sup><span class="footnote" id="fn6"> <a class="fnref" href="#note6" title="Footnote 6 Reference">6</a> Make is a language unto itself, intended to simplify the compilation of project with multiple files. </span>.</p>
+
+<pre class="make"><code>all:
     nasm -f bin ./boot.asm -o ./boot.bin
     dd if=./message.txt &gt;&gt; ./boot.bin
-    dd if=/dev/zero bs=512 count=1 &gt;&gt; ./boot.bin</code></pre><p>The first line is same assemble command we’ve already been using. The second line puts the content of <em>message.txt</em> onto the end of our binary, and the third pads the binary out with null characters until it’s 512 bytes, and therefore a valid sector. You can type <code>make</code> at the command line to compile the project. You can see the content of the binary with <code>hexdump -C ./boot.bin &gt; hex.txt</code>, and opening the text file.</p></div><div class="sidenotes"><p class="footnote">
-6: Make is a language unto itself, intended to simplify the compilation of project with multiple files.
-</p></div></div><h3 id="time-to-actually-read-from-the-disk">Time to actually read from the disk</h3><div class="tufte-section"><div class="main-text"><p>We’ll be using interrupt <code>13h/02h</code>: “Disk - Read Sectors into Memory”. Looking at the expected register values that <a href="http://www.ctyme.com/intr/rb-0607.htm">Ralph Brown</a> provides<sup>7</sup> we can get to the follow code:</p><div class="sourceCode" id="cb3"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb3-1" title="1">    <span class="bu">mov</span><span class="bn"> ah, 02h</span></a>
+    dd if=/dev/zero bs=512 count=1 &gt;&gt; ./boot.bin</code></pre>
+<p>The first line is same assemble command we’ve already been using. The second line puts the content of <em>message.txt</em> onto the end of our binary, and the third pads the binary out with null characters until it’s 512 bytes, and therefore a valid sector. You can type <code>make</code> at the command line to compile the project. You can see the content of the binary with <code>hexdump -C ./boot.bin &gt; hex.txt</code>, and opening the text file.</p>
+<h3 id="time-to-actually-read-from-the-disk">Time to actually read from the disk</h3>
+<p>We’ll be using interrupt <code>13h/02h</code>: “Disk - Read Sectors into Memory”. Looking at the expected register values that <a href="http://www.ctyme.com/intr/rb-0607.htm">Ralph Brown</a> provides<sup class="fnref"><a href="#fn7" id="note7" title="Footnote 7">7</a></sup><span class="footnote" id="fn7"> <a class="fnref" href="#note7" title="Footnote 7 Reference">7</a> <code>AH</code> = 02h, <code>AL</code> = number of sectors to read, <code>CH</code> = cylinder number, <code>CL</code> = sector number, <code>DH</code> = head number, <code>ES:BX</code> -&gt; data buffer. Return: <code>CF</code> set on error </span> we can get to the follow code:</p>
+
+<div class="sourceCode" id="cb3"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb3-1" title="1">    <span class="bu">mov</span><span class="bn"> ah, 02h</span></a>
 <a class="sourceLine" id="cb3-2" title="2">    <span class="bu">mov</span> <span class="kw">al</span>, <span class="dv">1</span></a>
 <a class="sourceLine" id="cb3-3" title="3">    <span class="bu">mov</span><span class="bn"> ch, </span><span class="dv">0</span></a>
 <a class="sourceLine" id="cb3-4" title="4">    <span class="bu">mov</span><span class="bn"> dh, </span><span class="dv">0</span></a>
@@ -123,8 +144,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb3-17" title="17"><span class="pp">times</span> <span class="dv">510</span>-(<span class="dv">$</span> - <span class="dv">$$</span>) <span class="dt">db</span> <span class="dv">0</span> <span class="co">; Pad to 510th byte</span></a>
 <a class="sourceLine" id="cb3-18" title="18"><span class="dt">dw</span> <span class="bn">0xAA55</span> <span class="co">; dw=define word. Puts bootloader signal</span></a>
 <a class="sourceLine" id="cb3-19" title="19"></a>
-<a class="sourceLine" id="cb3-20" title="20"><span class="fu">buffer:</span></a></code></pre></div><p>Here we set up the registers as they need to be to read our message from the 2nd sector (<code>cl</code>) of the disk into the <code>buffer</code> label in memory<sup>8</sup>. Then we call the interrupt <code>0x13</code>. <code>jc</code> handles the error condition.</p></div><div class="sidenotes"><p class="footnote">
-7: <code>AH</code> = 02h, <code>AL</code> = number of sectors to read, <code>CH</code> = cylinder number, <code>CL</code> = sector number, <code>DH</code> = head number, <code>ES:BX</code> -&gt; data buffer. Return: <code>CF</code> set on error
-</p><p class="footnote">
-8: Note that the data is put into <code>ES:BX</code>, the Extra Segment. We have set this to <code>0x7c0</code>, which is the right place.
-</p></div></div></body></html>
+<a class="sourceLine" id="cb3-20" title="20"><span class="fu">buffer:</span></a></code></pre></div>
+<p>Here we set up the registers as they need to be to read our message from the 2nd sector (<code>cl</code>) of the disk into the <code>buffer</code> label in memory<sup class="fnref"><a href="#fn8" id="note8" title="Footnote 8">8</a></sup><span class="footnote" id="fn8"> <a class="fnref" href="#note8" title="Footnote 8 Reference">8</a> Note that the data is put into <code>ES:BX</code>, the Extra Segment. We have set this to <code>0x7c0</code>, which is the right place. </span>. Then we call the interrupt <code>0x13</code>. <code>jc</code> handles the error condition.</p>
+
+
+
+</body></html>

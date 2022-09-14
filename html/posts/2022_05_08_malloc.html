@@ -1,9 +1,15 @@
-<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><meta content="pandoc" name="generator" /><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" /><title>2022_05_08_malloc</title><style type="text/css">
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2022_05_08_malloc</title>
+  <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style><style type="text/css">
+  </style>
+  <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -65,15 +71,38 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style><link href="../../css/style.css" rel="stylesheet" /></head><body><h1 id="malloc.c-and-memory-allocation-in-unix">Malloc.c and memory allocation in UNIX</h1><div class="tufte-section"><div class="main-text"><p>This is an extract from a much longer annotated UNIX 6 source code post, about the specific file <code>malloc.c</code>, and the two functions <code>malloc</code> and <code>mfree</code>.</p><p>The purpose of these functions is to manage the memory (RAM or SWAP) available in the machine, as other programs and routines ask for it. I was actually quite surprised at how simple it is. I wasn’t expecting to be able to understand it at all. But both functions are very short and comprehensible.</p><p>The signature of the functions are <code>int malloc(map* mp, int size)</code> and <code>void mfree(map* mp, int size, int aa)</code><sup>1</sup>. The first challenge is figuring out what a ‘map’ is. Looking through the rest of the code, <code>malloc</code> is called with either <code>coremap</code> or <code>swapmap</code> as the first argument. In the headers these are declared as <code>int coremap[100]</code> and <code>int swapmap[100]</code>. So arrays of integers, one for RAM (core) and one for SWAP.</p><p>But you also, in <code>malloc.c</code> itself, have the map <em>struct</em>:</p><div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">struct</span> map {</a>
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="malloc.c-and-memory-allocation-in-unix">Malloc.c and memory allocation in UNIX</h1>
+<p>This is an extract from a much longer annotated UNIX 6 source code post, about the specific file <code>malloc.c</code>, and the two functions <code>malloc</code> and <code>mfree</code>.</p>
+<p>The purpose of these functions is to manage the memory (RAM or SWAP) available in the machine, as other programs and routines ask for it. I was actually quite surprised at how simple it is. I wasn’t expecting to be able to understand it at all. But both functions are very short and comprehensible.</p>
+<p>The signature of the functions are <code>int malloc(map* mp, int size)</code> and <code>void mfree(map* mp, int size, int aa)</code><sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> Note, UNIX 6 is written in very old style C. I’ve updated a lot of the source code to be more comprehensible to modern eyes. I’ve also expanded a lot of the argument and local variable names to be more descriptive. </span>. The first challenge is figuring out what a ‘map’ is. Looking through the rest of the code, <code>malloc</code> is called with either <code>coremap</code> or <code>swapmap</code> as the first argument. In the headers these are declared as <code>int coremap[100]</code> and <code>int swapmap[100]</code>. So arrays of integers, one for RAM (core) and one for SWAP.</p>
+
+<p>But you also, in <code>malloc.c</code> itself, have the map <em>struct</em>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">struct</span> map {</a>
 <a class="sourceLine" id="cb1-2" title="2">    <span class="dt">char</span>* m_size;</a>
 <a class="sourceLine" id="cb1-3" title="3">    <span class="dt">char</span>* m_addr;</a>
-<a class="sourceLine" id="cb1-4" title="4">};</a></code></pre></div><p>So now a map is a struct of two char pointers, not an array of integers? This was hard for me, as someone who doesn’t do much low level, memory managed programming, but these are the same thing.</p><p>First, an <code>int</code> is a 16bit number. A <code>char</code> is an 8bit number. So an <code>int</code> can plausibly be interpreted as two consecutive <code>char</code>. An ‘array of integers’ is a block of contiguous integers. But in another sense an ‘array’ is just the address of the first element of that block. So an array of integers is also a <code>int*</code>, or pointer to an integer. Put both of these together and you get to the conclusion that a struct of two <code>char*</code> is the same as a <code>int[]</code>.</p><p>Fine, but what <em>is</em> a map? It took me a bit of thinking, but what it is is a <em>table of blocks</em>, where a block is a ‘block of available memory’ described by a size and a starting address:</p><pre><code>el | size | address 
+<a class="sourceLine" id="cb1-4" title="4">};</a></code></pre></div>
+<p>So now a map is a struct of two char pointers, not an array of integers? This was hard for me, as someone who doesn’t do much low level, memory managed programming, but these are the same thing.</p>
+<p>First, an <code>int</code> is a 16bit number. A <code>char</code> is an 8bit number. So an <code>int</code> can plausibly be interpreted as two consecutive <code>char</code>. An ‘array of integers’ is a block of contiguous integers. But in another sense an ‘array’ is just the address of the first element of that block. So an array of integers is also a <code>int*</code>, or pointer to an integer. Put both of these together and you get to the conclusion that a struct of two <code>char*</code> is the same as a <code>int[]</code>.</p>
+<p>Fine, but what <em>is</em> a map? It took me a bit of thinking, but what it is is a <em>table of blocks</em>, where a block is a ‘block of available memory’ described by a size and a starting address:</p>
+<pre><code>el | size | address 
 ---|------|--------
 ...| ...  |   ...
  4 |  10  |   100
  5 |  50  |   500
- 6 |   0  |   600 &lt;- note size==0 acts as 'sentinal'</code></pre><p>The table has three rules: 1. the addresses of the blocks must be ordered ascending 2. There must be no ‘empty’ entries (size=0) in the middle of the table 3. There must be no contiguous blocks, where the end address of block X is the start address of block X+1</p><p>When a program requests memory of a certain size, <code>malloc</code> looks at this table, finds the first block with enough space, and returns the address of that block, updating the table to reflect that the memory is no longer available. When a program says it doesn’t need that memory any more, <code>mfree</code> creates a new entry in the table, reflecting that this memory is now available again. There are some nuances, which we’ll get into.</p><h4 id="malloc">malloc</h4><p>When asked for a block of memory of a certain size, <code>malloc</code> finds the address of a piece of memory that fits the bill, and returns that address.</p><p>The function looks through the table for a block of adequate size. That is, one where the size which the caller is requesting is smaller than or equal to the size of the block available <sup>2</sup>. It either finds one, in which case it returns a pointer to that address, or it reaches the end of the maps without finding a block, and returns zero.</p><p>When a suitable block has been found, the address of the block is <em>increased</em> by the requested size, and the size of the block is <em>reduced</em> by the requested size. So if there was a request for 100 bytes, and the block was size 200 at address 10000, the <em>new</em> block would be size 100 at address 10100.</p><p>There is an important last step: If, by allocating the new memory, the size of the block is now zero, then the block/row in the table is ‘deleted’, and everything gets ‘shifted up’. This ensures that there are no ‘hanging’ empty blocks in the middle of the table, which would cause the algorithm to fail to allocate prematurely. An illustration of this is below the code.</p><div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">int</span> malloc(map* mem_table, <span class="dt">int</span> size) {</a>
+ 6 |   0  |   600 &lt;- note size==0 acts as 'sentinal'</code></pre>
+<p>The table has three rules: 1. the addresses of the blocks must be ordered ascending 2. There must be no ‘empty’ entries (size=0) in the middle of the table 3. There must be no contiguous blocks, where the end address of block X is the start address of block X+1</p>
+<p>When a program requests memory of a certain size, <code>malloc</code> looks at this table, finds the first block with enough space, and returns the address of that block, updating the table to reflect that the memory is no longer available. When a program says it doesn’t need that memory any more, <code>mfree</code> creates a new entry in the table, reflecting that this memory is now available again. There are some nuances, which we’ll get into.</p>
+<h4 id="malloc">malloc</h4>
+<p>When asked for a block of memory of a certain size, <code>malloc</code> finds the address of a piece of memory that fits the bill, and returns that address.</p>
+<p>The function looks through the table for a block of adequate size. That is, one where the size which the caller is requesting is smaller than or equal to the size of the block available <sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> For this reason, the allocation algorithm is known as ‘first fit’. </span>. It either finds one, in which case it returns a pointer to that address, or it reaches the end of the maps without finding a block, and returns zero.</p>
+
+<p>When a suitable block has been found, the address of the block is <em>increased</em> by the requested size, and the size of the block is <em>reduced</em> by the requested size. So if there was a request for 100 bytes, and the block was size 200 at address 10000, the <em>new</em> block would be size 100 at address 10100.</p>
+<p>There is an important last step: If, by allocating the new memory, the size of the block is now zero, then the block/row in the table is ‘deleted’, and everything gets ‘shifted up’. This ensures that there are no ‘hanging’ empty blocks in the middle of the table, which would cause the algorithm to fail to allocate prematurely. An illustration of this is below the code.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">int</span> malloc(map* mem_table, <span class="dt">int</span> size) {</a>
 <a class="sourceLine" id="cb3-2" title="2">    <span class="dt">int</span> return_pointer;</a>
 <a class="sourceLine" id="cb3-3" title="3">    <span class="kw">struct</span> map* block;</a>
 <a class="sourceLine" id="cb3-4" title="4"></a>
@@ -93,7 +122,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb3-18" title="18">        }</a>
 <a class="sourceLine" id="cb3-19" title="19">    }</a>
 <a class="sourceLine" id="cb3-20" title="20">    <span class="cf">return</span>(<span class="dv">0</span>);</a>
-<a class="sourceLine" id="cb3-21" title="21">}</a></code></pre></div><p>The illustration of the ‘table shifting’:</p><pre><code>el | size | adk 
+<a class="sourceLine" id="cb3-21" title="21">}</a></code></pre></div>
+<p>The illustration of the ‘table shifting’:</p>
+<pre><code>el | size | adk 
 ---|------|----
 ...| ...  | ...
  4 |  10  | 100 &lt;- before request for 10
@@ -138,7 +169,11 @@ el | size | add
  5 |   0  | 600 &lt;- (block-1)-&gt;m_addr = block-&gt;m_addr, (block-1)-&gt;m_size = block-&gt;m_size
  6 |   0  | 600 &lt;- block still points here
 
-(block-1)-&gt;m_size == 0, so we are done</code></pre><h4 id="mfree">mfree</h4><p>When freeing memory, the table, the size, and the address is passed in. The function then creates a new entry in the table with those values. However, doing this is a recipe for many tiny blocks of memory that can’t actually be used. We need a mechanism for merging blocks if they are contiguous.</p><p>Consider the case <code>mfree(table, 50, 1000)</code> in the context of the table</p><pre><code>el | size | add 
+(block-1)-&gt;m_size == 0, so we are done</code></pre>
+<h4 id="mfree">mfree</h4>
+<p>When freeing memory, the table, the size, and the address is passed in. The function then creates a new entry in the table with those values. However, doing this is a recipe for many tiny blocks of memory that can’t actually be used. We need a mechanism for merging blocks if they are contiguous.</p>
+<p>Consider the case <code>mfree(table, 50, 1000)</code> in the context of the table</p>
+<pre><code>el | size | add 
 ---|------|----
 ...| ...  | ...
  4 |  50  |  500
@@ -151,12 +186,16 @@ el | size | add
  4 |  50  |  500
  5 |  50  |  950
  x |  50  | 1000 &lt;- We want to insert here
- 6 |  50  | 1050</code></pre><p>Here, we have 3 contiguous blocks: 5, x and 6. We want to merge these blocks into one, to end up with</p><pre><code>el | size | add 
+ 6 |  50  | 1050</code></pre>
+<p>Here, we have 3 contiguous blocks: 5, x and 6. We want to merge these blocks into one, to end up with</p>
+<pre><code>el | size | add 
 ---|------|----
 ...| ...  | ...
  4 |  50  |  500
  5 | 150  |  950
-...| ...  | ...</code></pre><p>The algorithm is for freeing a block X is: 1. Find the first block in the table where the address is greater than the start address of X. 2. Look at the block <em>before</em> this. Call this block A. If the block X is contiguous with A (<code>A.addr + A.size == X.addr</code>), then instead of inserting a new block for X, we want to <em>extend</em> block A. 3. Next we look at the block we got in step 1. Call this block B. If X is contiguous with A and B, we need to <em>merge</em> our newly extended A with B. This is the same ‘shift up’ operation we saw in <code>malloc</code> 4. If X is not contiguous with A, but is contiguous with B, just extend B backwards 5. Is X is not contiguous with A or B, we need to ‘insert’ a row into the table.</p><div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" title="1"><span class="dt">void</span> mfree(map* mem_table, <span class="dt">int</span> size, <span class="dt">int</span> addr_to_free) {</a>
+...| ...  | ...</code></pre>
+<p>The algorithm is for freeing a block X is: 1. Find the first block in the table where the address is greater than the start address of X. 2. Look at the block <em>before</em> this. Call this block A. If the block X is contiguous with A (<code>A.addr + A.size == X.addr</code>), then instead of inserting a new block for X, we want to <em>extend</em> block A. 3. Next we look at the block we got in step 1. Call this block B. If X is contiguous with A and B, we need to <em>merge</em> our newly extended A with B. This is the same ‘shift up’ operation we saw in <code>malloc</code> 4. If X is not contiguous with A, but is contiguous with B, just extend B backwards 5. Is X is not contiguous with A or B, we need to ‘insert’ a row into the table.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" title="1"><span class="dt">void</span> mfree(map* mem_table, <span class="dt">int</span> size, <span class="dt">int</span> addr_to_free) {</a>
 <a class="sourceLine" id="cb7-2" title="2">    <span class="kw">struct</span> map* block;</a>
 <a class="sourceLine" id="cb7-3" title="3">    <span class="dt">int</span> temp_address;</a>
 <a class="sourceLine" id="cb7-4" title="4"></a>
@@ -192,8 +231,7 @@ el | size | add
 <a class="sourceLine" id="cb7-34" title="34">            } <span class="cf">while</span> (size = temp_address);</a>
 <a class="sourceLine" id="cb7-35" title="35">        }</a>
 <a class="sourceLine" id="cb7-36" title="36">    }</a>
-<a class="sourceLine" id="cb7-37" title="37">}</a></code></pre></div></div><div class="sidenotes"><p class="footnote">
-1: Note, UNIX 6 is written in very old style C. I’ve updated a lot of the source code to be more comprehensible to modern eyes. I’ve also expanded a lot of the argument and local variable names to be more descriptive.
-</p><p class="footnote">
-2: For this reason, the allocation algorithm is known as ‘first fit’.
-</p></div></div></body></html>
+<a class="sourceLine" id="cb7-37" title="37">}</a></code></pre></div>
+
+
+</body></html>

@@ -1,9 +1,15 @@
-<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><meta content="pandoc" name="generator" /><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" /><title>2021_04_03_church</title><style type="text/css">
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2021_04_03_church</title>
+  <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style><style type="text/css">
+  </style>
+  <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -65,31 +71,60 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style><link href="../../css/style.css" rel="stylesheet" /></head><body><h1 id="church-numerals">Church Numerals</h1><div class="tufte-section"><div class="main-text"><p>What is a number? A number is counting, abstracted across the thing being counted. If you have a pile of rocks, you can count the number of rocks.</p><p>Now let’s think about counting an action: the number of times <em>bob</em> <em>jumps</em> a skipping rope. <code>(jump (jump (jump bob)))</code> is three jumps. But it doesn’t have to be bob, we can count anyone jumping, abstracting across the person.</p><div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(<span class="bu">defn</span><span class="fu"> three-jumps </span>[x] (jump (jump (jump x))))</a>
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="church-numerals">Church Numerals</h1>
+<p>What is a number? A number is counting, abstracted across the thing being counted. If you have a pile of rocks, you can count the number of rocks.</p>
+<p>Now let’s think about counting an action: the number of times <em>bob</em> <em>jumps</em> a skipping rope. <code>(jump (jump (jump bob)))</code> is three jumps. But it doesn’t have to be bob, we can count anyone jumping, abstracting across the person.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb1-1" title="1">(<span class="bu">defn</span><span class="fu"> three-jumps </span>[x] (jump (jump (jump x))))</a>
 <a class="sourceLine" id="cb1-2" title="2"></a>
 <a class="sourceLine" id="cb1-3" title="3">(<span class="bu">def</span><span class="fu"> three-bob-jumps </span>(three-jumps bob))</a>
-<a class="sourceLine" id="cb1-4" title="4">(<span class="bu">def</span><span class="fu"> three-jane-jumps </span>(three-jumps jane))</a></code></pre></div><p>So now we have a function three jumps, which takes any person and does the jump action three times.</p><p>It doesn’t have to be jumps: we can abstract across the <em>action</em> too, so we have the concept of three in it purest form: counting the number of times an action happens to a thing.</p><div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="bu">def</span><span class="fu"> three </span>(<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (f (f (f x))))))</a>
+<a class="sourceLine" id="cb1-4" title="4">(<span class="bu">def</span><span class="fu"> three-jane-jumps </span>(three-jumps jane))</a></code></pre></div>
+<p>So now we have a function three jumps, which takes any person and does the jump action three times.</p>
+<p>It doesn’t have to be jumps: we can abstract across the <em>action</em> too, so we have the concept of three in it purest form: counting the number of times an action happens to a thing.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb2-1" title="1">(<span class="bu">def</span><span class="fu"> three </span>(<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (f (f (f x))))))</a>
 <a class="sourceLine" id="cb2-2" title="2"></a>
 <a class="sourceLine" id="cb2-3" title="3">(<span class="bu">def</span><span class="fu"> three-bob-jumps </span>((three jump) bob))</a>
 <a class="sourceLine" id="cb2-4" title="4">(<span class="bu">def</span><span class="fu"> three-bob-skips </span>((three skip) bob))</a>
-<a class="sourceLine" id="cb2-5" title="5">(<span class="bu">def</span><span class="fu"> three-jane-shouts </span>((three shouts) jane))</a></code></pre></div><p>Notice the pattern: <code>three</code> is:</p><ul>
+<a class="sourceLine" id="cb2-5" title="5">(<span class="bu">def</span><span class="fu"> three-jane-shouts </span>((three shouts) jane))</a></code></pre></div>
+<p>Notice the pattern: <code>three</code> is:</p>
+<ul>
 <li>a function which takes an operation <code>f</code>, and</li>
 <li>returns a function which takes a value <code>x</code> and</li>
 <li>applies the <code>f</code> to the <code>x</code> three times</li>
-</ul><p>What about four? It’s a function which takes an operation and returns a function which takes a value, and applies the function to the value 4 times.</p><div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">def</span><span class="fu"> four </span>(<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (f (f (f (f x)))))))</a>
+</ul>
+<p>What about four? It’s a function which takes an operation and returns a function which takes a value, and applies the function to the value 4 times.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">def</span><span class="fu"> four </span>(<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (f (f (f (f x)))))))</a>
 <a class="sourceLine" id="cb3-2" title="2"></a>
 <a class="sourceLine" id="cb3-3" title="3">(<span class="bu">def</span><span class="fu"> four-bob-jumps </span>((four jump) bob))</a>
 <a class="sourceLine" id="cb3-4" title="4">(<span class="bu">def</span><span class="fu"> four-bob-skips </span>((four skip) bob))</a>
-<a class="sourceLine" id="cb3-5" title="5">(<span class="bu">def</span><span class="fu"> four-jane-shouts </span>((four shouts) jane))</a></code></pre></div><p>So we have our general conceptual definition of number: counting the number of times a process is applied to an object.</p><div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">defn</span><span class="fu"> zero </span>[f] (<span class="kw">fn</span> [x] x))</a>
+<a class="sourceLine" id="cb3-5" title="5">(<span class="bu">def</span><span class="fu"> four-jane-shouts </span>((four shouts) jane))</a></code></pre></div>
+<p>So we have our general conceptual definition of number: counting the number of times a process is applied to an object.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">defn</span><span class="fu"> zero </span>[f] (<span class="kw">fn</span> [x] x))</a>
 <a class="sourceLine" id="cb4-2" title="2">(<span class="bu">defn</span><span class="fu"> one </span>[f] (<span class="kw">fn</span> [x] (f x)))</a>
 <a class="sourceLine" id="cb4-3" title="3">(<span class="bu">defn</span><span class="fu"> two </span>[f] (<span class="kw">fn</span> [x] (f (f x))))</a>
 <a class="sourceLine" id="cb4-4" title="4">(<span class="bu">defn</span><span class="fu"> three </span>[f] (<span class="kw">fn</span> [x] (f (f (f x)))))</a>
-<a class="sourceLine" id="cb4-5" title="5">(<span class="bu">defn</span><span class="fu"> four </span>[f] (<span class="kw">fn</span> [x] (f (f (f (f x))))))</a></code></pre></div><p>It’s maybe a little easier to see with a threaded version:</p><div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="bu">defn</span><span class="fu"> zero </span>[f]  (<span class="kw">fn</span> [x] x))</a>
+<a class="sourceLine" id="cb4-5" title="5">(<span class="bu">defn</span><span class="fu"> four </span>[f] (<span class="kw">fn</span> [x] (f (f (f (f x))))))</a></code></pre></div>
+<p>It’s maybe a little easier to see with a threaded version:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="bu">defn</span><span class="fu"> zero </span>[f]  (<span class="kw">fn</span> [x] x))</a>
 <a class="sourceLine" id="cb5-2" title="2">(<span class="bu">defn</span><span class="fu"> one </span>[f]   (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x f)))</a>
 <a class="sourceLine" id="cb5-3" title="3">(<span class="bu">defn</span><span class="fu"> two </span>[f]   (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x f f)))</a>
 <a class="sourceLine" id="cb5-4" title="4">(<span class="bu">defn</span><span class="fu"> three </span>[f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x f f f)))</a>
-<a class="sourceLine" id="cb5-5" title="5">(<span class="bu">defn</span><span class="fu"> four </span>[f]  (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x f f f f)))</a></code></pre></div><p>This method of counting, and this definition of a number, is called a <em>Church Numeral</em>.</p><p>How do we translate our church numeral to an integer?</p><p>Let’s go back to <code>(def four-jane-shouts ((four shouts) jane))</code>. We take our conceptual idea of four, and supply it with a concrete action (shout), then apply <em>that</em> to a concrete initial state (Jane). What we end up with is a version of Jane who has shouted four times, having first shouted once, then shouted twice, then shouted three times.</p><p>Consider the action as something that calculates a <em>successor</em>, transitioning the object to the ‘next’ state (whatever that means).</p><p>So to apply this to counting integers, we need our initial state: an <em>identity</em>, which when an action is applied to it zero times gives us the result we want. So the number <code>0</code>.</p><p>Next we need a procedure <code>f</code> which, when applied to an integer gives us its successor. So what when applied 1 times to <code>0</code> gives us <code>1</code>, and two times gives us <code>2</code>? <code>inc</code>!</p><div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn</span><span class="fu"> church-&gt;int </span>[n] ((n <span class="kw">inc</span>) <span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb6-2" title="2">(church-&gt;int three) <span class="co">;;=&gt; 3</span></a></code></pre></div><p>Here we have created a way to go from our weird conceptual idea of three, to the concrete representation of the integer <code>3</code>, by mixing our conceptual three with a concrete identity <code>0</code>, and the concrete successor action <code>inc</code>.</p><p>Now lets dig back into the weird conceptual space of numbers, and look at how we can manipulate and combine the numbers without having to get into the messy world of concretions.</p><p>How do we add 1 to a number? We simply apply the procedure an additional time:</p><div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> add-1 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (f ((n f) x)))))</a>
+<a class="sourceLine" id="cb5-5" title="5">(<span class="bu">defn</span><span class="fu"> four </span>[f]  (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x f f f f)))</a></code></pre></div>
+<p>This method of counting, and this definition of a number, is called a <em>Church Numeral</em>.</p>
+<p>How do we translate our church numeral to an integer?</p>
+<p>Let’s go back to <code>(def four-jane-shouts ((four shouts) jane))</code>. We take our conceptual idea of four, and supply it with a concrete action (shout), then apply <em>that</em> to a concrete initial state (Jane). What we end up with is a version of Jane who has shouted four times, having first shouted once, then shouted twice, then shouted three times.</p>
+<p>Consider the action as something that calculates a <em>successor</em>, transitioning the object to the ‘next’ state (whatever that means).</p>
+<p>So to apply this to counting integers, we need our initial state: an <em>identity</em>, which when an action is applied to it zero times gives us the result we want. So the number <code>0</code>.</p>
+<p>Next we need a procedure <code>f</code> which, when applied to an integer gives us its successor. So what when applied 1 times to <code>0</code> gives us <code>1</code>, and two times gives us <code>2</code>? <code>inc</code>!</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn</span><span class="fu"> church-&gt;int </span>[n] ((n <span class="kw">inc</span>) <span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb6-2" title="2">(church-&gt;int three) <span class="co">;;=&gt; 3</span></a></code></pre></div>
+<p>Here we have created a way to go from our weird conceptual idea of three, to the concrete representation of the integer <code>3</code>, by mixing our conceptual three with a concrete identity <code>0</code>, and the concrete successor action <code>inc</code>.</p>
+<p>Now lets dig back into the weird conceptual space of numbers, and look at how we can manipulate and combine the numbers without having to get into the messy world of concretions.</p>
+<p>How do we add 1 to a number? We simply apply the procedure an additional time:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> add-1 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (f ((n f) x)))))</a>
 <a class="sourceLine" id="cb7-2" title="2"></a>
 <a class="sourceLine" id="cb7-3" title="3"><span class="st">&quot;By substitution&quot;</span></a>
 <a class="sourceLine" id="cb7-4" title="4"></a>
@@ -101,18 +136,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb7-10" title="10"></a>
 <a class="sourceLine" id="cb7-11" title="11"><span class="st">&quot;Possibly easier to read in a threaded form&quot;</span></a>
 <a class="sourceLine" id="cb7-12" title="12">(<span class="bu">defn</span><span class="fu"> add-1 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) f))))</a>
-<a class="sourceLine" id="cb7-13" title="13"><span class="st">&quot;Take x, apply f n times, then apply it once more&quot;</span></a></code></pre></div><p>In general, we can add n to a number by applying <code>f</code> n more times:</p><div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(<span class="bu">defn</span><span class="fu"> add-1 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) f))))</a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="st">&quot;Take x, apply f n times, then apply it once more&quot;</span></a></code></pre></div>
+<p>In general, we can add n to a number by applying <code>f</code> n more times:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(<span class="bu">defn</span><span class="fu"> add-1 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) f))))</a>
 <a class="sourceLine" id="cb8-2" title="2">(<span class="bu">defn</span><span class="fu"> add-2 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) f f))))</a>
 <a class="sourceLine" id="cb8-3" title="3">(<span class="bu">defn</span><span class="fu"> add-3 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) f f f))))</a>
 <a class="sourceLine" id="cb8-4" title="4"></a>
 <a class="sourceLine" id="cb8-5" title="5">(church-&gt;int (add<span class="dv">-1</span> three)) <span class="co">;;=&gt; 4</span></a>
 <a class="sourceLine" id="cb8-6" title="6">(church-&gt;int (add<span class="dv">-2</span> three)) <span class="co">;;=&gt; 5</span></a>
-<a class="sourceLine" id="cb8-7" title="7">(church-&gt;int (add<span class="dv">-3</span> three)) <span class="co">;;=&gt; 6</span></a></code></pre></div><p>Note that <code>add-3</code> takes an <code>x</code>, applies <code>(n f)</code> to it, resulting in a new <code>x1</code>, then applies <code>f</code> three more times to <code>x1</code>. But we already have something that applies a procedure <code>f</code> three times to an <code>x</code>! That’s the definition of the number 3!<sup>1</sup> So we just need to do <code>((three f) x1)</code></p><div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> add-3 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) ((three f))))))</a>
+<a class="sourceLine" id="cb8-7" title="7">(church-&gt;int (add<span class="dv">-3</span> three)) <span class="co">;;=&gt; 6</span></a></code></pre></div>
+<p>Note that <code>add-3</code> takes an <code>x</code>, applies <code>(n f)</code> to it, resulting in a new <code>x1</code>, then applies <code>f</code> three more times to <code>x1</code>. But we already have something that applies a procedure <code>f</code> three times to an <code>x</code>! That’s the definition of the number 3!<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> This blows my mind. </span> So we just need to do <code>((three f) x1)</code></p>
+
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> add-3 </span>[n] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n f)) ((three f))))))</a>
 <a class="sourceLine" id="cb9-2" title="2">(church-&gt;int (add<span class="dv">-3</span> three)) <span class="co">;;=&gt; 6</span></a>
 <a class="sourceLine" id="cb9-3" title="3">(church-&gt;int (add<span class="dv">-3</span> two))   <span class="co">;;=&gt; 5</span></a>
-<a class="sourceLine" id="cb9-4" title="4">(church-&gt;int (add<span class="dv">-3</span> four))  <span class="co">;;=&gt; 7</span></a></code></pre></div><p>Now we can generalize this even further to add together any numbers:</p><div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(<span class="bu">defn</span><span class="fu"> add </span>[n1 n2] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n1 f)) ((n2 f))))))</a>
+<a class="sourceLine" id="cb9-4" title="4">(church-&gt;int (add<span class="dv">-3</span> four))  <span class="co">;;=&gt; 7</span></a></code></pre></div>
+<p>Now we can generalize this even further to add together any numbers:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(<span class="bu">defn</span><span class="fu"> add </span>[n1 n2] (<span class="kw">fn</span> [f] (<span class="kw">fn</span> [x] (<span class="kw">-&gt;</span> x ((n1 f)) ((n2 f))))))</a>
 <a class="sourceLine" id="cb10-2" title="2"></a>
 <a class="sourceLine" id="cb10-3" title="3">(church-&gt;int (add three two))  <span class="co">;;=&gt; 5 </span></a>
-<a class="sourceLine" id="cb10-4" title="4">(church-&gt;int (add three four)) <span class="co">;;=&gt; 7</span></a></code></pre></div></div><div class="sidenotes"><p class="footnote">
-1: This blows my mind.
-</p></div></div></body></html>
+<a class="sourceLine" id="cb10-4" title="4">(church-&gt;int (add three four)) <span class="co">;;=&gt; 7</span></a></code></pre></div>
+
+
+</body></html>
