@@ -1,0 +1,283 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2020_12_13_mod_mult</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="solutions-to-systems-of-linear-congruences-and-aoc2020-day-13">Solutions to systems of Linear Congruences and AOC2020 Day 13</h1>
+<h2 id="modular-arithmetic">Modular Arithmetic</h2>
+<p>Modular arithmetic is like regular arithmetic, except you have numbers ‘looping around’ - so once they hit a certain point, they go back to 0.</p>
+<p>24-hour clock arithmetic is modular arithmetic: once you get to 24, the numbers loop back to zero. We would say clock arithmetic occurs <em>modulo 24</em>.</p>
+<p>In that sense, saying something happens at 28’o’clock is equivalent to saying is happens at (28 - 24) 4’o’clock. In this system, they are they same thing. Mathematically we would say that <em>28 and 4 are congruent modulo 24</em>, or we would write <em>28==4 (mod 24)</em>. (Congruent in this context means ‘identical in form’)</p>
+<p>These are all equivalent ways of describing this:</p>
+<ul>
+<li><em>a</em> is congruent to <em>b</em> modulo <em>m</em> if <em>m</em> divides their difference.</li>
+<li><em>a==b (mod m)</em> if <em>a-b=km</em> for some <em>k</em>.</li>
+<li><em>a==b (mod m)</em> if <em>a = km + b</em> for some <em>k</em>.</li>
+</ul>
+<p>For example, <em>348==236 (mod 7)</em>, since _348-236=112=16*7_.</p>
+<p><em>38==14 (mod 12)</em>, since <em>38-14=24</em>, which is a multiple of 12.</p>
+<p>Notice that 38/12 and 14/12 have the same remainder of 2.</p>
+<h2 id="congruence-classes">Congruence Classes</h2>
+<p>Going back to our clock example, notice that 28 isn’t the <em>only</em> number that is congruent to 4 (mod 24). So is 52. So is 76. So are <em>all</em> numbers that are <em>4 + 24k</em> (even when k is negative).</p>
+<p>We call this set of numbers `x==4 (mod 24) the <em>congruence class</em> 4-bar-mod-24.</p>
+<p>More generally The set of all numbers <em>x==a (mod m)</em> is {… , <em>a-2m</em> , <em>a-m</em>, <em>a</em> , <em>a+m</em>, <em>a+2m</em>,…} <em>congruence class of <em>a</em> modulo <em>m</em></em>.</p>
+<pre><code>  a-bar-mod-m = {x in Z | x==a (mod m)}</code></pre>
+<p>For example, the following are congruence classes modulo 10:</p>
+<pre><code>  0-bar-m10 = {..., -20, -10, 0, 10, 20, ...}
+  1-bar-m10 = {..., -19, -9, 1, 11, 21, ...}
+  5-bar-m10 = {..., -15, -5, 5, 15, 25, ...}
+  9-bar-m10 = {..., -11, -1, 9, 19, 29, ...}</code></pre>
+<h2 id="linear-congruence">Linear Congruence</h2>
+<p>A modular congruence of the the form</p>
+<p><em>ax==b (mod m)</em></p>
+<p>It’s just an equation where the <em>x</em> is unknown and you have to find it, like linear equations over real numbers.</p>
+<p>Like normal algebra, there may be 0, 1 or several solutions to this congruence.</p>
+<p>There is a whole school of techniques for solving linear congruences, but we’re focusing only on one case here.</p>
+<h2 id="systems-of-linear-congruences">Systems of linear congruences</h2>
+<p>In normal algebra you often have to solve ‘simultaneous equations’ - that is you’re given multiple equations at the same time, with some common connection, and you have to solve them.</p>
+<p>Systems of linear congruences are to linear congruences what simultaneous equations are to normal equations. In other words you’re given several of them at the same time and have to solve them. They’re given in the form:</p>
+<pre><code>  X = a1 (mod n1)
+  X = a2 (mod n2)
+  X = a3 (mod n3)
+  X = a4 (mod n4)
+  ...</code></pre>
+<p>And you have to solve for X. This is what we’re going to do here, and to do it we’ll need to know about Modular Multiplicative Inverses.</p>
+<h2 id="modular-multiplicative-inverse">Modular Multiplicative Inverse</h2>
+<p>MMI is a special case of linear congruence.</p>
+<p>It’s equivalent to the ‘inverse’ in real-number mathematics, where the inverse of x is x^-1: <em>x * x^-1 = 1</em>. We’re saying that y is the inverse of x where <em>x * y = 1</em> (where _*_ is a binary operation)</p>
+<p>In modular arithmetic we also say y is the inverse of x when <em>x * y = 1</em>, only here you have to plop the modulo on the end. The MMI of integer <em>a</em> is an <em>x</em> ST <em>ax==1 (mod m)</em>.</p>
+<p>You can think of this as</p>
+<ul>
+<li>the remainder of <em>ax/m</em> is 1.</li>
+<li><em>m</em> evenly divides <em>ax-1</em>.</li>
+</ul>
+<p>Take <em>a=43</em>, and <em>m=5</em>.</p>
+<p><em>x=2</em> is a MMI of 43 mod 5, since _43*2-1 = 85_, which is divisible by 5.</p>
+<p><em>x=3</em> is <em>not</em> an MMI of 43 mod 5, since _43*3-1 = 128_ is not divisible by 5.</p>
+<p>A solution to <em>ax==1 (mod m)</em> exists only if and only if <em>gcd(a,m)=1</em>, i.e. they they are <em>coprime</em></p>
+<p>Take MMI(3, 10), <em>3x==1 (mod 10)</em>. Since <em>gcd(3,10)=1</em>, this will have solutions.</p>
+<p>7 is one solution: _3*7 == 1 (mod 10)<em>, </em>(21-1)/10=2_.</p>
+<p>17 is another: _3*17 == 1 (mod 10)<em>, </em>(51-1)/10=5_.</p>
+<p>In fact, every number in the congruence group <em>7-bar mod 10</em>: {…, -3, 7, 17, 27, …} will be a solution.</p>
+<p>You can see this by noticing that every element of <em>7-bar mod 10</em> can be expressed as:</p>
+<pre><code>  7 + 10r</code></pre>
+<p>and</p>
+<pre><code>  3(7 + 10r) - 1 = 21 + 30r - 1 = 10(2+3r)</code></pre>
+<h2 id="computation-of-mmi-using-the-extended-euclidean-algorithm">Computation of MMI using the extended Euclidean Algorithm</h2>
+<p>The Euclidean algorithm is just the common method for finding the gcd.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn</span><span class="fu"> gcd </span>[a b]</a>
+<a class="sourceLine" id="cb6-2" title="2">  (<span class="kw">if</span> (<span class="kw">zero?</span> b) a</a>
+<a class="sourceLine" id="cb6-3" title="3">      (<span class="kw">recur</span> b (<span class="kw">mod</span> a b))))</a></code></pre></div>
+<p>The <em>extended</em> Euclidean computes, in addition to the gcd, the coefficients to <em>Bezout’s identity</em>, that is</p>
+<p>ax + by = gcd(a,b)</p>
+<p>The algorithm goes like this</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn</span><span class="fu"> xgcd </span>[a b]</a>
+<a class="sourceLine" id="cb7-2" title="2">  (<span class="kw">if</span> (<span class="kw">=</span> a <span class="dv">0</span>) [b <span class="dv">0</span> <span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb7-3" title="3">    (<span class="kw">let</span> [[g x y] (xgcd (<span class="kw">mod</span> b a) a)]</a>
+<a class="sourceLine" id="cb7-4" title="4">      [g (<span class="kw">-</span> y (<span class="kw">*</span> (Math/floorDiv b a) x)) x])))</a></code></pre></div>
+<p>Which returns a tuple of gcd, x, y.</p>
+<p>The application for MMIs is that you know gcd(a,m)=1, and so finding <em>x</em> in the Bezout Identity, is equivalent to solving for the MMI. (<em>y</em> you can ignore, because whatever it is it gets multiplied by the modulo and so disappears).</p>
+<p>So for the equation _3x==1 (mod 10)__, you are looking for a solution</p>
+<pre><code>  3x + 10y = 1</code></pre>
+<p>We can apply the <code>xgcd(a,b)</code>, where a=3, b=10, which returns <code>[1 -3 1]</code></p>
+<p>The second argument, <em>x</em>, -3 is the solution to <em>3x==1 (mod 10)</em>. (as are all the numbers in the congruence group 7-bar mod 7, of the form <em>7+10r</em>)</p>
+<p>(Java has a built in <code>.modInverse</code> method, which you should probably use in practice)</p>
+<h2 id="chinese-remainder-theorem-and-solving-systems-of-linear-congruences">Chinese Remainder Theorem and solving systems of linear congruences</h2>
+<ul>
+<li>https://www.geeksforgeeks.org/chinese-remainder-theorem-set-1-introduction/</li>
+<li>https://www.geeksforgeeks.org/chinese-remainder-theorem-set-2-implementation/?ref=lbp</li>
+<li>https://en.wikipedia.org/wiki/Chinese_remainder_theorem</li>
+</ul>
+<p>The Chinese Remainder Theorem (CRT) is a theory of systems of linear congruences. That is, for problems in the form</p>
+<pre><code>  X == a1 (mod n1)
+  X == a2 (mod n2)
+  ...
+  X == ak (mod nk)</code></pre>
+<p>where the n’s are coprime - gcd(ni,nj)=1 for all n.</p>
+<p>The CRT states that there is always a solution X to such a system.</p>
+<p>Systems of linear congruences can be solved with MMIs using the formula:</p>
+<pre><code>  X = (∑ (ai * ppi * invi)) (mod prod)
+  prod = Π ni
+  ppi = prod / ni
+  invi = MMI(ppi, ni)</code></pre>
+<p>With a very literal translation into Clojure:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb11-1" title="1">(<span class="bu">defn-</span><span class="fu"> linear-congruence-solve </span>[pairs]</a>
+<a class="sourceLine" id="cb11-2" title="2">  (<span class="kw">let</span> [remainders (<span class="kw">map</span> <span class="kw">first</span> pairs)</a>
+<a class="sourceLine" id="cb11-3" title="3">        modulos (<span class="kw">map</span> <span class="kw">second</span> pairs)</a>
+<a class="sourceLine" id="cb11-4" title="4">        prod (<span class="kw">apply</span> <span class="kw">*</span> modulos)</a>
+<a class="sourceLine" id="cb11-5" title="5">        pp (<span class="kw">map</span> #(<span class="kw">/</span> prod <span class="va">%</span>) modulos)</a>
+<a class="sourceLine" id="cb11-6" title="6">        inv (<span class="kw">map</span> #(.modInverse (biginteger <span class="va">%1</span>) (biginteger <span class="va">%2</span>)) pp modulos)]</a>
+<a class="sourceLine" id="cb11-7" title="7">    (<span class="kw">mod</span> (<span class="kw">apply</span> <span class="kw">+</span> (<span class="kw">map</span> <span class="kw">*</span> remainders pp inv)) prod)))</a></code></pre></div>
+<p>Take</p>
+<pre><code>  X = 2 (mod 3)
+  X = 3 (mod 4)
+  X = 1 (mod 5)</code></pre>
+<p>Applying the formula we get X = 11</p>
+<h2 id="an-application-to-day-13-of-advent-of-code">An application to Day 13 of Advent of Code</h2>
+<p><a href="https://adventofcode.com/2020/day/13#part2">Link to problem</a> (note: you need to have solved part 1!)</p>
+<p>We are told there are a bunch of buses which complete a cycle of their routes every <em>m</em> minutes, starting from minute 0 when they all leave the terminal concurrently.</p>
+<p>We are asked to find the earliest time X where bus1 passes through the terminal at X, bus2 at X+1, bus3 at X+3 etc. (there are some ‘gaps’, but they don’t complicate the problem much and we’ll ignore them)</p>
+<p>This can be interpreted as a system of linear congruences. When you have multiple things going around in loops and you are asked to predict how they will interact waaay in the future, your mind should always go here.</p>
+<p>Consider the case where you have bus1 on a 3 minute look, and bus2 on a 5 minute loop. The schedule would look something like this, with D being every time one of the buses passes the depot:</p>
+<pre><code>  0     D     D
+  1     .     .
+  2     .     .
+  3     D     .
+  4     .     .
+  5     .     D
+  6     D     .
+  7     .     .
+  8     .     .
+  9     D     .
+  10    .     D
+  11    .     .
+  12    D     .
+  13    .     .
+  14    .     .
+  15    D     D
+  16    .     .
+  17    .     .
+  18    D     .
+  19    .     .
+  20    .     D
+  21    D     .
+  22    .     .
+  23    .     .
+  24    D     .
+  25    .     D
+  26    .     .
+  27    D     .
+  28    .     .
+  29    .     .
+  30    D     D</code></pre>
+<p>The solutions we can see are 9 and 24.</p>
+<p>This is a system of linear congruences: We are being asked to find X such that</p>
+<pre><code>  X == 0 (mod 3), (9 == 0 (mod 3))
+  X == -1 (mod 5), (9 == -1 (mod 5))</code></pre>
+<p>Note 3 and 5 are pairwise coprime, so we can use the formula from above here.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb15-1" title="1"><span class="st">&quot;7,13,x,x,59,x,31,19&quot;</span></a>
+<a class="sourceLine" id="cb15-2" title="2"></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="st">&quot;time     bus 7   bus 13  bus 59  bus 31  bus 19</span></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="st">1068773    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="st">1068774    D       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-6" title="6"><span class="st">1068775    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="st">1068776    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-8" title="8"><span class="st">1068777    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-9" title="9"><span class="st">1068778    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-10" title="10"><span class="st">1068779    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-11" title="11"><span class="st">1068780    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-12" title="12"><span class="st">1068781    D       .       .       .       .  &lt;- 1068781 is the answer</span></a>
+<a class="sourceLine" id="cb15-13" title="13"><span class="st">1068782    .       D       .       .       .</span></a>
+<a class="sourceLine" id="cb15-14" title="14"><span class="st">1068783    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-15" title="15"><span class="st">1068784    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-16" title="16"><span class="st">1068785    .       .       D       .       .</span></a>
+<a class="sourceLine" id="cb15-17" title="17"><span class="st">1068786    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-18" title="18"><span class="st">1068787    .       .       .       D       .</span></a>
+<a class="sourceLine" id="cb15-19" title="19"><span class="st">1068788    D       .       .       .       D</span></a>
+<a class="sourceLine" id="cb15-20" title="20"><span class="st">1068789    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-21" title="21"><span class="st">1068790    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-22" title="22"><span class="st">1068791    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-23" title="23"><span class="st">1068792    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-24" title="24"><span class="st">1068793    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-25" title="25"><span class="st">1068794    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-26" title="26"><span class="st">1068795    D       D       .       .       .</span></a>
+<a class="sourceLine" id="cb15-27" title="27"><span class="st">1068796    .       .       .       .       .</span></a>
+<a class="sourceLine" id="cb15-28" title="28"><span class="st">1068797    .       .       .       .       .&quot;</span></a>
+<a class="sourceLine" id="cb15-29" title="29"></a>
+<a class="sourceLine" id="cb15-30" title="30">(linear-congruence-solve [[<span class="dv">0</span> <span class="dv">7</span>] [-<span class="dv">1</span> <span class="dv">13</span>] [-<span class="dv">4</span> <span class="dv">59</span>] [-<span class="dv">6</span> <span class="dv">31</span>] [-<span class="dv">7</span> <span class="dv">19</span>]])</a>
+<a class="sourceLine" id="cb15-31" title="31"><span class="co">;; =&gt; 1068781N</span></a>
+<a class="sourceLine" id="cb15-32" title="32"></a>
+<a class="sourceLine" id="cb15-33" title="33"><span class="st">&quot;17,x,13,19&quot;</span></a>
+<a class="sourceLine" id="cb15-34" title="34">(linear-congruence-solve [[<span class="dv">0</span> <span class="dv">17</span>] [-<span class="dv">2</span> <span class="dv">13</span>] [-<span class="dv">3</span> <span class="dv">19</span>]])</a>
+<a class="sourceLine" id="cb15-35" title="35"><span class="co">;; =&gt; 3417N</span></a>
+<a class="sourceLine" id="cb15-36" title="36"></a>
+<a class="sourceLine" id="cb15-37" title="37"><span class="st">&quot;67,7,59,61&quot;</span></a>
+<a class="sourceLine" id="cb15-38" title="38">(linear-congruence-solve [[<span class="dv">0</span> <span class="dv">67</span>] [-<span class="dv">1</span> <span class="dv">7</span>] [-<span class="dv">2</span> <span class="dv">59</span>] [-<span class="dv">3</span> <span class="dv">61</span>]])</a>
+<a class="sourceLine" id="cb15-39" title="39"><span class="co">;; =&gt; 754018N</span></a>
+<a class="sourceLine" id="cb15-40" title="40"></a>
+<a class="sourceLine" id="cb15-41" title="41"><span class="st">&quot;67,x,7,59,61&quot;</span></a>
+<a class="sourceLine" id="cb15-42" title="42">(linear-congruence-solve [[<span class="dv">0</span> <span class="dv">67</span>] [-<span class="dv">2</span> <span class="dv">7</span>] [-<span class="dv">3</span> <span class="dv">59</span>] [-<span class="dv">4</span> <span class="dv">61</span>]])</a>
+<a class="sourceLine" id="cb15-43" title="43"><span class="co">;; =&gt; 779210N</span></a>
+<a class="sourceLine" id="cb15-44" title="44"></a>
+<a class="sourceLine" id="cb15-45" title="45"><span class="st">&quot;67,7,x,59,61&quot;</span></a>
+<a class="sourceLine" id="cb15-46" title="46">(linear-congruence-solve [[<span class="dv">0</span> <span class="dv">67</span>] [-<span class="dv">1</span> <span class="dv">7</span>] [-<span class="dv">3</span> <span class="dv">59</span>] [-<span class="dv">4</span> <span class="dv">61</span>]])</a>
+<a class="sourceLine" id="cb15-47" title="47"><span class="co">;; =&gt; 1261476N</span></a>
+<a class="sourceLine" id="cb15-48" title="48"></a>
+<a class="sourceLine" id="cb15-49" title="49"><span class="st">&quot;1789,37,47,1889&quot;</span></a>
+<a class="sourceLine" id="cb15-50" title="50">(linear-congruence-solve [[<span class="dv">0</span> <span class="dv">1789</span>] [-<span class="dv">1</span> <span class="dv">37</span>] [-<span class="dv">2</span> <span class="dv">47</span>] [-<span class="dv">3</span> <span class="dv">1889</span>]])</a>
+<a class="sourceLine" id="cb15-51" title="51"><span class="co">;; =&gt; 1202161486N</span></a></code></pre></div>
+
+
+</body></html>
