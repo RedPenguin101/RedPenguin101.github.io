@@ -164,12 +164,17 @@ figure {
   max-width: fit-content;
 }
 
-span>img {
+img {
   border: 1px solid #EAEAEA;
+
+}
+
+span>img {
+  max-height: 25em;
+  margin-bottom: 10px;
 }
 
 figure>img {
-  border: 1px solid #EAEAEA;
   max-height: 35em;
 }
 

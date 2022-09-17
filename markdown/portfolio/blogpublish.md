@@ -3,9 +3,9 @@ BlogPublish is a Clojure application for managing a simple blog.
 It takes markdown posts, puts them through pre-processing, replacing certain elements of markdown with HTML, shells out to pandoc to generate the full HTML file, then applies post-processing which re-writes the document tree.
 It also builds the index page for your blog.
 It does not handle hosting, comments etc.
-Aside from posts, the output blog also has a section for maintaining notes on books.[^10]
+Aside from posts, the output blog also has a section for maintaining notes on books.[^1]
 
-[^10]: ![Blog Post](../../images/portfolio_gitblog/post.png) ![Blog Index](../../images/portfolio_gitblog/index.png)
+[^1]: Examples of Blog post ![Blog Post](../../images/portfolio_gitblog/post.png) and blog index ![Blog Index](../../images/portfolio_gitblog/index.png)
 
 The sourcecode is [here](https://github.com/RedPenguin101/blogpublish).
 
@@ -42,11 +42,11 @@ blog_root
  |- publish.jar (the program)
 ```
 
-Write a post in _markdown/posts/YYYY-MM-DD_mypost.md_ format[^1].
+Write a post in _markdown/posts/YYYY-MM-DD_mypost.md_ format[^2].
 When ready, run `java -jar publish.jar` from the command line.
 This will create the html file in _html/posts/YYYY-MM-DD_mypost.html_ and create an index file with a link to that file.
 
-[^1]: The date format is used in the index creation, but the name following the first underscore isn't important for functionality.
+[^2]: The date format is used in the index creation, but the name following the first underscore isn't important for functionality.
 
 Now you can use a blog-hosting service, or roll your own.
 Github Pages is what I use, and it works fine.
@@ -55,13 +55,13 @@ Github Pages is what I use, and it works fine.
 The format of posts in the blog is inspired by the [Tufte Format](https://rstudio.github.io/tufte/).
 I won't go into the why's of the format, but some of the notable characteristics of the format are:
 
-1. A focus on longform presentation over "powerpoint" style bullet lists.[^2]
+1. A focus on longform presentation over "powerpoint" style bullet lists.[^3]
 2. 'Footnotes' are presented in a 'gutter' to the right of the main text, as opposed to at the actual foot of the document. This enables the reader to quickly reference the notes without moving from their place in the main text.
 3. Tight integration of graphics with text.
 4. "Indendent" paragraphs rather than the whitespace separation more common on the web.
 5. Limited use of headings, generally 2 levels, excluding the title level which covers the whole document. In HTML terms, this means H2 and H3 levels, but not H4.
 
-[^2]: See Norvig's [Gettysburg Powerpoint Presentation](https://norvig.com/Gettysburg/) for a satire on the practice of using powerpoint for communication, and [Tufte's actual paper](https://www.inf.ed.ac.uk/teaching/courses/pi/2016_2017/phil/tufte-powerpoint.pdf) for both a more indepth look and a complete rationale for the format.
+[^3]: See Norvig's [Gettysburg Powerpoint Presentation](https://norvig.com/Gettysburg/) for a satire on the practice of using powerpoint for communication, and [Tufte's actual paper](https://www.inf.ed.ac.uk/teaching/courses/pi/2016_2017/phil/tufte-powerpoint.pdf) for both a more indepth look and a complete rationale for the format.
 
 ## HTML Structure and CSS implementation
 
@@ -70,9 +70,9 @@ The code has 3 namespaces:
 
 1. main: Orchestration of the creation, functionality for index creation, configuration.
 2. footnote-md: This is in effect the preprocessor for markdown files. It takes markdown strings as input and replaces some features with native html. As the name suggests, it does this for footnotes, implementing some of the custom html the blog format uses.
-3. html-post: The post-processor. The primary functions in this ns take html, parse it to hiccup[^3], and rewrite it in a format required by the blog. The only thing it does is 'inline' footnotes so they appear immediately after the references to them.
+3. html-post: The post-processor. The primary functions in this ns take html, parse it to hiccup[^4], and rewrite it in a format required by the blog. The only thing it does is 'inline' footnotes so they appear immediately after the references to them.
 
-[^3]: A representation of HTML in native Clojure data structures - [see here](https://github.com/weavejester/hiccup) for more detail.
+[^4]: A representation of HTML in native Clojure data structures - [see here](https://github.com/weavejester/hiccup) for more detail.
 
 ### Footnote-md
 A very simple namespace, it's a regex match - in effect a partial markdown to html compiler.
@@ -312,4 +312,3 @@ But that doesn't solve the problem really.
 The way the `get-title` works is wrong.
 Given an html file, it should be able to figure out what the title is.
 Instead it has to find the related _markdown_ file and get the title from that, which obviously presumes you have the markdown file available.
-
