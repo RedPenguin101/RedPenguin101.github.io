@@ -299,9 +299,9 @@ The _why_ is the *product vision*. The PM needs to have the vision and to effect
 * Management encourages product teams to get close to their customers, and product management is seen as a critical function that furthers the business.
 * If there is one main reason I have seen companies fail to make a transition, it’s the lack of leadership buy-in to move to an outcome-oriented company.
 * Visibility in organizations is absolutely key. The more leaders can understand where teams are, the more they will step back and let the teams execute. We need a cadence of communicating strategy that matches our strategic framework.
-** Quarterly business reviews: discussing progress toward the strategic intents and outcomes of a financial nature. 
-** Product initiative reviews: for the product development side of the house. review the progress of the options against the product initiatives and adjust our strategy accordingly.
-** Monthly Release reviews: provide the opportunity for teams to show off the hard work they have done and to talk about success metrics.
+  * Quarterly business reviews: discussing progress toward the strategic intents and outcomes of a financial nature. 
+  * Product initiative reviews: for the product development side of the house. review the progress of the options against the product initiatives and adjust our strategy accordingly.
+  * Monthly Release reviews: provide the opportunity for teams to show off the hard work they have done and to talk about success metrics.
 * Roadmaps: *not* a Gantt chart.  you should view them as an explanation of strategy and the current stage of your product. _Living_ roadmaps.
   * The theme
   * Hypothesis
