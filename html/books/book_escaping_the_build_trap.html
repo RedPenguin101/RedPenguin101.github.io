@@ -1,0 +1,445 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>book_escaping_the_build_trap</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="escaping-the-build-trap-by-melissa-perri">Escaping the build trap, by Melissa Perri</h1>
+<h2 id="content">Content</h2>
+<ul>
+<li>Part 1: The build trap
+<ul>
+<li><ol type="1">
+<li>The value exchange system</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Constraints on the VES</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>Project vs. Product vs. Service</li>
+</ol></li>
+<li><ol start="4" type="1">
+<li>The product-led org (Sales, Visionary, Tech and product led)</li>
+</ol></li>
+<li><ol start="5" type="1">
+<li>What we know and what we don’t</li>
+</ol></li>
+</ul></li>
+<li>Part 2: The role of the PM
+<ul>
+<li><ol start="6" type="1">
+<li>Anti-patterns: The CEO, the Waiter, The former PM</li>
+</ol></li>
+<li><ol start="7" type="1">
+<li>A Great PM</li>
+</ol></li>
+<li><ol start="8" type="1">
+<li>The PM career path</li>
+</ol></li>
+<li><ol start="9" type="1">
+<li>Organizing teams</li>
+</ol></li>
+</ul></li>
+<li>Part 3: Strategy
+<ul>
+<li><ol start="10" type="1">
+<li>What is it?</li>
+</ol></li>
+<li><ol start="11" type="1">
+<li>Gaps: Knowledge, Alignment, Effects</li>
+</ol></li>
+<li><ol start="12" type="1">
+<li>A strategic framework: deployment and creation</li>
+</ol></li>
+<li><ol start="13" type="1">
+<li>Company level vision and strategic intents</li>
+</ol></li>
+<li><ol start="14" type="1">
+<li>Product vision and portfolio</li>
+</ol></li>
+</ul></li>
+<li>Part 4: PM Process
+<ul>
+<li><ol start="15" type="1">
+<li>Product Kata</li>
+</ol></li>
+<li><ol start="16" type="1">
+<li>Direction and Success Metrics</li>
+</ol></li>
+<li><ol start="17" type="1">
+<li>Problem exploration</li>
+</ol></li>
+<li><ol start="18" type="1">
+<li>Solution exploration</li>
+</ol></li>
+<li><ol start="19" type="1">
+<li>Solution optimization</li>
+</ol></li>
+</ul></li>
+<li>Part 5: The product led organization
+<ul>
+<li><ol start="20" type="1">
+<li>Outcome focused communication</li>
+</ol></li>
+<li><ol start="21" type="1">
+<li>rewards and incentives</li>
+</ol></li>
+<li><ol start="22" type="1">
+<li>Safety and learning</li>
+</ol></li>
+<li><ol start="23" type="1">
+<li>budgeting</li>
+</ol></li>
+<li><ol start="24" type="1">
+<li>Customer centricity</li>
+</ol></li>
+<li><ol start="25" type="1">
+<li>Marquetly: the product led company</li>
+</ol></li>
+</ul></li>
+</ul>
+<h2 id="terms">Terms</h2>
+<ul>
+<li><strong>output</strong>:</li>
+<li><strong>outcome</strong>:</li>
+<li><strong>process-led</strong>:</li>
+<li><strong>Product Owner</strong>:</li>
+<li><strong>Build trap</strong>: The temptation to focus on output (e.g. number of features shipped), instead of output (Value delivered to customers.) Products developed in this way will inevitably be bad, containing features that their customers don’t want or use.</li>
+<li><strong>Value exchange System</strong>: What is value? Customers have problems, wants and needs. A product or service will fulfill them, and the customer will pay for them. Products do not have inherent value. What they do for the customer has value.</li>
+<li><strong>Product</strong>: A vehicle of value. Delivered to customers, they repeatedly deliver value without the producer having to build something new every time. Excel, baby food, Tinder, the iPhone are all products.</li>
+<li><strong>Service</strong>: Also a vehicle of value, but deliver value based on the servicer putting in continuous human effort. Design firm, accounting firms etc.</li>
+<li><strong>Project</strong>: A discrete scope of work with a particular aim.</li>
+<li><strong>Company Strategy</strong>: a deployable decision-making framework, enabling action to achieve desired outcomes, comprised of the <em>operational framework</em> and <em>strategic framework</em>
+<ul>
+<li><strong>Strategic framework</strong>: How the company realizes the vision through product and service development in the market. It connects company vision with product visions.</li>
+<li><strong>Strategy creation</strong>: The process of figuring out which direction the company should go and developing the strategic framework.</li>
+<li><strong>Strategy Deployment</strong>: The act of propagating goals and narratives through the layers of the organization, making sure at each layer that they further the goals of the parent node, and scoped in time and space as appropriate to the layer. Examples: OKRs Hoshin Kanri, mission command.</li>
+<li><strong>Strategic Intent</strong> What are the challenges that stand in the way of reaching the company vision?</li>
+</ul></li>
+</ul>
+<h2 id="summary-of-ideas">Summary of Ideas</h2>
+<h3 id="what-is-the-build-trap">What is the build trap?</h3>
+<p>The Build Trap is the authors term for the common pattern in technology teams of building the wrong thing, and so ending up with products that no-one wants.</p>
+<p>Her hypothesis is that the major cause of the build trap is that the organization is focused on <em>outputs</em> - “we released 10 features”, “we met our deadlines” - not <em>outcomes</em> - measuring the value being given to the customer. The prerequisite for this is putting much more emphasis on thinking in terms of the <em>product</em> being offered instead of narrower focuses on projects and services.</p>
+<p>This problem starts at the top: The organization as a whole should be <em>product-led</em> - that is, optimizing for business outcomes. Every change to a product should tie back to producing value to the customer.</p>
+<p>She claims this is a problem with the <em>product management</em> function of the technology organization, and the solution is to set up robust product management practices. There are four interconnected areas which comprise these practices. Interconnected because, for example, if the organization is not product-led, the PM function will not be incentivized to create practices that focus on outcomes.</p>
+<ul>
+<li>Strategy</li>
+<li>PM Role</li>
+<li>PM Process</li>
+<li>Organization</li>
+</ul>
+<h3 id="the-company-and-the-strategy">The Company and the strategy</h3>
+<p>Sorry in advance for corporate bullshit terms - not my fault.</p>
+<h4 id="company-vision">Company Vision</h4>
+<p>Your business has a <em>vision</em><sup class="fnref"><a href="#fn10" id="note10" title="Footnote 10">10</a></sup><span class="footnote" id="fn10"> <a class="fnref" href="#note10" title="Footnote 10 Reference">10</a> I’ve left out the distinction between vision and mission that’s in the text, I don’t think it adds much </span>. Why does the company exist? Where is it going based on that mission? You want a vision to act as an anchor point which you can always fall back on when you’re thinking about what you should do.</p>
+
+<p>The vision should be short and clear. Not <em>too</em> broadly focused. “Being the market leader in X” is too broad. There should be something in there that narrows the scope a bit.</p>
+<blockquote>
+<p>To offer designer eyewear at a revolutionary price, while leading the way for socially conscious businesses.</p>
+<p>Becoming the best global entertainment distribution service, licensing entertainment content around the world, creating markets that are accessible to film makers, and helping content creators around the world to find a global audience.</p>
+</blockquote>
+<h4 id="strategic-intents">Strategic Intents</h4>
+<p>From your company vision, you create <em>strategic intents</em>. These are the current areas of focus to move your company towards the vision. The time-scope is usually a year or two. You shouldn’t not have too many of them: just a few key things.</p>
+<p>The trap that the C-suite fall into, and that strategic intents are trying to avoid, is going into your yearly planning cycle you are just coming up with a laundry list of ideas for goals, features or desires. The problem is not that the ideas are <em>bad</em>, it’s that they are usually not aligned to any broader strategy, pushing the business in particular direction. It’s just sort of aimless.</p>
+<p>Strategic intents should be high level and business focused. They should be stated at the level of new markets, new revenue streams, or focusing on a particular area with an associated revenue goal.</p>
+<p>Here are the two strategic intents for the example company in the book, with associated goals.</p>
+<blockquote>
+<p>Expand into the enterprise business: Increase revenue from currently $5 million a year to $60 million a year in three years.</p>
+</blockquote>
+<blockquote>
+<p>Double revenue growth from individual users: Increase revenue growth from 15% YoY to 30% YoY from individual users.</p>
+</blockquote>
+<p>Strategic intents can involve the whole business: product development, marketing, content creation etc. Obviously we’re only looking at the product development piece here.</p>
+<p>So what to do with these strategic intents? This is where we get out of the Company level and into the product level.</p>
+<h3 id="the-product-and-product-management">The product and product management</h3>
+<p>A product is a vehicle for delivering value. You sell it (or rent it) to the customer, and you collect the revenue from it. You also <em>improve</em> the product over time, so it delivers more value<sup class="fnref"><a href="#fn11" id="note11" title="Footnote 11">11</a></sup><span class="footnote" id="fn11"> <a class="fnref" href="#note11" title="Footnote 11 Reference">11</a> Note this is different from a <em>service</em>, which requires you to put in time and effort for every ‘unit’ of value that’s delivered to the customer. </span>. Product management is this process of determining why, how and when to improve the product<sup class="fnref"><a href="#fn12" id="note12" title="Footnote 12">12</a></sup><span class="footnote" id="fn12"> <a class="fnref" href="#note12" title="Footnote 12 Reference">12</a> If your company has more than one product, then it is said to have a <em>product portfolio</em>. This introduces a further layer in the strategy-to-product journey, so we’ll ignore it for now and assume that there’s a single product. </span>.</p>
+
+
+<h4 id="product-initiatives">Product initiatives</h4>
+<p>We left the company strategy process at the point where we’d got to some <em>strategic intents</em>. These are business goals about expanding into new markets or growing an existing revenue stream. For example: <em>Increase revenue growth from 15% YoY to 30% YoY from individual users.</em></p>
+<p>Next we need to turn these into <em>product initiatives</em>. These translate the challenge laid down by the strategic intent into <em>problems</em> that we will solve with our product. <em>How</em> can we reach the business goals by changing the product.</p>
+<p>Notice that this the focus is on <em>problem</em> identification and exploration, not on <em>solution</em> development - that comes later. Premature solution fixation is one of the biggest traps to fall into in this stage.</p>
+<p>For example, there are 3 paths to increasing revenue:</p>
+<ul>
+<li>acquire more individual users</li>
+<li>retain existing users better</li>
+<li>create new revenue streams from existing users</li>
+</ul>
+<p>The third is slightly different, but the first two we can dive into exploration.</p>
+<p>First we should look to verify and quantify: What is the conversion rate? What is the retention rate? Then we have to figure out <em>why</em> users are not converting, and why they are leaving. This is where user feedback, talking to the users, starts to become critical. This is where we start to find the problems.</p>
+<h3 id="what-is-product-management-and-what-makes-a-good-product-manager">What is product management, and what makes a good product manager?</h3>
+<p>Part of being a Product Manager (PM) is being the <em>Product Owner</em> - but only in a sense. They are responsible for the <em>why</em>: determining and communicating why the product is being built and the outcome it will produce. They are not responsible for the <em>when</em>. They do not own (but do work with the team on) the <em>what</em>. They don’t care much about the <em>how</em> of the technical implementation.</p>
+<p>They need to have a very deep understanding of the business and the customer, so they can identify what is valuable, and see opportunities to create value. They should talk to (and otherwise get feedback from) the customer a <em>lot</em>. Empathy for the customer is the critical attribute. Tech-literacy is a must, but tech-expertise is not.</p>
+<p>They should not be a mini-dictator, lording it over the team; a waiter, mindlessly communicating customer requests to developers; or a pseudo project manager, taking ownership of the <em>when</em>.</p>
+<p>The <em>why</em> is the <em>product vision</em>. The PM needs to have the vision and to effectively communicate it. They need to determine metrics and goals for the product. They need to be given the time and space to do vision and research work.</p>
+<h3 id="tactical-product-management">Tactical product management</h3>
+<h2 id="hr-read-notes">2hr read notes</h2>
+<h3 id="preface">Preface</h3>
+<ul>
+<li>my products were crap, and no one was using them</li>
+<li>I was so focused on shipping features that I didn’t think about the outcome of those features.</li>
+<li>I wasn’t connecting the goals of my company or the needs of my users back to my work.</li>
+<li>Lean agile: Experimentation, talking to customers.</li>
+<li>Systematic / Organizational problems: Bonus tied to features, managers upset at not shipping</li>
+<li>Focus needs to be on the <em>org</em></li>
+<li>Four layers to PM in the org:
+<ul>
+<li>Role</li>
+<li>Strategy</li>
+<li>Process</li>
+<li>Organization</li>
+</ul></li>
+</ul>
+<figure>
+<img alt="Four Layers" src="../../images/book_escaping_build_trap/four_layers.png" /><figcaption>Four Layers</figcaption>
+</figure>
+<h3 id="appendix-is-your-org-product-led-questions-for-a-pm">Appendix: Is your org product-led? Questions for a PM</h3>
+<ul>
+<li>Who came up with the last feature or product idea you built? Hopefully no-one will know. Or it will be ‘the team’</li>
+<li>What was the last product you decided to kill? If no-one can remember, that’s a bad sign. Probably:
+<ul>
+<li>Commitment to customers happens too early</li>
+<li>Budgeting can’t budge</li>
+<li>No pushback to management</li>
+</ul></li>
+<li>When’s the last time you talked with your customers? <em>Worst</em> answer is “we’re not allowed to talk to customers”.<br />
+</li>
+<li>What is your goal? First, <em>have</em> one. Second, it should be <em>outcome</em> centric, not <em>output</em> centric. i.e. focused on the value added to the business, not on ‘did we ship on deadline’</li>
+<li>What are you currently working on? Passion is the telling sign</li>
+<li>What are your PMs like? Are they well respected? Lack of respect can either be because they’re too strong (dictators) or too weak (beaten down by stakeholders and managers).</li>
+</ul>
+<h3 id="part-1-the-build-trap">Part 1: The build trap</h3>
+<ul>
+<li>The build trap is when organizations become stuck measuring their success by <em>outputs</em> rather than <em>outcomes</em>.</li>
+<li>It’s when they focus more on shipping and developing features rather than on the actual value those things produce.</li>
+<li>get out of the build trap by setting themselves up to develop intentional and robust product management practices.</li>
+<li>Training PMs is not enough. They will slip into old habits if the organization isn’t set up right - i.e. is not <em>product-led</em></li>
+<li>Priority not aligned. Likely have too many priorities</li>
+<li>“peanut buttering your strategy”. So many strategic initiatives spread over very few people.</li>
+<li>PMs should be pushing back, but org has to be set up for that kind of feedback.</li>
+<li>Wrong people in role - marketers and sales people are not PMs</li>
+<li>This part: How the build trap emerges, signs to look out for</li>
+<li>Misunderstand value. Should be <em>outcomes they want to create</em>, not <em>the amount of stuff you produce</em>.</li>
+<li>Customers have problems, wants, needs. Value is realized when these are filled</li>
+<li><em>Every</em> feature and initiative should result in outcome that is tied back to business value.</li>
+<li>Understanding value is hard. But you have to do it.</li>
+<li>Orgs create their own constraints. Overly rigid processes.</li>
+<li>Companies operate on <em>project</em> based dev cycle. Scoping work, deadlines, milestones. Problem is, no way to align these with the strategy. Projects are essential part of product development - but thinking only in terms of projects is damaging</li>
+<li><em>products</em> are vehicles of value. <em>Repeated</em> value without more work from anyone in the org.</li>
+<li><em>services</em> use human labor to deliver value. Value at the cost of work</li>
+<li>Many companies have a mixed value model.</li>
+<li>Products need to be nurtured and grown</li>
+<li><em>Product led</em> companies optimize for business outcomes, align product strategy to these outcomes, prioritize projects that will best meet them</li>
+</ul>
+<figure>
+<img alt="What We Know" src="../../images/book_escaping_build_trap/what_we_know.png" /><figcaption>What We Know</figcaption>
+</figure>
+<ul>
+<li>Product management is the domain of recognizing and investigating the known unknowns and of reducing the universe around the unknown unknowns.</li>
+<li>Product managers identify features and products that will solve customer problems while achieving business goals. They optimize the Value Exchange System.</li>
+</ul>
+<h3 id="part-2-the-role-of-the-pm">Part 2: the role of the PM</h3>
+<ul>
+<li>The product manager deeply understands both the business and the customer to identify the right opportunities to produce value.</li>
+<li>responsible for synthesizing multiple pieces of data, (analytics, feedback, market research), determining in which direction the team should move.</li>
+<li>keep the team focused on the <em>why</em>—why are we building this product, and what outcome will it produce?</li>
+<li>The chief product officer is the cornerstone of the product team in companies, helping to tie together the business outcomes to the roadmap and to represent its impact to the board.</li>
+<li>Companies need to create a standardized product management career path</li>
+<li>PM anti-Patterns
+<ul>
+<li>Mini-CEO: PMs don’t have authority over people. They are not people managers. They need to <em>influence</em>, not command. Mini-CEOs are tiny kings, think they’re the next Steve Jobs. They will fail quickly because they don’t have the trust of the team.</li>
+<li>The waiter: takes orders from stakeholders/customers/managers. No goal, no vision. No decision making. This is the majority of PMs. Leads to product death cycle (see below)</li>
+<li>Former Project Manager: (though you need a little Project Management skill to do the role). Projects Managers are responsible for <em>when</em>, PMs are responsible for <em>why</em>.</li>
+</ul></li>
+</ul>
+<figure>
+<img alt="Product Death Cycle" src="../../images/book_escaping_build_trap/product_death_cycle.png" /><figcaption>Product Death Cycle</figcaption>
+</figure>
+<ul>
+<li>A great PM works with a team to create the right product that balances meeting business needs with solving user problems.</li>
+<li>LOTS of understanding of the business, the market, vision and goal of the company. <em>Empathy for users</em></li>
+<li>NOT in charge of the <em>what</em>, only the <em>why</em>. They work <em>with</em> the team on the what. Really it’s the <em>team</em> that owns the product.</li>
+<li>Figuring out what to build: strategic and experimental approach</li>
+<li>Must be humble enough in their approach to learn and take into account that they don’t know all of the answers.</li>
+<li>Lone wolf mentality is death for a PM. The idea that they and they alone are responsible for the success of the product. Breeds arrogance.</li>
+<li>not expert in either tech or marketing. Must be <em>tech-literate</em> though</li>
+<li>Start with <em>why</em> - don’t dive into solutioning too early</li>
+<li>Don’t skip setting success metrics and goals</li>
+<li>Product <em>Ownership</em> is just one piece of product <em>management</em></li>
+<li>Need time to do vision and research work</li>
+<li>PM career path: Associate PM, PM, Senior PM, Director of PM, VP of Product, Chief Product Officer.</li>
+</ul>
+<figure>
+<img alt="The PM career path" src="../../images/book_escaping_build_trap/career_path.png" /><figcaption>The PM career path</figcaption>
+</figure>
+<ul>
+<li>Organizing product teams: <em>not</em> around technical components, features. Around business goals, <em>value streams</em>.</li>
+</ul>
+<h3 id="part-3-strategy">Part 3: Strategy</h3>
+<ul>
+<li>A good strategy is not a plan; it’s a framework that helps you make decisions.</li>
+<li>Product strategy connects the vision and economic outcomes of the company back to product portfolio, individual product initiatives, and solution options for the teams.</li>
+<li>Strategy creation is the process of determining the direction of the company and developing the framework in which people make decisions.</li>
+<li>Strategies are created at each level and then deployed across the organization.</li>
+<li>Focus on the whole, them zoom in on the parts</li>
+<li>Too often, people think of their product strategy as a document made up of a stakeholder’s wish list of features and detailed information on how those wishes should be accomplished. And they’re peppered with a ton of buzzwords like platform or innovation.</li>
+<li>Communicating the end state of a product is not a strategy (though it’s not a bad thing to do - you need the vision of the end result.)</li>
+<li>Bungay: Strategy is a deployable decision-making framework, enabling action to achieve desired outcomes, constrained by current capabilities, coherently aligned to the existing context.</li>
+</ul>
+<figure>
+<img alt="Gaps" src="../../images/book_escaping_build_trap/gaps.png" /><figcaption>Gaps</figcaption>
+</figure>
+<ul>
+<li>Autonomous teams: Have them. Don’t lead by authority</li>
+<li>Creating a strategic framework</li>
+<li>“I went to my peers in the leadership team and asked them what was the most important thing we could do as a company. They all gave me different answers. It’s pretty clear we’re not aligned on what our strategy is or what we want to become as a company.”</li>
+<li>company strategy, two parts:
+<ul>
+<li>operational framework, or how to keep the day-to-day activities of a company moving</li>
+<li>strategic framework, or how the company realizes the vision through product and service development in the market. aligns the company’s strategy and vision with the products that are developed by the teams.</li>
+</ul></li>
+<li>Strategies are interconnecting stories told throughout the organization that explain the objective and outcomes, tailored to a specific time frame. We call this act of communicating and aligning those narratives strategy deployment.</li>
+<li>Strategy deployment is about setting the right level of goals and objectives throughout the organization to narrow the playing field so that teams can act.
+<ul>
+<li>Execs are on 5-year decision making cycle</li>
+<li>Middle mgmt are on yearly/quarterly cycle</li>
+<li>Teams are on a monthly/weekly cycle</li>
+</ul></li>
+<li>Not having the right level of direction lands us in the build trap</li>
+</ul>
+<p><img src="../../images/book_escaping_build_trap/strategy_deployment.png" /></p>
+<ul>
+<li>Strategy Creation: the process of figuring out which direction the company should act upon and of developing the framework in which people make decisions. Strategies are created at each level and then deployed across the organization.</li>
+</ul>
+<p><img src="../../images/book_escaping_build_trap/improvement_kata.png" /></p>
+<p><img src="../../images/book_escaping_build_trap/product_kata.png" /></p>
+<ul>
+<li>Company Vision: A good mission explains why the company exists. A vision, on the other hand, explains where the company is going based on that purpose. I find that the best thing a company can do is to combine both the mission and the vision into one statement to provide the value proposition of the company</li>
+<li>Strategic Intents: how you intend to reach that vision changes as your company matures and develops. Strategic intents communicate the company’s current areas of focus. The horizon is 1-several years. should be at a high level and business focused.</li>
+<li>Product Initiatives translate the business goals into the problems that we will solve with our product. The product initiatives answer how? set the direction for the product teams to explore options.</li>
+<li>Product Vision: communicates why you are building something and what the value proposition is for the customer. (Amazon Press Release documents for every product vision.)</li>
+<li>Product Portfolio: When you have &gt; 1 product. Need a vision for that too
+<ul>
+<li>How do all of our products work as a system to provide value to our customers?</li>
+<li>What unique value does each of the product lines offer that makes this a compelling system?</li>
+<li>What overall values and guidelines should we consider when deciding on new product solutions?</li>
+<li>What should we stop doing or building because it does not serve this vision?</li>
+</ul></li>
+</ul>
+<h3 id="part-4-pm-process">Part 4: PM Process</h3>
+<ul>
+<li>The best solutions are linked to real problems that users want solved.</li>
+<li>Product managers use a process to identify which of those problems the team can solve to further the business and achieve the strategy.</li>
+<li>Product managers can rely on the Product Kata to help them develop the right experimental mindset to fall in love with the problem rather than the solution. They continue iterating until they reach the outcome.</li>
+<li>This section is all about the process of uncovering the right thing to build.</li>
+<li>Usually, when we think about processes, we focus more on the act of developing software than we do about building the right software. This is the build trap.</li>
+<li>The Product Kata: The first task is to get to the product initiative. Four sub-parts
+<ul>
+<li>Understanding the direction: Setting metrics (Pirate metrics, HEART Framework)</li>
+<li>Problem exploration: Talk to users, all the time</li>
+<li>Solution exploration: Experimenting to learn. Concept testing</li>
+<li>Solution optimization: Story mapping</li>
+</ul></li>
+</ul>
+<figure>
+<img alt="Pirate Metrics" src="../../images/book_escaping_build_trap/pirate_metrics.png" /><figcaption>Pirate Metrics</figcaption>
+</figure>
+<h3 id="part-5-the-product-led-organization">Part 5: The product led organization</h3>
+<ul>
+<li>The product-led organization is characterized by a culture that understands and organizes around outcomes over output</li>
+<li>a company cadence that revolves around evaluating its strategy in accordance to meeting outcomes.</li>
+<li>people are rewarded for learning and achieving goals.</li>
+<li>Management encourages product teams to get close to their customers, and product management is seen as a critical function that furthers the business.</li>
+<li>If there is one main reason I have seen companies fail to make a transition, it’s the lack of leadership buy-in to move to an outcome-oriented company.</li>
+<li>Visibility in organizations is absolutely key. The more leaders can understand where teams are, the more they will step back and let the teams execute. We need a cadence of communicating strategy that matches our strategic framework. ** Quarterly business reviews: discussing progress toward the strategic intents and outcomes of a financial nature. ** Product initiative reviews: for the product development side of the house. review the progress of the options against the product initiatives and adjust our strategy accordingly. ** Monthly Release reviews: provide the opportunity for teams to show off the hard work they have done and to talk about success metrics.</li>
+<li>Roadmaps: <em>not</em> a Gantt chart. you should view them as an explanation of strategy and the current stage of your product. <em>Living</em> roadmaps.
+<ul>
+<li>The theme</li>
+<li>Hypothesis</li>
+<li>Goals and success metrics</li>
+<li>Stage of development</li>
+<li>Any important milestones</li>
+</ul></li>
+<li>Phases: Experiment, Alpha, Beta, Generally Available</li>
+<li>Product operations/ Chief Of Staff: Collect Data; report on goals, outcomes etc.; set up product analytics platform; standardize product processes; organize and run meetings; organize</li>
+<li>Rewards, Incentives.Y ou should be rewarding people for moving the business forward—achieving outcomes, learning about your users, and finding the right business opportunities.</li>
+<li>Safety and learning: Fail small and early, encourage it.</li>
+<li>Budgeting: Think like a VC, not a corporation (antipattern: over-promise to get budget)</li>
+<li>break out of budgeting once a year. Instead, allocate funds to the product portfolio as a whole. use the product initiative reviews to determine what should be funded, based on the amount of certainty toward the outcomes.</li>
+<li>Customer centricity: deeply understand your customers.</li>
+</ul>
+<h2 id="quotes">Quotes</h2>
+<blockquote>
+<p>A lot of it is due to having too many priorities. Everything is number one on your project list. You are peanut-buttering your strategy—meaning that you have so many strategic initiatives spread over very few people. You can’t give one team a large objective and expect them to hit major goals in a month. Those things take time and manpower. You have to build up to them. - Page 5</p>
+</blockquote>
+<blockquote>
+<p>Strategy is a deployable decision-making framework, enabling action to achieve desired outcomes, constrained by current capabilities, coherently aligned to the existing context. - Page 62</p>
+</blockquote>
+<h2 id="questions">Questions</h2>
+<p>What are the responsibilities of a product manager?</p>
+<ol type="1">
+<li>a PM is <em>not</em> a UX designer</li>
+<li>interface with the business, tech and design depts. to harness their collective knowledge</li>
+<li>A PM doesn’t have much direct authority</li>
+<li>A PM is primarily responsible for the <em>why</em> of the product, the direction of it. They are involved in the <em>what</em> (workflows, UX etc.) and <em>when</em>, but these are owned by the team as a whole. They are barely at all involved in the <em>how</em> - that’s the devs job.</li>
+<li>They craft the product vision, communicate it, and champion it.</li>
+<li>They break down the purpose of the product into known knowns (facts), known unknowns (questions, which they seek to answer), unknown knowns (intuition, which they seek to validate) and unknown unknowns (discovery, which they put processes in place to facilitate)</li>
+<li>They connect the dots, taking information from various sources and sifting and analyzing it, and turning that into the product vision.</li>
+<li>It comprises <em>product ownership</em> (in the Scrum definition), of defining th backlog and creating user stories, grooming work in the backlog, and checking completed work. But that doesn’t cover the whole thing</li>
+</ol>
+<p>What makes a good product manager?</p>
+<ol type="1">
+<li>talking to users</li>
+<li>the ability to empathize with users, walk a mile in their shoes.</li>
+<li>the ability to persuade and influence the team and the company that what is being built is the right thing.</li>
+<li>not being too attached to your own ideas - your job is creating value, not implementing your ideas. So…</li>
+<li>listening to criticism of your ideas and creating a process for iterating them into good ideas</li>
+<li>validate your ideas by seeking out data. Evidence, not opinions</li>
+<li>get problems, wants and needs from customers, not solutions.</li>
+<li>They push back against managers and stakeholders when they present solutions, asking <em>why</em>.</li>
+<li>Have a deep understanding of the business: what its goals are, what its strategy is, how their product relates to that strategy.</li>
+<li>They are technically literate, but don’t have to be a tech expert</li>
+<li>They understand the market, but don’t have to be a market expert.</li>
+</ol>
+<p>What makes a <em>bad</em> product manager?</p>
+<ol type="1">
+<li>the mini dictator (don’t be an asshole to UX and devs)</li>
+<li>the waiter, taking what stakeholders ask for at face value, allowing the priority to be dictated by the most important person in the room.</li>
+<li>the reformed project manager, focusing on the <em>when</em>, not they <em>why</em>.</li>
+<li>A lone wold mentality - a feeling that they alone are responsible for the success of the product, and that they have to come up with it themselves without input from others.</li>
+</ol>
+<p>What makes a good product management function?</p>
+<p>Why do companies fall into the build trap?</p>
+<ol type="1">
+<li>They don’t understand their customers wants, needs or problems, and so they can’t measure value. Because some targets are required, they create proxies that they <em>can</em> measure, but don’t represent value: features shipped etc.</li>
+<li>They face unthinking pressure to fast-follow competitors, superficially copying their features without understanding whether those features are valuable.</li>
+<li>They over-promise during sales pitches, leading to one-off features that were not worth the investment because they are not widely useful. Where the strategy is driven by the contracts the company can get, the company is a <em>sales led</em> organization.</li>
+<li>the <em>product death cycle</em> They do not find out what their customers problems are, they just ask them what features are missing and build those features without validating them.</li>
+</ol>
+<h2 id="misc">Misc</h2>
+<ul>
+<li>known knowns: Facts</li>
+<li>known unknowns: questions</li>
+<li>unknown knowns: intuition</li>
+<li>unknown unknowns: discovery</li>
+</ul>
+<p>Why questions</p>
+<ul>
+<li>Why even do this project?</li>
+<li>What’s the desired result that we hope to achieve here?</li>
+<li>What does success look like?</li>
+<li>What are the risks?</li>
+<li>How are we mitigating those risks?</li>
+</ul>
+
+
+</body></html>
