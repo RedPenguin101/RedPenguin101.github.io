@@ -1,8 +1,8 @@
-= Radical Candor, by Kim Scott 
+# Radical Candor, by Kim Scott 
 
-== Part 1: The theory
+## Part 1: The theory
 
-=== Chapter 1: The role of the boss and radically candid relationships
+### Chapter 1: The role of the boss and radically candid relationships
 
 The responsibilities of a boss:
 
@@ -10,36 +10,30 @@ The responsibilities of a boss:
 * Building your Team
 * Producing Results
 
-Your relationships with your reports determine whether you can do that. And they are what will give your work meaning beyond the results you achieve
+Your relationships with your reports determine whether you can do that.
+And they are what will give your work meaning beyond the results you achieve
 
-Radical Candor is a framework for building good relationships. It consists of Caring Personally and Challenging Directly (i.e. not shying away from hard feedback)
+Radical Candor is a framework for building good relationships.
+It consists of Caring Personally and Challenging Directly 
+(i.e. not shying away from hard feedback)
 
 You have to, HAVE TO relinquish unilateral control over your team, over decision making
 
-=== Chapter 2: giving and getting feedback in a radically candid way
+### Chapter 2: giving and getting feedback in a radically candid way
 
-You want your team to criticize you, you want to be able to criticize your team, and you want your team to be able to criticize each other. Same for praise.
+You want your team to criticize you, you want to be able to criticize your team, and you want your team to be able to criticize each other.
+Same for praise.
 
 Give feedback as soon as you can, make it tangible, don't personalize it (make it about the action not the person).
 
 Start by asking for feedback, then transition into giving it.
 
-|===
-| | If you don't care personally | If you care personally
+|  | If you don't care personally | If you care personally |
+|--|------------------------------|------------------------|
+|If you challenge directly|Ruinous Empathy, Holding back over concern for feelings|Radical Candor|
+|If you don't challenge Directly|Manipulative insincerity.Looking for political advantage.Saying their presentation was good when it wasn't|Obnoxious aggression.Belittling, embarrassing, in public|
 
-|If you challenge directly 
-|Ruinous Empathy,Holding back over concern for feelings 
-|Radical Candor
-
-|If you don't challenge Directly
-|Manipulative insincerity.
-Looking for political advantage. 
-Saying their presentation was good when it wasn't
-|Obnoxious aggression.
-Belittling, embarrassing, in public
-|===
-
-=== Chapter 3: Your teams motivations and growth trajectories
+### Chapter 3: Your teams motivations and growth trajectories
 
 You need to understand how your direct reports work life fits into their life goals, what motivates them
 
@@ -49,61 +43,52 @@ You have Rockstars and Superstars: people on gradual growth and rapid growth tra
 
 Paths are not permanent, people can switch	
 
-|===
-||Low performance|Average performance|High performance: Be a partner, give focus and time
 
-|Steep growth trajectory
-|Wrong role? That's your fault, fix it. If they are new to the role: onboarding isn't good enough? Otherwise, fire them
-|Push them, set the quality bar
-|Keep the challenge up, find them mentors. Don't get dependent on them. Make sure there's a promotion path for an individual contributor (people who can't or don't want to manage others).
+| |Low performance|Average performance|High performance: Be a partner, give focus and time|
+|-|---------------|-------------------|---------------------------------------------------|
+|Steep growth trajectory||Wrong role? That's your fault, fix it. If they are new to the role: onboarding isn't good enough? Otherwise, fire them|Push them, set the quality bar|Keep the challenge up, find them mentors. Don't get dependent on them. Make sure there's a promotion path for an individual contributor (people who can't or don't want to manage others).|
+|Gradual growth trajectory|Fire them. AFTER they've been told their performance is poor and given a chance to fix it.|Push them, set the quality bar|Give recognition, not promotion. Find out what is valuable to them - bonuses, designate them as a guru, put them in charge of teaching (only if they see that as a reward)|
 
-|Gradual growth trajectory	
-|Fire them. AFTER they've been told their performance is poor and given a chance to fix it.
-|Push them, set the quality bar
-|Give recognition, not promotion. Find out what is valuable to them - bonuses, designate them as a guru, put them in charge of teaching (only if they see that as a reward)
-|===
+### Chapter 4: Collaborate for results
 
-=== Chapter 4: Collaborate for results
-
-Don't tell people what to do. Use the Getting Stuff Done wheel to help your team decide what to do for themselves.
+Don't tell people what to do.
+Use the Getting Stuff Done wheel to help your team decide what to do for themselves.
 
 Don't dive right into doing, cycle through the steps quickly (but don't skip any)
 
-image::./book_radical_candor/gsd_wheel.png[]
+![Getting Stuff Done](../../images/book_radical_candor/gsd_wheel.png)
 
-. *Listen*: Embrace awkward silences. Let people fill silences, or throw out points of view for people to push back against
-. *Clarify*: create a safe space for people to flesh out and think through their ideas before taking it to others
-. *Debate*: a rock polisher, remove rough edges through friction. Keep ego out of it.
-. *Decide*: not necessarily you but the best person. Make sure they get facts, not recommendations
-. *Persuade* people who weren't in the loop. explaining isn't enough, you have to sell it.
-. *Execute*: Make sure your team is blocking out time to actually work. Make any meetings effective
-. *Learn*: be disciplined and dispassionate about admitting mistakes.
+1. *Listen*: Embrace awkward silences. Let people fill silences, or throw out points of view for people to push back against
+1. *Clarify*: create a safe space for people to flesh out and think through their ideas before taking it to others
+1. *Debate*: a rock polisher, remove rough edges through friction. Keep ego out of it.
+1. *Decide*: not necessarily you but the best person. Make sure they get facts, not recommendations
+1. *Persuade* people who weren't in the loop. explaining isn't enough, you have to sell it.
+1. *Execute*: Make sure your team is blocking out time to actually work. Make any meetings effective
+1. *Learn*: be disciplined and dispassionate about admitting mistakes.
 
-== Part 2: Tools and techniques
+## Part 2: Tools and techniques
 
-=== Chapter 5: Relationships
+### Chapter 5: Relationships
 
-Sort yourself out first. If you're not happy, you can't build good relationships. Find what de-stresses you and calendarize it
+Sort yourself out first.
+If you're not happy, you can't build good relationships.
+Find what de-stresses you and calendarize it
 
 Always be looking for places where you can give away direct control, to give your teams agency
-
 You build relationships away from the desk, but in working hours: picnics, walks, coffees.
-
 (Mostly) Avoid 'optional' after hours stuff - it can feel mandatory
-
 Make sure you know peoples boundaries individually, and respect them, physically and emotionally
-
-Trust is built over time, don't assume too much right off the bat. Start with 1:1 meetings.
+Trust is built over time, don't assume too much right off the bat.
+Start with 1:1 meetings.
 
 You don't need to agree with others values, but you do need to respect them
-
-Acknowledge others emotions, don't ignore them, and don't try and manage them. Don't tell people how to feel. Ask questions and listen
-
+Acknowledge others emotions, don't ignore them, and don't try and manage them.
+Don't tell people how to feel.
+Ask questions and listen
 Keep a box of tissues near, but not at, your desk - the walk to fetch them will give a useful pause if things get emotional
-
 Walk, don't sit, when you're having tough conversations.
 
-=== Chapter 6: giving and soliciting feedback
+### Chapter 6: giving and soliciting feedback
 
 Soliciting feedback
 
@@ -141,7 +126,7 @@ Gender and guidance
 * Women being managed: demand criticism. Don't be the angel of the office to try to show you care personally: baking cookies, getting the copies and suchlike. Don't write men off if they fall into the trap: point it out to them
 * How to avoid the Abrasiveness Trap: Imagine a man doing the same thing and how you would react. Don't use gendered language: abrasive, shrill, bossy
 
-=== Chapter 7: Careers and growth
+### Chapter 7: Careers and growth
 
 Caring personally in 3 conversations
 
@@ -158,7 +143,7 @@ Challenge directly with a growth management plan once a year
 * Bad and not improving: fire them as soon as possible.
 * Growth plans should not take more than 15 mins per person if you are thinking about growth regularly enough.
 
-=== Chapter 8: Results - meetings to make your team more effective
+### Chapter 8: Results - meetings to make your team more effective
 
 * People's time is divided between meetings and execution time. You need to make sure the first help and don't impede the second.
 * 1:1's - these are must do's, once a week. It's where you get to know people, listen to them and help them clarify their ideas. They aren't criticism sessions - criticism is done 'live'. Keep them informal: coffee or lunch. The agenda is theirs to decide, but you can set expectations (e.g does it need to be a written agenda)
@@ -169,7 +154,7 @@ Challenge directly with a growth management plan once a year
 * Meeting free zones: make sure your team has blocked time to execute
 * Walk arounds: spend an hour a week walking round and talking to people. Get in the weeds of what they are doing, helps avoid 'that's beneath me' attitude in you and others.
  
-== Getting started - a checklist
+## Getting started - a checklist
 
 * Explain Radical candour to your team. Do it yourself, use stories
 * Start soliciting criticism use chapter 6 techniques
