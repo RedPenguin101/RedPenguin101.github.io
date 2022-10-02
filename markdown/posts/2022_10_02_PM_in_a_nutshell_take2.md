@@ -10,7 +10,7 @@ Everything else is secondary or in support of this purpose.
 
 ## Dual Track: Discovery and Build
 
-The teams 'cycle' of work has two phases:
+The team's 'cycle' of work has two phases:
 Discovery, where you figure out what you should build, and Build, where you build it.
 
 These phases should run on 'dual tracks'.
@@ -40,18 +40,18 @@ Talking to users is not scalable.
 Data is.
 Data shows what people _do_, not what they _say_ they'll do.
 But you can easily make incorrect assumptions about what data means.
-Treat any insights you get from data as hypotheses, and find was to test them.
+Treat any insights you get from data as hypotheses, and find ways to test them.
 
 ## Packaging: Transitioning from Discovery to Build
 
-When you have a good sense of the users problems, you need to get the work ready for the the engineers, by building a _package_ (or PRD, Pitch, Bet, Spec) for them.
+When you have a good sense of the user's problems, you need to get the work ready for the the engineers, by building a _package_ (or PRD, Pitch, Bet, Spec) for them.
 Whatever the implementation, keep in mind the _goal_ of the package is to familiarize the engineers with the situation so that they can design something to solve the problem.
 The package should have the following characteristics and content.
 
 1. It should be written down, to force exactness.
 2. It should be readable in 5-10 minutes. This isn't a contract, it's a tool for communicating, an excuse to have a conversation.
 3. It should describe the current state and the problem from the user's perspective.
-4. It should have clear success criteria and definition-of-done. This provides structure, which will prevent later scope-creep and enabling continual delivery focus.
+4. It should have clear success criteria and definition-of-done. This provides structure, which will prevent later scope-creep and enable delivery focus.
 5. It should clearly state the _value_ of solving the problem.
 6. It should _not_ include solution or implementation. But it should include things that constrain the design, including timing constraints.
 
@@ -88,7 +88,7 @@ It is a delicate balancing act.
 An engineer should always be clear what the definition of done is for the task they are doing.
 If they don't have this, they will spin.
 They should always be aware of how that task they are doing connects to a broader goal.
-This allows focus _within_ the task, guiding implementation, and allows the engineer needs to select their next task in a decentralized but still coordinated way.
+This allows focus _within_ the task, guiding implementation, and allows the engineer to select their next task in a decentralized but still coordinated way.
 
 Make sure there are several 'levels' of goals, which can each provide context for the levels on either side of it.
 Define clear cycles of work, with defined outcomes.
