@@ -220,11 +220,11 @@ Compare:
 The first is definitely better, but I think it would require macros for the deferred evaluation, and I don't want to get into that yet.
 
 ### What's missing?
-From skimming the rest of this paper, this implementation misses some of the core value propositions of the PPM:
+From skimming the rest of this paper, this implementation misses some of the core value propositions of the PPM, which hopefully I'll explore more as I read further into the paper.
+
 * Bi-directionality: if `z<-x*y`, then `x<-z/y`. A full system would be able to update `x` when `z` or `y` changes
 * A constraint system - an extension of the bi-directionality
 * Conditional propagation.
 * Composing propagator networks
 * Things which I don't even understand yet.
 
-Hopefully I'll explore these more as I read further into the paper.

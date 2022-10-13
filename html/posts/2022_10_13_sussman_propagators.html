@@ -241,8 +241,14 @@ propagate g [p ps]
 (define-cell! :answer [:prop sum [:a :b]])</code></pre>
 <p>The first is definitely better, but I think it would require macros for the deferred evaluation, and I don’t want to get into that yet.</p>
 <h3 id="whats-missing">What’s missing?</h3>
-<p>From skimming the rest of this paper, this implementation misses some of the core value propositions of the PPM: * Bi-directionality: if <code>z&lt;-x*y</code>, then <code>x&lt;-z/y</code>. A full system would be able to update <code>x</code> when <code>z</code> or <code>y</code> changes * A constraint system - an extension of the bi-directionality * Conditional propagation. * Composing propagator networks * Things which I don’t even understand yet.</p>
-<p>Hopefully I’ll explore these more as I read further into the paper.</p>
+<p>From skimming the rest of this paper, this implementation misses some of the core value propositions of the PPM, which hopefully I’ll explore more as I read further into the paper.</p>
+<ul>
+<li>Bi-directionality: if <code>z&lt;-x*y</code>, then <code>x&lt;-z/y</code>. A full system would be able to update <code>x</code> when <code>z</code> or <code>y</code> changes</li>
+<li>A constraint system - an extension of the bi-directionality</li>
+<li>Conditional propagation.</li>
+<li>Composing propagator networks</li>
+<li>Things which I don’t even understand yet.</li>
+</ul>
 
 
 </body></html>
