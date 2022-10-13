@@ -1,0 +1,238 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2022_10_13_sussman_propagators</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="propagator-programming-model-1---a-first-look">Propagator Programming Model 1 - a first look</h1>
+<h2 id="intro">Intro</h2>
+<p>I’m reading up on the Propagator Programming Model (PPM) proposed by Radul and Sussman<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> Full 2009 paper: <a href="https://groups.csail.mit.edu/mac/users/gjs/propagators/">Revised Report on the Propagator Model, by Radul and Sussman</a> </span>. I’ve only read the summary of how the model works so far. My goal is to explore the space and implementation challenges myself before reading what Radul has to say about it.</p>
+
+<h2 id="the-ppm">The PPM</h2>
+<p>A theme of Sussman’s work, and of his students, has always been extensible programs. He often compares the design of programs to the design of ‘natural’/organic systems, noting how the large amount of redundancy and fault-tolerance of the latter provides flexibility and resilience. In contrast, the programs we build tend to have a <em>single</em> way of solving a problem, and will immediately fall over if the exact conditions it needs to solve that problem are not met, or change.</p>
+<blockquote>
+<p>The most important problem facing a programmer is the revision of an existing program to extend it for some new situation. Unfortunately, the traditional models of programming provide little support for this activity. The programmer often finds that commitments made in the existing code impede the extension, but the costs of reversing those commitments are excessive. - Radul, in the paper</p>
+</blockquote>
+<p>The PPM is a model with the goal of allowing extension. It has two fundamental concepts: The Cell (which contains data), and a Propagator - a stateless machine which ‘watches’ input cells for changes, recomputes results based on the new values, and outputs them to another cell. In the below example, if the value of <code>CellA</code> changes, then <code>PropX</code> will be aware of that, and automatically update the value of <code>CellC</code>. The idea here is that the program designer can, by simply adding propagators, extend the system to include new methods generating results without damaging the existing methods.</p>
+<pre><code>CellA ------
+            \
+            PropX -----&gt; CellC
+            /
+CellB ------</code></pre>
+<p>There are a couple of parallels that immediately jump to mind. The first is the spreadsheet<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> Apparently, the first spreadsheet, VisiCalc, was inspired by this model, though that somewhat contradicts other things I’ve heard about the development of the spreadsheet. </span>, where formula cells point to other cells, and automatically update when the referenced cells are changed. The second is the Erlang-style of actor / message passing model, where ‘processes’ are spawned, and have ‘inboxes’ that can receive messages.</p>
+
+<p>Here’s the basic syntax from the paper:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode lisp"><code class="sourceCode commonlisp"><a class="sourceLine" id="cb2-1" title="1">(define-cell a)</a>
+<a class="sourceLine" id="cb2-2" title="2">(define-cell b)</a>
+<a class="sourceLine" id="cb2-3" title="3">(add-content a <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-4" title="4">(add-content b <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-5" title="5">(define-cell answer (e:+ a b))</a>
+<a class="sourceLine" id="cb2-6" title="6">(run)</a>
+<a class="sourceLine" id="cb2-7" title="7">(content answer) <span class="op">=&gt;</span> <span class="dv">5</span></a></code></pre></div>
+<h2 id="implementation">Implementation</h2>
+<p>Off the top of my head I can think of two plausible ways to implement this: First, a synchronous program which maintains a DAG<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3"> <a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> Cycles are technically allowed I think, but require special handling, so for simplicity I’ll ignore them for now. </span> of dependencies. When a cell is changed, the program will determine all the dependent propagators and run them, changing other cells which would in turn have their dependent propagators called. A second implementation would be using asynchronous channels, with each cell having an in-and-out channel, and each propagator subbing to the relevant out-channels and pushing output to the relevant cell in-channel.</p>
+
+<p>Intuitively I think the former will have some order-dependence issues (not that the async won’t), since the order in which dependent propagators are called will depend on the order in which the graph is navigated (e.g. DFS vs. BFS). But the inherent complexity of async leads me to start with the graph implementation.</p>
+<p>Nodes on the graph are cells (C) and propagators (P). A cell will contain a value, a merge function (ignored for now), and a list of dependent propagators. A Propagator has a list of input cells, a function, and an output cell. When a cell value is updated, the list of P will have to be registered for recalculation. Here’s a rough psuedo-code implementation with the recursive propagation.</p>
+<pre><code>cell = value deps
+prop = inputs fn output
+
+graph: 
+    c1 = 2 [p1 p2] // cell c1 has value 2, and dependent propagators p1 and p2
+    c2 = 3 [p1 p2]
+    c3 = 5 []
+    c4 = 6 []
+    p1 = [c1 c2] + [c3]
+    p2 = [c1 c2] * [c4]
+
+propagate (update graph c1 4) [p1 p2]
+
+propagate g [p ps]
+  if not p, g
+  else
+  let out = apply p:fn p:inputs
+      new-props = p:output:deps
+    recur (update graph p:output:value out)
+          concat ps new-props</code></pre>
+<p>In Clojure, here’s a pure implementation of this:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">defn</span><span class="fu"> sum     </span>[xs] (<span class="kw">apply</span> <span class="kw">+</span> xs))</a>
+<a class="sourceLine" id="cb4-2" title="2">(<span class="bu">defn</span><span class="fu"> product </span>[xs] (<span class="kw">apply</span> <span class="kw">*</span> xs))</a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4">                     <span class="co">; name  val  deps</span></a>
+<a class="sourceLine" id="cb4-5" title="5">(<span class="bu">def</span><span class="fu"> g </span>{<span class="at">:cells</span>       {<span class="at">:c1</span>    [<span class="dv">2</span>    [<span class="at">:p1</span> <span class="at">:p2</span>]]</a>
+<a class="sourceLine" id="cb4-6" title="6">                      <span class="at">:c2</span>    [<span class="dv">3</span>    [<span class="at">:p1</span> <span class="at">:p2</span>]]</a>
+<a class="sourceLine" id="cb4-7" title="7">                      <span class="at">:c3</span>    [<span class="dv">5</span>    []]</a>
+<a class="sourceLine" id="cb4-8" title="8">                      <span class="at">:c4</span>    [<span class="dv">6</span>    []]}</a>
+<a class="sourceLine" id="cb4-9" title="9">                     <span class="co">; name  inputs    function  output</span></a>
+<a class="sourceLine" id="cb4-10" title="10">        <span class="at">:propagators</span> {<span class="at">:p1</span>   [[<span class="at">:c1</span> <span class="at">:c2</span>] sum      <span class="at">:c3</span>    ]</a>
+<a class="sourceLine" id="cb4-11" title="11">                      <span class="at">:p2</span>   [[<span class="at">:c1</span> <span class="at">:c2</span>] product  <span class="at">:c4</span>    ]}})</a>
+<a class="sourceLine" id="cb4-12" title="12"></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">;; some private get/set abstractions</span></a>
+<a class="sourceLine" id="cb4-14" title="14">(<span class="bu">defn-</span><span class="fu"> cell-value      </span>[g c]   (<span class="kw">get-in</span> g   [<span class="at">:cells</span> c <span class="dv">0</span>]))</a>
+<a class="sourceLine" id="cb4-15" title="15">(<span class="bu">defn-</span><span class="fu"> cell-update-val </span>[g c v] (<span class="kw">assoc-in</span> g [<span class="at">:cells</span> c <span class="dv">0</span>] v))</a>
+<a class="sourceLine" id="cb4-16" title="16">(<span class="bu">defn-</span><span class="fu"> cell-deps       </span>[g c]   (<span class="kw">get-in</span> g   [<span class="at">:cells</span> c <span class="dv">1</span>]))</a>
+<a class="sourceLine" id="cb4-17" title="17"></a>
+<a class="sourceLine" id="cb4-18" title="18">(<span class="bu">defn</span><span class="fu"> all-cell-vals </span>[g] (update-vals (<span class="at">:cells</span> g) <span class="kw">first</span>))</a>
+<a class="sourceLine" id="cb4-19" title="19"></a>
+<a class="sourceLine" id="cb4-20" title="20">(<span class="bu">defn-</span><span class="fu"> prop-output-cell </span>[g p] (<span class="kw">get-in</span> g [<span class="at">:propagators</span> p <span class="dv">2</span>]))</a>
+<a class="sourceLine" id="cb4-21" title="21"></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">;; For a propagator, gets the value of the inputs and calculates the output</span></a>
+<a class="sourceLine" id="cb4-23" title="23">(<span class="bu">defn-</span><span class="fu"> prop-run         </span>[g p] ((<span class="kw">get-in</span> g [<span class="at">:propagators</span> p <span class="dv">1</span>]) (<span class="kw">map</span> #(cell-value g <span class="va">%</span>) (<span class="kw">get-in</span> g [<span class="at">:propagators</span> p <span class="dv">0</span>]))))</a>
+<a class="sourceLine" id="cb4-24" title="24"></a>
+<a class="sourceLine" id="cb4-25" title="25">(<span class="bu">defn-</span><span class="fu"> propagate </span>[g [p &amp; ps]]</a>
+<a class="sourceLine" id="cb4-26" title="26">  (<span class="kw">if</span> (<span class="kw">not</span> p) g</a>
+<a class="sourceLine" id="cb4-27" title="27">      (<span class="kw">let</span> [out-cell (prop-output-cell g p)]</a>
+<a class="sourceLine" id="cb4-28" title="28">        (<span class="kw">recur</span> (cell-update-val g out-cell (prop-run g p))</a>
+<a class="sourceLine" id="cb4-29" title="29">               (<span class="kw">into</span> ps (cell-deps g out-cell))))))</a>
+<a class="sourceLine" id="cb4-30" title="30"></a>
+<a class="sourceLine" id="cb4-31" title="31">(<span class="bu">defn</span><span class="fu"> update-cell </span>[g c v]</a>
+<a class="sourceLine" id="cb4-32" title="32">  (propagate (cell-update-val g c v)</a>
+<a class="sourceLine" id="cb4-33" title="33">             (cell-deps g c)))</a>
+<a class="sourceLine" id="cb4-34" title="34"></a>
+<a class="sourceLine" id="cb4-35" title="35">(all-cell-vals (update-cell g <span class="at">:c1</span> <span class="dv">4</span>))</a>
+<a class="sourceLine" id="cb4-36" title="36"><span class="co">;; =&gt; {:c1 4, :c2 3, :c3 7, :c4 12}</span></a></code></pre></div>
+<p>And here’s a layer on top of this that adds the stateful registry that is in the Scheme version. Note the example near the end mirrors Radul’s version, with the notable exception that ‘running’ is done incrementally as propagators are added - I’m not sure how important that is to the model.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="bu">def</span><span class="fu"> graph-register </span>(<span class="kw">atom</span> {}))</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3">(<span class="bu">defn-</span><span class="fu"> prop? </span>[<span class="kw">val</span>]</a>
+<a class="sourceLine" id="cb5-4" title="4">  (<span class="kw">and</span> (<span class="kw">vector?</span> <span class="kw">val</span>) (<span class="kw">=</span> <span class="at">:prop</span> (<span class="kw">first</span> <span class="kw">val</span>))))</a>
+<a class="sourceLine" id="cb5-5" title="5"></a>
+<a class="sourceLine" id="cb5-6" title="6">(<span class="bu">defn-</span><span class="fu"> add-dependencies </span>[g prop-name prop-input-cells]</a>
+<a class="sourceLine" id="cb5-7" title="7">  (<span class="kw">reduce</span> (<span class="kw">fn</span> [g' c]</a>
+<a class="sourceLine" id="cb5-8" title="8">            (<span class="kw">update-in</span> g' [<span class="at">:cells</span> c <span class="dv">1</span>] <span class="kw">conj</span> prop-name))</a>
+<a class="sourceLine" id="cb5-9" title="9">          g</a>
+<a class="sourceLine" id="cb5-10" title="10">          prop-input-cells))</a>
+<a class="sourceLine" id="cb5-11" title="11"></a>
+<a class="sourceLine" id="cb5-12" title="12">(<span class="bu">defn-</span><span class="fu"> add-cell-and-prop </span>[g cell prop-inputs prop-fn]</a>
+<a class="sourceLine" id="cb5-13" title="13">  (<span class="kw">let</span> [prop-name (<span class="kw">keyword</span> (<span class="kw">gensym</span> <span class="st">&quot;prop-&quot;</span>))]</a>
+<a class="sourceLine" id="cb5-14" title="14">    (<span class="kw">-&gt;</span> g</a>
+<a class="sourceLine" id="cb5-15" title="15">        (<span class="kw">assoc-in</span> [<span class="at">:propagators</span> prop-name] [prop-inputs prop-fn cell])</a>
+<a class="sourceLine" id="cb5-16" title="16">        (<span class="kw">assoc-in</span> [<span class="at">:cells</span> cell]      [<span class="va">nil</span> []])</a>
+<a class="sourceLine" id="cb5-17" title="17">        (add-dependencies prop-name prop-inputs)</a>
+<a class="sourceLine" id="cb5-18" title="18">        (propagate [prop-name]))))</a>
+<a class="sourceLine" id="cb5-19" title="19"></a>
+<a class="sourceLine" id="cb5-20" title="20">(<span class="bu">defn</span><span class="fu"> define-cell! </span>[nm <span class="kw">val</span>]</a>
+<a class="sourceLine" id="cb5-21" title="21">  (<span class="kw">if</span> (prop? <span class="kw">val</span>)</a>
+<a class="sourceLine" id="cb5-22" title="22">    (<span class="kw">swap!</span> graph-register add-cell-and-prop nm (<span class="kw">nth</span> <span class="kw">val</span> <span class="dv">2</span>) (<span class="kw">second</span> <span class="kw">val</span>))</a>
+<a class="sourceLine" id="cb5-23" title="23">    (<span class="kw">swap!</span> graph-register <span class="kw">assoc-in</span> [<span class="at">:cells</span> nm] [<span class="kw">val</span> []])))</a>
+<a class="sourceLine" id="cb5-24" title="24"></a>
+<a class="sourceLine" id="cb5-25" title="25">(<span class="bu">defn</span><span class="fu"> content! </span>[cell] (cell-value <span class="at">@graph-register</span> cell))</a>
+<a class="sourceLine" id="cb5-26" title="26"></a>
+<a class="sourceLine" id="cb5-27" title="27"><span class="co">;; EXAMPLES:</span></a>
+<a class="sourceLine" id="cb5-28" title="28"><span class="co">;; Following the above</span></a>
+<a class="sourceLine" id="cb5-29" title="29">(<span class="kw">reset!</span> graph-register {})</a>
+<a class="sourceLine" id="cb5-30" title="30">(define-cell! <span class="at">:c1</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb5-31" title="31">(define-cell! <span class="at">:c2</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb5-32" title="32">(define-cell! <span class="at">:c3</span> [<span class="at">:prop</span> sum [<span class="at">:c1</span> <span class="at">:c2</span>]])</a>
+<a class="sourceLine" id="cb5-33" title="33">(define-cell! <span class="at">:c4</span> [<span class="at">:prop</span> product [<span class="at">:c1</span> <span class="at">:c2</span>]])</a>
+<a class="sourceLine" id="cb5-34" title="34"><span class="at">@graph-register</span></a>
+<a class="sourceLine" id="cb5-35" title="35"><span class="co">;; =&gt; {:cells</span></a>
+<a class="sourceLine" id="cb5-36" title="36"><span class="co">;;     {:c1 [2 [:prop-8123 :prop-8124]],</span></a>
+<a class="sourceLine" id="cb5-37" title="37"><span class="co">;;      :c2 [3 [:prop-8123 :prop-8124]],</span></a>
+<a class="sourceLine" id="cb5-38" title="38"><span class="co">;;      :c3 [5 []],</span></a>
+<a class="sourceLine" id="cb5-39" title="39"><span class="co">;;      :c4 [6 []]},</span></a>
+<a class="sourceLine" id="cb5-40" title="40"><span class="co">;;     :propagators</span></a>
+<a class="sourceLine" id="cb5-41" title="41"><span class="co">;;     {:prop-8123 [[:c1 :c2] #function[propagators/sum] :c3],</span></a>
+<a class="sourceLine" id="cb5-42" title="42"><span class="co">;;      :prop-8124 [[:c1 :c2] #function[propagators/product] :c4]}}</span></a>
+<a class="sourceLine" id="cb5-43" title="43"></a>
+<a class="sourceLine" id="cb5-44" title="44">(all-cell-vals <span class="at">@graph-register</span>)</a>
+<a class="sourceLine" id="cb5-45" title="45"><span class="co">;; =&gt; {:c1 2, :c2 3, :c3 5, :c4 6}</span></a>
+<a class="sourceLine" id="cb5-46" title="46"></a>
+<a class="sourceLine" id="cb5-47" title="47"><span class="co">;; Following Radul's example</span></a>
+<a class="sourceLine" id="cb5-48" title="48">(<span class="kw">reset!</span> graph-register {})</a>
+<a class="sourceLine" id="cb5-49" title="49">(define-cell! <span class="at">:a</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb5-50" title="50">(define-cell! <span class="at">:b</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb5-51" title="51">(define-cell! <span class="at">:answer</span> [<span class="at">:prop</span> sum [<span class="at">:a</span> <span class="at">:b</span>]])</a>
+<a class="sourceLine" id="cb5-52" title="52">(content! <span class="at">:answer</span>)</a>
+<a class="sourceLine" id="cb5-53" title="53"><span class="co">;; =&gt; 5</span></a>
+<a class="sourceLine" id="cb5-54" title="54"></a>
+<a class="sourceLine" id="cb5-55" title="55"><span class="co">;; with multiple propagations</span></a>
+<a class="sourceLine" id="cb5-56" title="56">(<span class="kw">reset!</span> graph-register {})</a>
+<a class="sourceLine" id="cb5-57" title="57">(define-cell! <span class="at">:a</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb5-58" title="58">(define-cell! <span class="at">:b</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb5-59" title="59">(define-cell! <span class="at">:c</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb5-60" title="60">(define-cell! <span class="at">:intermediate</span> [<span class="at">:prop</span> sum     [<span class="at">:a</span> <span class="at">:b</span>]])</a>
+<a class="sourceLine" id="cb5-61" title="61">(define-cell! <span class="at">:final</span>        [<span class="at">:prop</span> product [<span class="at">:c</span> <span class="at">:intermediate</span>]])</a>
+<a class="sourceLine" id="cb5-62" title="62">(content! <span class="at">:final</span>)</a>
+<a class="sourceLine" id="cb5-63" title="63"><span class="co">;; =&gt; 20</span></a></code></pre></div>
+<p>The thing (or rather one thing, I expect there are many) in which my implementation is different to Radul’s is the propagation function syntax. Compare:</p>
+<pre><code>(define-cell answer (e:+ a b))
+(define-cell! :answer [:prop sum [:a :b]])</code></pre>
+<p>The first is definitely better, but I think it would require macros for the deferred evaluation, and I don’t want to get into that yet.</p>
+<h3 id="whats-missing">What’s missing?</h3>
+<p>From skimming the rest of this paper, this implementation misses some of the core value propositions of the PPM: * Bi-directionality: if <code>z&lt;-x*y</code>, then <code>x&lt;-z/y</code>. A full system would be able to update <code>x</code> when <code>z</code> or <code>y</code> changes * A constraint system - an extension of the bi-directionality * Conditional propagation. * Composing propagator networks * Things which I don’t even understand yet.</p>
+<p>Hopefully I’ll explore these more as I read further into the paper.</p>
+
+
+</body></html>
