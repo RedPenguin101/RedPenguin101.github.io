@@ -159,6 +159,7 @@ Note the example near the end mirrors Radul's version, with the notable exceptio
     (swap! graph-register assoc-in [:cells nm] [val []])))
 
 (defn content! [cell] (cell-value @graph-register cell))
+(defn update-cell! [cell value] (swap! graph-register update-cell cell value))
 
 ;; EXAMPLES:
 ;; Following the above
@@ -197,6 +198,15 @@ Note the example near the end mirrors Radul's version, with the notable exceptio
 (define-cell! :final        [:prop product [:c :intermediate]])
 (content! :final)
 ;; => 20
+;; being (3+2)*4
+(update-cell! :a 5)
+(content! :final)
+;; => 28
+;; being (5+2)*4
+(update-cell! :b 10)
+(content! :final)
+;; => 60
+;; being (5+10)*4
 ```
 
 The thing (or rather one thing, I expect there are many) in which my implementation is different to Radul's is the propagation function syntax.
