@@ -1,0 +1,5 @@
+{:deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        metasoarous/oz      {:mvn/version "1.6.0-alpha36"}
+        generateme/fastmath {:mvn/version "2.1.8"}
+        org.apache.commons/commons-math3 {:mvn/version "3.6.1"}}
+ :paths ["src" "data"]}
