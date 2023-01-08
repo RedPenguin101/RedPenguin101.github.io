@@ -3,149 +3,255 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>2022_05_14_kernel_part2</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<h1 id="kernel-development-part-2-the-interrupt-vector-table-and-real-mode-io">Kernel Development Part 2: The Interrupt Vector Table and Real Mode IO</h1>
-<p>Interrupts are like subroutines that you call through ‘interrupt numbers’ rather than memory addresses. There are interrupts pre-defined in the BIOS - in the previous post we saw <code>10h 0eh</code> prints a character to the screen - or they can be set up by the programmer. Interrupts are special because they halt the processor, save the current state (meaning what? the registers?) to the stack, execute the interrupt, then restore the pre-interrupt state.</p>
-<p>The code for these interrupts are stored in RAM. The locations of the code are stored in the <em>interrupt vector table</em> (IVT)<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> All of this only applies to Real Mode. In Protected Mode, an “Interrupt Descriptor Table” is used instead. More on this later </span>, which starts <em>right at the beginning</em> of RAM at address <code>0x00</code>. There are 256 entries in numerical order, <code>0x00</code> to <code>0xFF</code>, and each contains a 4 bytes: a 2 byte OFFSET and a 2 byte SEGMENT. This means you can calculate the location in the IVT of any interrupt code with <code>code * 0x04</code>. Interrupt <code>0x13</code> is at <code>0x46</code>.<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> Layout of the IVT: <img alt="Interrupt Vector Table" src="../../images/2022_03_21_kerneldev/IVT.png" /> </span></p>
+<h1 id="kernel-development-part-2-the-interrupt-vector-table-and-real-mode-io">Kernel
+Development Part 2: The Interrupt Vector Table and Real Mode IO</h1>
+<p>Interrupts are like subroutines that you call through ‘interrupt
+numbers’ rather than memory addresses. There are interrupts pre-defined
+in the BIOS - in the previous post we saw <code>10h 0eh</code> prints a
+character to the screen - or they can be set up by the programmer.
+Interrupts are special because they halt the processor, save the current
+state (meaning what? the registers?) to the stack, execute the
+interrupt, then restore the pre-interrupt state.</p>
+<p>The code for these interrupts are stored in RAM. The locations of the
+code are stored in the <em>interrupt vector table</em>
+(IVT)<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1">
+<a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> All of
+this only applies to Real Mode. In Protected Mode, an “Interrupt
+Descriptor Table” is used instead. More on this later </span>,
+which starts <em>right at the beginning</em> of RAM at address
+<code>0x00</code>. There are 256 entries in numerical order,
+<code>0x00</code> to <code>0xFF</code>, and each contains a 4 bytes: a 2
+byte OFFSET and a 2 byte SEGMENT. This means you can calculate the
+location in the IVT of any interrupt code with <code>code * 0x04</code>.
+Interrupt <code>0x13</code> is at
+<code>0x46</code>.<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2">
+<a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> Layout
+of the IVT: <img alt="Interrupt Vector Table" src="../../images/2022_03_21_kerneldev/IVT.png" /> </span></p>
 
 
-<p>The processor can throw exceptions with interrupts. For example, if you try to divide by zero in an Intel processor, it will call interrupt 0.<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3"> <a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> wiki.osdev.org/exceptions is a great resource for learning more </span></p>
+<p>The processor can throw exceptions with interrupts. For example, if
+you try to divide by zero in an Intel processor, it will call interrupt
+0.<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3">
+<a class="fnref" href="#note3" title="Footnote 3 Reference">3</a>
+wiki.osdev.org/exceptions is a great resource for learning more
+</span></p>
 
-<p>In the following code, we <em>replace</em> interrupt 0 with our own subroutine, by replacing the entries in the IVT to point to the subroutine in memory. Running our bootloader in this state will cause the screen to show <code>AHello World!A</code> - the first <code>A</code> comes from our manual call to the <code>int 0</code>, and the second comes from our attempt to divide by zero, which causes the processor to run interrupt 0.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">start:</span></a>
-<a class="sourceLine" id="cb1-2" title="2">    <span class="co">; snip</span></a>
-<a class="sourceLine" id="cb1-3" title="3">    <span class="bu">mov</span> <span class="dt">word</span>[<span class="kw">ss</span>:<span class="bn">0x00</span>], handle_zero <span class="co">; Set offset to handle_word address</span></a>
-<a class="sourceLine" id="cb1-4" title="4">    <span class="bu">mov</span> <span class="dt">word</span>[<span class="kw">ss</span>:<span class="bn">0x02</span>]<span class="bn">, 0x07C0      </span><span class="co">; set segment to 0x07c0 </span></a>
-<a class="sourceLine" id="cb1-5" title="5"></a>
-<a class="sourceLine" id="cb1-6" title="6">    <span class="bu">int</span> <span class="dv">0</span> <span class="co">; call interupt 0</span></a>
-<a class="sourceLine" id="cb1-7" title="7"></a>
-<a class="sourceLine" id="cb1-8" title="8">    <span class="bu">mov</span> <span class="kw">si</span>, message</a>
-<a class="sourceLine" id="cb1-9" title="9">    <span class="bu">call</span> print</a>
-<a class="sourceLine" id="cb1-10" title="10"></a>
-<a class="sourceLine" id="cb1-11" title="11">    <span class="bu">mov</span> <span class="kw">ax</span><span class="bn">, 0x00</span></a>
-<a class="sourceLine" id="cb1-12" title="12">    <span class="bu">div</span> <span class="kw">ax</span> <span class="co">; try to divide by 0</span></a>
-<a class="sourceLine" id="cb1-13" title="13"></a>
-<a class="sourceLine" id="cb1-14" title="14">    <span class="bu">jmp</span> <span class="dv">$</span></a>
-<a class="sourceLine" id="cb1-15" title="15"></a>
-<a class="sourceLine" id="cb1-16" title="16"><span class="fu">handle_zero:</span></a>
-<a class="sourceLine" id="cb1-17" title="17">    <span class="bu">mov</span><span class="bn"> ah, 0eh</span></a>
-<a class="sourceLine" id="cb1-18" title="18">    <span class="bu">mov</span> <span class="kw">al</span>, <span class="st">'A'</span></a>
-<a class="sourceLine" id="cb1-19" title="19">    <span class="bu">mov</span> <span class="kw">bx</span><span class="bn">, 0x00</span></a>
-<a class="sourceLine" id="cb1-20" title="20">    <span class="bu">int</span><span class="bn"> 0x10</span></a>
-<a class="sourceLine" id="cb1-21" title="21">    <span class="bu">iret</span></a>
-<a class="sourceLine" id="cb1-22" title="22"></a>
-<a class="sourceLine" id="cb1-23" title="23"><span class="co">; snip</span></a></code></pre></div>
+<p>In the following code, we <em>replace</em> interrupt 0 with our own
+subroutine, by replacing the entries in the IVT to point to the
+subroutine in memory. Running our bootloader in this state will cause
+the screen to show <code>AHello World!A</code> - the first
+<code>A</code> comes from our manual call to the <code>int 0</code>, and
+the second comes from our attempt to divide by zero, which causes the
+processor to run interrupt 0.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode asm"><code class="sourceCode fasm"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">start:</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>    <span class="co">; snip</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>    <span class="bu">mov</span> <span class="dt">word</span><span class="op">[</span><span class="kw">ss</span><span class="op">:</span><span class="bn">0x00</span><span class="op">],</span> handle_zero <span class="co">; Set offset to handle_word address</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>    <span class="bu">mov</span> <span class="dt">word</span><span class="op">[</span><span class="kw">ss</span><span class="op">:</span><span class="bn">0x02</span><span class="op">],</span> <span class="bn">0x07C0</span>      <span class="co">; set segment to 0x07c0 </span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    <span class="bu">int</span> <span class="dv">0</span> <span class="co">; call interupt 0</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">si</span><span class="op">,</span> message</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    <span class="cf">call</span> print</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">ax</span><span class="op">,</span> <span class="bn">0x00</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    <span class="bu">div</span> <span class="kw">ax</span> <span class="co">; try to divide by 0</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    <span class="cf">jmp</span> <span class="op">$</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="fu">handle_zero:</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">ah</span><span class="op">,</span> <span class="bn">0eh</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">al</span><span class="op">,</span> <span class="st">'A'</span></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">bx</span><span class="op">,</span> <span class="bn">0x00</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>    <span class="bu">int</span> <span class="bn">0x10</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>    <span class="cf">iret</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a></span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a><span class="co">; snip</span></span></code></pre></div>
 <h2 id="reading-from-disk">Reading from disk</h2>
-<p>Next we will see how we can read data from a hard disk. Note that we’re not talking about accessing <em>files</em>. Files and the file system are implemented in the Kernel. Or to be more specific, the disk is ‘formatted’ with a particular file system data structure (FAT, EXT4 etc.), and the kernel has drivers which are able to interpret that data structure as files. As far as we are concerned, the disk consists of blocks of data called <em>sectors</em><sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4"> <a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> We already encountered sectors when talking about how the bootloader is loaded. </span>. A sector consists of 512 contiguous bytes. These sectors are read and written in sector blocks, not by accessing individual bytes.<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5"> <a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by <code>58376/512=114</code>, and the offset as <code>58376%512=8</code> </span></p>
+<p>Next we will see how we can read data from a hard disk. Note that
+we’re not talking about accessing <em>files</em>. Files and the file
+system are implemented in the Kernel. Or to be more specific, the disk
+is ‘formatted’ with a particular file system data structure (FAT, EXT4
+etc.), and the kernel has drivers which are able to interpret that data
+structure as files. As far as we are concerned, the disk consists of
+blocks of data called
+<em>sectors</em><sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4">
+<a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> We
+already encountered sectors when talking about how the bootloader is
+loaded. </span>.
+A sector consists of 512 contiguous bytes. These sectors are read and
+written in sector blocks, not by accessing individual
+bytes.<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5">
+<a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> Since
+you can only read in sectors, to calculate a specific place on the disk
+using LBA you need to calculate the sector and the offset. This is
+simply a matter of getting the quotient and the modulus. So to get to
+byte 58376 you calculate the LBA sector by <code>58376/512=114</code>,
+and the offset as <code>58376%512=8</code> </span></p>
 
 <figure>
-<img alt="Disk" src="../../images/2022_03_21_kerneldev/disk.png" /><figcaption>Disk</figcaption>
+<img alt="Disk" src="../../images/2022_03_21_kerneldev/disk.png" />
+<figcaption aria-hidden="true">Disk</figcaption>
 </figure>
-<p>The old way of addressing disk sectors is the <em>Cylinder Head Sector</em> (CHS) system. This is from when disks were spinning magnetic plates arranged in cylinders. You need to specify the cylinder, head, sector and track you want to read from. This was pretty complicated, and it is no longer really used. The modern way is called <em>Logical Block Address</em> (LBA). In LBA you just specify the sector number you want to get. LBA 0 is the first sector on the disk, etc.<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5"> <a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> Since you can only read in sectors, to calculate a specific place on the disk using LBA you need to calculate the sector and the offset. This is simply a matter of getting the quotient and the modulus. So to get to byte 58376 you calculate the LBA sector by <code>58376/512=114</code>, and the offset as <code>58376%512=8</code> </span></p>
+<p>The old way of addressing disk sectors is the <em>Cylinder Head
+Sector</em> (CHS) system. This is from when disks were spinning magnetic
+plates arranged in cylinders. You need to specify the cylinder, head,
+sector and track you want to read from. This was pretty complicated, and
+it is no longer really used. The modern way is called <em>Logical Block
+Address</em> (LBA). In LBA you just specify the sector number you want
+to get. LBA 0 is the first sector on the disk,
+etc.<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5">
+<a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> Since
+you can only read in sectors, to calculate a specific place on the disk
+using LBA you need to calculate the sector and the offset. This is
+simply a matter of getting the quotient and the modulus. So to get to
+byte 58376 you calculate the LBA sector by <code>58376/512=114</code>,
+and the offset as <code>58376%512=8</code> </span></p>
 
-<h3 id="some-housekeeping-before-we-actually-read-from-the-disk">Some housekeeping before we actually read from the disk</h3>
-<p>First create a text file and put in it whatever you want. This is going to be the thing that gets read from the disk. Create a <em>Makefile</em><sup class="fnref"><a href="#fn6" id="note6" title="Footnote 6">6</a></sup><span class="footnote" id="fn6"> <a class="fnref" href="#note6" title="Footnote 6 Reference">6</a> Make is a language unto itself, intended to simplify the compilation of project with multiple files. </span>.</p>
+<h3 id="some-housekeeping-before-we-actually-read-from-the-disk">Some
+housekeeping before we actually read from the disk</h3>
+<p>First create a text file and put in it whatever you want. This is
+going to be the thing that gets read from the disk. Create a
+<em>Makefile</em><sup class="fnref"><a href="#fn6" id="note6" title="Footnote 6">6</a></sup><span class="footnote" id="fn6">
+<a class="fnref" href="#note6" title="Footnote 6 Reference">6</a> Make
+is a language unto itself, intended to simplify the compilation of
+project with multiple files. </span>.</p>
 
 <pre class="make"><code>all:
     nasm -f bin ./boot.asm -o ./boot.bin
     dd if=./message.txt &gt;&gt; ./boot.bin
     dd if=/dev/zero bs=512 count=1 &gt;&gt; ./boot.bin</code></pre>
-<p>The first line is same assemble command we’ve already been using. The second line puts the content of <em>message.txt</em> onto the end of our binary, and the third pads the binary out with null characters until it’s 512 bytes, and therefore a valid sector. You can type <code>make</code> at the command line to compile the project. You can see the content of the binary with <code>hexdump -C ./boot.bin &gt; hex.txt</code>, and opening the text file.</p>
-<h3 id="time-to-actually-read-from-the-disk">Time to actually read from the disk</h3>
-<p>We’ll be using interrupt <code>13h/02h</code>: “Disk - Read Sectors into Memory”. Looking at the expected register values that <a href="http://www.ctyme.com/intr/rb-0607.htm">Ralph Brown</a> provides<sup class="fnref"><a href="#fn7" id="note7" title="Footnote 7">7</a></sup><span class="footnote" id="fn7"> <a class="fnref" href="#note7" title="Footnote 7 Reference">7</a> <code>AH</code> = 02h, <code>AL</code> = number of sectors to read, <code>CH</code> = cylinder number, <code>CL</code> = sector number, <code>DH</code> = head number, <code>ES:BX</code> -&gt; data buffer. Return: <code>CF</code> set on error </span> we can get to the follow code:</p>
+<p>The first line is same assemble command we’ve already been using. The
+second line puts the content of <em>message.txt</em> onto the end of our
+binary, and the third pads the binary out with null characters until
+it’s 512 bytes, and therefore a valid sector. You can type
+<code>make</code> at the command line to compile the project. You can
+see the content of the binary with
+<code>hexdump -C ./boot.bin &gt; hex.txt</code>, and opening the text
+file.</p>
+<h3 id="time-to-actually-read-from-the-disk">Time to actually read from
+the disk</h3>
+<p>We’ll be using interrupt <code>13h/02h</code>: “Disk - Read Sectors
+into Memory”. Looking at the expected register values that <a href="http://www.ctyme.com/intr/rb-0607.htm">Ralph Brown</a>
+provides<sup class="fnref"><a href="#fn7" id="note7" title="Footnote 7">7</a></sup><span class="footnote" id="fn7">
+<a class="fnref" href="#note7" title="Footnote 7 Reference">7</a>
+<code>AH</code> = 02h, <code>AL</code> = number of sectors to read,
+<code>CH</code> = cylinder number, <code>CL</code> = sector number,
+<code>DH</code> = head number, <code>ES:BX</code> -&gt; data buffer.
+Return: <code>CF</code> set on error </span>
+we can get to the follow code:</p>
 
-<div class="sourceCode" id="cb3"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb3-1" title="1">    <span class="bu">mov</span><span class="bn"> ah, 02h</span></a>
-<a class="sourceLine" id="cb3-2" title="2">    <span class="bu">mov</span> <span class="kw">al</span>, <span class="dv">1</span></a>
-<a class="sourceLine" id="cb3-3" title="3">    <span class="bu">mov</span><span class="bn"> ch, </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb3-4" title="4">    <span class="bu">mov</span><span class="bn"> dh, </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb3-5" title="5">    <span class="bu">mov</span> <span class="kw">cl</span>, <span class="dv">2</span></a>
-<a class="sourceLine" id="cb3-6" title="6">    <span class="bu">mov</span> <span class="kw">bx</span>, buffer</a>
-<a class="sourceLine" id="cb3-7" title="7">    <span class="bu">int</span><span class="bn"> 0x13</span></a>
-<a class="sourceLine" id="cb3-8" title="8">    <span class="bu">jc</span> error <span class="co">; if carry flag is set, meaning load failed</span></a>
-<a class="sourceLine" id="cb3-9" title="9"></a>
-<a class="sourceLine" id="cb3-10" title="10">    <span class="bu">mov</span> <span class="kw">si</span>, buffer</a>
-<a class="sourceLine" id="cb3-11" title="11">    <span class="bu">call</span> print</a>
-<a class="sourceLine" id="cb3-12" title="12"></a>
-<a class="sourceLine" id="cb3-13" title="13"><span class="co">; snip to end of file</span></a>
-<a class="sourceLine" id="cb3-14" title="14"></a>
-<a class="sourceLine" id="cb3-15" title="15"><span class="fu">error_message:</span> <span class="dt">db</span> <span class="st">'Failed to load sector'</span>, <span class="dv">0</span></a>
-<a class="sourceLine" id="cb3-16" title="16"></a>
-<a class="sourceLine" id="cb3-17" title="17"><span class="pp">times</span> <span class="dv">510</span>-(<span class="dv">$</span> - <span class="dv">$$</span>) <span class="dt">db</span> <span class="dv">0</span> <span class="co">; Pad to 510th byte</span></a>
-<a class="sourceLine" id="cb3-18" title="18"><span class="dt">dw</span> <span class="bn">0xAA55</span> <span class="co">; dw=define word. Puts bootloader signal</span></a>
-<a class="sourceLine" id="cb3-19" title="19"></a>
-<a class="sourceLine" id="cb3-20" title="20"><span class="fu">buffer:</span></a></code></pre></div>
-<p>Here we set up the registers as they need to be to read our message from the 2nd sector (<code>cl</code>) of the disk into the <code>buffer</code> label in memory<sup class="fnref"><a href="#fn8" id="note8" title="Footnote 8">8</a></sup><span class="footnote" id="fn8"> <a class="fnref" href="#note8" title="Footnote 8 Reference">8</a> Note that the data is put into <code>ES:BX</code>, the Extra Segment. We have set this to <code>0x7c0</code>, which is the right place. </span>. Then we call the interrupt <code>0x13</code>. <code>jc</code> handles the error condition.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode asm"><code class="sourceCode fasm"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">ah</span><span class="op">,</span> <span class="bn">02h</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">al</span><span class="op">,</span> <span class="dv">1</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">ch</span><span class="op">,</span> <span class="dv">0</span></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">dh</span><span class="op">,</span> <span class="dv">0</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">cl</span><span class="op">,</span> <span class="dv">2</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">bx</span><span class="op">,</span> buffer</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    <span class="bu">int</span> <span class="bn">0x13</span></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    <span class="cf">jc</span> error <span class="co">; if carry flag is set, meaning load failed</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">si</span><span class="op">,</span> buffer</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    <span class="cf">call</span> print</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a><span class="co">; snip to end of file</span></span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a></span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a><span class="fu">error_message:</span> <span class="dt">db</span> <span class="st">'Failed to load sector'</span><span class="op">,</span> <span class="dv">0</span></span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a><span class="pp">times</span> <span class="dv">510</span><span class="op">-($</span> <span class="op">-</span> <span class="op">$$)</span> <span class="dt">db</span> <span class="dv">0</span> <span class="co">; Pad to 510th byte</span></span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a><span class="dt">dw</span> <span class="bn">0xAA55</span> <span class="co">; dw=define word. Puts bootloader signal</span></span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a></span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a><span class="fu">buffer:</span></span></code></pre></div>
+<p>Here we set up the registers as they need to be to read our message
+from the 2nd sector (<code>cl</code>) of the disk into the
+<code>buffer</code> label in
+memory<sup class="fnref"><a href="#fn8" id="note8" title="Footnote 8">8</a></sup><span class="footnote" id="fn8">
+<a class="fnref" href="#note8" title="Footnote 8 Reference">8</a> Note
+that the data is put into <code>ES:BX</code>, the Extra Segment. We have
+set this to <code>0x7c0</code>, which is the right place. </span>.
+Then we call the interrupt <code>0x13</code>. <code>jc</code> handles
+the error condition.</p>
 
 
 

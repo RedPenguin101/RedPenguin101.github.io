@@ -3,182 +3,393 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>2022_10_29_distributions_prob_prog</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<h1 id="probabilistic-programming-and-distributions">Probabilistic Programming and Distributions</h1>
-<h2 id="deterministic-and-probabilistic-programs">Deterministic and Probabilistic Programs</h2>
-<p>A traditional computer program is a set of procedures which run roughly sequentially to produce a result. The inputs to those procedures are known at the time they are run. For example, at the time the function <code>add(1,2)</code> is run, there is no doubt that the inputs to the function are 1 and 2.</p>
-<p>In probabilistic programming this is different. A function might <code>add(X,Y)</code>, but at the time it executes, the exact values of x and y are <em>not</em> known by you. Call them <strong>uncertain variables</strong>. There are two consequences to this: First there can be no single outcome from running the program. At best, you can run it for every possible value of every variable, producing a <em>set</em> of results. The second consequence is that you can run your program <em>backwards</em>, taking a set of results and using them to get a better idea of what values your unknown variables can take.</p>
-<p>Traditional programs are often <em>models</em> of some real world activity, with objects and concepts in reality being represented in code by classes, types and functions. A shipping management program will have electronic representations of different ships moving between electronic ports. A chess program has analogues in code to the wooden boards and pieces. Actions taken in the real world will have mirrors in the program, like <code>pizza.addTopping(mushroom)</code>. “Running” a program of this type <em>simulates</em> activity in the real world, with the assumption that the outcome of the simulation will be useful - for example, I will be able to figure out <code>pizza.price()</code></p>
-<p>In a probabilistic program, running the program <em>forward</em> has this same quality of simulation. The difference is that, for a traditional program, the outcome should be the same every time - <code>pizza.price()</code> is not useful if it gives you different answers - whereas for a probabilistic program the outcome will usually be different - like the function <code>six_sided_die.roll()</code>.</p>
-<p>Consider the above ‘pizza’ program, only in this scenario we’re not the person running the pizza shop, and we <em>don’t know</em> what the topping prices are. However, we have a bunch of receipts from the pizza shop which show the total price, and the toppings. By running the program <em>backwards</em>, we can come up with, or improve, our guesses about what the prices of individual toppings cost, by figuring out how likely we would be to see that data given different inputs.</p>
+<h1 id="probabilistic-programming-and-distributions">Probabilistic
+Programming and Distributions</h1>
+<h2 id="deterministic-and-probabilistic-programs">Deterministic and
+Probabilistic Programs</h2>
+<p>A traditional computer program is a set of procedures which run
+roughly sequentially to produce a result. The inputs to those procedures
+are known at the time they are run. For example, at the time the
+function <code>add(1,2)</code> is run, there is no doubt that the inputs
+to the function are 1 and 2.</p>
+<p>In probabilistic programming this is different. A function might
+<code>add(X,Y)</code>, but at the time it executes, the exact values of
+x and y are <em>not</em> known by you. Call them <strong>uncertain
+variables</strong>. There are two consequences to this: First there can
+be no single outcome from running the program. At best, you can run it
+for every possible value of every variable, producing a <em>set</em> of
+results. The second consequence is that you can run your program
+<em>backwards</em>, taking a set of results and using them to get a
+better idea of what values your unknown variables can take.</p>
+<p>Traditional programs are often <em>models</em> of some real world
+activity, with objects and concepts in reality being represented in code
+by classes, types and functions. A shipping management program will have
+electronic representations of different ships moving between electronic
+ports. A chess program has analogues in code to the wooden boards and
+pieces. Actions taken in the real world will have mirrors in the
+program, like <code>pizza.addTopping(mushroom)</code>. “Running” a
+program of this type <em>simulates</em> activity in the real world, with
+the assumption that the outcome of the simulation will be useful - for
+example, I will be able to figure out <code>pizza.price()</code></p>
+<p>In a probabilistic program, running the program <em>forward</em> has
+this same quality of simulation. The difference is that, for a
+traditional program, the outcome should be the same every time -
+<code>pizza.price()</code> is not useful if it gives you different
+answers - whereas for a probabilistic program the outcome will usually
+be different - like the function <code>six_sided_die.roll()</code>.</p>
+<p>Consider the above ‘pizza’ program, only in this scenario we’re not
+the person running the pizza shop, and we <em>don’t know</em> what the
+topping prices are. However, we have a bunch of receipts from the pizza
+shop which show the total price, and the toppings. By running the
+program <em>backwards</em>, we can come up with, or improve, our guesses
+about what the prices of individual toppings cost, by figuring out how
+likely we would be to see that data given different inputs.</p>
 <figure>
-<img alt="Probabilistic Program Flow" src="../../images/2022_10_29_distributions_prob_prog/program.jpg" /><figcaption>Probabilistic Program Flow</figcaption>
+<img alt="Probabilistic Program Flow" src="../../images/2022_10_29_distributions_prob_prog/program.jpg" />
+<figcaption aria-hidden="true">Probabilistic Program Flow</figcaption>
 </figure>
-<p>Before we dive into probabilistic programming, a note on nomenclature. In probabilistic programming, the languages of statistics and programming - each confusing, inconsistent and poorly defined - have collided many times over, producing many incompatible languages largely incomprehensible to everyone. Here are some rough equivalences between the two domains, but for the rest of this article I’ll try to avoid most of the more statistical terms.</p>
+<p>Before we dive into probabilistic programming, a note on
+nomenclature. In probabilistic programming, the languages of statistics
+and programming - each confusing, inconsistent and poorly defined - have
+collided many times over, producing many incompatible languages largely
+incomprehensible to everyone. Here are some rough equivalences between
+the two domains, but for the rest of this article I’ll try to avoid most
+of the more statistical terms.</p>
 <ol type="1">
-<li>A ‘Program’ and a ‘Model’ are synonymous terms. (I’ll usually use program).</li>
-<li>‘Simulation’, ‘Generation’ and ‘Sampling’ are all names for the process of running your program forwards to produce data. (I’ll use simulation)</li>
-<li>‘Training’ or ‘Updating’ your model, or ‘Inference’ is the process of running your program <em>backwards</em>, using data, to improve your guesses about your uncertain variables. (I’ll use inference, in the sense of <em>“I infer things about the uncertain variables from the data.”</em>)</li>
-<li>The ‘prior’ is the name for your guesses before the training, and the ‘posterior’ is the name for them afterwards. (I’ll not use these at all.)</li>
+<li>A ‘Program’ and a ‘Model’ are synonymous terms. (I’ll usually use
+program).</li>
+<li>‘Simulation’, ‘Generation’ and ‘Sampling’ are all names for the
+process of running your program forwards to produce data. (I’ll use
+simulation)</li>
+<li>‘Training’ or ‘Updating’ your model, or ‘Inference’ is the process
+of running your program <em>backwards</em>, using data, to improve your
+guesses about your uncertain variables. (I’ll use inference, in the
+sense of <em>“I infer things about the uncertain variables from the
+data.”</em>)</li>
+<li>The ‘prior’ is the name for your guesses before the training, and
+the ‘posterior’ is the name for them afterwards. (I’ll not use these at
+all.)</li>
 </ol>
 <h2 id="specifying-uncertainty">Specifying Uncertainty</h2>
-<p>I’ve said that the inputs to our program are uncertain, or that we provide ‘best guesses’ as to what the inputs are when we are running the program. What this means is that, instead of knowing that a mushroom topping is $3, we have to indicate a range of possible values we think it can take. Something like “I think the mushroom topping is $3 or $4.” But this isn’t really sophisticated enough. Do we think it’s equally likely to be $3 or $4, or do we think it’s a bit more likely to be $3 than $4? Do we think it’s <em>exactly</em> $3 or $4, or just some value inbetween those two? We need a language to be able to specify this precisely.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="co">## Deterministic Program</span></a>
-<a class="sourceLine" id="cb1-2" title="2">mushroom <span class="op">=</span> <span class="dv">3</span></a>
-<a class="sourceLine" id="cb1-3" title="3"></a>
-<a class="sourceLine" id="cb1-4" title="4">pizza <span class="op">=</span> Pizza(size<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb1-5" title="5">pizza.add_topping(mushroom)</a>
-<a class="sourceLine" id="cb1-6" title="6">pizza.price()</a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="co">#=&gt; 15</span></a>
-<a class="sourceLine" id="cb1-8" title="8"></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="co">## Probabilitic Program</span></a>
-<a class="sourceLine" id="cb1-10" title="10">Mushroom <span class="op">=</span> ??</a>
-<a class="sourceLine" id="cb1-11" title="11"></a>
-<a class="sourceLine" id="cb1-12" title="12">pizza <span class="op">=</span> Pizza(size<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb1-13" title="13">pizza.add_topping(Mushroom)</a>
-<a class="sourceLine" id="cb1-14" title="14">pizza.price()</a>
-<a class="sourceLine" id="cb1-15" title="15"><span class="co">#=&gt; ??</span></a></code></pre></div>
-<p>This is where uncertainty curves, or “Distributions” come in. An uncertainty curve is a 2d-graph which, for each potential value we think a variable can have (on the x-axis), shows how likely we think that value will be (on the y-axis). The curve can be <em>continuous</em> - the variable can take any value in a range - or <em>discrete</em> - the variable can take on only particular values. The shape of the curve can be a completely arbitrary squiggle on a page. However there are some shapes that are so common they have been given names. Here are a few. Remember the x-axis is the possible values the an uncertain variable can be, and the y-axis is the relative likelihood of the variable taking that value. Note that I’ve taken off the Y-axis label. That’s because it’s not really important - the <em>shape</em>, and the x-axis values are what counts.</p>
+<p>I’ve said that the inputs to our program are uncertain, or that we
+provide ‘best guesses’ as to what the inputs are when we are running the
+program. What this means is that, instead of knowing that a mushroom
+topping is $3, we have to indicate a range of possible values we think
+it can take. Something like “I think the mushroom topping is $3 or $4.”
+But this isn’t really sophisticated enough. Do we think it’s equally
+likely to be $3 or $4, or do we think it’s a bit more likely to be $3
+than $4? Do we think it’s <em>exactly</em> $3 or $4, or just some value
+inbetween those two? We need a language to be able to specify this
+precisely.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="co">## Deterministic Program</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>mushroom <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>pizza <span class="op">=</span> Pizza(size<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>pizza.add_topping(mushroom)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>pizza.price()</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="co">#=&gt; 15</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="co">## Probabilitic Program</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>Mushroom <span class="op">=</span> ??</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>pizza <span class="op">=</span> Pizza(size<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>pizza.add_topping(Mushroom)</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>pizza.price()</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="co">#=&gt; ??</span></span></code></pre></div>
+<p>This is where uncertainty curves, or “Distributions” come in. An
+uncertainty curve is a 2d-graph which, for each potential value we think
+a variable can have (on the x-axis), shows how likely we think that
+value will be (on the y-axis). The curve can be <em>continuous</em> -
+the variable can take any value in a range - or <em>discrete</em> - the
+variable can take on only particular values. The shape of the curve can
+be a completely arbitrary squiggle on a page. However there are some
+shapes that are so common they have been given names. Here are a few.
+Remember the x-axis is the possible values the an uncertain variable can
+be, and the y-axis is the relative likelihood of the variable taking
+that value. Note that I’ve taken off the Y-axis label. That’s because
+it’s not really important - the <em>shape</em>, and the x-axis values
+are what counts.</p>
 <figure>
-<img alt="Uniform" src="../..//images/2022_10_29_distributions_prob_prog/uniform.png" /><figcaption>Uniform</figcaption>
+<img alt="Uniform" src="../..//images/2022_10_29_distributions_prob_prog/uniform.png" />
+<figcaption aria-hidden="true">Uniform</figcaption>
 </figure>
-<p>This shape says: <em>“the variable is equally likely to be any value between 2 and 4, but nothing else.”</em> It’s called the <strong>uniform</strong> distribution.</p>
+<p>This shape says: <em>“the variable is equally likely to be any value
+between 2 and 4, but nothing else.”</em> It’s called the
+<strong>uniform</strong> distribution.</p>
 <figure>
-<img alt="Normal" src="../..//images/2022_10_29_distributions_prob_prog/normal.png" /><figcaption>Normal</figcaption>
+<img alt="Normal" src="../..//images/2022_10_29_distributions_prob_prog/normal.png" />
+<figcaption aria-hidden="true">Normal</figcaption>
 </figure>
-<p>This shape says: <em>“the variable is something around 4.25, but can vary a bit around that.”</em> It’s called the <strong>normal</strong> distribution.</p>
+<p>This shape says: <em>“the variable is something around 4.25, but can
+vary a bit around that.”</em> It’s called the <strong>normal</strong>
+distribution.</p>
 <figure>
-<img alt="Poisson" src="../..//images/2022_10_29_distributions_prob_prog/poisson.png" /><figcaption>Poisson</figcaption>
+<img alt="Poisson" src="../..//images/2022_10_29_distributions_prob_prog/poisson.png" />
+<figcaption aria-hidden="true">Poisson</figcaption>
 </figure>
-<p>This shape says: <em>“the variable is most likely around 2 or 3, but it could be as low as zero, and could also plausible be 0, 1, 4, 5 or 6. There’s also a slight possibility it’s more than 6, but not much.”</em> This is called the <strong>Poisson</strong> distribution.</p>
-<p>There are a lot of these named distributions. One of the reasons they are named is because they happen to come up a lot. For example, the Poisson distribution looks like the shape you see when you’re counting events that occur in a set period of time. Like the number of people that leave a tube station exit in an hour. It could be zero, but it can never be <em>less</em> than zero. It has a peak somewhere, after which it falls off. <em>Theoretically</em> there is no upper limit to the number of people that could exit the station in an hour, but in practice it’s very unlikely it will be a large number.</p>
-<p>The Normal distribution is probably the most famous. The distinctive bell pattern - “something around x, but could be a bit more or a bit less” - comes up all the time in nature for various reasons.</p>
-<p>I call these distributions, but really they are more like <em>families</em> of distributions. For example the following are both Normal distributions, but they have different graphs, with different peaks and different ‘spreads’. A Normal distribution is described with two parameters which give the ‘peak’ x and how spread out it is. So you might say a variable with a peak at 5, and a spread of 4 has a <code>Normal(4,5)</code> distribution<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> The naming conventions for parameters are confusing. For normal distributions they are variously called mean, mu, sd, sigma, tau, variance. Worse, every distribution has different parameters, different names for those parameters, and sometimes different <em>meanings</em> for them. It’s a bit of a mess, but it’s not much of problem in practice. </span>.</p>
+<p>This shape says: <em>“the variable is most likely around 2 or 3, but
+it could be as low as zero, and could also plausible be 0, 1, 4, 5 or 6.
+There’s also a slight possibility it’s more than 6, but not much.”</em>
+This is called the <strong>Poisson</strong> distribution.</p>
+<p>There are a lot of these named distributions. One of the reasons they
+are named is because they happen to come up a lot. For example, the
+Poisson distribution looks like the shape you see when you’re counting
+events that occur in a set period of time. Like the number of people
+that leave a tube station exit in an hour. It could be zero, but it can
+never be <em>less</em> than zero. It has a peak somewhere, after which
+it falls off. <em>Theoretically</em> there is no upper limit to the
+number of people that could exit the station in an hour, but in practice
+it’s very unlikely it will be a large number.</p>
+<p>The Normal distribution is probably the most famous. The distinctive
+bell pattern - “something around x, but could be a bit more or a bit
+less” - comes up all the time in nature for various reasons.</p>
+<p>I call these distributions, but really they are more like
+<em>families</em> of distributions. For example the following are both
+Normal distributions, but they have different graphs, with different
+peaks and different ‘spreads’. A Normal distribution is described with
+two parameters which give the ‘peak’ x and how spread out it is. So you
+might say a variable with a peak at 5, and a spread of 4 has a
+<code>Normal(4,5)</code>
+distribution<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1">
+<a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> The
+naming conventions for parameters are confusing. For normal
+distributions they are variously called mean, mu, sd, sigma, tau,
+variance. Worse, every distribution has different parameters, different
+names for those parameters, and sometimes different <em>meanings</em>
+for them. It’s a bit of a mess, but it’s not much of problem in
+practice. </span>.</p>
 <figure>
-<img alt="Poisson" src="../../images/2022_10_29_distributions_prob_prog/two_normals.png" /><figcaption>Poisson</figcaption>
+<img alt="Poisson" src="../../images/2022_10_29_distributions_prob_prog/two_normals.png" />
+<figcaption aria-hidden="true">Poisson</figcaption>
 </figure>
 
-<p>Here’s some proposed pseudocode for specifying uncertain parameters using distributions.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" title="1">a <span class="op">=</span> <span class="dv">10</span>          <span class="co"># assignment of deterministic parameters</span></a>
-<a class="sourceLine" id="cb2-2" title="2">X <span class="op">=</span> Normal(<span class="dv">3</span>,<span class="dv">4</span>) <span class="co"># convention: uncertain variables are capitalized</span></a>
-<a class="sourceLine" id="cb2-3" title="3">Y <span class="op">=</span> Poisson(<span class="dv">4</span>)</a></code></pre></div>
-<p>The only critical attribute of a distribution is that there is some way to determine the probability of a potential value <code>x</code>. That is, for a value x, you need to be able to get to the <code>y=p(x)</code>. The easiest way to do this is with a function. Each of the named distributions have a mathematically defined <strong>probability function</strong><sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> in different cases called a ‘pdf’ or ‘pmf’ for tedious reasons </span> which, for every possible x value, will give you the y value on the curve. The details of the functions themselves are not especially important, the computer knows them.</p>
+<p>Here’s some proposed pseudocode for specifying uncertain parameters
+using distributions.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">10</span>          <span class="co"># assignment of deterministic parameters</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>X <span class="op">=</span> Normal(<span class="dv">3</span>,<span class="dv">4</span>) <span class="co"># convention: uncertain variables are capitalized</span></span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>Y <span class="op">=</span> Poisson(<span class="dv">4</span>)</span></code></pre></div>
+<p>The only critical attribute of a distribution is that there is some
+way to determine the probability of a potential value <code>x</code>.
+That is, for a value x, you need to be able to get to the
+<code>y=p(x)</code>. The easiest way to do this is with a function. Each
+of the named distributions have a mathematically defined
+<strong>probability
+function</strong><sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2">
+<a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> in
+different cases called a ‘pdf’ or ‘pmf’ for tedious reasons </span>
+which, for every possible x value, will give you the y value on the
+curve. The details of the functions themselves are not especially
+important, the computer knows them.</p>
 
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" title="1">X <span class="op">=</span> Normal(<span class="dv">5</span>,<span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="co"># Finding the probability that uncertain variable X has the value 3</span></a>
-<a class="sourceLine" id="cb3-3" title="3">y <span class="op">=</span> X.probability(<span class="dv">3</span>)</a></code></pre></div>
-<p>Having these functions is nice because you can plug in any x value you want and get an answer. A downside is that the named distributions can be quite limiting, because the shapes they draw are very simple, so they might not be a good reflection of the real world. Another downside is that combining curves means composing functions together, which is not always easy (and sometimes basically impossible).</p>
-<p>There are other ways to represent distributions. A very simple way is just by enumeration: For every value of x, you specify the value of y.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb4-1" title="1">X <span class="op">=</span> Distribution([[<span class="dv">0</span>,<span class="fl">0.078</span>],[<span class="dv">1</span>,<span class="fl">0.259</span>],[<span class="dv">2</span>,<span class="fl">0.345</span>],[<span class="dv">3</span>,<span class="fl">0.231</span>],[<span class="dv">4</span>,<span class="fl">0.077</span>],[<span class="dv">5</span>,<span class="fl">0.010</span>]])</a></code></pre></div>
-<p>Note that we haven’t specified a <em>type</em> of distribution, like Normal, because we don’t need to. That gets around the problem above of being limited to named distributions, and means we can represent arbitrary curves. This method is OK, but it scales very poorly. Most distributions (and all continuous ones) can take infinite values. Nonetheless, you can roughly specify the curve by having an appropriate large number of x values, and saying that beyond a certain point y is pretty much zero. <em>Combining</em> distributions is theoretically easy (you’re just multiplying matrix values together) but again, that quickly becomes unscaleable, because the number of calculations you need to do grows exponentially with the number of uncertain variables.</p>
-<p>A third way to represent a curve is to provide a bunch of data taking values that are in proportion to the curve you want to draw. When the data is plotted on a normalized histogram, the shape of the resulting bars will approximate the curve of the distribution, provided you have enough data. The downside is that you need a <em>lot</em> of data to get a good approximation.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb5-1" title="1">X <span class="op">=</span> Distribution(data<span class="op">=</span>csv.reader(<span class="st">&quot;data.csv&quot;</span>) )</a>
-<a class="sourceLine" id="cb5-2" title="2">histogram(X)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>X <span class="op">=</span> Normal(<span class="dv">5</span>,<span class="dv">4</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="co"># Finding the probability that uncertain variable X has the value 3</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>y <span class="op">=</span> X.probability(<span class="dv">3</span>)</span></code></pre></div>
+<p>Having these functions is nice because you can plug in any x value
+you want and get an answer. A downside is that the named distributions
+can be quite limiting, because the shapes they draw are very simple, so
+they might not be a good reflection of the real world. Another downside
+is that combining curves means composing functions together, which is
+not always easy (and sometimes basically impossible).</p>
+<p>There are other ways to represent distributions. A very simple way is
+just by enumeration: For every value of x, you specify the value of
+y.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>X <span class="op">=</span> Distribution([[<span class="dv">0</span>,<span class="fl">0.078</span>],[<span class="dv">1</span>,<span class="fl">0.259</span>],[<span class="dv">2</span>,<span class="fl">0.345</span>],[<span class="dv">3</span>,<span class="fl">0.231</span>],[<span class="dv">4</span>,<span class="fl">0.077</span>],[<span class="dv">5</span>,<span class="fl">0.010</span>]])</span></code></pre></div>
+<p>Note that we haven’t specified a <em>type</em> of distribution, like
+Normal, because we don’t need to. That gets around the problem above of
+being limited to named distributions, and means we can represent
+arbitrary curves. This method is OK, but it scales very poorly. Most
+distributions (and all continuous ones) can take infinite values.
+Nonetheless, you can roughly specify the curve by having an appropriate
+large number of x values, and saying that beyond a certain point y is
+pretty much zero. <em>Combining</em> distributions is theoretically easy
+(you’re just multiplying matrix values together) but again, that quickly
+becomes unscaleable, because the number of calculations you need to do
+grows exponentially with the number of uncertain variables.</p>
+<p>A third way to represent a curve is to provide a bunch of data taking
+values that are in proportion to the curve you want to draw. When the
+data is plotted on a normalized histogram, the shape of the resulting
+bars will approximate the curve of the distribution, provided you have
+enough data. The downside is that you need a <em>lot</em> of data to get
+a good approximation.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>X <span class="op">=</span> Distribution(data<span class="op">=</span>csv.reader(<span class="st">&quot;data.csv&quot;</span>) )</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>histogram(X)</span></code></pre></div>
 <figure>
-<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/distribution_of_height_samples.png" /><figcaption>Density Histogram of data</figcaption>
+<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/distribution_of_height_samples.png" />
+<figcaption aria-hidden="true">Density Histogram of data</figcaption>
 </figure>
-<h2 id="simulation-running-the-program-forwards">Simulation: running the program forwards</h2>
-<p>So we have a way to specify uncertain variables. Now what? I said that we can run our program forwards, to simulate, and backwards, to infer. Let’s start with running our program forwards.</p>
-<p>We know that our probabilistic program doesn’t output single possible results like a deterministic one. So what does it output? One way or another, it outputs the relative likelihood of the different possible outcomes we expect to see. The first way to think about this is that our program can output a range of possible outcomes, with the likelihood of seeing each of those outcomes. The second way to think about this is to ‘pick’ a value from the uncertain variables, and see what the outcome is. Do this hundreds or thousands of times, and look at the relative counts of the outcomes are. These are, in effect, the same thing. In practice, the second approach tends to be used.</p>
-<p>To simulate we need to generate random values for our variables. That is, produce a value randomly such that the likelihood of getting any give x value is proportional to the y value on the curve. Doing this is pretty easy: All you need is the probability function (i.e. a mapping of x to y) and something that can generate a random number between 0 and 1. Turn the probability function into a <em>cumulative</em> probability function by summing all the values, so you get a curve like this (probability function in blue, cumulative function in irange):</p>
+<h2 id="simulation-running-the-program-forwards">Simulation: running the
+program forwards</h2>
+<p>So we have a way to specify uncertain variables. Now what? I said
+that we can run our program forwards, to simulate, and backwards, to
+infer. Let’s start with running our program forwards.</p>
+<p>We know that our probabilistic program doesn’t output single possible
+results like a deterministic one. So what does it output? One way or
+another, it outputs the relative likelihood of the different possible
+outcomes we expect to see. The first way to think about this is that our
+program can output a range of possible outcomes, with the likelihood of
+seeing each of those outcomes. The second way to think about this is to
+‘pick’ a value from the uncertain variables, and see what the outcome
+is. Do this hundreds or thousands of times, and look at the relative
+counts of the outcomes are. These are, in effect, the same thing. In
+practice, the second approach tends to be used.</p>
+<p>To simulate we need to generate random values for our variables. That
+is, produce a value randomly such that the likelihood of getting any
+give x value is proportional to the y value on the curve. Doing this is
+pretty easy: All you need is the probability function (i.e. a mapping of
+x to y) and something that can generate a random number between 0 and 1.
+Turn the probability function into a <em>cumulative</em> probability
+function by summing all the values, so you get a curve like this
+(probability function in blue, cumulative function in irange):</p>
 <figure>
-<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/cdf.png" /><figcaption>Density Histogram of data</figcaption>
+<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/cdf.png" />
+<figcaption aria-hidden="true">Density Histogram of data</figcaption>
 </figure>
-<p>Then take a random number between 0 and 1, find the x value that corresponds to that y value. For example, using the above graph, if your random number is 0.5, read across from 0.5 on the y-axis until it intercepts the orange curve, the read down to the x value to get about 4.5.</p>
+<p>Then take a random number between 0 and 1, find the x value that
+corresponds to that y value. For example, using the above graph, if your
+random number is 0.5, read across from 0.5 on the y-axis until it
+intercepts the orange curve, the read down to the x value to get about
+4.5.</p>
 <h2 id="certainty-about-uncertainty">Certainty about Uncertainty</h2>
-<p>So far we have looked at uncertain variables, and you can use these to make programs. For example, you could have a program that assumes height in a group of people is normally distributed, with an average of 189 and a spread of 5.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb6-1" title="1">Height <span class="op">=</span> Normal(<span class="dv">189</span>, <span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb6-2" title="2">Height.simulate(<span class="dv">1000</span>) <span class="co"># running forwards</span></a></code></pre></div>
-<p>Here we said that our initial guess of the mean and sd of the uncertain variable <code>Height</code> was 189 and 5. But this misses a crucial point: In this supposedly uncertain program, we are in effect saying the mean and sd are a <em>single value</em>. How sure are we about that? That is, we are not allowing for any uncertainty in those values, when really we <em>should</em> be acknowledging that we don’t really know what they are, we’re just guessing. This is easy to do with the syntax we’ve created so far: We just say the arguments passed to our <code>Height</code> function are themselves uncertain variables, instead of just fixed numbers.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb7-1" title="1">X <span class="op">=</span> Normal(<span class="dv">189</span>, <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb7-2" title="2">Y <span class="op">=</span> Uniform(<span class="dv">0</span>, <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb7-3" title="3">Height <span class="op">=</span> Normal(X,Y)</a>
-<a class="sourceLine" id="cb7-4" title="4">Height.simulate(<span class="dv">10000</span>)</a></code></pre></div>
-<p>What we’re saying here is <em>“I don’t know exactly what the average of the height is, but I think it’s somewhere around 189cm, give or take 10cm”</em>. And likewise with the standard deviation, something between 0 and 10cm. Simulating from this program is a now a matter of simulating a value for X, simulating a value for Y, then plugging those into Height and simulating <em>that</em>. Here are the histograms of running the first program (in <em>blue</em> with fixed arguments 189 and 5) and the second program (in <em>orange</em>).</p>
+<p>So far we have looked at uncertain variables, and you can use these
+to make programs. For example, you could have a program that assumes
+height in a group of people is normally distributed, with an average of
+189 and a spread of 5.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>Height <span class="op">=</span> Normal(<span class="dv">189</span>, <span class="dv">5</span>)</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>Height.simulate(<span class="dv">1000</span>) <span class="co"># running forwards</span></span></code></pre></div>
+<p>Here we said that our initial guess of the mean and sd of the
+uncertain variable <code>Height</code> was 189 and 5. But this misses a
+crucial point: In this supposedly uncertain program, we are in effect
+saying the mean and sd are a <em>single value</em>. How sure are we
+about that? That is, we are not allowing for any uncertainty in those
+values, when really we <em>should</em> be acknowledging that we don’t
+really know what they are, we’re just guessing. This is easy to do with
+the syntax we’ve created so far: We just say the arguments passed to our
+<code>Height</code> function are themselves uncertain variables, instead
+of just fixed numbers.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>X <span class="op">=</span> Normal(<span class="dv">189</span>, <span class="dv">10</span>)</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>Y <span class="op">=</span> Uniform(<span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>Height <span class="op">=</span> Normal(X,Y)</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>Height.simulate(<span class="dv">10000</span>)</span></code></pre></div>
+<p>What we’re saying here is <em>“I don’t know exactly what the average
+of the height is, but I think it’s somewhere around 189cm, give or take
+10cm”</em>. And likewise with the standard deviation, something between
+0 and 10cm. Simulating from this program is a now a matter of simulating
+a value for X, simulating a value for Y, then plugging those into Height
+and simulating <em>that</em>. Here are the histograms of running the
+first program (in <em>blue</em> with fixed arguments 189 and 5) and the
+second program (in <em>orange</em>).</p>
 <figure>
-<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/height_samples_uncertain_params.png" /><figcaption>Density Histogram of data</figcaption>
+<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/height_samples_uncertain_params.png" />
+<figcaption aria-hidden="true">Density Histogram of data</figcaption>
 </figure>
-<p>Notice that the orange plot is shorter and more spread out. This makes sense intuitively: We are saying our program is <em>more uncertain</em> about the average and spread of height. So the outcomes we might tentatively expect to see are more spread out. If we specify our estimates of X and Y more tightly, we would results that are less spread out, because our guesses are in effect more confident.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1">X <span class="op">=</span> Normal(<span class="dv">189</span>, <span class="dv">5</span>) <span class="co"># reducing the 'spread' of our mean estimate by 5</span></a>
-<a class="sourceLine" id="cb8-2" title="2">Y <span class="op">=</span> Uniform(<span class="dv">2</span>, <span class="dv">7</span>)  <span class="co"># making the window of standard deviation smaller  </span></a>
-<a class="sourceLine" id="cb8-3" title="3">Height <span class="op">=</span> Normal(X,Y)</a>
-<a class="sourceLine" id="cb8-4" title="4">Height.simulate(<span class="dv">10000</span>)</a></code></pre></div>
-<p>The orange plot is as before, the green is using the below new distributions for X and Y. Not that the green is tighter and higher than the orange, but less so than the blue.</p>
+<p>Notice that the orange plot is shorter and more spread out. This
+makes sense intuitively: We are saying our program is <em>more
+uncertain</em> about the average and spread of height. So the outcomes
+we might tentatively expect to see are more spread out. If we specify
+our estimates of X and Y more tightly, we would results that are less
+spread out, because our guesses are in effect more confident.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>X <span class="op">=</span> Normal(<span class="dv">189</span>, <span class="dv">5</span>) <span class="co"># reducing the 'spread' of our mean estimate by 5</span></span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>Y <span class="op">=</span> Uniform(<span class="dv">2</span>, <span class="dv">7</span>)  <span class="co"># making the window of standard deviation smaller  </span></span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>Height <span class="op">=</span> Normal(X,Y)</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>Height.simulate(<span class="dv">10000</span>)</span></code></pre></div>
+<p>The orange plot is as before, the green is using the below new
+distributions for X and Y. Not that the green is tighter and higher than
+the orange, but less so than the blue.</p>
 <figure>
-<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/height_samples_uncertain_params2.png" /><figcaption>Density Histogram of data</figcaption>
+<img alt="Density Histogram of data" src="../../images/2022_10_29_distributions_prob_prog/height_samples_uncertain_params2.png" />
+<figcaption aria-hidden="true">Density Histogram of data</figcaption>
 </figure>
-<p>To this, you might object that we’ve only moved the problem: We’ve said with certainty that the arguments to X and Y are single values. Aren’t we uncertain about them too? Well, yes, and you can make <em>those</em> uncertain as well. But you have to stop somewhere. And in practice the ‘further down’ you go, the less it matters. In any case, all of these numbers are just our initial guess. The next part of probabilistic program - <em>inference</em> - is about using data to <em>improve</em> those guesses.</p>
+<p>To this, you might object that we’ve only moved the problem: We’ve
+said with certainty that the arguments to X and Y are single values.
+Aren’t we uncertain about them too? Well, yes, and you can make
+<em>those</em> uncertain as well. But you have to stop somewhere. And in
+practice the ‘further down’ you go, the less it matters. In any case,
+all of these numbers are just our initial guess. The next part of
+probabilistic program - <em>inference</em> - is about using data to
+<em>improve</em> those guesses.</p>
 
 
 </body></html>

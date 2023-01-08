@@ -3,163 +3,288 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>modelling-framework</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<h1 id="financial-modelling-framework">Financial Modelling Framework</h1>
+<h1 id="financial-modelling-framework">Financial Modelling
+Framework</h1>
 <h2 id="introduction">Introduction</h2>
-<p>This is a framework to iteratively build and use ‘project finance’ type financial models. It is an alternative to Excel, the dominant method.</p>
+<p>This is a framework to iteratively build and use ‘project finance’
+type financial models. It is an alternative to Excel, the dominant
+method.</p>
 <p>It provides</p>
 <ul>
-<li>An extensible Domain Specific Language (DSL) for building and running models</li>
+<li>An extensible Domain Specific Language (DSL) for building and
+running models</li>
 <li>Notebook-like build/run pattern from within the editor</li>
-<li>Rich Table display functionality, with formatting, headers and highlighting</li>
+<li>Rich Table display functionality, with formatting, headers and
+highlighting</li>
 <li>Time series charting.</li>
 </ul>
 <p>The full source code is <a href="https://github.com/RedPenguin101/modelling-framework">here</a></p>
 <h2 id="what-is-a-financial-model">What is a financial model?</h2>
-<h2 id="why-does-this-framework-exist">Why does this framework exist?</h2>
-<p>Excel is very good at building project finance type models. Above all, it is very flexible, which is well suited to the diverse project-finance type models.</p>
-<p>That being said, there are reasons to look for alternative. These types of models can grow to be extremely complex, with hundreds of inputs, thousands of rows, and incomprehensible dependency graphs. The modelling community has adapted to this complexity by developing standards and conventions to minimize the problems caused. A few examples:</p>
+<h2 id="why-does-this-framework-exist">Why does this framework
+exist?</h2>
+<p>Excel is very good at building project finance type models. Above
+all, it is very flexible, which is well suited to the diverse
+project-finance type models.</p>
+<p>That being said, there are reasons to look for alternative. These
+types of models can grow to be extremely complex, with hundreds of
+inputs, thousands of rows, and incomprehensible dependency graphs. The
+modelling community has adapted to this complexity by developing
+standards and conventions to minimize the problems caused. A few
+examples:</p>
 <ul>
 <li>Formula must be consistent across a time-series</li>
-<li>Formula that are ‘calculations’ (i.e. have some arithmetic operations) must not have references to things outside of the sheet. Instead you should use dedicated ‘import’ rows.</li>
-<li>Linkages must be ‘star’ schemas. That is, you can’t link to something which itself is a link to something else.</li>
-<li>The creation of ‘template’ sheets for common attributes, especially time related measure (“In operating period flag”, “period end date”) and financial statements.</li>
+<li>Formula that are ‘calculations’ (i.e. have some arithmetic
+operations) must not have references to things outside of the sheet.
+Instead you should use dedicated ‘import’ rows.</li>
+<li>Linkages must be ‘star’ schemas. That is, you can’t link to
+something which itself is a link to something else.</li>
+<li>The creation of ‘template’ sheets for common attributes, especially
+time related measure (“In operating period flag”, “period end date”) and
+financial statements.</li>
 <li>Placeholders have a yellow background.</li>
 <li>Rows that are exported to other rows have red text</li>
 <li>User inputs have a particular format</li>
 </ul>
-<p>While these conventions are broadly effective, all of these impose structure on the workbook, but rely on the <em>discipline</em> of the modeller to maintain them. This removal of flexibility in exchange for simplicity and safety is typical of the maturity life-cycle of business process as patterns of common use emerge and complexity increases.</p>
-<p>It is often at that stage of the life-cycle that software emerges that implements and enforces those conventions. This has not, to this point, happened for project finance modelling.</p>
+<p>While these conventions are broadly effective, all of these impose
+structure on the workbook, but rely on the <em>discipline</em> of the
+modeller to maintain them. This removal of flexibility in exchange for
+simplicity and safety is typical of the maturity life-cycle of business
+process as patterns of common use emerge and complexity increases.</p>
+<p>It is often at that stage of the life-cycle that software emerges
+that implements and enforces those conventions. This has not, to this
+point, happened for project finance modelling.</p>
 <p>This program is an attempt to do that for this domain.</p>
 <h3 id="a-model-is-a-program">A Model is A Program</h3>
-<p>A model is, in effect, a program that creates a set of outputs. Every model is different, though (thanks to the conventions) created from largely homogeneous blocks. In this sense a modeller is more like a programmer than a ‘user’ of an application.</p>
-<p>Following this analogy, a modeller doesn’t need a program to help them construct models - such a program would necessarily impose too many restrictions on what a user can and can’t do. They need an <em>environment</em> to create programs, in the same way that a software engineer uses an IDE.</p>
-<h3 id="taking-inspiration-from-portfolio-modelling">Taking inspiration from Portfolio Modelling</h3>
-<p>In recent years another type of model - the ‘portfolio model’ - has shown signs of moving away from Excel as its main modelling tool.</p>
-<p>These are analytical and predictive models of large portfolios of financial assets, for example portfolio of credit cards. The credit card provider will send to a prospective financier ‘data tapes’ with historical data about the underlying assets. The financier will ingest, clean and analyze that data for things such as default rates, then build a predictive model on top of it based on assumed (or probabilistic) future default rates to determine its likely future cash-flows and assess whether it’s a good investment for them.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> It is, however, often the case that such an asset level model will provide inputs into another model, much more similar to a project finance type model, which will model the liabilities etc. </span></p>
+<p>A model is, in effect, a program that creates a set of outputs. Every
+model is different, though (thanks to the conventions) created from
+largely homogeneous blocks. In this sense a modeller is more like a
+programmer than a ‘user’ of an application.</p>
+<p>Following this analogy, a modeller doesn’t need a program to help
+them construct models - such a program would necessarily impose too many
+restrictions on what a user can and can’t do. They need an
+<em>environment</em> to create programs, in the same way that a software
+engineer uses an IDE.</p>
+<h3 id="taking-inspiration-from-portfolio-modelling">Taking inspiration
+from Portfolio Modelling</h3>
+<p>In recent years another type of model - the ‘portfolio model’ - has
+shown signs of moving away from Excel as its main modelling tool.</p>
+<p>These are analytical and predictive models of large portfolios of
+financial assets, for example portfolio of credit cards. The credit card
+provider will send to a prospective financier ‘data tapes’ with
+historical data about the underlying assets. The financier will ingest,
+clean and analyze that data for things such as default rates, then build
+a predictive model on top of it based on assumed (or probabilistic)
+future default rates to determine its likely future cash-flows and
+assess whether it’s a good investment for
+them.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1">
+<a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> It is,
+however, often the case that such an asset level model will provide
+inputs into another model, much more similar to a project finance type
+model, which will model the liabilities etc. </span></p>
 
-<p>The drive away from Excel for these types of models are based partly on increased statistical sophistication, requiring more advanced stochastic tools, but mostly on the size of the data tapes. They can get extremely large, with hundreds of thousands of assets. This firstly has the consequence that Excel just can’t <em>handle</em> that amount of data well. Secondly, the challenge of cleaning the data is large, and Excel’s tools for this are relatively rudimentary. And finally the amount of data means the value of being able to see all of it, on a line-by-line basis, is much diminished. When you have a million credit cards, the value of looking at a single credit card is minimal. Only aggregates are important. Excel… excels at showing you all the data, all the time. Since this is less necessary, the benefit of Excel is less.</p>
-<p>The alternative tools to Excel that have been adopted are less like ‘user applications’, which would not be sufficiently flexible, and more similar to the tools that software engineers use. Data cleaning and manipulation and model building are done in general(ish) purpose programming languages like R and Python, with specialized libraries like R’s Tidyverse and Python’s Pandas. The tools are IDEs like R-Studio, or ‘Notebooks’ like Jupyter, which have the functionality of an IDE with integrated runtimes and better options for display. This solution doesn’t reduce flexibility available to the user (arguably it increases it, since you have a full general purpose programming language at your disposal), while solving many of the above problems.</p>
-<p>Crucially, these tools also retain the fast feedback loops (the length of time between making a change and seeing the impact of that change) that is characteristic of Excel, but not of more traditional programming environments.</p>
-<h2 id="pros-and-cons-of-excel-for-project-finance-modelling">Pros and Cons of Excel for Project Finance Modelling</h2>
-<p>For an alternative to Excel to be successful it must retain the positive attributes of Excel while mitigating its negative elements. Here are those pros and cons.</p>
+<p>The drive away from Excel for these types of models are based partly
+on increased statistical sophistication, requiring more advanced
+stochastic tools, but mostly on the size of the data tapes. They can get
+extremely large, with hundreds of thousands of assets. This firstly has
+the consequence that Excel just can’t <em>handle</em> that amount of
+data well. Secondly, the challenge of cleaning the data is large, and
+Excel’s tools for this are relatively rudimentary. And finally the
+amount of data means the value of being able to see all of it, on a
+line-by-line basis, is much diminished. When you have a million credit
+cards, the value of looking at a single credit card is minimal. Only
+aggregates are important. Excel… excels at showing you all the data, all
+the time. Since this is less necessary, the benefit of Excel is
+less.</p>
+<p>The alternative tools to Excel that have been adopted are less like
+‘user applications’, which would not be sufficiently flexible, and more
+similar to the tools that software engineers use. Data cleaning and
+manipulation and model building are done in general(ish) purpose
+programming languages like R and Python, with specialized libraries like
+R’s Tidyverse and Python’s Pandas. The tools are IDEs like R-Studio, or
+‘Notebooks’ like Jupyter, which have the functionality of an IDE with
+integrated runtimes and better options for display. This solution
+doesn’t reduce flexibility available to the user (arguably it increases
+it, since you have a full general purpose programming language at your
+disposal), while solving many of the above problems.</p>
+<p>Crucially, these tools also retain the fast feedback loops (the
+length of time between making a change and seeing the impact of that
+change) that is characteristic of Excel, but not of more traditional
+programming environments.</p>
+<h2 id="pros-and-cons-of-excel-for-project-finance-modelling">Pros and
+Cons of Excel for Project Finance Modelling</h2>
+<p>For an alternative to Excel to be successful it must retain the
+positive attributes of Excel while mitigating its negative elements.
+Here are those pros and cons.</p>
 <h3 id="pros">Pros</h3>
 <ol type="1">
 <li>Tight feedback loops between making changes and seeing results</li>
-<li>Looking at any part of the model, or the results of that model is quite easy.</li>
-<li>Excellent visualization capabilities, especially something like Excel’s quickgraph.</li>
-<li>With the cell-reference model, you can directly back-trace the value of a cell to how that cell was generated, which is very useful for debugging.</li>
-<li>Rich formatting of both model and results can be highly communicative, if used well.</li>
-<li>A good library of standard functions, well suited to this use case.</li>
-<li>Performance: One of the reasons that Excel swept all before it was it’s recalculation engine was blazingly fast. This remains the case today, though large models test it.</li>
+<li>Looking at any part of the model, or the results of that model is
+quite easy.</li>
+<li>Excellent visualization capabilities, especially something like
+Excel’s quickgraph.</li>
+<li>With the cell-reference model, you can directly back-trace the value
+of a cell to how that cell was generated, which is very useful for
+debugging.</li>
+<li>Rich formatting of both model and results can be highly
+communicative, if used well.</li>
+<li>A good library of standard functions, well suited to this use
+case.</li>
+<li>Performance: One of the reasons that Excel swept all before it was
+it’s recalculation engine was blazingly fast. This remains the case
+today, though large models test it.</li>
 </ol>
 <h3 id="cons">Cons</h3>
 <ol type="1">
 <li>Difficulty of version control</li>
-<li>Lack of tools to trace cause (changes to the model) to effect (changes in the results)</li>
+<li>Lack of tools to trace cause (changes to the model) to effect
+(changes in the results)</li>
 <li>Difficulty in handling circular references</li>
 <li>Lack of comprehensibility on models above a certain size</li>
-<li>A specific case of the above: Close coupling of model and output.</li>
+<li>A specific case of the above: Close coupling of model and
+output.</li>
 <li>Second class extensibility through VBA macros</li>
-<li>“Cell Reference” model of calculation has legibility problems at scale.</li>
-<li>Flexibility to ‘do anything’ requires a lot of discipline to maintain model quality.</li>
+<li>“Cell Reference” model of calculation has legibility problems at
+scale.</li>
+<li>Flexibility to ‘do anything’ requires a lot of discipline to
+maintain model quality.</li>
 </ol>
-<h2 id="the-target-features-of-the-framework">The target features of the framework</h2>
-<p>This framework aims to keep as many of these pros as possible, while mitigating some of the cons.</p>
-<p>The first and most fundemental difference to the model is the separation of the model and output of the model. In Excel, these ‘boundaries’ between these two are very fuzzy, leading to scalability and legibility problems. Similar to the “Portfolio Models” described about, the framework creates a strong separation between these two things. The Model is, in effect, a program that is run to generate the Output.</p>
-<p>The second major difference is to move away from the overreliance on opaque cell references. That the content of a cells is some combination of C3, C8, SheetX_B4 and B:B means it’s incredibly hard to determine what goes into a calculation. The framework abstracts a named time-series output into a first-class entity, whose defining calcluation is a function of other named time-series outputs.</p>
+<h2 id="the-target-features-of-the-framework">The target features of the
+framework</h2>
+<p>This framework aims to keep as many of these pros as possible, while
+mitigating some of the cons.</p>
+<p>The first and most fundemental difference to the model is the
+separation of the model and output of the model. In Excel, these
+‘boundaries’ between these two are very fuzzy, leading to scalability
+and legibility problems. Similar to the “Portfolio Models” described
+about, the framework creates a strong separation between these two
+things. The Model is, in effect, a program that is run to generate the
+Output.</p>
+<p>The second major difference is to move away from the overreliance on
+opaque cell references. That the content of a cells is some combination
+of C3, C8, SheetX_B4 and B:B means it’s incredibly hard to determine
+what goes into a calculation. The framework abstracts a named
+time-series output into a first-class entity, whose defining calcluation
+is a function of other named time-series outputs.</p>
 <p>Other target features:</p>
 <ul>
-<li>Maintain full flexibility of what’s <em>in</em> the model, while providing structure and guardrails for <em>how</em> you model.</li>
-<li>Maintain tight feedback loops between model change and results viewing</li>
+<li>Maintain full flexibility of what’s <em>in</em> the model, while
+providing structure and guardrails for <em>how</em> you model.</li>
+<li>Maintain tight feedback loops between model change and results
+viewing</li>
 <li>User can quickly look at any part of the results set</li>
 <li>At least some timeseries visualization capabilities</li>
-<li>Rich and configurable formatting of results (colors, formats) to maximize legibility</li>
+<li>Rich and configurable formatting of results (colors, formats) to
+maximize legibility</li>
 <li>Source-code style version control of <em>model</em></li>
 <li>Version control of <em>results</em></li>
-<li>Fully extensible to user for new functions and framework elements.</li>
+<li>Fully extensible to user for new functions and framework
+elements.</li>
 </ul>
 <h2 id="modelling-key-concepts">Modelling Key Concepts</h2>
-<p>There are a few concepts that are core to the understanding of this framework:</p>
+<p>There are a few concepts that are core to the understanding of this
+framework:</p>
 <h3 id="the-time-series">The Time-series</h3>
-<p>All financial models are based on time series: what is the profit over time? what are the dividends over time? what is the balance-sheet over time? Almost everything in a financial model can be represented in a time series. In Excel, this takes the form of a time series ‘sheet’, with ‘periods’ across the top, named measures (<em>rows</em>) down the side, and the value of those measures in a time-series period in the intersection of these.</p>
-<p>Here is an example from Gridlines’ <a href="https://academy.gridlines.com/p/essential-financial-modelling">Essential Financial Modelling</a> course.</p>
+<p>All financial models are based on time series: what is the profit
+over time? what are the dividends over time? what is the balance-sheet
+over time? Almost everything in a financial model can be represented in
+a time series. In Excel, this takes the form of a time series ‘sheet’,
+with ‘periods’ across the top, named measures (<em>rows</em>) down the
+side, and the value of those measures in a time-series period in the
+intersection of these.</p>
+<p>Here is an example from Gridlines’ <a href="https://academy.gridlines.com/p/essential-financial-modelling">Essential
+Financial Modelling</a> course.</p>
 <figure>
-<img alt="Excel Time-Series Sheet" src="../../images/modelling_framework/Excel.png" /><figcaption>Excel Time-Series Sheet</figcaption>
+<img alt="Excel Time-Series Sheet" src="../../images/modelling_framework/Excel.png" />
+<figcaption aria-hidden="true">Excel Time-Series Sheet</figcaption>
 </figure>
-<h3 id="the-model-inputs-and-model-rows">The Model: Inputs and Model Rows</h3>
-<p>The model is a description of how to generate each row in the time series. For example, a description of a model for generating period start and end dates might be:</p>
+<h3 id="the-model-inputs-and-model-rows">The Model: Inputs and Model
+Rows</h3>
+<p>The model is a description of how to generate each row in the time
+series. For example, a description of a model for generating period
+start and end dates might be:</p>
 <pre><code>Inputs:
   model-start-date: 2020-01-01
   length-of-period: 3 months
@@ -170,23 +295,46 @@ Model Rows:
                   then model-start-date
                   else previous period-end + 1day
   period-end    = period-start + length-of-period</code></pre>
-<p>We see here a couple of key elements: There are <strong>inputs</strong>, which are static variables, and <strong>model rows</strong>, which define how to generate the time series for <em>period-number</em>, <em>period-start</em> and <em>period-end</em>. Model rows are stated in terms of other model rows, and of inputs.</p>
+<p>We see here a couple of key elements: There are
+<strong>inputs</strong>, which are static variables, and <strong>model
+rows</strong>, which define how to generate the time series for
+<em>period-number</em>, <em>period-start</em> and <em>period-end</em>.
+Model rows are stated in terms of other model rows, and of inputs.</p>
 <h3 id="results">Results</h3>
-<p>The results are the outcome of ‘running’ the model. Running the above model would give the following results:</p>
+<p>The results are the outcome of ‘running’ the model. Running the above
+model would give the following results:</p>
 <pre><code>period-number:      1          2          3          4     ...
 period-start:  2020-01-01 2020-04-01 2020-07-01 2020-10-01 ...
 period-end:    2020-03-31 2020-06-30 2020-09-30 2020-12-31 ...</code></pre>
-<p>In Excel, the model and results are closely connected. In fact, they are the same thing: the model <em>is</em> the results. In the below screenshot you can see the model implemented in Excel. The ‘results’ are just the evaluation of the formula in the cells.</p>
+<p>In Excel, the model and results are closely connected. In fact, they
+are the same thing: the model <em>is</em> the results. In the below
+screenshot you can see the model implemented in Excel. The ‘results’ are
+just the evaluation of the formula in the cells.</p>
 <p><img src="../../images/modelling_framework/ExcelModel.png" /></p>
-<p>Our approach is different: we keep the model and results quite separate.</p>
+<p>Our approach is different: we keep the model and results quite
+separate.</p>
 <h3 id="outputs">Outputs</h3>
-<p>A model is run for a reason: to see what the outputs are. These outputs are also useful when building the model to see what, in aggregate, has changed. There are typically stated in terms of aggregations of rows in results. Output definitions are part of the model definition, and are produced alongside the results as a outcome of running the model.</p>
+<p>A model is run for a reason: to see what the outputs are. These
+outputs are also useful when building the model to see what, in
+aggregate, has changed. There are typically stated in terms of
+aggregations of rows in results. Output definitions are part of the
+model definition, and are produced alongside the results as a outcome of
+running the model.</p>
 <pre><code>Outputs:
   blended-equity-irr: irr period-end cashflows-to-equity-holders
   total-dividends:    sum dividends</code></pre>
 <h3 id="calculations-and-sheets">Calculations and sheets</h3>
-<p>Theoretically the above gives you everything you need to build and run a model. However in practice building a model with hundreds of rows would quickly get too confusing. In Excel, modellers separate and group the rows in their model, by putting them in different sheets or tabs (e.g. the “equity” tab), and further group them within those sheets into smaller blocks, which I’ll call <em>calculation blocks</em> (for example, the ‘dividend paid’ calculation block).</p>
-<p>These abstractions, which are effectively name-spacing the rows, provide some structure to the model which improves comprehensibility to the reader, and the ability to compartmentalize for the writer. We can do the same thing in the framework by name-spacing the rows.</p>
+<p>Theoretically the above gives you everything you need to build and
+run a model. However in practice building a model with hundreds of rows
+would quickly get too confusing. In Excel, modellers separate and group
+the rows in their model, by putting them in different sheets or tabs
+(e.g. the “equity” tab), and further group them within those sheets into
+smaller blocks, which I’ll call <em>calculation blocks</em> (for
+example, the ‘dividend paid’ calculation block).</p>
+<p>These abstractions, which are effectively name-spacing the rows,
+provide some structure to the model which improves comprehensibility to
+the reader, and the ability to compartmentalize for the writer. We can
+do the same thing in the framework by name-spacing the rows.</p>
 <pre><code>INPUTS
   model-start-date = 2020-01-01
   length-of-period = 3 months
@@ -205,28 +353,52 @@ DEBT.Interest
                         TIME.periods/start-date - 1
                         TIME.periods/end-date
   amount            = calculation-basis * annual-rate * year-frac</code></pre>
-<p>Each ‘block’ is a calculation block. The capitalized prefix (<code>TIME</code>) is equivalent to a ‘sheet’ in Excel, and the suffice (<code>Periods</code>) is the equivalent to a calculation block. Notice that now, where rows are referencing other rows they can either be local (<code>amount</code> in the <code>DEBT.Interest</code> block), or importing (<code>DEBT.principal.starting-balance</code>).</p>
+<p>Each ‘block’ is a calculation block. The capitalized prefix
+(<code>TIME</code>) is equivalent to a ‘sheet’ in Excel, and the suffice
+(<code>Periods</code>) is the equivalent to a calculation block. Notice
+that now, where rows are referencing other rows they can either be local
+(<code>amount</code> in the <code>DEBT.Interest</code> block), or
+importing (<code>DEBT.principal.starting-balance</code>).</p>
 <h2 id="programming-dsl">Programming DSL</h2>
 <h3 id="setup">Setup</h3>
-<p>The general purpose language chosen for writing and running the model is <a href="https://clojure.org/">Clojure</a>. Clojure is a mostly-functional Lisp which is hosted on the JVM. It was chosen for the following reasons:</p>
+<p>The general purpose language chosen for writing and running the model
+is <a href="https://clojure.org/">Clojure</a>. Clojure is a
+mostly-functional Lisp which is hosted on the JVM. It was chosen for the
+following reasons:</p>
 <ol type="1">
-<li>REPL driven development, and excellent tooling for it, provides excellent interactive programming capabilities out of the box</li>
-<li><a href="https://en.wikipedia.org/wiki/Homoiconicity">Homoiconicity</a> means that implementing what is effectively a DSL is extremely easy, and allows users to arbitrarily execute code and extend functionality within that DSL.</li>
-<li>JVM hosting gives an excellent runtime, a lot of useful out of the box functionality, especially for date manipulation, and access to lots of libraries.</li>
+<li>REPL driven development, and excellent tooling for it, provides
+excellent interactive programming capabilities out of the box</li>
+<li><a href="https://en.wikipedia.org/wiki/Homoiconicity">Homoiconicity</a>
+means that implementing what is effectively a DSL is extremely easy, and
+allows users to arbitrarily execute code and extend functionality within
+that DSL.</li>
+<li>JVM hosting gives an excellent runtime, a lot of useful out of the
+box functionality, especially for date manipulation, and access to lots
+of libraries.</li>
 </ol>
-<p>LISP syntax might be challenging for those coming from Python or R, but it is quite simple, especially since we use a very limited subset here.</p>
-<p>You can use any IDE you like, but my recommendation is VSCode, because with <a href="https://calva.io/get-started-with-clojure/">Calva</a> it has excellent REPL integration. I recommend setting up Calva to ‘Evaluate on Save’, which will in effect re-run your model whenever you hit Ctrl+S (which you should do a lot). Lastly, install the Microsoft Live Preview Extension (link below), which will be used to display model outputs.</p>
-<p>Clone this repo and set up a new model (clj file) in the Models subfolder. At the top, put</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="kw">ns</span> models.readme-example</a>
-<a class="sourceLine" id="cb5-2" title="2">  (<span class="at">:require</span> [fmwk.framework <span class="at">:as</span> f <span class="at">:refer</span> [base-case! calculation! bulk-metadata! metadata! cork-metadata! corkscrew! totalled-calculation! check! outputs!]]</a>
-<a class="sourceLine" id="cb5-3" title="3">            [fmwk.results-display <span class="at">:refer</span> [print-result-summary!]]</a>
-<a class="sourceLine" id="cb5-4" title="4">            [fmwk.utils <span class="at">:refer</span> [when-flag when-not-flag round mean]]</a>
-<a class="sourceLine" id="cb5-5" title="5">            [fmwk.dates <span class="at">:refer</span> [year-frac-act<span class="dv">-360</span> month-of add-days add-months date= date&lt; date&lt;= date&gt; date&gt;=]]</a>
-<a class="sourceLine" id="cb5-6" title="6">            [fmwk.irr <span class="at">:refer</span> [irr-days]]))</a>
-<a class="sourceLine" id="cb5-7" title="7"></a>
-<a class="sourceLine" id="cb5-8" title="8">(f/reset-model!)</a></code></pre></div>
-<p>Start the REPL following the Calva instructions. Now you’re ready to start building the model.</p>
-<h3 id="translating-the-above-model-definition-into-the-dsl">Translating the above model definition into the DSL</h3>
+<p>LISP syntax might be challenging for those coming from Python or R,
+but it is quite simple, especially since we use a very limited subset
+here.</p>
+<p>You can use any IDE you like, but my recommendation is VSCode,
+because with <a href="https://calva.io/get-started-with-clojure/">Calva</a> it has
+excellent REPL integration. I recommend setting up Calva to ‘Evaluate on
+Save’, which will in effect re-run your model whenever you hit Ctrl+S
+(which you should do a lot). Lastly, install the Microsoft Live Preview
+Extension (link below), which will be used to display model outputs.</p>
+<p>Clone this repo and set up a new model (clj file) in the Models
+subfolder. At the top, put</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>(<span class="kw">ns</span> models.readme-example</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>  (<span class="at">:require</span> [fmwk.framework <span class="at">:as</span> f <span class="at">:refer</span> [base-case! calculation! bulk-metadata! metadata! cork-metadata! corkscrew! totalled-calculation! check! outputs!]]</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>            [fmwk.results-display <span class="at">:refer</span> [print-result-summary!]]</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>            [fmwk.utils <span class="at">:refer</span> [when-flag when-not-flag round mean]]</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>            [fmwk.dates <span class="at">:refer</span> [year-frac-act<span class="dv">-360</span> month-of add-days add-months date= date&lt; date&lt;= date&gt; date&gt;=]]</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>            [fmwk.irr <span class="at">:refer</span> [irr-days]]))</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>(f/reset-model!)</span></code></pre></div>
+<p>Start the REPL following the Calva instructions. Now you’re ready to
+start building the model.</p>
+<h3 id="translating-the-above-model-definition-into-the-dsl">Translating
+the above model definition into the DSL</h3>
 <p>We’re going to translate the model we defined:</p>
 <pre><code>INPUTS
   model-start-date = 2020-01-01
@@ -246,140 +418,217 @@ DEBT.Interest
                         TIME.periods/start-date - 1
                         TIME.periods/end-date
   amount            = calculation-basis * annual-rate * year-frac</code></pre>
-<p>Into the framework DSL, basically one-for-one<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> The full source code for this model is at <a href="https://github.com/RedPenguin101/modelling-framework/blob/main/models/models/readme_example.clj">This link</a>. That folder also has several other sample models you can look at. </span>.</p>
+<p>Into the framework DSL, basically
+one-for-one<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2">
+<a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> The
+full source code for this model is at <a href="https://github.com/RedPenguin101/modelling-framework/blob/main/models/models/readme_example.clj">This
+link</a>. That folder also has several other sample models you can look
+at. </span>.</p>
 
-<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(base-case!</a>
-<a class="sourceLine" id="cb7-2" title="2"> <span class="st">&quot;base-case&quot;</span></a>
-<a class="sourceLine" id="cb7-3" title="3"> <span class="at">:model-start-date</span> <span class="st">&quot;2020-01-01&quot;</span></a>
-<a class="sourceLine" id="cb7-4" title="4"> <span class="at">:length-of-period</span> <span class="dv">3</span></a>
-<a class="sourceLine" id="cb7-5" title="5"> <span class="at">:interest-rate</span>    <span class="fl">0.05</span>)</a>
-<a class="sourceLine" id="cb7-6" title="6"></a>
-<a class="sourceLine" id="cb7-7" title="7">(calculation!</a>
-<a class="sourceLine" id="cb7-8" title="8"> <span class="st">&quot;TIME.Periods&quot;</span></a>
-<a class="sourceLine" id="cb7-9" title="9"> <span class="at">:number</span>                   '(<span class="kw">+</span> <span class="dv">1</span> [<span class="at">:number</span> <span class="at">:prev</span>])</a>
-<a class="sourceLine" id="cb7-10" title="10"> <span class="at">:start-date</span>               '(<span class="kw">if</span> (<span class="kw">=</span> <span class="dv">1</span> [<span class="at">:number</span>])</a>
-<a class="sourceLine" id="cb7-11" title="11">                              [<span class="at">:inputs/model-start-date</span>]</a>
-<a class="sourceLine" id="cb7-12" title="12">                              (add-days [<span class="at">:end-date</span> <span class="at">:prev</span>] <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb7-13" title="13"> <span class="at">:end-date</span>                 '(<span class="kw">-&gt;</span> [<span class="at">:start-date</span>]</a>
-<a class="sourceLine" id="cb7-14" title="14">                                (add-months [<span class="at">:inputs/length-of-period</span>])</a>
-<a class="sourceLine" id="cb7-15" title="15">                                (add-days <span class="dv">-1</span>)))</a>
-<a class="sourceLine" id="cb7-16" title="16"></a>
-<a class="sourceLine" id="cb7-17" title="17">(calculation!</a>
-<a class="sourceLine" id="cb7-18" title="18"> <span class="st">&quot;DEBT.Interest&quot;</span></a>
-<a class="sourceLine" id="cb7-19" title="19"> <span class="at">:calculation-basis</span>       [<span class="at">:DEBT.Principal/starting-balance</span>]</a>
-<a class="sourceLine" id="cb7-20" title="20"> <span class="at">:annual-rate</span>             [<span class="at">:inputs/interest-rate</span>]</a>
-<a class="sourceLine" id="cb7-21" title="21"> <span class="at">:year-frac</span>              '(year-frac-act<span class="dv">-360</span></a>
-<a class="sourceLine" id="cb7-22" title="22">                           (add-days [<span class="at">:TIME.Periods/start-date</span>] <span class="dv">-1</span>)</a>
-<a class="sourceLine" id="cb7-23" title="23">                           [<span class="at">:TIME.Periods/end-date</span>])</a>
-<a class="sourceLine" id="cb7-24" title="24"> <span class="at">:amount</span>                 '(<span class="kw">*</span> [<span class="at">:calculation-basis</span>]</a>
-<a class="sourceLine" id="cb7-25" title="25">                             [<span class="at">:annual-rate</span>]</a>
-<a class="sourceLine" id="cb7-26" title="26">                             [<span class="at">:year-frac</span>]))</a></code></pre></div>
-<p>First we define our inputs - actually a “base-case”, since we might want to create alternative sets of inputs later. Then we create two calculations: <code>TIME.Periods</code> and <code>DEBT.Interest</code>. Inside each calculation we define pairs of row-names, and their associated formula. These can either be direct references (like <code>calculation-basis</code>) or functions. A function is a Lisp S-Expression. The format is simply <code>(function-to-apply arg1 arg2 ...)</code>. It’s entirely equivalent to <code>function-to-apply(arg1, arg2)</code> in Python, only the opening bracket comes <em>before</em> the function call.</p>
-<p><strong>Note the ‘quote’ before each S-Expression!</strong> This is important because it defers the evaluation of the expression until you want to run the model. Every formula that isn’t a direct reference needs to have one of these<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3"> <a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> You can put them on references too if you like, but you don’t need to. </span>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>(base-case!</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a> <span class="st">&quot;base-case&quot;</span></span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a> <span class="at">:model-start-date</span> <span class="st">&quot;2020-01-01&quot;</span></span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a> <span class="at">:length-of-period</span> <span class="dv">3</span></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a> <span class="at">:interest-rate</span>    <span class="fl">0.05</span>)</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>(calculation!</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a> <span class="st">&quot;TIME.Periods&quot;</span></span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a> <span class="at">:number</span>                   '(<span class="kw">+</span> <span class="dv">1</span> [<span class="at">:number</span> <span class="at">:prev</span>])</span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a> <span class="at">:start-date</span>               '(<span class="kw">if</span> (<span class="kw">=</span> <span class="dv">1</span> [<span class="at">:number</span>])</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>                              [<span class="at">:inputs/model-start-date</span>]</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>                              (add-days [<span class="at">:end-date</span> <span class="at">:prev</span>] <span class="dv">1</span>))</span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a> <span class="at">:end-date</span>                 '(<span class="kw">-&gt;</span> [<span class="at">:start-date</span>]</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>                                (add-months [<span class="at">:inputs/length-of-period</span>])</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>                                (add-days -<span class="dv">1</span>)))</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a></span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>(calculation!</span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a> <span class="st">&quot;DEBT.Interest&quot;</span></span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a> <span class="at">:calculation-basis</span>       [<span class="at">:DEBT.Principal/starting-balance</span>]</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a> <span class="at">:annual-rate</span>             [<span class="at">:inputs/interest-rate</span>]</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a> <span class="at">:year-frac</span>              '(year-frac-act<span class="dv">-360</span></span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>                           (add-days [<span class="at">:TIME.Periods/start-date</span>] -<span class="dv">1</span>)</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>                           [<span class="at">:TIME.Periods/end-date</span>])</span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a> <span class="at">:amount</span>                 '(<span class="kw">*</span> [<span class="at">:calculation-basis</span>]</span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a>                             [<span class="at">:annual-rate</span>]</span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a>                             [<span class="at">:year-frac</span>]))</span></code></pre></div>
+<p>First we define our inputs - actually a “base-case”, since we might
+want to create alternative sets of inputs later. Then we create two
+calculations: <code>TIME.Periods</code> and <code>DEBT.Interest</code>.
+Inside each calculation we define pairs of row-names, and their
+associated formula. These can either be direct references (like
+<code>calculation-basis</code>) or functions. A function is a Lisp
+S-Expression. The format is simply
+<code>(function-to-apply arg1 arg2 ...)</code>. It’s entirely equivalent
+to <code>function-to-apply(arg1, arg2)</code> in Python, only the
+opening bracket comes <em>before</em> the function call.</p>
+<p><strong>Note the ‘quote’ before each S-Expression!</strong> This is
+important because it defers the evaluation of the expression until you
+want to run the model. Every formula that isn’t a direct reference needs
+to have one of
+these<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3">
+<a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> You
+can put them on references too if you like, but you don’t need to.
+</span>.</p>
 
-<p>The capitalization of the sheet, and the first-letter capitalizations of the calculation are just conventions which don’t need to be followed for the model to work. You can also have more than two ‘layers’ of calculation if you want, though for legibility the output will only show headings for the first two levels.</p>
+<p>The capitalization of the sheet, and the first-letter capitalizations
+of the calculation are just conventions which don’t need to be followed
+for the model to work. You can also have more than two ‘layers’ of
+calculation if you want, though for legibility the output will only show
+headings for the first two levels.</p>
 <p>Next, we can run the model with the following code:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(compile-run-display! <span class="dv">20</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></a>
-<a class="sourceLine" id="cb8-2" title="2">                          <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</a>
-<a class="sourceLine" id="cb8-3" title="3">                          <span class="at">:start</span> <span class="dv">1</span></a>
-<a class="sourceLine" id="cb8-4" title="4">                          <span class="at">:charts</span> []})</a></code></pre></div>
-<p>Here we run the model for 20 periods. The second argument provides some specifiers which determine the output we will see. If you actually try to run this model, however, you’ll get the following error:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>(compile-run-display! <span class="dv">20</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>                          <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>                          <span class="at">:start</span> <span class="dv">1</span></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>                          <span class="at">:charts</span> []})</span></code></pre></div>
+<p>Here we run the model for 20 periods. The second argument provides
+some specifiers which determine the output we will see. If you actually
+try to run this model, however, you’ll get the following error:</p>
 <pre><code>References to non-existant rows #:DEBT.Interest{:calculation-basis (:DEBT.Principal/starting-balance)}</code></pre>
-<p>We’ve tried to reference the starting balance of the debt, but we haven’t defined it in our model. For now, we can just stub out a placeholder:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(calculation!</a>
-<a class="sourceLine" id="cb10-2" title="2"> <span class="st">&quot;DEBT.Principal&quot;</span></a>
-<a class="sourceLine" id="cb10-3" title="3"> <span class="at">:starting-balance</span>        [<span class="at">:placeholder</span> <span class="dv">1000000</span>])</a></code></pre></div>
-<p>Now if we run the model, we don’t get any errors, but seemingly nothing happens. What has actually happened is that an html file called <em>results.html</em> has been created and saved to your working directory. A good way to view this if your IDE is VSCode is to install a live-preview extension (Microsoft’s <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server">Live Preview</a> works fine), and load the html file. Then whenever you run the model, which if you’ve followed the above setup will be whenever you hit <code>Ctrl+s</code>, the results will be displayed in the live preview window.</p>
+<p>We’ve tried to reference the starting balance of the debt, but we
+haven’t defined it in our model. For now, we can just stub out a
+placeholder:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>(calculation!</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a> <span class="st">&quot;DEBT.Principal&quot;</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a> <span class="at">:starting-balance</span>        [<span class="at">:placeholder</span> <span class="dv">1000000</span>])</span></code></pre></div>
+<p>Now if we run the model, we don’t get any errors, but seemingly
+nothing happens. What has actually happened is that an html file called
+<em>results.html</em> has been created and saved to your working
+directory. A good way to view this if your IDE is VSCode is to install a
+live-preview extension (Microsoft’s <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server">Live
+Preview</a> works fine), and load the html file. Then whenever you run
+the model, which if you’ve followed the above setup will be whenever you
+hit <code>Ctrl+s</code>, the results will be displayed in the live
+preview window.</p>
 <figure>
-<img alt="Results" src="../../images/modelling_framework/ResultsDisplay.png" /><figcaption>Results</figcaption>
+<img alt="Results" src="../../images/modelling_framework/ResultsDisplay.png" />
+<figcaption aria-hidden="true">Results</figcaption>
 </figure>
 <p>Notice the correspondence between the options map and results:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb11-1" title="1">(compile-run-display! <span class="dv">20</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></a>
-<a class="sourceLine" id="cb11-2" title="2">                          <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</a>
-<a class="sourceLine" id="cb11-3" title="3">                          <span class="at">:start</span> <span class="dv">1</span></a>
-<a class="sourceLine" id="cb11-4" title="4">                          <span class="at">:charts</span> []})</a></code></pre></div>
-<p>We specified the header as the period end date, and said we wanted to see the Debt sheet, and start at period 1 (The default is to display 10 periods). The results have done all that, including showing sub-headings for the two calculation, Principal and Interest.</p>
-<p>Note as well that the Placeholder we put in has been highlighted in yellow. This is a visual indicator that you’ll need to go back and fill this in.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>(compile-run-display! <span class="dv">20</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>                          <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>                          <span class="at">:start</span> <span class="dv">1</span></span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>                          <span class="at">:charts</span> []})</span></code></pre></div>
+<p>We specified the header as the period end date, and said we wanted to
+see the Debt sheet, and start at period 1 (The default is to display 10
+periods). The results have done all that, including showing sub-headings
+for the two calculation, Principal and Interest.</p>
+<p>Note as well that the Placeholder we put in has been highlighted in
+yellow. This is a visual indicator that you’ll need to go back and fill
+this in.</p>
 <h3 id="metadata">Metadata</h3>
-<p>However this doesn’t look great. The Annual rate and Year Frac are not showing because they’re being rounded to zero, there is no total for the interest amount, and the calculation basis is superfluous. We can fix this by adding some metadata:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb12-1" title="1">(metadata!</a>
-<a class="sourceLine" id="cb12-2" title="2"> <span class="st">&quot;DEBT.Interest&quot;</span></a>
-<a class="sourceLine" id="cb12-3" title="3"> <span class="at">:calculation-basis</span> {<span class="at">:hidden</span> <span class="va">true</span>}</a>
-<a class="sourceLine" id="cb12-4" title="4"> <span class="at">:annual-rate</span>       {<span class="at">:units</span> <span class="at">:percent</span>}</a>
-<a class="sourceLine" id="cb12-5" title="5"> <span class="at">:year-frac</span>         {<span class="at">:units</span> <span class="at">:factor</span>}</a>
-<a class="sourceLine" id="cb12-6" title="6"> <span class="at">:amount</span>            {<span class="at">:units</span> <span class="at">:currency</span> <span class="at">:total</span> <span class="va">true</span>})</a></code></pre></div>
+<p>However this doesn’t look great. The Annual rate and Year Frac are
+not showing because they’re being rounded to zero, there is no total for
+the interest amount, and the calculation basis is superfluous. We can
+fix this by adding some metadata:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>(metadata!</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a> <span class="st">&quot;DEBT.Interest&quot;</span></span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a> <span class="at">:calculation-basis</span> {<span class="at">:hidden</span> <span class="va">true</span>}</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a> <span class="at">:annual-rate</span>       {<span class="at">:units</span> <span class="at">:percent</span>}</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a> <span class="at">:year-frac</span>         {<span class="at">:units</span> <span class="at">:factor</span>}</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a> <span class="at">:amount</span>            {<span class="at">:units</span> <span class="at">:currency</span> <span class="at">:total</span> <span class="va">true</span>})</span></code></pre></div>
 <figure>
-<img alt="Formatted display - note the placeholder highlighted in yellow" src="../../images/modelling_framework/Results2.png" /><figcaption>Formatted display - note the placeholder highlighted in yellow</figcaption>
+<img alt="Formatted display - note the placeholder highlighted in yellow" src="../../images/modelling_framework/Results2.png" />
+<figcaption aria-hidden="true">Formatted display - note the placeholder
+highlighted in yellow</figcaption>
 </figure>
 <h3 id="corkscrew-calculations">Corkscrew Calculations</h3>
-<p>We want to replace that placeholder. What we need is the balance of debt at any given time. To do this we need a <em>corkscrew</em> calculation. These are common calculation patterns that have a start balance, an increase, and a decrease, an end balance based on the sum of these three things. The start balance is then based on the previous start balance. This pattern is so common the framework has a helper function for both creating the calculation and adding metadata to it:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">(corkscrew!</a>
-<a class="sourceLine" id="cb13-2" title="2"> <span class="st">&quot;DEBT.Principal-Balance&quot;</span></a>
-<a class="sourceLine" id="cb13-3" title="3"> <span class="at">:starter</span>         [<span class="at">:inputs/debt-drawdown</span>]</a>
-<a class="sourceLine" id="cb13-4" title="4"> <span class="at">:start-condition</span> [<span class="at">:TIME.periods/first-flag</span>])</a>
-<a class="sourceLine" id="cb13-5" title="5"></a>
-<a class="sourceLine" id="cb13-6" title="6">(cork-metadata!</a>
-<a class="sourceLine" id="cb13-7" title="7"> <span class="st">&quot;DEBT.Principal-Balance&quot;</span></a>
-<a class="sourceLine" id="cb13-8" title="8"> <span class="at">:currency-thousands</span>)</a></code></pre></div>
+<p>We want to replace that placeholder. What we need is the balance of
+debt at any given time. To do this we need a <em>corkscrew</em>
+calculation. These are common calculation patterns that have a start
+balance, an increase, and a decrease, an end balance based on the sum of
+these three things. The start balance is then based on the previous
+start balance. This pattern is so common the framework has a helper
+function for both creating the calculation and adding metadata to
+it:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>(corkscrew!</span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a> <span class="st">&quot;DEBT.Principal-Balance&quot;</span></span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a> <span class="at">:starter</span>         [<span class="at">:inputs/debt-drawdown</span>]</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a> <span class="at">:start-condition</span> [<span class="at">:TIME.periods/first-flag</span>])</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>(cork-metadata!</span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a> <span class="st">&quot;DEBT.Principal-Balance&quot;</span></span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a> <span class="at">:currency-thousands</span>)</span></code></pre></div>
 <p>Running the model we now get this.</p>
 <figure>
-<img alt="Corkscrew" src="../../images/modelling_framework/Results3.png" /><figcaption>Corkscrew</figcaption>
+<img alt="Corkscrew" src="../../images/modelling_framework/Results3.png" />
+<figcaption aria-hidden="true">Corkscrew</figcaption>
 </figure>
 <h3 id="checks">Checks</h3>
-<p>We need to model the paying off of the debt. Let’s say we need to pay it off in equal installments over 3 years. We can model it something like this:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb14-1" title="1">(calculation!</a>
-<a class="sourceLine" id="cb14-2" title="2"> <span class="st">&quot;DEBT.Principal&quot;</span></a>
-<a class="sourceLine" id="cb14-3" title="3"> <span class="at">:amortization-periods</span> '(<span class="kw">*</span> [<span class="at">:inputs/repayment-term</span>]</a>
-<a class="sourceLine" id="cb14-4" title="4">                           [<span class="at">:inputs/periods-in-year</span>])</a>
-<a class="sourceLine" id="cb14-5" title="5"> <span class="at">:repayment-amount-pos</span> '(<span class="kw">/</span> [<span class="at">:inputs/debt-drawdown</span>] </a>
-<a class="sourceLine" id="cb14-6" title="6">                           [<span class="at">:amortization-periods</span>]))</a>
-<a class="sourceLine" id="cb14-7" title="7"></a>
-<a class="sourceLine" id="cb14-8" title="8">(metadata!</a>
-<a class="sourceLine" id="cb14-9" title="9"> <span class="st">&quot;DEBT.Principal&quot;</span></a>
-<a class="sourceLine" id="cb14-10" title="10"> <span class="at">:amortization-periods</span>  {<span class="at">:units</span> <span class="at">:counter</span>}</a>
-<a class="sourceLine" id="cb14-11" title="11"> <span class="at">:repayment-amount-pos</span>  {<span class="at">:units</span> <span class="at">:currency-thousands</span>})</a></code></pre></div>
+<p>We need to model the paying off of the debt. Let’s say we need to pay
+it off in equal installments over 3 years. We can model it something
+like this:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>(calculation!</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a> <span class="st">&quot;DEBT.Principal&quot;</span></span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a> <span class="at">:amortization-periods</span> '(<span class="kw">*</span> [<span class="at">:inputs/repayment-term</span>]</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>                           [<span class="at">:inputs/periods-in-year</span>])</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a> <span class="at">:repayment-amount-pos</span> '(<span class="kw">/</span> [<span class="at">:inputs/debt-drawdown</span>] </span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a>                           [<span class="at">:amortization-periods</span>]))</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>(metadata!</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a> <span class="st">&quot;DEBT.Principal&quot;</span></span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a> <span class="at">:amortization-periods</span>  {<span class="at">:units</span> <span class="at">:counter</span>}</span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a> <span class="at">:repayment-amount-pos</span>  {<span class="at">:units</span> <span class="at">:currency-thousands</span>})</span></code></pre></div>
 <p>With the following result.</p>
 <figure>
-<img alt="Modelled Repayments" src="../../images/modelling_framework/Results4.png" /><figcaption>Modelled Repayments</figcaption>
+<img alt="Modelled Repayments" src="../../images/modelling_framework/Results4.png" />
+<figcaption aria-hidden="true">Modelled Repayments</figcaption>
 </figure>
-<p>But there are a couple of problems here. From the total column, we can see that the amount we’re repaying comes to more that the $1m we’ve borrowed. By running the model starting at period 6:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb15-1" title="1">(f/compile-run-display! <span class="dv">24</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></a>
-<a class="sourceLine" id="cb15-2" title="2">                            <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</a>
-<a class="sourceLine" id="cb15-3" title="3">                            <span class="at">:start</span> <span class="dv">6</span></a>
-<a class="sourceLine" id="cb15-4" title="4">                            <span class="at">:show-imports</span> <span class="va">false</span></a>
-<a class="sourceLine" id="cb15-5" title="5">                            <span class="at">:charts</span> []})</a></code></pre></div>
-<p>We can see the problem: From the 2023-03-31 period, we’ve totally paid off the loan, but in our model we continue to make principal repayments. It should be a hard invariant that our debt balance shouldn’t go below zero. We can code this in so the model will warn us if that invariant is violated.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb16-1" title="1">(check!</a>
-<a class="sourceLine" id="cb16-2" title="2"> <span class="at">:debt-balance-gt-zero</span></a>
-<a class="sourceLine" id="cb16-3" title="3"> '(<span class="kw">&gt;=</span> [<span class="at">:DEBT.Principal-Balance/end</span>] <span class="dv">0</span>))</a></code></pre></div>
-<p>Now running the model, we will see this<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4"> <a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> This is not very helpful right now. Improving the communicativeness of these checks is on the todo list. </span></p>
+<p>But there are a couple of problems here. From the total column, we
+can see that the amount we’re repaying comes to more that the $1m we’ve
+borrowed. By running the model starting at period 6:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>(f/compile-run-display! <span class="dv">24</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>                            <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>                            <span class="at">:start</span> <span class="dv">6</span></span>
+<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a>                            <span class="at">:show-imports</span> <span class="va">false</span></span>
+<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a>                            <span class="at">:charts</span> []})</span></code></pre></div>
+<p>We can see the problem: From the 2023-03-31 period, we’ve totally
+paid off the loan, but in our model we continue to make principal
+repayments. It should be a hard invariant that our debt balance
+shouldn’t go below zero. We can code this in so the model will warn us
+if that invariant is violated.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>(check!</span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a> <span class="at">:debt-balance-gt-zero</span></span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a> '(<span class="kw">&gt;=</span> [<span class="at">:DEBT.Principal-Balance/end</span>] <span class="dv">0</span>))</span></code></pre></div>
+<p>Now running the model, we will see
+this<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4">
+<a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> This
+is not very helpful right now. Improving the communicativeness of these
+checks is on the todo list. </span></p>
 
 <figure>
-<img alt="Failing Checks!" src="../../images/modelling_framework/Results6.png" /><figcaption>Failing Checks!</figcaption>
+<img alt="Failing Checks!" src="../../images/modelling_framework/Results6.png" />
+<figcaption aria-hidden="true">Failing Checks!</figcaption>
 </figure>
 <p>We can now fix our Principal Payment calc:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb17-1" title="1"></a>
-<a class="sourceLine" id="cb17-2" title="2">(calculation!</a>
-<a class="sourceLine" id="cb17-3" title="3"> <span class="st">&quot;DEBT.Principal&quot;</span></a>
-<a class="sourceLine" id="cb17-4" title="4"> <span class="at">:amortization-periods</span> '(<span class="kw">*</span> [<span class="at">:inputs/repayment-term</span>]</a>
-<a class="sourceLine" id="cb17-5" title="5">                           [<span class="at">:inputs/periods-in-year</span>])</a>
-<a class="sourceLine" id="cb17-6" title="6"> <span class="at">:repayment-amount-pos</span> '(when-flag</a>
-<a class="sourceLine" id="cb17-7" title="7">                         (<span class="kw">pos?</span> [<span class="at">:DEBT.Principal-Balance/start</span>])</a>
-<a class="sourceLine" id="cb17-8" title="8">                         (<span class="kw">/</span> [<span class="at">:inputs/debt-drawdown</span>]</a>
-<a class="sourceLine" id="cb17-9" title="9">                            [<span class="at">:amortization-periods</span>])))</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a></span>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a>(calculation!</span>
+<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a> <span class="st">&quot;DEBT.Principal&quot;</span></span>
+<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a> <span class="at">:amortization-periods</span> '(<span class="kw">*</span> [<span class="at">:inputs/repayment-term</span>]</span>
+<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a>                           [<span class="at">:inputs/periods-in-year</span>])</span>
+<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a> <span class="at">:repayment-amount-pos</span> '(when-flag</span>
+<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a>                         (<span class="kw">pos?</span> [<span class="at">:DEBT.Principal-Balance/start</span>])</span>
+<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a>                         (<span class="kw">/</span> [<span class="at">:inputs/debt-drawdown</span>]</span>
+<span id="cb17-9"><a aria-hidden="true" href="#cb17-9" tabindex="-1"></a>                            [<span class="at">:amortization-periods</span>])))</span></code></pre></div>
 <p>And see the result, with the check passing.</p>
 <figure>
-<img alt="The amount paid off equals the actual principal balance" src="../../images/modelling_framework/Result7.png" /><figcaption>The amount paid off equals the actual principal balance</figcaption>
+<img alt="The amount paid off equals the actual principal balance" src="../../images/modelling_framework/Result7.png" />
+<figcaption aria-hidden="true">The amount paid off equals the actual
+principal balance</figcaption>
 </figure>
 <h3 id="charts">Charts</h3>
-<p>A common requirement is to visualize a time-series. You can do this with the chart option. Here we see the debt balance charted over time, where we can verify that the balance smoothly decreases to zero over time.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb18-1" title="1">(f/compile-run-display! <span class="dv">24</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></a>
-<a class="sourceLine" id="cb18-2" title="2">                            <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</a>
-<a class="sourceLine" id="cb18-3" title="3">                            <span class="at">:start</span> <span class="dv">6</span></a>
-<a class="sourceLine" id="cb18-4" title="4">                            <span class="at">:show-imports</span> <span class="va">false</span></a>
-<a class="sourceLine" id="cb18-5" title="5">                            <span class="at">:charts</span> [<span class="at">:DEBT.Principal-Balance/end</span>])</a></code></pre></div>
+<p>A common requirement is to visualize a time-series. You can do this
+with the chart option. Here we see the debt balance charted over time,
+where we can verify that the balance smoothly decreases to zero over
+time.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb18-1"><a aria-hidden="true" href="#cb18-1" tabindex="-1"></a>(f/compile-run-display! <span class="dv">24</span> {<span class="at">:header</span> <span class="at">:TIME.periods/end-date</span></span>
+<span id="cb18-2"><a aria-hidden="true" href="#cb18-2" tabindex="-1"></a>                            <span class="at">:sheets</span> [<span class="st">&quot;DEBT&quot;</span>]</span>
+<span id="cb18-3"><a aria-hidden="true" href="#cb18-3" tabindex="-1"></a>                            <span class="at">:start</span> <span class="dv">6</span></span>
+<span id="cb18-4"><a aria-hidden="true" href="#cb18-4" tabindex="-1"></a>                            <span class="at">:show-imports</span> <span class="va">false</span></span>
+<span id="cb18-5"><a aria-hidden="true" href="#cb18-5" tabindex="-1"></a>                            <span class="at">:charts</span> [<span class="at">:DEBT.Principal-Balance/end</span>])</span></code></pre></div>
 <figure>
-<img alt="Principal Balance Visualisation" src="../../images/modelling_framework/ResultChart.png" /><figcaption>Principal Balance Visualisation</figcaption>
+<img alt="Principal Balance Visualisation" src="../../images/modelling_framework/ResultChart.png" />
+<figcaption aria-hidden="true">Principal Balance
+Visualisation</figcaption>
 </figure>
 
 

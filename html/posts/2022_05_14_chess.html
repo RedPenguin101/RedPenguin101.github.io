@@ -3,17 +3,30 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>2022_05_14_chess</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<h1 id="chess-white-vs.-computer-1200-14th-may-2022-win-0-blunders-1-mistake">Chess: White vs. Computer (1200) 14th May 2022: Win, 0 blunders, 1 mistake</h1>
-<p>An OK game. I was playing quite fast and missed a lot of best moves, so accuracy was quite low.</p>
+<h1 id="chess-white-vs.-computer-1200-14th-may-2022-win-0-blunders-1-mistake">Chess:
+White vs. Computer (1200) 14th May 2022: Win, 0 blunders, 1 mistake</h1>
+<p>An OK game. I was playing quite fast and missed a lot of best moves,
+so accuracy was quite low.</p>
 <ul>
 <li>accuracy 84.8</li>
 <li>Moves 35</li>
@@ -25,19 +38,32 @@
 <li>Book 3</li>
 </ul>
 <h2 id="analysis">Analysis</h2>
-<h3 id="opening-kings-pawn-latvian-gambit">Opening: King’s pawn, Latvian gambit</h3>
-<p>Unusual opening, only about 700 games in the database. White wins 53%. Most common response is Nxe5.</p>
+<h3 id="opening-kings-pawn-latvian-gambit">Opening: King’s pawn, Latvian
+gambit</h3>
+<p>Unusual opening, only about 700 games in the database. White wins
+53%. Most common response is Nxe5.</p>
 <h3 id="mistake">Mistake</h3>
-<p>15.Qxc5 is a mistake, probably the worst possible move, losing white a piece.</p>
+<p>15.Qxc5 is a mistake, probably the worst possible move, losing white
+a piece.</p>
 <figure>
-<img alt="15.Qxc5" src="../../images/2022_05_14_chess/queen_mistake.png" /><figcaption>15.Qxc5</figcaption>
+<img alt="15.Qxc5" src="../../images/2022_05_14_chess/queen_mistake.png" />
+<figcaption aria-hidden="true">15.Qxc5</figcaption>
 </figure>
-<p>After 15..Nxc6 16.Nxh7 Rxh7 White is now equal in material again. Fortunately Black didn’t take the knight, letting me off the hook.</p>
-<p>The right move here was to retreat the queen to d3, d2 or e3. I don’t recall exactly why I din’t do this, and chose to trade queens and potentially lose a piece. This is after 15.Qd3 c4 16.Bxc4 bxc4 17.Qxc4 Qe7 18.Nd5 Bxd5 19.exd5, which is up only 1 point in material, but 13 points in position according to stockfish.</p>
+<p>After 15..Nxc6 16.Nxh7 Rxh7 White is now equal in material again.
+Fortunately Black didn’t take the knight, letting me off the hook.</p>
+<p>The right move here was to retreat the queen to d3, d2 or e3. I don’t
+recall exactly why I din’t do this, and chose to trade queens and
+potentially lose a piece. This is after 15.Qd3 c4 16.Bxc4 bxc4 17.Qxc4
+Qe7 18.Nd5 Bxd5 19.exd5, which is up only 1 point in material, but 13
+points in position according to stockfish.</p>
 <figure>
-<img alt="Up 10 points" src="../../images/2022_05_14_chess/ten_points_up.png" /><figcaption>Up 10 points</figcaption>
+<img alt="Up 10 points" src="../../images/2022_05_14_chess/ten_points_up.png" />
+<figcaption aria-hidden="true">Up 10 points</figcaption>
 </figure>
-<p>I think the position is so strong it’s because black is very hemmed in, and white is dominating all the squares around the king. I’m threatening a pin with Rfe1 which would win the queen, so she needs to retreat, leaving the king open to checks on the e file.</p>
+<p>I think the position is so strong it’s because black is very hemmed
+in, and white is dominating all the squares around the king. I’m
+threatening a pin with Rfe1 which would win the queen, so she needs to
+retreat, leaving the king open to checks on the e file.</p>
 <h2 id="move-list">Move list</h2>
 <pre><code>1. e4 e5 2. Nf3 f5 3. Nc3 Qf6?? 4. d4 f4?! 5. dxe5 Qe7 
 6. Bxf4 a6 7. Bc4 c6 8. O-O h5 9. Qd4 g6 10. Rad1 b5 

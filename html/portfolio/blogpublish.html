@@ -3,90 +3,119 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>blogpublish</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <h1 id="blogpublish">BlogPublish</h1>
-<p>BlogPublish is a Clojure application for managing a simple blog. It takes markdown posts, puts them through pre-processing, replacing certain elements of markdown with HTML, shells out to pandoc to generate the full HTML file, then applies post-processing which re-writes the document tree. It also builds the index page for your blog. It does not handle hosting, comments etc. Aside from posts, the output blog also has a section for maintaining notes on books.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> Examples of Blog post <img alt="Blog Post" src="../../images/portfolio_gitblog/post.png" /> and blog index <img alt="Blog Index" src="../../images/portfolio_gitblog/index.png" /> </span></p>
+<p>BlogPublish is a Clojure application for managing a simple blog. It
+takes markdown posts, puts them through pre-processing, replacing
+certain elements of markdown with HTML, shells out to pandoc to generate
+the full HTML file, then applies post-processing which re-writes the
+document tree. It also builds the index page for your blog. It does not
+handle hosting, comments etc. Aside from posts, the output blog also has
+a section for maintaining notes on
+books.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1">
+<a class="fnref" href="#note1" title="Footnote 1 Reference">1</a>
+Examples of Blog post <img alt="Blog Post" src="../../images/portfolio_gitblog/post.png" /> and blog index <img alt="Blog Index" src="../../images/portfolio_gitblog/index.png" />
+</span></p>
 
 <p>The sourcecode is <a href="https://github.com/RedPenguin101/blogpublish">here</a>.</p>
 <h2 id="quickstart">Quickstart</h2>
 <h3 id="build-it">Build it</h3>
-<p>This is a Clojure project, and you will need the JVM and Clojure itself installed. See the <a href="https://clojure.org/guides/install_clojure">Clojure Install Guide</a> for installation details.</p>
-<p>Once you have the repo cloned, and the prerequisites installed, you can build the uberJar with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">chmod</span> +x build.sh</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="ex">./build.sh</span></a></code></pre></div>
-<p>This script simply runs Clojure build tool commands <code>clj -T:build clean</code>, <code>clj -T:build uber</code>, both of which call build commands in the <code>build.clj</code> file.</p>
-<p>The output of the build is a java executable <code>blogformat-X.X.XX-standalone.jar</code>. This can be copied to your blog folder. <code>css/style.css</code> should also be copied to your blog folder.</p>
+<p>This is a Clojure project, and you will need the JVM and Clojure
+itself installed. See the <a href="https://clojure.org/guides/install_clojure">Clojure Install
+Guide</a> for installation details.</p>
+<p>Once you have the repo cloned, and the prerequisites installed, you
+can build the uberJar with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">chmod</span> +x build.sh</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="ex">./build.sh</span></span></code></pre></div>
+<p>This script simply runs Clojure build tool commands
+<code>clj -T:build clean</code>, <code>clj -T:build uber</code>, both of
+which call build commands in the <code>build.clj</code> file.</p>
+<p>The output of the build is a java executable
+<code>blogformat-X.X.XX-standalone.jar</code>. This can be copied to
+your blog folder. <code>css/style.css</code> should also be copied to
+your blog folder.</p>
 <h3 id="run-it">Run it</h3>
 <p>The folder format the program expects is as follows:</p>
 <pre><code>blog_root
@@ -100,185 +129,281 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  |- index.html, books.html 
  |  (roots for posts and books respectively. Created by the program)
  |- publish.jar (the program)</code></pre>
-<p>Write a post in <em>markdown/posts/YYYY-MM-DD_mypost.md</em> format<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> The date format is used in the index creation, but the name following the first underscore isn’t important for functionality. </span>. When ready, run <code>java -jar publish.jar</code> from the command line. This will create the html file in <em>html/posts/YYYY-MM-DD_mypost.html</em> and create an index file with a link to that file.</p>
+<p>Write a post in <em>markdown/posts/YYYY-MM-DD_mypost.md</em>
+format<sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2">
+<a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> The
+date format is used in the index creation, but the name following the
+first underscore isn’t important for functionality. </span>.
+When ready, run <code>java -jar publish.jar</code> from the command
+line. This will create the html file in
+<em>html/posts/YYYY-MM-DD_mypost.html</em> and create an index file with
+a link to that file.</p>
 
-<p>Now you can use a blog-hosting service, or roll your own. Github Pages is what I use, and it works fine.</p>
+<p>Now you can use a blog-hosting service, or roll your own. Github
+Pages is what I use, and it works fine.</p>
 <h2 id="the-post-format">The Post Format</h2>
-<p>The format of posts in the blog is inspired by the <a href="https://rstudio.github.io/tufte/">Tufte Format</a>. I won’t go into the why’s of the format, but some of the notable characteristics of the format are:</p>
+<p>The format of posts in the blog is inspired by the <a href="https://rstudio.github.io/tufte/">Tufte Format</a>. I won’t go
+into the why’s of the format, but some of the notable characteristics of
+the format are:</p>
 <ol type="1">
-<li>A focus on longform presentation over “powerpoint” style bullet lists.<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup></li>
-<li>‘Footnotes’ are presented in a ‘gutter’ to the right of the main text, as opposed to at the actual foot of the document. This enables the reader to quickly reference the notes without moving from their place in the main text.</li>
+<li>A focus on longform presentation over “powerpoint” style bullet
+lists.<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup></li>
+<li>‘Footnotes’ are presented in a ‘gutter’ to the right of the main
+text, as opposed to at the actual foot of the document. This enables the
+reader to quickly reference the notes without moving from their place in
+the main text.</li>
 <li>Tight integration of graphics with text.</li>
-<li>“Indendent” paragraphs rather than the whitespace separation more common on the web.</li>
-<li>Limited use of headings, generally 2 levels, excluding the title level which covers the whole document. In HTML terms, this means H2 and H3 levels, but not H4.</li>
+<li>“Indendent” paragraphs rather than the whitespace separation more
+common on the web.</li>
+<li>Limited use of headings, generally 2 levels, excluding the title
+level which covers the whole document. In HTML terms, this means H2 and
+H3 levels, but not H4.</li>
 </ol>
 
-<h2 id="html-structure-and-css-implementation">HTML Structure and CSS implementation</h2>
-<h2 id="code-functionality-and-organization">Code functionality and organization</h2>
+<h2 id="html-structure-and-css-implementation">HTML Structure and CSS
+implementation</h2>
+<h2 id="code-functionality-and-organization">Code functionality and
+organization</h2>
 <p>The code has 3 namespaces:</p>
 <ol type="1">
-<li>main: Orchestration of the creation, functionality for index creation, configuration.</li>
-<li>footnote-md: This is in effect the preprocessor for markdown files. It takes markdown strings as input and replaces some features with native html. As the name suggests, it does this for footnotes, implementing some of the custom html the blog format uses.</li>
-<li>html-post: The post-processor. The primary functions in this ns take html, parse it to hiccup<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup>, and rewrite it in a format required by the blog. The only thing it does is ‘inline’ footnotes so they appear immediately after the references to them.</li>
+<li>main: Orchestration of the creation, functionality for index
+creation, configuration.</li>
+<li>footnote-md: This is in effect the preprocessor for markdown files.
+It takes markdown strings as input and replaces some features with
+native html. As the name suggests, it does this for footnotes,
+implementing some of the custom html the blog format uses.</li>
+<li>html-post: The post-processor. The primary functions in this ns take
+html, parse it to
+hiccup<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup>,
+and rewrite it in a format required by the blog. The only thing it does
+is ‘inline’ footnotes so they appear immediately after the references to
+them.</li>
 </ol>
 
 <h3 id="footnote-md">Footnote-md</h3>
-<p>A very simple namespace, it’s a regex match - in effect a partial markdown to html compiler. It finds footnote and footnote-references using regex, and replaces them with an html element.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb3-1" title="1">(<span class="bu">def</span><span class="fu"> reference </span><span class="ss">#&quot;\[\^(\d+)\](?!:)&quot;</span>)</a>
-<a class="sourceLine" id="cb3-2" title="2">(<span class="bu">def</span><span class="fu"> reference-html </span><span class="st">&quot;&lt;sup class=fnref&gt;&lt;a id=</span><span class="sc">\&quot;</span><span class="st">note$1</span><span class="sc">\&quot;</span><span class="st"> href=</span><span class="sc">\&quot;</span><span class="st">#fn$1</span><span class="sc">\&quot;</span><span class="st"> title=</span><span class="sc">\&quot;</span><span class="st">Footnote $1</span><span class="sc">\&quot;</span><span class="st">&gt;$1&lt;/a&gt;&lt;/sup&gt;&quot;</span>)</a>
-<a class="sourceLine" id="cb3-3" title="3"></a>
-<a class="sourceLine" id="cb3-4" title="4">(<span class="bu">def</span><span class="fu"> footnote </span><span class="ss">#&quot;(?m)^\[\^(\d+)\]:(.*)$&quot;</span>)</a>
-<a class="sourceLine" id="cb3-5" title="5">(<span class="bu">def</span><span class="fu"> footnote-html</span></a>
-<a class="sourceLine" id="cb3-6" title="6">  <span class="st">&quot;&lt;span id=fn$1 class=</span><span class="sc">\&quot;</span><span class="st">footnote</span><span class="sc">\&quot;</span><span class="st">&gt;</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="st">  &lt;a class=</span><span class="sc">\&quot;</span><span class="st">fnref</span><span class="sc">\&quot;</span><span class="st"> href=</span><span class="sc">\&quot;</span><span class="st">#note$1</span><span class="sc">\&quot;</span><span class="st"> title=</span><span class="sc">\&quot;</span><span class="st">Footnote $1 Reference</span><span class="sc">\&quot;</span><span class="st">&gt;$1&lt;/a&gt;</span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="st">  $2</span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="st">&lt;/span&gt;&quot;</span>)</a>
-<a class="sourceLine" id="cb3-10" title="10"></a>
-<a class="sourceLine" id="cb3-11" title="11">(<span class="bu">defn</span><span class="fu"> prewrite-markdown </span>[text]</a>
-<a class="sourceLine" id="cb3-12" title="12">  (<span class="kw">-&gt;</span> text</a>
-<a class="sourceLine" id="cb3-13" title="13">      (str/replace reference reference-html)</a>
-<a class="sourceLine" id="cb3-14" title="14">      (str/replace footnote footnote-html)))</a>
-<a class="sourceLine" id="cb3-15" title="15"></a>
-<a class="sourceLine" id="cb3-16" title="16">(<span class="kw">comment</span></a>
-<a class="sourceLine" id="cb3-17" title="17">  (str/replace <span class="st">&quot;A footnote reference&lt;sup class=fnref&gt;&lt;a id=&quot;</span>note1<span class="st">&quot; href=&quot;</span>#fn1<span class="st">&quot; title=&quot;</span>Footnote <span class="dv">1</span><span class="st">&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&quot;</span> reference reference-html)</a>
-<a class="sourceLine" id="cb3-18" title="18">  <span class="co">;; =&gt; &quot;A footnote reference&lt;sup class=fnref&gt;&lt;a id=\&quot;note1\&quot; href=\&quot;#fn1\&quot; title=\&quot;Footnote 1\&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&quot;</span></a>
-<a class="sourceLine" id="cb3-19" title="19"></a>
-<a class="sourceLine" id="cb3-20" title="20">  (str/replace <span class="st">&quot;[^1]: this is a footnote&quot;</span> footnote footnote-html)</a>
-<a class="sourceLine" id="cb3-21" title="21">  <span class="co">;; =&gt; &quot;&lt;span id=fn1 class=\&quot;footnote\&quot;&gt;</span></a>
-<a class="sourceLine" id="cb3-22" title="22">  <span class="co">;;       &lt;a class=\&quot;fnref\&quot; href=\&quot;#note1\&quot; title=\&quot;Footnote 1 Reference\&quot;&gt;1&lt;/a&gt;</span></a>
-<a class="sourceLine" id="cb3-23" title="23">  <span class="co">;;         this is a footnote</span></a>
-<a class="sourceLine" id="cb3-24" title="24">  <span class="co">;;     &lt;/span&gt;&quot;</span></a>
-<a class="sourceLine" id="cb3-25" title="25">)</a></code></pre></div>
+<p>A very simple namespace, it’s a regex match - in effect a partial
+markdown to html compiler. It finds footnote and footnote-references
+using regex, and replaces them with an html element.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> reference </span><span class="ss">#&quot;\[\^(\d+)\](?!:)&quot;</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> reference-html </span><span class="st">&quot;&lt;sup class=fnref&gt;&lt;a id=</span><span class="sc">\&quot;</span><span class="st">note$1</span><span class="sc">\&quot;</span><span class="st"> href=</span><span class="sc">\&quot;</span><span class="st">#fn$1</span><span class="sc">\&quot;</span><span class="st"> title=</span><span class="sc">\&quot;</span><span class="st">Footnote $1</span><span class="sc">\&quot;</span><span class="st">&gt;$1&lt;/a&gt;&lt;/sup&gt;&quot;</span>)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> footnote </span><span class="ss">#&quot;(?m)^\[\^(\d+)\]:(.*)$&quot;</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> footnote-html</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>  <span class="st">&quot;&lt;span id=fn$1 class=</span><span class="sc">\&quot;</span><span class="st">footnote</span><span class="sc">\&quot;</span><span class="st">&gt;</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a><span class="st">  &lt;a class=</span><span class="sc">\&quot;</span><span class="st">fnref</span><span class="sc">\&quot;</span><span class="st"> href=</span><span class="sc">\&quot;</span><span class="st">#note$1</span><span class="sc">\&quot;</span><span class="st"> title=</span><span class="sc">\&quot;</span><span class="st">Footnote $1 Reference</span><span class="sc">\&quot;</span><span class="st">&gt;$1&lt;/a&gt;</span></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a><span class="st">  $2</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a><span class="st">&lt;/span&gt;&quot;</span>)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> prewrite-markdown </span>[text]</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>  (<span class="kw">-&gt;</span> text</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>      (str/replace reference reference-html)</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>      (str/replace footnote footnote-html)))</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>(<span class="kw">comment</span></span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>  (str/replace <span class="st">&quot;A footnote reference&lt;sup class=fnref&gt;&lt;a id=&quot;</span>note1<span class="st">&quot; href=&quot;</span>#fn1<span class="st">&quot; title=&quot;</span>Footnote <span class="dv">1</span><span class="st">&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&quot;</span> reference reference-html)</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>  <span class="co">;; =&gt; &quot;A footnote reference&lt;sup class=fnref&gt;&lt;a id=\&quot;note1\&quot; href=\&quot;#fn1\&quot; title=\&quot;Footnote 1\&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&quot;</span></span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a></span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>  (str/replace <span class="st">&quot;[^1]: this is a footnote&quot;</span> footnote footnote-html)</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>  <span class="co">;; =&gt; &quot;&lt;span id=fn1 class=\&quot;footnote\&quot;&gt;</span></span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>  <span class="co">;;       &lt;a class=\&quot;fnref\&quot; href=\&quot;#note1\&quot; title=\&quot;Footnote 1 Reference\&quot;&gt;1&lt;/a&gt;</span></span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>  <span class="co">;;         this is a footnote</span></span>
+<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a>  <span class="co">;;     &lt;/span&gt;&quot;</span></span>
+<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a>)</span></code></pre></div>
 <h3 id="html-post">html-post</h3>
-<p>This namespace is rather more involved. Its purpose is to allow transformations to be applied to html. The only current transformation is <code>inline-footnotes</code>.</p>
-<p>The public api of the namespace is <code>rewrite</code>, which firstly serves the purpose of wrapping the conversion of html-string to hiccup and back, and also allows additional transformations to be added in the future.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb4-1" title="1">(<span class="bu">defn</span><span class="fu"> rewrite </span>[html]</a>
-<a class="sourceLine" id="cb4-2" title="2">  (<span class="kw">-&gt;</span> html</a>
-<a class="sourceLine" id="cb4-3" title="3">      html-prep</a>
-<a class="sourceLine" id="cb4-4" title="4">      inline-footnotes</a>
-<a class="sourceLine" id="cb4-5" title="5">      <span class="co">;; future transformations here</span></a>
-<a class="sourceLine" id="cb4-6" title="6">      hc/html))</a></code></pre></div>
-<p>The below is a sample (in hiccup format) of a “para-with-footnote-ref” - a data structure where the top level element is a para, and the para contains a footnote reference. Notice that the footnote (span.footnote) is not next to the thing that references it (sup.fnref) In our output document, we want the footnote to be horizontally situated in the right gutter of the page (which can be accompished with CSS) and vertically situated as closely as possible to the reference to it. To do this, we need to restructure the html, which is the purpose of this namespace.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb5-1" title="1">(<span class="bu">def</span><span class="fu"> sample</span></a>
-<a class="sourceLine" id="cb5-2" title="2">    [<span class="at">:p</span> {}</a>
-<a class="sourceLine" id="cb5-3" title="3">     <span class="st">&quot;Text&quot;</span></a>
-<a class="sourceLine" id="cb5-4" title="4">     [<span class="at">:sup</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>} [<span class="at">:a</span> {<span class="at">:id</span> <span class="st">&quot;note2&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#fn2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2&quot;</span>} <span class="st">&quot;2&quot;</span>]]</a>
-<a class="sourceLine" id="cb5-5" title="5">     <span class="st">&quot;More text&quot;</span></a>
-<a class="sourceLine" id="cb5-6" title="6">     [<span class="at">:span</span> {<span class="at">:id</span> <span class="st">&quot;fn2&quot;</span>, <span class="at">:class</span> <span class="st">&quot;footnote&quot;</span>}</a>
-<a class="sourceLine" id="cb5-7" title="7">      [<span class="at">:a</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#note2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2 Reference&quot;</span>} <span class="st">&quot;2&quot;</span>]</a>
-<a class="sourceLine" id="cb5-8" title="8">      <span class="st">&quot;Footnote text&quot;</span>]])</a>
-<a class="sourceLine" id="cb5-9" title="9"></a>
-<a class="sourceLine" id="cb5-10" title="10">  <span class="co">;; The main function of this ns, inline-footnotes, does this.</span></a>
-<a class="sourceLine" id="cb5-11" title="11">  <span class="co">;; Note in the below evaluation how the span.footnote now follows immediately</span></a>
-<a class="sourceLine" id="cb5-12" title="12">  <span class="co">;; after the sup.fnref. This will achieve the desired result.</span></a>
-<a class="sourceLine" id="cb5-13" title="13">  (inline-footnotes sample)</a>
-<a class="sourceLine" id="cb5-14" title="14">  <span class="co">;; =&gt; </span></a>
-<a class="sourceLine" id="cb5-15" title="15">  [<span class="at">:p</span></a>
-<a class="sourceLine" id="cb5-16" title="16">   {}</a>
-<a class="sourceLine" id="cb5-17" title="17">   <span class="st">&quot;Text&quot;</span></a>
-<a class="sourceLine" id="cb5-18" title="18">   [<span class="at">:sup</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>} [<span class="at">:a</span> {<span class="at">:id</span> <span class="st">&quot;note2&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#fn2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2&quot;</span>} <span class="st">&quot;2&quot;</span>]]</a>
-<a class="sourceLine" id="cb5-19" title="19">   [<span class="at">:span</span></a>
-<a class="sourceLine" id="cb5-20" title="20">    {<span class="at">:id</span> <span class="st">&quot;fn2&quot;</span>, <span class="at">:class</span> <span class="st">&quot;footnote&quot;</span>}</a>
-<a class="sourceLine" id="cb5-21" title="21">    [<span class="at">:a</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#note2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2 Reference&quot;</span>} <span class="st">&quot;2&quot;</span>]</a>
-<a class="sourceLine" id="cb5-22" title="22">    <span class="st">&quot;Footnote text&quot;</span>]</a>
-<a class="sourceLine" id="cb5-23" title="23">   <span class="st">&quot;More text&quot;</span>]</a></code></pre></div>
+<p>This namespace is rather more involved. Its purpose is to allow
+transformations to be applied to html. The only current transformation
+is <code>inline-footnotes</code>.</p>
+<p>The public api of the namespace is <code>rewrite</code>, which
+firstly serves the purpose of wrapping the conversion of html-string to
+hiccup and back, and also allows additional transformations to be added
+in the future.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> rewrite </span>[html]</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>  (<span class="kw">-&gt;</span> html</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>      html-prep</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>      inline-footnotes</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>      <span class="co">;; future transformations here</span></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>      hc/html))</span></code></pre></div>
+<p>The below is a sample (in hiccup format) of a
+“para-with-footnote-ref” - a data structure where the top level element
+is a para, and the para contains a footnote reference. Notice that the
+footnote (span.footnote) is not next to the thing that references it
+(sup.fnref) In our output document, we want the footnote to be
+horizontally situated in the right gutter of the page (which can be
+accompished with CSS) and vertically situated as closely as possible to
+the reference to it. To do this, we need to restructure the html, which
+is the purpose of this namespace.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> sample</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    [<span class="at">:p</span> {}</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>     <span class="st">&quot;Text&quot;</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>     [<span class="at">:sup</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>} [<span class="at">:a</span> {<span class="at">:id</span> <span class="st">&quot;note2&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#fn2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2&quot;</span>} <span class="st">&quot;2&quot;</span>]]</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>     <span class="st">&quot;More text&quot;</span></span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>     [<span class="at">:span</span> {<span class="at">:id</span> <span class="st">&quot;fn2&quot;</span>, <span class="at">:class</span> <span class="st">&quot;footnote&quot;</span>}</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>      [<span class="at">:a</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#note2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2 Reference&quot;</span>} <span class="st">&quot;2&quot;</span>]</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>      <span class="st">&quot;Footnote text&quot;</span>]])</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>  <span class="co">;; The main function of this ns, inline-footnotes, does this.</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>  <span class="co">;; Note in the below evaluation how the span.footnote now follows immediately</span></span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>  <span class="co">;; after the sup.fnref. This will achieve the desired result.</span></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>  (inline-footnotes sample)</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>  <span class="co">;; =&gt; </span></span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>  [<span class="at">:p</span></span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>   {}</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>   <span class="st">&quot;Text&quot;</span></span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>   [<span class="at">:sup</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>} [<span class="at">:a</span> {<span class="at">:id</span> <span class="st">&quot;note2&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#fn2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2&quot;</span>} <span class="st">&quot;2&quot;</span>]]</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>   [<span class="at">:span</span></span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    {<span class="at">:id</span> <span class="st">&quot;fn2&quot;</span>, <span class="at">:class</span> <span class="st">&quot;footnote&quot;</span>}</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    [<span class="at">:a</span> {<span class="at">:class</span> <span class="st">&quot;fnref&quot;</span>, <span class="at">:href</span> <span class="st">&quot;#note2&quot;</span>, <span class="at">:title</span> <span class="st">&quot;Footnote 2 Reference&quot;</span>} <span class="st">&quot;2&quot;</span>]</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    <span class="st">&quot;Footnote text&quot;</span>]</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>   <span class="st">&quot;More text&quot;</span>]</span></code></pre></div>
 <p>Looking at the <code>inline-footnotes</code> function in detail:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb6-1" title="1">(<span class="bu">defn-</span><span class="fu"> inline-footnotes</span></a>
-<a class="sourceLine" id="cb6-2" title="2">  <span class="st">&quot;Given a hic-el containing footnotes, where the fnref</span></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="st">   and footnotes are separated, will reorg the datastructure</span></a>
-<a class="sourceLine" id="cb6-4" title="4"><span class="st">   such that the footnote immediately follows the fnref&quot;</span></a>
-<a class="sourceLine" id="cb6-5" title="5">  [hic]</a>
-<a class="sourceLine" id="cb6-6" title="6">  (<span class="kw">let</span> [footnotes (<span class="kw">into</span> {} (get-footnotes hic))]</a>
-<a class="sourceLine" id="cb6-7" title="7">    (<span class="kw">vec</span> (<span class="kw">postwalk</span> (<span class="kw">fn</span> [el]</a>
-<a class="sourceLine" id="cb6-8" title="8">                     (<span class="kw">cond</span> (para-with-footnote-ref? el)</a>
-<a class="sourceLine" id="cb6-9" title="9">                           (<span class="kw">vec</span> (restruct-fns el footnotes))</a>
-<a class="sourceLine" id="cb6-10" title="10"></a>
-<a class="sourceLine" id="cb6-11" title="11">                           (standalone-footnote? el) <span class="va">nil</span></a>
-<a class="sourceLine" id="cb6-12" title="12">                           <span class="at">:else</span> el))</a>
-<a class="sourceLine" id="cb6-13" title="13">                   hic))))</a></code></pre></div>
-<p>We can see it is doing two things: 1. Getting all the footnotes from the document and putting them in a dictionary so they can be looked up. 2. Walking through the document again, identifying all the footnote <em>references</em>, inserting the footnote after the reference, and removing the original footnote.</p>
-<p>Getting the footnotes is a simple recursive search through the tree:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb7-1" title="1">(<span class="bu">defn-</span><span class="fu"> get-footnotes </span>[hic-el]</a>
-<a class="sourceLine" id="cb7-2" title="2">  (<span class="kw">cond</span> (<span class="kw">not</span> (<span class="kw">vector?</span> hic-el)) [] <span class="co">;; sentinel.</span></a>
-<a class="sourceLine" id="cb7-3" title="3">        (footnote? hic-el) [[(footnote? hic-el) hic-el]]</a>
-<a class="sourceLine" id="cb7-4" title="4">        <span class="at">:else</span> (<span class="kw">mapcat</span> get-footnotes hic-el)))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>(<span class="bu">defn-</span><span class="fu"> inline-footnotes</span></span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>  <span class="st">&quot;Given a hic-el containing footnotes, where the fnref</span></span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="st">   and footnotes are separated, will reorg the datastructure</span></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="st">   such that the footnote immediately follows the fnref&quot;</span></span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>  [hic]</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>  (<span class="kw">let</span> [footnotes (<span class="kw">into</span> {} (get-footnotes hic))]</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    (<span class="kw">vec</span> (<span class="kw">postwalk</span> (<span class="kw">fn</span> [el]</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>                     (<span class="kw">cond</span> (para-with-footnote-ref? el)</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>                           (<span class="kw">vec</span> (restruct-fns el footnotes))</span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>                           (standalone-footnote? el) <span class="va">nil</span></span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>                           <span class="at">:else</span> el))</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>                   hic))))</span></code></pre></div>
+<p>We can see it is doing two things: 1. Getting all the footnotes from
+the document and putting them in a dictionary so they can be looked up.
+2. Walking through the document again, identifying all the footnote
+<em>references</em>, inserting the footnote after the reference, and
+removing the original footnote.</p>
+<p>Getting the footnotes is a simple recursive search through the
+tree:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>(<span class="bu">defn-</span><span class="fu"> get-footnotes </span>[hic-el]</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>  (<span class="kw">cond</span> (<span class="kw">not</span> (<span class="kw">vector?</span> hic-el)) [] <span class="co">;; sentinel.</span></span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>        (footnote? hic-el) [[(footnote? hic-el) hic-el]]</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>        <span class="at">:else</span> (<span class="kw">mapcat</span> get-footnotes hic-el)))</span></code></pre></div>
 <p>To rewrite the html itself:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb8-1" title="1">(<span class="bu">defn-</span><span class="fu"> restruct-fns </span>[hic-el footnotes]</a>
-<a class="sourceLine" id="cb8-2" title="2">  (<span class="kw">mapcat</span> #(replace-footnote <span class="va">%</span> footnotes) (split-after footnote-ref? hic-el)))</a>
-<a class="sourceLine" id="cb8-3" title="3"></a>
-<a class="sourceLine" id="cb8-4" title="4">(<span class="bu">defn-</span><span class="fu"> replace-footnote </span>[hic-el footnotes]</a>
-<a class="sourceLine" id="cb8-5" title="5">  (<span class="kw">let</span> [x (footnote-ref? (<span class="kw">last</span> hic-el))]</a>
-<a class="sourceLine" id="cb8-6" title="6">    (<span class="kw">if</span> x (<span class="kw">conj</span> (<span class="kw">vec</span> (<span class="kw">remove</span> footnote? hic-el)) (<span class="kw">get</span> footnotes x))</a>
-<a class="sourceLine" id="cb8-7" title="7">        (<span class="kw">vec</span> (<span class="kw">remove</span> footnote? hic-el)))))</a></code></pre></div>
-<p><code>restruct-fns</code> splits the hiccup sequence (expected to be a paragraph containing a footnote) after it encounters a footnote reference. It then calls <code>replace-footnote</code> on the sub-sequences, adding the actual footnote (from the lookup dictionary) onto the end. Otherwise it just element - though in both branches, it removes any actual footnotes it finds, preventing duplication.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>(<span class="bu">defn-</span><span class="fu"> restruct-fns </span>[hic-el footnotes]</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>  (<span class="kw">mapcat</span> #(replace-footnote <span class="va">%</span> footnotes) (split-after footnote-ref? hic-el)))</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>(<span class="bu">defn-</span><span class="fu"> replace-footnote </span>[hic-el footnotes]</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>  (<span class="kw">let</span> [x (footnote-ref? (<span class="kw">last</span> hic-el))]</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>    (<span class="kw">if</span> x (<span class="kw">conj</span> (<span class="kw">vec</span> (<span class="kw">remove</span> footnote? hic-el)) (<span class="kw">get</span> footnotes x))</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>        (<span class="kw">vec</span> (<span class="kw">remove</span> footnote? hic-el)))))</span></code></pre></div>
+<p><code>restruct-fns</code> splits the hiccup sequence (expected to be
+a paragraph containing a footnote) after it encounters a footnote
+reference. It then calls <code>replace-footnote</code> on the
+sub-sequences, adding the actual footnote (from the lookup dictionary)
+onto the end. Otherwise it just element - though in both branches, it
+removes any actual footnotes it finds, preventing duplication.</p>
 <h3 id="main---orchestration">main - orchestration</h3>
 <p>The main function of the program looks like this</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb9-1" title="1">(<span class="bu">defn</span><span class="fu"> -main </span>[]</a>
-<a class="sourceLine" id="cb9-2" title="2">  (<span class="kw">println</span> <span class="st">&quot;Publishing markdown Posts&quot;</span>)</a>
-<a class="sourceLine" id="cb9-3" title="3">  (publish! publish-markdown preproc-markdown postproc-markdown (<span class="at">:markdown</span> post-paths) (<span class="at">:html</span> post-paths))</a>
-<a class="sourceLine" id="cb9-4" title="4">  (<span class="kw">println</span> <span class="st">&quot;Publishing markdown Books&quot;</span>)</a>
-<a class="sourceLine" id="cb9-5" title="5">  (publish! publish-markdown preproc-markdown postproc-markdown (<span class="at">:markdown</span> book-paths) (<span class="at">:html</span> book-paths))</a>
-<a class="sourceLine" id="cb9-6" title="6">  (<span class="kw">println</span> <span class="st">&quot;Creating Post index&quot;</span>)</a>
-<a class="sourceLine" id="cb9-7" title="7">  (create-post-index!)</a>
-<a class="sourceLine" id="cb9-8" title="8">  (<span class="kw">println</span> <span class="st">&quot;Creating Book Index&quot;</span>)</a>
-<a class="sourceLine" id="cb9-9" title="9">  (create-book-index!)</a>
-<a class="sourceLine" id="cb9-10" title="10">  (<span class="kw">println</span> <span class="st">&quot;DONE&quot;</span>)</a>
-<a class="sourceLine" id="cb9-11" title="11">  (<span class="kw">shutdown-agents</span>))</a></code></pre></div>
-<p>There are two things happening here: publishing all the posts, and creating the index.</p>
-<h3 id="main---turning-markdown-to-html">main - turning markdown to html</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> -main </span>[]</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Publishing markdown Posts&quot;</span>)</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>  (publish! publish-markdown preproc-markdown postproc-markdown (<span class="at">:markdown</span> post-paths) (<span class="at">:html</span> post-paths))</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Publishing markdown Books&quot;</span>)</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>  (publish! publish-markdown preproc-markdown postproc-markdown (<span class="at">:markdown</span> book-paths) (<span class="at">:html</span> book-paths))</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Creating Post index&quot;</span>)</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>  (create-post-index!)</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Creating Book Index&quot;</span>)</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>  (create-book-index!)</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;DONE&quot;</span>)</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>  (<span class="kw">shutdown-agents</span>))</span></code></pre></div>
+<p>There are two things happening here: publishing all the posts, and
+creating the index.</p>
+<h3 id="main---turning-markdown-to-html">main - turning markdown to
+html</h3>
 <p>The function here is publish!:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb10-1" title="1">(<span class="bu">defn</span><span class="fu"> publish! </span>[pub-fn pre-fn post-fn in-folder out-folder]</a>
-<a class="sourceLine" id="cb10-2" title="2">  (<span class="kw">-&gt;&gt;</span> (get-file-paths in-folder)</a>
-<a class="sourceLine" id="cb10-3" title="3">       (<span class="kw">map</span> pre-fn)</a>
-<a class="sourceLine" id="cb10-4" title="4">       (<span class="kw">map</span> pub-fn)</a>
-<a class="sourceLine" id="cb10-5" title="5">       (<span class="kw">map</span> post-fn)</a>
-<a class="sourceLine" id="cb10-6" title="6">       (<span class="kw">map</span> #(move-file <span class="va">%</span> out-folder))</a>
-<a class="sourceLine" id="cb10-7" title="7">       (<span class="kw">map</span> cleanup)</a>
-<a class="sourceLine" id="cb10-8" title="8">       <span class="kw">doall</span>))</a></code></pre></div>
-<p>It takes three functions: publish, a pre-processor and a post-processor, as well as the input folder and output folder.</p>
-<p>It gets all the files in the input folder, applies successively the pre-proc, publication and post-proc, moves all the files, and cleans up any temporary files.</p>
-<p>Each of the pre, pub and post functions have side-effects, reading a file and outputting another file, and each one returns the name of the file it has written to to be used by the next function. For example:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb11-1" title="1">(<span class="bu">defn</span><span class="fu"> preproc-markdown </span>[file-path]</a>
-<a class="sourceLine" id="cb11-2" title="2">  (<span class="kw">let</span> [out-file-path (str/replace file-path <span class="st">&quot;.md&quot;</span> <span class="st">&quot;.temp&quot;</span>)]</a>
-<a class="sourceLine" id="cb11-3" title="3">    (spit out-file-path (md/prewrite-markdown (<span class="kw">slurp</span> file-path)))</a>
-<a class="sourceLine" id="cb11-4" title="4">    out-file-path))</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> publish! </span>[pub-fn pre-fn post-fn in-folder out-folder]</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>  (<span class="kw">-&gt;&gt;</span> (get-file-paths in-folder)</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>       (<span class="kw">map</span> pre-fn)</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>       (<span class="kw">map</span> pub-fn)</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>       (<span class="kw">map</span> post-fn)</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>       (<span class="kw">map</span> #(move-file <span class="va">%</span> out-folder))</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>       (<span class="kw">map</span> cleanup)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>       <span class="kw">doall</span>))</span></code></pre></div>
+<p>It takes three functions: publish, a pre-processor and a
+post-processor, as well as the input folder and output folder.</p>
+<p>It gets all the files in the input folder, applies successively the
+pre-proc, publication and post-proc, moves all the files, and cleans up
+any temporary files.</p>
+<p>Each of the pre, pub and post functions have side-effects, reading a
+file and outputting another file, and each one returns the name of the
+file it has written to to be used by the next function. For example:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> preproc-markdown </span>[file-path]</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>  (<span class="kw">let</span> [out-file-path (str/replace file-path <span class="st">&quot;.md&quot;</span> <span class="st">&quot;.temp&quot;</span>)]</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>    (spit out-file-path (md/prewrite-markdown (<span class="kw">slurp</span> file-path)))</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>    out-file-path))</span></code></pre></div>
 <h3 id="main---index-creation">main - index creation</h3>
 <p>Creating the index:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb12-1" title="1">(<span class="bu">defn</span><span class="fu"> create-post-index! </span>[]</a>
-<a class="sourceLine" id="cb12-2" title="2">  (<span class="kw">-&gt;&gt;</span> (get-file-paths (<span class="at">:html</span> post-paths))</a>
-<a class="sourceLine" id="cb12-3" title="3">       (<span class="kw">map</span> #(entry-from-post post-paths <span class="va">%</span>))</a>
-<a class="sourceLine" id="cb12-4" title="4">       build-index</a>
-<a class="sourceLine" id="cb12-5" title="5">       html</a>
-<a class="sourceLine" id="cb12-6" title="6">       (spit <span class="kw">index</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> create-post-index! </span>[]</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>  (<span class="kw">-&gt;&gt;</span> (get-file-paths (<span class="at">:html</span> post-paths))</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>       (<span class="kw">map</span> #(entry-from-post post-paths <span class="va">%</span>))</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>       build-index</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>       html</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>       (spit <span class="kw">index</span>)))</span></code></pre></div>
 <p>The steps are:</p>
 <ol type="1">
 <li>Get all the html file names</li>
-<li>from those names, calculate an ‘entry’: a map with the post date, the filename, and the title (obtained by reading the first line of the markdown file).</li>
+<li>from those names, calculate an ‘entry’: a map with the post date,
+the filename, and the title (obtained by reading the first line of the
+markdown file).</li>
 <li>inserts those entries into a markdown template (see below)</li>
-<li>converts the template into an html string and spits it to <code>index.html</code></li>
+<li>converts the template into an html string and spits it to
+<code>index.html</code></li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><a class="sourceLine" id="cb13-1" title="1">[<span class="at">:html</span></a>
-<a class="sourceLine" id="cb13-2" title="2"> <span class="co">;; snip</span></a>
-<a class="sourceLine" id="cb13-3" title="3"> [<span class="at">:body</span></a>
-<a class="sourceLine" id="cb13-4" title="4">  [<span class="at">:div</span></a>
-<a class="sourceLine" id="cb13-5" title="5">   <span class="co">;;snip</span></a>
-<a class="sourceLine" id="cb13-6" title="6">   [<span class="at">:table</span></a>
-<a class="sourceLine" id="cb13-7" title="7">    [<span class="at">:tr</span> [<span class="at">:th</span> <span class="st">&quot;Date&quot;</span>] [<span class="at">:th</span> <span class="st">&quot;Title&quot;</span>]]</a>
-<a class="sourceLine" id="cb13-8" title="8">    (<span class="kw">for</span> [entry (<span class="kw">reverse</span> (<span class="kw">sort-by</span> <span class="at">:date</span> entries))]</a>
-<a class="sourceLine" id="cb13-9" title="9">      [<span class="at">:tr</span></a>
-<a class="sourceLine" id="cb13-10" title="10">       [<span class="at">:td</span> (<span class="at">:date</span> entry)]</a>
-<a class="sourceLine" id="cb13-11" title="11">       [<span class="at">:td</span> [<span class="at">:a</span> {<span class="at">:href</span> (<span class="kw">str</span> (<span class="at">:html</span> post-paths) (<span class="at">:filename</span> entry))}</a>
-<a class="sourceLine" id="cb13-12" title="12">             (<span class="at">:title</span> entry)]]])]]]]</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>[<span class="at">:html</span></span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a> <span class="co">;; snip</span></span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a> [<span class="at">:body</span></span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>  [<span class="at">:div</span></span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a>   <span class="co">;;snip</span></span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>   [<span class="at">:table</span></span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a>    [<span class="at">:tr</span> [<span class="at">:th</span> <span class="st">&quot;Date&quot;</span>] [<span class="at">:th</span> <span class="st">&quot;Title&quot;</span>]]</span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a>    (<span class="kw">for</span> [entry (<span class="kw">reverse</span> (<span class="kw">sort-by</span> <span class="at">:date</span> entries))]</span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a>      [<span class="at">:tr</span></span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>       [<span class="at">:td</span> (<span class="at">:date</span> entry)]</span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>       [<span class="at">:td</span> [<span class="at">:a</span> {<span class="at">:href</span> (<span class="kw">str</span> (<span class="at">:html</span> post-paths) (<span class="at">:filename</span> entry))}</span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>             (<span class="at">:title</span> entry)]]])]]]]</span></code></pre></div>
 <h2 id="critique">Critique</h2>
-<p>I like the deterministic nature of the overall process. It effectively recreates the entire blog every time you run the program, rather than trying to figure out what changed and run only those. Trying to do that would’ve required adding some state management, maybe a database, as well as figuring out when something should be published. Having the whole thing created from scratch avoids all that complexity. This might run into some performance problems if the blog gets <em>really</em> large, but I don’t foresee that being an issue.</p>
-<p>I like the footnote post-processor overall. Some nice treewalking stuff in there.</p>
-<p>It’s pretty extensible. For this write-up (which is part of a blog that I use this software for) I needed to add the ability to publish ‘portfolio’ posts like this one. The only things I needed to add (apart from a bit of config) were a couple of trivial functions, basically copy-pasted.</p>
+<p>I like the deterministic nature of the overall process. It
+effectively recreates the entire blog every time you run the program,
+rather than trying to figure out what changed and run only those. Trying
+to do that would’ve required adding some state management, maybe a
+database, as well as figuring out when something should be published.
+Having the whole thing created from scratch avoids all that complexity.
+This might run into some performance problems if the blog gets
+<em>really</em> large, but I don’t foresee that being an issue.</p>
+<p>I like the footnote post-processor overall. Some nice treewalking
+stuff in there.</p>
+<p>It’s pretty extensible. For this write-up (which is part of a blog
+that I use this software for) I needed to add the ability to publish
+‘portfolio’ posts like this one. The only things I needed to add (apart
+from a bit of config) were a couple of trivial functions, basically
+copy-pasted.</p>
 <figure>
-<img alt="Diff to add portfolio" src="../../images/portfolio_gitblog/port_add_diff.png" /><figcaption>Diff to add portfolio</figcaption>
+<img alt="Diff to add portfolio" src="../../images/portfolio_gitblog/port_add_diff.png" />
+<figcaption aria-hidden="true">Diff to add portfolio</figcaption>
 </figure>
-<p>I’m not happy with how removal of footnotes is done. The program takes two swipes at it: in <code>replace-foonote</code> and <code>inline-footnotes</code>. This is a consequence of the ‘standalone’ footnote, where a footnote sits in its own para rather then being nested under another one. This case was added afterwards, hence why the same thing is done in two places. This should be harmonized.</p>
-<p>I don’t love how <code>publish!</code> works. Firstly it operates at the ‘folder’ level, pointed at a folder and touching everything in that folder, where it should really work at a <em>file</em> level. Second, ideally the process would be <code>mdfile-&gt;mdstring-&gt;htmlstring-&gt;htmlfile</code>, with the IO happening only at the start and end. Because I’m shelling out the actual compiliation of MD to HTML I have to have each step do its own IO. The trade-off, obviously, is that I don’t have to write my own markdown compiler. This is a good tradeoff I think. I might be able to do something to eliminate the ‘temp’ file and just have the pandoc output write to std-out and have the program pick it up from there. But that doesn’t solve the problem really.</p>
-<p>The way the <code>get-title</code> works is wrong. Given an html file, it should be able to figure out what the title is. Instead it has to find the related <em>markdown</em> file and get the title from that, which obviously presumes you have the markdown file available.</p>
+<p>I’m not happy with how removal of footnotes is done. The program
+takes two swipes at it: in <code>replace-foonote</code> and
+<code>inline-footnotes</code>. This is a consequence of the ‘standalone’
+footnote, where a footnote sits in its own para rather then being nested
+under another one. This case was added afterwards, hence why the same
+thing is done in two places. This should be harmonized.</p>
+<p>I don’t love how <code>publish!</code> works. Firstly it operates at
+the ‘folder’ level, pointed at a folder and touching everything in that
+folder, where it should really work at a <em>file</em> level. Second,
+ideally the process would be
+<code>mdfile-&gt;mdstring-&gt;htmlstring-&gt;htmlfile</code>, with the
+IO happening only at the start and end. Because I’m shelling out the
+actual compiliation of MD to HTML I have to have each step do its own
+IO. The trade-off, obviously, is that I don’t have to write my own
+markdown compiler. This is a good tradeoff I think. I might be able to
+do something to eliminate the ‘temp’ file and just have the pandoc
+output write to std-out and have the program pick it up from there. But
+that doesn’t solve the problem really.</p>
+<p>The way the <code>get-title</code> works is wrong. Given an html
+file, it should be able to figure out what the title is. Instead it has
+to find the related <em>markdown</em> file and get the title from that,
+which obviously presumes you have the markdown file available.</p>
 
 
 </body></html>

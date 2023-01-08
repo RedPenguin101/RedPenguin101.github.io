@@ -3,26 +3,95 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>2022_10_14_agile_in_1000</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <h1 id="agile-in-1500-words">Agile in 1,500 Words</h1>
-<h2 id="how-much-you-dont-know-drives-the-method-of-organizing-work">How much you don’t know drives the method of organizing work</h2>
-<p>My career has consisted of three kinds of work. I was an accountant in financial services. Then I closed deals. Then I creating software. The methods of work needed for each was different. The factor that drove these differences was how much you didn’t know before you started working. When you find out new things while doing a task, it changes your view on what you should do, or how to do it. You have to decide whether to keep on your current course, or change your direction. If you know everything upfront there won’t be many of these decisions, and their impact will be minor. If the amount you don’t know is large, there will be many decisions, and their impact will be significant.</p>
-<p>Accounting is largely homogeneous work. It’s largely about creating repeatable, reliable, and efficient processes, and then optimizing those processes for scale and handling minor variations in input. Accounting has a low amount of things you don’t know upfront.</p>
-<p>Deal closing is more diverse. The tasks required to close any two deals will be different, and done in different order. Despite this, there is an overall arc to a deal closing project that is similar across deals. The people involved generally know what needs to happen, how to do each of the tasks, and how long the tasks should take. There does need to be reactivity to changing requirements, in particular changing timelines and structure, but these tend to be changes in detail, not of fundamentals. Tasks are enumerated and estimated up-front, dependencies identified, and rough start and end times specified for everything. This is possible because deal closings have only a moderate amount of things you don’t know upfront.</p>
-<p>After a decade in business, I moved to the technology department and started building software. When developing greenfield software and implementing user requirements, the amount of things we didn’t know upfront turned out to be large. While we were doing something we would discover that we had misunderstood what was needed, or it was much more complicated and would take longer than we initially thought.</p>
-<h2 id="being-agile-is-a-mindset-of-leaning-into-change-rather-than-limiting-it">Being agile is a mindset of leaning into change rather than limiting it</h2>
-<p>In most areas of work, making significant course adjustments mid-stream is seen as dysfunction, and a consequence of poor upfront analysis and planning. The cure is to do better and more analysis upfront to eliminate unknowns, and avoid them requiring you to change the plan once you start. This means creating the structures and communication channels that ensure this upfront analysis, within functions and between them, is done. If this is done adequately, the consequence of any proposed change are minor enough that they can be ignored if they threaten the planned timing or scope of the project. Thus the trade-offs between accepting and resisting change swing towards resisting them.</p>
-<p>This approach is generally very effective, and seemed to me to be universal. But when I tried to apply this approach to software engineering, I discovered that it didn’t work. However much upfront analysis we did, new information always came up during the build which required significant changes to our plans, sometimes in areas we didn’t even know we needed to analyze.</p>
-<p>Upfront analysis and rules around practice often seemed counterproductive. The upfront analysis missed whole areas that in retrospect were glaring, and focused on areas that turned out to be irrelevant. Efforts to put in place the rigid structure and constraints aimed at avoiding the need for change tended to strangle the team and the project with analysis-paralysis and administration overhead. Disallowing the mid-course corrections meant that changes necessary for the project to be successful were not made, and the product delivered was sub-par, if delivered at all.</p>
-<p>The agile approach is to build your entire process of work around an expectation that these changes will arise, recognizing them, and adapting to them rather than controlling them away. To <em>flex</em>, not constrict. It’s the difference between a plaster cast which prevents all movement, and a brace which provides support while still allowing movement. This is what the four values of the <a href="https://agilemanifesto.org/">Agile Manifesto</a> are trying to tell you.</p>
+<h2 id="how-much-you-dont-know-drives-the-method-of-organizing-work">How
+much you don’t know drives the method of organizing work</h2>
+<p>My career has consisted of three kinds of work. I was an accountant
+in financial services. Then I closed deals. Then I creating software.
+The methods of work needed for each was different. The factor that drove
+these differences was how much you didn’t know before you started
+working. When you find out new things while doing a task, it changes
+your view on what you should do, or how to do it. You have to decide
+whether to keep on your current course, or change your direction. If you
+know everything upfront there won’t be many of these decisions, and
+their impact will be minor. If the amount you don’t know is large, there
+will be many decisions, and their impact will be significant.</p>
+<p>Accounting is largely homogeneous work. It’s largely about creating
+repeatable, reliable, and efficient processes, and then optimizing those
+processes for scale and handling minor variations in input. Accounting
+has a low amount of things you don’t know upfront.</p>
+<p>Deal closing is more diverse. The tasks required to close any two
+deals will be different, and done in different order. Despite this,
+there is an overall arc to a deal closing project that is similar across
+deals. The people involved generally know what needs to happen, how to
+do each of the tasks, and how long the tasks should take. There does
+need to be reactivity to changing requirements, in particular changing
+timelines and structure, but these tend to be changes in detail, not of
+fundamentals. Tasks are enumerated and estimated up-front, dependencies
+identified, and rough start and end times specified for everything. This
+is possible because deal closings have only a moderate amount of things
+you don’t know upfront.</p>
+<p>After a decade in business, I moved to the technology department and
+started building software. When developing greenfield software and
+implementing user requirements, the amount of things we didn’t know
+upfront turned out to be large. While we were doing something we would
+discover that we had misunderstood what was needed, or it was much more
+complicated and would take longer than we initially thought.</p>
+<h2 id="being-agile-is-a-mindset-of-leaning-into-change-rather-than-limiting-it">Being
+agile is a mindset of leaning into change rather than limiting it</h2>
+<p>In most areas of work, making significant course adjustments
+mid-stream is seen as dysfunction, and a consequence of poor upfront
+analysis and planning. The cure is to do better and more analysis
+upfront to eliminate unknowns, and avoid them requiring you to change
+the plan once you start. This means creating the structures and
+communication channels that ensure this upfront analysis, within
+functions and between them, is done. If this is done adequately, the
+consequence of any proposed change are minor enough that they can be
+ignored if they threaten the planned timing or scope of the project.
+Thus the trade-offs between accepting and resisting change swing towards
+resisting them.</p>
+<p>This approach is generally very effective, and seemed to me to be
+universal. But when I tried to apply this approach to software
+engineering, I discovered that it didn’t work. However much upfront
+analysis we did, new information always came up during the build which
+required significant changes to our plans, sometimes in areas we didn’t
+even know we needed to analyze.</p>
+<p>Upfront analysis and rules around practice often seemed
+counterproductive. The upfront analysis missed whole areas that in
+retrospect were glaring, and focused on areas that turned out to be
+irrelevant. Efforts to put in place the rigid structure and constraints
+aimed at avoiding the need for change tended to strangle the team and
+the project with analysis-paralysis and administration overhead.
+Disallowing the mid-course corrections meant that changes necessary for
+the project to be successful were not made, and the product delivered
+was sub-par, if delivered at all.</p>
+<p>The agile approach is to build your entire process of work around an
+expectation that these changes will arise, recognizing them, and
+adapting to them rather than controlling them away. To <em>flex</em>,
+not constrict. It’s the difference between a plaster cast which prevents
+all movement, and a brace which provides support while still allowing
+movement. This is what the four values of the <a href="https://agilemanifesto.org/">Agile Manifesto</a> are trying to
+tell you.</p>
 <blockquote>
 <ol type="1">
 <li>Individuals and interactions over processes and tools.</li>
@@ -31,27 +100,90 @@
 <li>Responding to change over following a plan.</li>
 </ol>
 </blockquote>
-<p>The last value is the definition of agile. The others are implementations. Plans, processes, contracts and documentation are all manifestations of what you know, and the inertia of their mere existence will lead to resistance to change. Interactions, collaboration and people using working software are methods of finding out what you don’t know in by creating feedback loops, and so will open you up to change.</p>
+<p>The last value is the definition of agile. The others are
+implementations. Plans, processes, contracts and documentation are all
+manifestations of what you know, and the inertia of their mere existence
+will lead to resistance to change. Interactions, collaboration and
+people using working software are methods of finding out what you don’t
+know in by creating feedback loops, and so will open you up to
+change.</p>
 <h2 id="the-frameworks">The frameworks</h2>
-<p>How do you organize work, when structure itself creates poor results? This is the problem that agile frameworks aim to address. Frameworks set out universal rules you can follow to ‘be’ agile. But this creates a paradox: The premise of agile working is in reacting to outcomes and adapting your process accordingly. Any framework is, by necessity, unchanging, and unable to adapt to your situation because the author doesn’t know about them. This is inherently antithetical to the philosophy of agility.</p>
-<p>This is why, if the frameworks are implemented literally, they tend to fail. In defense of the frameworks, they often stress that they are not <em>supposed</em> to be implemented literally, at least not permanently. From Sutherland’s Scrum book<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> <a href="https://www.scruminc.com/new-scrum-the-book/">Scrum: The Art of doing twice the Work in Half the Time, by Jeff Sutherland</a>, Page 38. </span>.</p>
+<p>How do you organize work, when structure itself creates poor results?
+This is the problem that agile frameworks aim to address. Frameworks set
+out universal rules you can follow to ‘be’ agile. But this creates a
+paradox: The premise of agile working is in reacting to outcomes and
+adapting your process accordingly. Any framework is, by necessity,
+unchanging, and unable to adapt to your situation because the author
+doesn’t know about them. This is inherently antithetical to the
+philosophy of agility.</p>
+<p>This is why, if the frameworks are implemented literally, they tend
+to fail. In defense of the frameworks, they often stress that they are
+not <em>supposed</em> to be implemented literally, at least not
+permanently. From Sutherland’s Scrum
+book<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1">
+<a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> <a href="https://www.scruminc.com/new-scrum-the-book/">Scrum: The Art of
+doing twice the Work in Half the Time, by Jeff Sutherland</a>, Page 38.
+</span>.</p>
 
 <blockquote>
-<p>Scrum … is something that you can only really learn by doing. In the martial arts you lean a concept called <em>Shu Ha Ri</em>, which points to different levels of mastery. In the <em>Shu</em> state, you know all the rules and forms. You repeat them, like the steps in a dance, so your body absorbs them. You don’t deviate at all. In the <em>Ha</em> state, once you’ve mastered the forms, you can make innovations… In the <em>Ri</em> state, you’re able to discard the forms, and you’re able to be creative in an unhindered way.</p>
+<p>Scrum … is something that you can only really learn by doing. In the
+martial arts you lean a concept called <em>Shu Ha Ri</em>, which points
+to different levels of mastery. In the <em>Shu</em> state, you know all
+the rules and forms. You repeat them, like the steps in a dance, so your
+body absorbs them. You don’t deviate at all. In the <em>Ha</em> state,
+once you’ve mastered the forms, you can make innovations… In the
+<em>Ri</em> state, you’re able to discard the forms, and you’re able to
+be creative in an unhindered way.</p>
 </blockquote>
-<p>The rules are to be used like stabilizers on a bicycle: Useful when you are developing the muscle memory of pedaling and steering at the same time, but to be removed when you can do those things unconsciously.</p>
-<p>I’m sure this works sometimes, but every time I’ve tried to implement a rules framework by following what’s in the book, it has had poor results, and the first few months of the teams work were spent slowly removing or relaxing all the rules. The rules are just too heavy, like the bike stabilizers have so much friction you can’t pedal and make forward progress. Another objection to the frameworks is that the approach is packaged, not to most effectively achieve results, but to sell services to the traditional work-organization functions of a business. You can sell rules, <em>Shu</em>, but you can’t sell wisdom, <em>Ri</em>.</p>
-<h2 id="operationalizing-agile-values">Operationalizing agile values</h2>
-<p>What has worked for me has always been dependent on the team and situation I’m coming into. In particular, it depends on the nature of the task the team is being asked to do, and the history of that team. The practices that will evolve will depend on how much you know about what you’re being asked to do. Here are some broad principles that, while not universal, have usually got me off on the right foot:</p>
+<p>The rules are to be used like stabilizers on a bicycle: Useful when
+you are developing the muscle memory of pedaling and steering at the
+same time, but to be removed when you can do those things
+unconsciously.</p>
+<p>I’m sure this works sometimes, but every time I’ve tried to implement
+a rules framework by following what’s in the book, it has had poor
+results, and the first few months of the teams work were spent slowly
+removing or relaxing all the rules. The rules are just too heavy, like
+the bike stabilizers have so much friction you can’t pedal and make
+forward progress. Another objection to the frameworks is that the
+approach is packaged, not to most effectively achieve results, but to
+sell services to the traditional work-organization functions of a
+business. You can sell rules, <em>Shu</em>, but you can’t sell wisdom,
+<em>Ri</em>.</p>
+<h2 id="operationalizing-agile-values">Operationalizing agile
+values</h2>
+<p>What has worked for me has always been dependent on the team and
+situation I’m coming into. In particular, it depends on the nature of
+the task the team is being asked to do, and the history of that team.
+The practices that will evolve will depend on how much you know about
+what you’re being asked to do. Here are some broad principles that,
+while not universal, have usually got me off on the right foot:</p>
 <ol type="1">
-<li>Start small and light. Make gradual changes over time in reaction to events.</li>
-<li>Don’t <em>impose</em> practices on the team, even if you have the authority to do it. Any rules should be agreed to by the majority of the team, and preferably initiated by them in reaction to events.</li>
-<li>Protect the <a href="http://www.paulgraham.com/makersschedule.html">‘Makers Schedule’</a>.</li>
-<li>Make sure all work is visible via artifacts. But don’t make the format of the artifacts too elaborate. The artifacts, at first, are just reminders about what is being worked on, and a prompt to talk about the work.</li>
-<li>Create short feedback loops, usually daily, as venues for developers to clarify outcomes and tweak approaches.</li>
-<li>Create cohesion for the daily tasks, a longer-term goal that ties together the day-to-day work, so developers have the context for deciding what tasks they need to do and how they should implement it. If the team is new you probably won’t hit the goal, so be ready to flex, and manage expectations.</li>
+<li>Start small and light. Make gradual changes over time in reaction to
+events.</li>
+<li>Don’t <em>impose</em> practices on the team, even if you have the
+authority to do it. Any rules should be agreed to by the majority of the
+team, and preferably initiated by them in reaction to events.</li>
+<li>Protect the <a href="http://www.paulgraham.com/makersschedule.html">‘Makers
+Schedule’</a>.</li>
+<li>Make sure all work is visible via artifacts. But don’t make the
+format of the artifacts too elaborate. The artifacts, at first, are just
+reminders about what is being worked on, and a prompt to talk about the
+work.</li>
+<li>Create short feedback loops, usually daily, as venues for developers
+to clarify outcomes and tweak approaches.</li>
+<li>Create cohesion for the daily tasks, a longer-term goal that ties
+together the day-to-day work, so developers have the context for
+deciding what tasks they need to do and how they should implement it. If
+the team is new you probably won’t hit the goal, so be ready to flex,
+and manage expectations.</li>
 </ol>
-<p>Over time, practices will emerge as the team adjusts to the nature of the work they do and a equilibrium of team dynamic is established. Stand-ups can become less frequent if the work becomes more routine. The ‘cohesion’ goals can become sprints of fixed length, or be more floating and adjustable. The visible artifacts of work will naturally grow rules about what needs to be in them and how they are managed, such as WIP limits, swim-lanes, and acceptance criteria.</p>
+<p>Over time, practices will emerge as the team adjusts to the nature of
+the work they do and a equilibrium of team dynamic is established.
+Stand-ups can become less frequent if the work becomes more routine. The
+‘cohesion’ goals can become sprints of fixed length, or be more floating
+and adjustable. The visible artifacts of work will naturally grow rules
+about what needs to be in them and how they are managed, such as WIP
+limits, swim-lanes, and acceptance criteria.</p>
 
 
 </body></html>

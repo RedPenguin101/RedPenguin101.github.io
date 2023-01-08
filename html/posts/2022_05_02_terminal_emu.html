@@ -3,26 +3,63 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>2022_05_02_terminal_emu</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<h1 id="summary-anatomy-of-a-terminal-emulator">Summary: Anatomy of a Terminal Emulator</h1>
-<p>From the article <a href="https://poor.dev/terminal-anatomy/">Anatomy of a Terminal Emulator</a> by Aram Drevekenin, which offers “a gentle and broad introduction to the terminal emulator as a platform for development.”</p>
-<h2 id="the-terminal-the-psuedoterminal-and-the-shell">The Terminal, the Psuedoterminal, and the Shell</h2>
-<p>The terminal and shell are both executable programs. Modern examples of the terminal are alacritty, kitty and gnome-terminal. Three examples of shells are bash, zsh and fish.</p>
-<p>The <strong>shell</strong> is a program which allows a user to interface with the computer’s operating system. It can interpret commands passed to it, and makes decisions about running other programs and commands.</p>
-<p>The <strong>terminal’s</strong> job is purely to display what the shell tells it to.</p>
-<p>The <strong>pseudoterminal</strong> (or PTY) forms a “bridge” between the terminal and the shall. It consists of two channels, STDIN and STDOUT. The terminal sends data to the STDIN channel, which the PTY forwards to the shell. The shell sends output to the STDOUT channel, which the PTY passes on to the terminal.</p>
-<p>The PTY also <em>buffers</em> input from the terminal. That is, it holds off on sending characters the user types into the shell until it receives an <code>&lt;ENTER&gt;</code> character. Then it sends all the buffered characters.</p>
-<h2 id="ansi-escape-codes-the-language-of-the-terminal">ANSI Escape Codes: The Language of the Terminal</h2>
-<p>The shell can obviously send text to the terminal to display. However it can also give it various commands about <em>how</em> to display those characters, such as the color and style, and also <em>where</em> to display, by commands which move the cursor around the screen.</p>
-<p>The ‘language’ of these commands are “ANSI Escape Codes”. Here’s a (slightly simplified) version of what the “fish” shell actually sends to the terminal on starting up, and what some of these code mean. In short, this sequence: Displays a welcome message; goes to a new line; sets the cursor; and prints the time on the right hand side of the screen.</p>
+<h1 id="summary-anatomy-of-a-terminal-emulator">Summary: Anatomy of a
+Terminal Emulator</h1>
+<p>From the article <a href="https://poor.dev/terminal-anatomy/">Anatomy
+of a Terminal Emulator</a> by Aram Drevekenin, which offers “a gentle
+and broad introduction to the terminal emulator as a platform for
+development.”</p>
+<h2 id="the-terminal-the-psuedoterminal-and-the-shell">The Terminal, the
+Psuedoterminal, and the Shell</h2>
+<p>The terminal and shell are both executable programs. Modern examples
+of the terminal are alacritty, kitty and gnome-terminal. Three examples
+of shells are bash, zsh and fish.</p>
+<p>The <strong>shell</strong> is a program which allows a user to
+interface with the computer’s operating system. It can interpret
+commands passed to it, and makes decisions about running other programs
+and commands.</p>
+<p>The <strong>terminal’s</strong> job is purely to display what the
+shell tells it to.</p>
+<p>The <strong>pseudoterminal</strong> (or PTY) forms a “bridge” between
+the terminal and the shall. It consists of two channels, STDIN and
+STDOUT. The terminal sends data to the STDIN channel, which the PTY
+forwards to the shell. The shell sends output to the STDOUT channel,
+which the PTY passes on to the terminal.</p>
+<p>The PTY also <em>buffers</em> input from the terminal. That is, it
+holds off on sending characters the user types into the shell until it
+receives an <code>&lt;ENTER&gt;</code> character. Then it sends all the
+buffered characters.</p>
+<h2 id="ansi-escape-codes-the-language-of-the-terminal">ANSI Escape
+Codes: The Language of the Terminal</h2>
+<p>The shell can obviously send text to the terminal to display. However
+it can also give it various commands about <em>how</em> to display those
+characters, such as the color and style, and also <em>where</em> to
+display, by commands which move the cursor around the screen.</p>
+<p>The ‘language’ of these commands are “ANSI Escape Codes”. Here’s a
+(slightly simplified) version of what the “fish” shell actually sends to
+the terminal on starting up, and what some of these code mean. In short,
+this sequence: Displays a welcome message; goes to a new line; sets the
+cursor; and prints the time on the right hand side of the screen.</p>
 <pre><code>^[(B^[[m\r^[[KWelcome to fish, the friendly interactive shell\r\n
 ^[]0;fish /home/aram^[[m^[[97m^[[46m⋊&gt;^[[m^[[33m ~^[[m^[[K^[[67C^[[38;2;85;85;85m10:21:15
 ^[[m\r^[[5C</code></pre>
@@ -37,25 +74,52 @@
 <li><code>^[[46m</code>: Background Cyan</li>
 <li><code>^[[67C</code>: cursor fwd 67 chars</li>
 </ul>
-<p>This language can be used directly from the terminal, e.g <code>echo -e &quot;I am some \033[38;5;9mred text!&quot;</code></p>
+<p>This language can be used directly from the terminal, e.g
+<code>echo -e &quot;I am some \033[38;5;9mred text!&quot;</code></p>
 <h2 id="terminal-uis">Terminal UIs</h2>
-<p>The above example sticks to the ASCII character set. There is also the “special characters” character set (<code>^[(0</code>). This set includes box drawing characters that can be used for drawing terminal UIs. For example <code>echo -e &quot;\033(0lqqqk\nx   x\nmqqqj&quot;</code> draws a box.</p>
-<p>A key attribute of a modern UI is responsiveness - changing dynamically in response to users resizing windows. You can do this in a terminal UI by listing to the <code>SIGWINCH</code> signal, and using the <code>ioctl</code> syscall to get the new size of the terminal.</p>
+<p>The above example sticks to the ASCII character set. There is also
+the “special characters” character set (<code>^[(0</code>). This set
+includes box drawing characters that can be used for drawing terminal
+UIs. For example <code>echo -e &quot;\033(0lqqqk\nx   x\nmqqqj&quot;</code> draws
+a box.</p>
+<p>A key attribute of a modern UI is responsiveness - changing
+dynamically in response to users resizing windows. You can do this in a
+terminal UI by listing to the <code>SIGWINCH</code> signal, and using
+the <code>ioctl</code> syscall to get the new size of the terminal.</p>
 <h2 id="raw-mode">Raw mode</h2>
-<p>Consider a scenario where you want to show a <code>Would you like to quit? [y/n]</code> message, and quit when the user hits <code>y</code>. We saw above that the PTY buffers until you hit enter, which you don’t want in this case: you just want the user to hit “y” and exit the program.</p>
-<p>You can accomplish this by putting the terminal into “raw mode”. This does 3 things:</p>
+<p>Consider a scenario where you want to show a
+<code>Would you like to quit? [y/n]</code> message, and quit when the
+user hits <code>y</code>. We saw above that the PTY buffers until you
+hit enter, which you don’t want in this case: you just want the user to
+hit “y” and exit the program.</p>
+<p>You can accomplish this by putting the terminal into “raw mode”. This
+does 3 things:</p>
 <ul>
 <li>STDIN is read char by char instead of buffering</li>
 <li>Echo is disabled, so the terminal doesn’t print what you input</li>
-<li>Special processing is disabled (e.g. Ctrl C will no longer send SIGINT)</li>
+<li>Special processing is disabled (e.g. Ctrl C will no longer send
+SIGINT)</li>
 </ul>
-<p>Raw mode is used in many modern terminals because it allows much more dynamism. For example, if you type an invalid command into a modern terminal, it might ‘highlight’ it in red to indicate that it’s invalid <em>as you type</em>. It can do this because your terminal is sending data character by character.</p>
+<p>Raw mode is used in many modern terminals because it allows much more
+dynamism. For example, if you type an invalid command into a modern
+terminal, it might ‘highlight’ it in red to indicate that it’s invalid
+<em>as you type</em>. It can do this because your terminal is sending
+data character by character.</p>
 <h2 id="pty-as-a-file">PTY as a file</h2>
-<p>Everything in Linux is a file, and the PTY is no exception. You can run <code>ps</code> from your terminal and you might see something like:</p>
+<p>Everything in Linux is a file, and the PTY is no exception. You can
+run <code>ps</code> from your terminal and you might see something
+like:</p>
 <pre><code>   PID TTY          TIME CMD
  426886 pts/1    00:00:01 zsh
  427154 pts/1    00:00:00 ps</code></pre>
-<p>The “TTY” here points to your PTY, which here would be the file <code>/dev/pts/1</code>. So you can do <code>echo &quot;Hi!&quot; &gt; /dev/pts/1</code> and your terminal will assume that this is coming directly from the shell. You can also do <code>echo &quot;Hi from new window!&quot; &gt; /dev/pts/1</code> from a <em>different</em> terminal, and ‘hijack’ the terminal of someone else’s process! This is one reason why you shouldn’t have multiple people logging onto a production server as a single user.</p>
+<p>The “TTY” here points to your PTY, which here would be the file
+<code>/dev/pts/1</code>. So you can do
+<code>echo &quot;Hi!&quot; &gt; /dev/pts/1</code> and your terminal will assume
+that this is coming directly from the shell. You can also do
+<code>echo &quot;Hi from new window!&quot; &gt; /dev/pts/1</code> from a
+<em>different</em> terminal, and ‘hijack’ the terminal of someone else’s
+process! This is one reason why you shouldn’t have multiple people
+logging onto a production server as a single user.</p>
 
 
 </body></html>

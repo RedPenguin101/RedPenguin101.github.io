@@ -3,84 +3,113 @@
   <meta content="pandoc" name="generator" />
   <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
   <title>2022_08_06_wm3</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<h1 id="linux-window-manager-part-3-building-a-window-manager">Linux Window Manager Part 3: Building a Window Manager</h1>
-<p>In the previous posts in this series I’ve talked about graphical interfaces, the role that window managers play in them, the X protocol and X11 library. In this post we will bring those things together and build a simple window manager. Sort of.</p>
+<h1 id="linux-window-manager-part-3-building-a-window-manager">Linux
+Window Manager Part 3: Building a Window Manager</h1>
+<p>In the previous posts in this series I’ve talked about graphical
+interfaces, the role that window managers play in them, the X protocol
+and X11 library. In this post we will bring those things together and
+build a simple window manager. Sort of.</p>
 <h2 id="the-singleton-window-manager">The Singleton Window Manager</h2>
-<p>I say “sort of”, because the program we build is <em>barely</em> going to actually manage windows. We are going to build an innovative new type of window manager called the <em>Singleton</em> window manager, <strong>SWM</strong>. The idea behind it is that, hey, you don’t <em>need</em> all those windows on the screen at the same time. You only have one pair of eyes, one mouse pointer, right? One app on screen is enough. Anything else is just distraction.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1"> <a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> Oh, and you don’t need any status bars either. Wasted real estate. </span></p>
+<p>I say “sort of”, because the program we build is <em>barely</em>
+going to actually manage windows. We are going to build an innovative
+new type of window manager called the <em>Singleton</em> window manager,
+<strong>SWM</strong>. The idea behind it is that, hey, you don’t
+<em>need</em> all those windows on the screen at the same time. You only
+have one pair of eyes, one mouse pointer, right? One app on screen is
+enough. Anything else is just
+distraction.<sup class="fnref"><a href="#fn1" id="note1" title="Footnote 1">1</a></sup><span class="footnote" id="fn1">
+<a class="fnref" href="#note1" title="Footnote 1 Reference">1</a> Oh,
+and you don’t need any status bars either. Wasted real estate.
+</span></p>
 
-<p>Now, obviously this isn’t true. There are plenty of reasons you might want multiple windows on screen. But the intention here is only to show you how a window manager works. Other simplifications we will make is that we will consider only one monitor, and will not have any concepts of multiple ‘workspaces’ or ‘tags’.</p>
+<p>Now, obviously this isn’t true. There are plenty of reasons you might
+want multiple windows on screen. But the intention here is only to show
+you how a window manager works. Other simplifications we will make is
+that we will consider only one monitor, and will not have any concepts
+of multiple ‘workspaces’ or ‘tags’.</p>
 <h2 id="the-behavior-of-swm">The behavior of SWM</h2>
 <p>Here is what we will be implementing:</p>
 <ul>
@@ -89,117 +118,206 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>The user can open a terminal with a shortcut</li>
 <li>When a user opens a window, it fills the screen.</li>
 <li>The user can close any opened window with a shortcut</li>
-<li>If the user closes all windows, the (blank) desktop will be shown.</li>
-<li>The user can launch a window containing any graphical application on their computer</li>
-<li>When a user opens a second window, it also fills the screen, replacing the previous one.</li>
-<li>If the user closes the second window, the first window will be shown, full screen. (In this sense, the windows work like a stack, with new windows ‘pushed’ onto the top of the stack, and ‘popped’ off the top when they are closed.)</li>
+<li>If the user closes all windows, the (blank) desktop will be
+shown.</li>
+<li>The user can launch a window containing any graphical application on
+their computer</li>
+<li>When a user opens a second window, it also fills the screen,
+replacing the previous one.</li>
+<li>If the user closes the second window, the first window will be
+shown, full screen. (In this sense, the windows work like a stack, with
+new windows ‘pushed’ onto the top of the stack, and ‘popped’ off the top
+when they are closed.)</li>
 </ul>
 <p>We will be implementing the first two requirements today.</p>
-<h2 id="getting-set-up-for-wm-development">Getting set up for WM development</h2>
-<p>The key thing you need is a linux machine with X11 dev libraries installed. I won’t go into how to do that, but on Ubuntu something like <code>sudo apt install libx11-dev</code> should do the trick.</p>
+<h2 id="getting-set-up-for-wm-development">Getting set up for WM
+development</h2>
+<p>The key thing you need is a linux machine with X11 dev libraries
+installed. I won’t go into how to do that, but on Ubuntu something like
+<code>sudo apt install libx11-dev</code> should do the trick.</p>
 <h2 id="swmv0-the-core-loop">SWMv0: The core loop</h2>
-<p>Our first goal is to create a window manager that can be loaded by our machine. We will verify it’s working by making sure it’s picking up key presses. We also need to be able to exit out of it.</p>
-<p>We start by creating the file <em>swm0.c</em><sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2"> <a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> See the full file at <a href="https://github.com/RedPenguin101/swm/blob/main/swm0.c">the swm github repo</a> </span> with the imports and globals.</p>
+<p>Our first goal is to create a window manager that can be loaded by
+our machine. We will verify it’s working by making sure it’s picking up
+key presses. We also need to be able to exit out of it.</p>
+<p>We start by creating the file
+<em>swm0.c</em><sup class="fnref"><a href="#fn2" id="note2" title="Footnote 2">2</a></sup><span class="footnote" id="fn2">
+<a class="fnref" href="#note2" title="Footnote 2 Reference">2</a> See
+the full file at <a href="https://github.com/RedPenguin101/swm/blob/main/swm0.c">the swm
+github repo</a> </span>
+with the imports and globals.</p>
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="pp">#include </span><span class="im">&lt;X11/Xlib.h&gt;</span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="pp">#include </span><span class="im">&lt;X11/cursorfont.h&gt;</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="pp">#include </span><span class="im">&lt;X11/keysym.h&gt;</span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="pp">#include </span><span class="im">&lt;stdbool.h&gt;</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
-<a class="sourceLine" id="cb1-6" title="6"></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="dt">static</span> Display* display;</a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="dt">static</span> <span class="dt">int</span> screen;</a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="dt">static</span> <span class="dt">int</span> screen_w, screen_h;</a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="dt">static</span> <span class="dt">int</span> running = true;</a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="dt">static</span> Window root;</a>
-<a class="sourceLine" id="cb1-12" title="12"></a>
-<a class="sourceLine" id="cb1-13" title="13">Cursor cursor;</a>
-<a class="sourceLine" id="cb1-14" title="14"></a>
-<a class="sourceLine" id="cb1-15" title="15"><span class="dt">FILE</span>* logfile;</a>
-<a class="sourceLine" id="cb1-16" title="16"><span class="dt">const</span> <span class="dt">char</span>* logpath = <span class="st">&quot;/home/joe/programming/projects/swm/log_swm0.txt&quot;</span>;</a></code></pre></div>
-<p>We are loading 3 X11 libraries, the use of which will be clear from the name and how we will use them later.</p>
-<p>For globals we will have an X Display pointer, and slots to put the identifier of the screen and “root” window of that screen. We’ll also store the width and height of that screen, since we will need to refer to it often.</p>
-<p>Finally there is a boolean ‘running’ which we’ll use as our loop terminator, a Cursor (an X Object) and a file and path for logging.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;X11/Xlib.h&gt;</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;X11/cursorfont.h&gt;</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;X11/keysym.h&gt;</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbool.h&gt;</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="dt">static</span> Display<span class="op">*</span> display<span class="op">;</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> screen<span class="op">;</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> screen_w<span class="op">,</span> screen_h<span class="op">;</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> running <span class="op">=</span> true<span class="op">;</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="dt">static</span> Window root<span class="op">;</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>Cursor cursor<span class="op">;</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="dt">FILE</span><span class="op">*</span> logfile<span class="op">;</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span><span class="op">*</span> logpath <span class="op">=</span> <span class="st">&quot;/home/joe/programming/projects/swm/log_swm0.txt&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>We are loading 3 X11 libraries, the use of which will be clear from
+the name and how we will use them later.</p>
+<p>For globals we will have an X Display pointer, and slots to put the
+identifier of the screen and “root” window of that screen. We’ll also
+store the width and height of that screen, since we will need to refer
+to it often.</p>
+<p>Finally there is a boolean ‘running’ which we’ll use as our loop
+terminator, a Cursor (an X Object) and a file and path for logging.</p>
 <p>Our main function is like this:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" title="1"><span class="dt">int</span> main(<span class="dt">int</span> args, <span class="dt">char</span>* argv[]) {</a>
-<a class="sourceLine" id="cb2-2" title="2">  <span class="cf">if</span> (!(display = XOpenDisplay(NULL)))</a>
-<a class="sourceLine" id="cb2-3" title="3">    <span class="cf">return</span> <span class="dv">1</span>;</a>
-<a class="sourceLine" id="cb2-4" title="4">  setup();</a>
-<a class="sourceLine" id="cb2-5" title="5">  run();</a>
-<a class="sourceLine" id="cb2-6" title="6">  cleanup();</a>
-<a class="sourceLine" id="cb2-7" title="7">  XCloseDisplay(display);</a>
-<a class="sourceLine" id="cb2-8" title="8">  <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb2-9" title="9">}</a></code></pre></div>
-<p>This is pretty standard, and will change not at all during the build. We open the connection to the Xorg display, we set ourselves up and enter the run loop. Then when we are finished we clean up and close the display.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> args<span class="op">,</span> <span class="dt">char</span><span class="op">*</span> argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(!(</span>display <span class="op">=</span> XOpenDisplay<span class="op">(</span>NULL<span class="op">)))</span></span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>  setup<span class="op">();</span></span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>  run<span class="op">();</span></span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>  cleanup<span class="op">();</span></span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>  XCloseDisplay<span class="op">(</span>display<span class="op">);</span></span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>This is pretty standard, and will change not at all during the build.
+We open the connection to the Xorg display, we set ourselves up and
+enter the run loop. Then when we are finished we clean up and close the
+display.</p>
 <h3 id="setup-and-substructure">Setup and Substructure</h3>
 <p>The setup function is a bit more complicated.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">static</span> <span class="dt">void</span> setup() {</a>
-<a class="sourceLine" id="cb3-2" title="2">  <span class="co">//1. logging</span></a>
-<a class="sourceLine" id="cb3-3" title="3">  logfile = fopen(logpath, <span class="st">&quot;w&quot;</span>);</a>
-<a class="sourceLine" id="cb3-4" title="4">  fprintf(logfile, <span class="st">&quot;START SESSION LOG</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
-<a class="sourceLine" id="cb3-5" title="5"></a>
-<a class="sourceLine" id="cb3-6" title="6">  <span class="co">//2. screen setup</span></a>
-<a class="sourceLine" id="cb3-7" title="7">  screen = DefaultScreen(display);</a>
-<a class="sourceLine" id="cb3-8" title="8">  screen_w = DisplayWidth(display, screen);</a>
-<a class="sourceLine" id="cb3-9" title="9">  screen_h = DisplayHeight(display, screen);</a>
-<a class="sourceLine" id="cb3-10" title="10">  root = RootWindow(display, screen);</a>
-<a class="sourceLine" id="cb3-11" title="11">  fprintf(logfile, <span class="st">&quot;Root window %ld</span><span class="sc">\n</span><span class="st">&quot;</span>, root);</a>
-<a class="sourceLine" id="cb3-12" title="12"></a>
-<a class="sourceLine" id="cb3-13" title="13">  <span class="co">//3. reconfiguring root</span></a>
-<a class="sourceLine" id="cb3-14" title="14">  XSetWindowAttributes wa;</a>
-<a class="sourceLine" id="cb3-15" title="15">  cursor = XCreateFontCursor(display, XC_left_ptr);</a>
-<a class="sourceLine" id="cb3-16" title="16">  wa.cursor = cursor;</a>
-<a class="sourceLine" id="cb3-17" title="17"></a>
-<a class="sourceLine" id="cb3-18" title="18">  wa.event_mask =</a>
-<a class="sourceLine" id="cb3-19" title="19">      SubstructureRedirectMask | SubstructureNotifyMask | KeyPressMask;</a>
-<a class="sourceLine" id="cb3-20" title="20"></a>
-<a class="sourceLine" id="cb3-21" title="21">  XMoveResizeWindow(display, root, <span class="dv">0</span>, <span class="dv">0</span>, screen_w, screen_h);</a>
-<a class="sourceLine" id="cb3-22" title="22">  XChangeWindowAttributes(display, root, CWEventMask | CWCursor, &amp;wa);</a>
-<a class="sourceLine" id="cb3-23" title="23">}</a></code></pre></div>
-<p>The screen setup is pretty standard stuff: you get the screen from the display (and the dimensions of the screen), and get the root window of the screen.</p>
-<p>Next we reconfigure the root window so it acts as the base of a window manager. In X re-configuring windows is done with an <code>XSetWindowAttributes</code> that is then applied to the window with <code>XChangeWindowAttributes</code>. For now we are changing two things: We are setting the cursor, and we are setting the ‘event_mask’.</p>
-<p>The first is important but not interesting - you have to set up a cursor or the program won’t work.</p>
-<p>The second is important and also crucial to the operation of a window manager. As we saw in part 2, an event mask is just a bit mask which tells which tell XOrg which events are ‘listened’ for in this window. Previously we’d seen things like <code>KeyPressMask</code> and <code>MouseMotionMask</code>. Here we have the <code>SubstructureRedirectMask</code> and <code>SubstructureNotifyMask</code>. What these two do is to tell XOrg that whenever windows under the root emit events, to not process them directly but <em>send them to our program</em> to deal with. This is what allows our WM to work: Xorg routes any event traffic from other programs to us, and the vast bulk of our program will be deciding how to handle these events.</p>
-<p>A critical thing here is that Xorg will only allow <em>one</em> window to have this substructure redirect and notify settings at once. This means you can only have one WM running on a Linux session - for obvious reasons. A proper window manager will check for this, and fail elegantly if we try to launch a second WM, but for now we’ll just let it ride.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> setup<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>  <span class="co">//1. logging</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>  logfile <span class="op">=</span> fopen<span class="op">(</span>logpath<span class="op">,</span> <span class="st">&quot;w&quot;</span><span class="op">);</span></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;START SESSION LOG</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>  <span class="co">//2. screen setup</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>  screen <span class="op">=</span> DefaultScreen<span class="op">(</span>display<span class="op">);</span></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>  screen_w <span class="op">=</span> DisplayWidth<span class="op">(</span>display<span class="op">,</span> screen<span class="op">);</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>  screen_h <span class="op">=</span> DisplayHeight<span class="op">(</span>display<span class="op">,</span> screen<span class="op">);</span></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>  root <span class="op">=</span> RootWindow<span class="op">(</span>display<span class="op">,</span> screen<span class="op">);</span></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Root window %ld</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> root<span class="op">);</span></span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>  <span class="co">//3. reconfiguring root</span></span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>  XSetWindowAttributes wa<span class="op">;</span></span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>  cursor <span class="op">=</span> XCreateFontCursor<span class="op">(</span>display<span class="op">,</span> XC_left_ptr<span class="op">);</span></span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>  wa<span class="op">.</span>cursor <span class="op">=</span> cursor<span class="op">;</span></span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a></span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>  wa<span class="op">.</span>event_mask <span class="op">=</span></span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>      SubstructureRedirectMask <span class="op">|</span> SubstructureNotifyMask <span class="op">|</span> KeyPressMask<span class="op">;</span></span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a></span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>  XMoveResizeWindow<span class="op">(</span>display<span class="op">,</span> root<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> screen_w<span class="op">,</span> screen_h<span class="op">);</span></span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>  XChangeWindowAttributes<span class="op">(</span>display<span class="op">,</span> root<span class="op">,</span> CWEventMask <span class="op">|</span> CWCursor<span class="op">,</span> <span class="op">&amp;</span>wa<span class="op">);</span></span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The screen setup is pretty standard stuff: you get the screen from
+the display (and the dimensions of the screen), and get the root window
+of the screen.</p>
+<p>Next we reconfigure the root window so it acts as the base of a
+window manager. In X re-configuring windows is done with an
+<code>XSetWindowAttributes</code> that is then applied to the window
+with <code>XChangeWindowAttributes</code>. For now we are changing two
+things: We are setting the cursor, and we are setting the
+‘event_mask’.</p>
+<p>The first is important but not interesting - you have to set up a
+cursor or the program won’t work.</p>
+<p>The second is important and also crucial to the operation of a window
+manager. As we saw in part 2, an event mask is just a bit mask which
+tells which tell XOrg which events are ‘listened’ for in this window.
+Previously we’d seen things like <code>KeyPressMask</code> and
+<code>MouseMotionMask</code>. Here we have the
+<code>SubstructureRedirectMask</code> and
+<code>SubstructureNotifyMask</code>. What these two do is to tell XOrg
+that whenever windows under the root emit events, to not process them
+directly but <em>send them to our program</em> to deal with. This is
+what allows our WM to work: Xorg routes any event traffic from other
+programs to us, and the vast bulk of our program will be deciding how to
+handle these events.</p>
+<p>A critical thing here is that Xorg will only allow <em>one</em>
+window to have this substructure redirect and notify settings at once.
+This means you can only have one WM running on a Linux session - for
+obvious reasons. A proper window manager will check for this, and fail
+elegantly if we try to launch a second WM, but for now we’ll just let it
+ride.</p>
 <h3 id="the-loop-and-event-handlers">The loop and event handlers</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" title="1"><span class="dt">static</span> <span class="dt">void</span> run() {</a>
-<a class="sourceLine" id="cb4-2" title="2">  XEvent event;</a>
-<a class="sourceLine" id="cb4-3" title="3">  <span class="cf">while</span> (running &amp;&amp; XNextEvent(display, &amp;event) == <span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb4-4" title="4">    <span class="cf">switch</span> (event.type) {</a>
-<a class="sourceLine" id="cb4-5" title="5">      <span class="cf">case</span> KeyPress:</a>
-<a class="sourceLine" id="cb4-6" title="6">        keypress_handler(&amp;event);</a>
-<a class="sourceLine" id="cb4-7" title="7">        <span class="cf">break</span>;</a>
-<a class="sourceLine" id="cb4-8" title="8">      <span class="cf">default</span>:</a>
-<a class="sourceLine" id="cb4-9" title="9">        fprintf(logfile, <span class="st">&quot;Unhandled event-type: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, event.type);</a>
-<a class="sourceLine" id="cb4-10" title="10">    }</a>
-<a class="sourceLine" id="cb4-11" title="11">  }</a>
-<a class="sourceLine" id="cb4-12" title="12">}</a>
-<a class="sourceLine" id="cb4-13" title="13"></a>
-<a class="sourceLine" id="cb4-14" title="14"><span class="dt">static</span> <span class="dt">void</span> keypress_handler(XEvent* event) {</a>
-<a class="sourceLine" id="cb4-15" title="15">  XKeyEvent* ev = &amp;event-&gt;xkey;</a>
-<a class="sourceLine" id="cb4-16" title="16">  KeySym keysym = XKeycodeToKeysym(display, ev-&gt;keycode, <span class="dv">0</span>);</a>
-<a class="sourceLine" id="cb4-17" title="17">  fprintf(logfile, <span class="st">&quot;Keypress </span><span class="sc">\t\t</span><span class="st"> KeySym: %ld modifier = 0x%x</span><span class="sc">\n</span><span class="st">&quot;</span>, keysym, ev-&gt;state);</a>
-<a class="sourceLine" id="cb4-18" title="18">  <span class="cf">if</span> (keysym == XK_q)</a>
-<a class="sourceLine" id="cb4-19" title="19">    running = false;</a>
-<a class="sourceLine" id="cb4-20" title="20">}</a></code></pre></div>
-<p>This is the same for the X11 program examples we saw in part 2, and for most X11 programs: We enter a loop where we get the event (with <code>XNextEvent</code>), match on the <code>event.type</code>, and for each event we have a ‘handler’ function which determines how we deal with the event.</p>
-<p>In this case, we have a single handler for keypresses<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3"> <a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> Note that the ‘keysym’ way of handling is deprecated, and you’ll get a warning every time you compile. But that’s what dwm does, and if it’s good enough for them, it’s good enough for this. </span>. Otherwise we’ll log our the event type so we can see what messages we’re getting. The keypress handler detects if the button we have pressed is a lowercase <code>q</code>, and if it is, sets <code>running</code> to false, which will quit the program.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> run<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>  XEvent event<span class="op">;</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>  <span class="cf">while</span> <span class="op">(</span>running <span class="op">&amp;&amp;</span> XNextEvent<span class="op">(</span>display<span class="op">,</span> <span class="op">&amp;</span>event<span class="op">)</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>event<span class="op">.</span>type<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>      <span class="cf">case</span> KeyPress<span class="op">:</span></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>        keypress_handler<span class="op">(&amp;</span>event<span class="op">);</span></span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>      <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>        fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Unhandled event-type: %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> event<span class="op">.</span>type<span class="op">);</span></span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> keypress_handler<span class="op">(</span>XEvent<span class="op">*</span> event<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>  XKeyEvent<span class="op">*</span> ev <span class="op">=</span> <span class="op">&amp;</span>event<span class="op">-&gt;</span>xkey<span class="op">;</span></span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>  KeySym keysym <span class="op">=</span> XKeycodeToKeysym<span class="op">(</span>display<span class="op">,</span> ev<span class="op">-&gt;</span>keycode<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Keypress </span><span class="sc">\t\t</span><span class="st"> KeySym: %ld modifier = 0x%x</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> keysym<span class="op">,</span> ev<span class="op">-&gt;</span>state<span class="op">);</span></span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>keysym <span class="op">==</span> XK_q<span class="op">)</span></span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>    running <span class="op">=</span> false<span class="op">;</span></span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>This is the same for the X11 program examples we saw in part 2, and
+for most X11 programs: We enter a loop where we get the event (with
+<code>XNextEvent</code>), match on the <code>event.type</code>, and for
+each event we have a ‘handler’ function which determines how we deal
+with the event.</p>
+<p>In this case, we have a single handler for
+keypresses<sup class="fnref"><a href="#fn3" id="note3" title="Footnote 3">3</a></sup><span class="footnote" id="fn3">
+<a class="fnref" href="#note3" title="Footnote 3 Reference">3</a> Note
+that the ‘keysym’ way of handling is deprecated, and you’ll get a
+warning every time you compile. But that’s what dwm does, and if it’s
+good enough for them, it’s good enough for this. </span>.
+Otherwise we’ll log our the event type so we can see what messages we’re
+getting. The keypress handler detects if the button we have pressed is a
+lowercase <code>q</code>, and if it is, sets <code>running</code> to
+false, which will quit the program.</p>
 
-<p>Finally we have ‘cleanup’. Right now there’s nothing to clean up, so we are just closing the log file.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" title="1"><span class="dt">static</span> <span class="dt">void</span> cleanup() {</a>
-<a class="sourceLine" id="cb5-2" title="2">  fprintf(logfile, <span class="st">&quot;END SESSION LOG</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
-<a class="sourceLine" id="cb5-3" title="3">  fclose(logfile);</a>
-<a class="sourceLine" id="cb5-4" title="4">}</a></code></pre></div>
+<p>Finally we have ‘cleanup’. Right now there’s nothing to clean up, so
+we are just closing the log file.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> cleanup<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;END SESSION LOG</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>  fclose<span class="op">(</span>logfile<span class="op">);</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <h2 id="running-your-window-manager">Running your window manager</h2>
 <p>First, compile your program with:</p>
 <pre><code>cc swm0.c -lX11 -o swm0</code></pre>
-<p>Once you have your binary <code>swm0</code>, move it to <code>/usr/bin/</code></p>
-<p>Next you need to get yourself into a linux session that doesn’t have another WM running. One way to do this is to have your OS set up so it doesn’t launch a WM by default, and loads you into a command line prompt. If you don’t have this, and you are in a graphical environment already (which if you are reading this you presumably are), you can switch to another tty session. Usually this is done with the command <code>Ctrl+Alt+Fx</code>, where x is the number of the tty you want to switch to<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4"> <a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> having two X sessions running at once, even on different ttys, can cause some weirdness, even when the WM has proper error handling, which ours assuredly does not. Be prepared to restart your machine if things go wonky. </span> <sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5"> <a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> A third method, and one which will be used when you are done with development and actually want to <em>use</em> your WM, is to create a <code>swm.desktop</code> file in <code>/usr/share/xsessions</code>. This will be used by your display manager so you can load into our new WM as opposed to your normal one. </span>.</p>
+<p>Once you have your binary <code>swm0</code>, move it to
+<code>/usr/bin/</code></p>
+<p>Next you need to get yourself into a linux session that doesn’t have
+another WM running. One way to do this is to have your OS set up so it
+doesn’t launch a WM by default, and loads you into a command line
+prompt. If you don’t have this, and you are in a graphical environment
+already (which if you are reading this you presumably are), you can
+switch to another tty session. Usually this is done with the command
+<code>Ctrl+Alt+Fx</code>, where x is the number of the tty you want to
+switch
+to<sup class="fnref"><a href="#fn4" id="note4" title="Footnote 4">4</a></sup><span class="footnote" id="fn4">
+<a class="fnref" href="#note4" title="Footnote 4 Reference">4</a> having
+two X sessions running at once, even on different ttys, can cause some
+weirdness, even when the WM has proper error handling, which ours
+assuredly does not. Be prepared to restart your machine if things go
+wonky. </span>
+<sup class="fnref"><a href="#fn5" id="note5" title="Footnote 5">5</a></sup><span class="footnote" id="fn5">
+<a class="fnref" href="#note5" title="Footnote 5 Reference">5</a> A
+third method, and one which will be used when you are done with
+development and actually want to <em>use</em> your WM, is to create a
+<code>swm.desktop</code> file in <code>/usr/share/xsessions</code>. This
+will be used by your display manager so you can load into our new WM as
+opposed to your normal one. </span>.</p>
 
 
-<p>Using either of the above methods you should be looking at a linux session where Xorg isn’t loaded. To start your X session using your WM, in the command prompt put:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1">➜ <span class="ex">startx</span> /etc/X11/Xsession swm0</a></code></pre></div>
-<p>Assuming this worked, congratulations, you have a working WM. Admittedly it’s just a blank screen. Try typing ‘hello’, then hit ‘q’, and it’ll dump you back to the tty. Now, if you look at the log file you configured, you should see something like this, indicating your WM is listening to your key commands.</p>
+<p>Using either of the above methods you should be looking at a linux
+session where Xorg isn’t loaded. To start your X session using your WM,
+in the command prompt put:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="ex">➜</span> startx /etc/X11/Xsession swm0</span></code></pre></div>
+<p>Assuming this worked, congratulations, you have a working WM.
+Admittedly it’s just a blank screen. Try typing ‘hello’, then hit ‘q’,
+and it’ll dump you back to the tty. Now, if you look at the log file you
+configured, you should see something like this, indicating your WM is
+listening to your key commands.</p>
 <pre><code>START SESSION LOG
 Root window 1980
 Keypress        KeySym: 104 state = 0x0
@@ -210,7 +328,8 @@ Keypress        KeySym: 111 state = 0x0
 Keypress        KeySym: 119 state = 0x0
 Keypress        KeySym: 113 state = 0x0
 END SESSION LOG</code></pre>
-<p>This is step one in our WM creation journey. In this session we have implemented the following points of our requirements list:</p>
+<p>This is step one in our WM creation journey. In this session we have
+implemented the following points of our requirements list:</p>
 <ul>
 <li>The WM opens on a blank screen</li>
 <li>The user can quit out of the WM with a shortcut</li>
