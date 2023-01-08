@@ -1,0 +1,398 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2021_05_08_dijkstra_clojure</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="dijkstras-shortest-path">Dijkstra’s shortest path</h1>
+<p>https://www.youtube.com/watch?v=GazC3A4OQTE</p>
+<p>When you have a graph a common requirement is to find the shortest
+path between two nodes. We’ll use the analogy of roads.</p>
+<p>Each node represents a junction in the road system. The length of the
+edges represent the distance between the junctions (or how long it takes
+to get between the junctions). Dijkstra does a flood-fill through the
+graph, but does it in an order that makes sense. That is, we check the
+quickest roads first.</p>
+<p>To implement Dijkstra we need a graph, and a starting node. And we
+need an idea of how long the path to a node is when we’ve calculated it.
+We start at node S. S has a distance of 0, because we’re already there.
+Everything else has a distance of infinity, because we haven’t visited
+them yet. We line up all our nodes, with their distance, in a
+<em>prioritised queue</em>. We start at S, and we look at all the
+connections of S. S in this example has connections A (7), B (2), C
+(3)</p>
+<ul>
+<li>S -&gt; FINISHED</li>
+<li>B 2 S</li>
+<li>C 3 S</li>
+<li>A 7 S</li>
+<li>D Inf</li>
+</ul>
+<p>Now we pick the shortest path: B. B has connections D (4), A (3), H
+(1). So our new queue looks like</p>
+<ul>
+<li>B -&gt; FINISHED</li>
+<li>C 3 S</li>
+<li>H (2+1=3) B</li>
+<li>A (2+3=5) B</li>
+<li>D (2+4=6) B</li>
+</ul>
+<p>Next is C</p>
+<ul>
+<li>C -&gt; FINISHED</li>
+<li>H 3 B</li>
+<li>A 5 B</li>
+<li>L (3+2=5) C</li>
+<li>D 6 B</li>
+</ul>
+<p>Then</p>
+<ul>
+<li>H -&gt; FINISHED</li>
+<li>A 5 B</li>
+<li>L 5 C</li>
+<li>G (3+2=5) H</li>
+<li>D 6 B</li>
+<li>F (3+3=6) H</li>
+</ul>
+<p>Then</p>
+<ul>
+<li>A -&gt; FINISHED</li>
+<li>L 5 C</li>
+<li>G 5 H</li>
+<li>D 6 B (5+4=9, so original 6 B stays)</li>
+<li>F 6 H</li>
+</ul>
+<p>Then</p>
+<ul>
+<li>L -&gt; FINISHED</li>
+<li>G 5 H</li>
+<li>D 6 B</li>
+<li>F 6 H</li>
+<li>I (5+4=9) C</li>
+<li>J (5+4=9) C</li>
+</ul>
+<p>Then</p>
+<ul>
+<li>G -&gt; FINISHED</li>
+<li>D 6 B</li>
+<li>F 6 H</li>
+<li>I 9 C</li>
+<li>J 9 C</li>
+<li>E (5+2=7) G</li>
+</ul>
+<p>Last, you backtrack: E-&gt;G, G-&gt;H, H-&gt;B, B-&gt;S. So the
+shortest path is SBHGE.</p>
+<p>Stated concisely, the algorithm is:</p>
+<ol type="1">
+<li>Add start-node to priority queue, with distance 0</li>
+<li>take the first node N from the queue, with distance Nd</li>
+<li>get nodes connected to N, [M], and distances from N [Md]</li>
+<li>for each node in M:
+<ol type="1">
+<li>If M is in the Finished pile, ignore it</li>
+<li>If M is not in the priority queue, add it to the priority queue with
+priority (Nd + Md)</li>
+<li>If M is in the priority queue, assign it the priority (min
+current-priority (Nd + Md))</li>
+</ol></li>
+<li>If M is the target, you are don</li>
+<li>If M is not the target, go to step 2</li>
+</ol>
+<h2 id="an-implementation-in-clojure">An implementation in Clojure</h2>
+<p>First, a very simple undirected graph implementation, with an API
+of</p>
+<ul>
+<li><code>connections : graph, node -&gt; #{[from to length]}</code></li>
+<li><code>nodes : graph -&gt; #{nodes}</code></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> edge </span>[graph start end weight]</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>  (<span class="kw">-&gt;</span> graph</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>      (<span class="kw">conj</span> [start end weight])</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>      (<span class="kw">conj</span> [end start weight])))</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> nodes </span>[graph]</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>  (<span class="kw">set</span> (<span class="kw">map</span> <span class="kw">first</span> graph)))</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> connections </span>[graph <span class="kw">node</span>]</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>  (<span class="kw">set</span> (<span class="kw">filter</span> #(#{<span class="kw">node</span>} (<span class="kw">first</span> <span class="va">%</span>)) graph)))</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> graph </span>(<span class="kw">-&gt;</span> #{}</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>               (edge <span class="at">:s</span> <span class="at">:a</span> <span class="dv">7</span>)</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>               (edge <span class="at">:s</span> <span class="at">:b</span> <span class="dv">2</span>)</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>               (edge <span class="at">:s</span> <span class="at">:c</span> <span class="dv">3</span>)</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>               (edge <span class="at">:a</span> <span class="at">:d</span> <span class="dv">4</span>)</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>               (edge <span class="at">:a</span> <span class="at">:b</span> <span class="dv">3</span>)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>               (edge <span class="at">:b</span> <span class="at">:d</span> <span class="dv">4</span>)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>               (edge <span class="at">:b</span> <span class="at">:h</span> <span class="dv">1</span>)</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>               (edge <span class="at">:c</span> <span class="at">:l</span> <span class="dv">2</span>)</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>               (edge <span class="at">:d</span> <span class="at">:f</span> <span class="dv">5</span>)</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>               (edge <span class="at">:e</span> <span class="at">:g</span> <span class="dv">2</span>)</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>               (edge <span class="at">:e</span> <span class="at">:k</span> <span class="dv">5</span>)</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>               (edge <span class="at">:f</span> <span class="at">:h</span> <span class="dv">3</span>)</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>               (edge <span class="at">:g</span> <span class="at">:h</span> <span class="dv">2</span>)</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>               (edge <span class="at">:i</span> <span class="at">:l</span> <span class="dv">4</span>)</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>               (edge <span class="at">:i</span> <span class="at">:j</span> <span class="dv">6</span>)</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>               (edge <span class="at">:i</span> <span class="at">:k</span> <span class="dv">4</span>)</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>               (edge <span class="at">:j</span> <span class="at">:l</span> <span class="dv">4</span>)</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>               (edge <span class="at">:j</span> <span class="at">:k</span> <span class="dv">4</span>)))</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>(nodes graph)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a><span class="co">;; =&gt; #{:e :s :l :k :g :c :j :h :b :d :f :i :a}</span></span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a></span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>(connections graph <span class="at">:s</span>)</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a><span class="co">;; =&gt; #{[:s :c 3] [:s :a 7] [:s :b 2]}</span></span></code></pre></div>
+<p>Next, a priority queue implementation, with an API of</p>
+<ul>
+<li><code>priority : queue -&gt; queue-entry</code> (returns the
+priority)</li>
+<li><code>update-queue : queue, [from-node, to-node, distance] -&gt; queue</code></li>
+</ul>
+<p>A queue entry here will be <code>[distance from-node]</code> (as in
+the example)</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> update-queue </span>[queue [from to dist]]</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>  (<span class="kw">let</span> [base (<span class="kw">first</span> (from queue))]</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    (<span class="kw">if</span> (<span class="kw">or</span> (<span class="kw">not</span> (to queue)) (<span class="kw">&lt;</span> (<span class="kw">+</span> base dist) (<span class="kw">first</span> (to queue))))</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>      (<span class="kw">assoc</span> queue to [(<span class="kw">+</span> base dist) from])</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>      queue)))</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> priority </span>[queue]</span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>  (<span class="kw">ffirst</span> (<span class="kw">sort-by</span> (<span class="kw">juxt</span> (<span class="kw">comp</span> <span class="kw">first</span> <span class="kw">second</span>) <span class="kw">first</span>) queue)))</span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>(<span class="bu">deftest</span><span class="fu"> q</span></span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>  (<span class="kw">testing</span> <span class="st">&quot;an unseen node gets added&quot;</span></span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a>    (<span class="kw">is</span> (<span class="kw">=</span> {<span class="at">:s</span> [<span class="dv">0</span> <span class="at">:s</span>], <span class="at">:b</span> [<span class="dv">2</span> <span class="at">:s</span>]}</span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>           (update-queue {<span class="at">:s</span> [<span class="dv">0</span> <span class="at">:s</span>]} [<span class="at">:s</span> <span class="at">:b</span> <span class="dv">2</span>]))))</span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>  (<span class="kw">testing</span> <span class="st">&quot;a seen node where the new route is shorter gets updated&quot;</span></span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>    (<span class="kw">is</span> (<span class="kw">=</span> [<span class="dv">5</span> <span class="at">:b</span>]</span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>           (<span class="at">:a</span> (update-queue {<span class="at">:s</span> [<span class="dv">0</span> <span class="at">:s</span>] <span class="at">:b</span> [<span class="dv">2</span> <span class="at">:s</span>] <span class="at">:a</span> [<span class="dv">7</span> <span class="at">:s</span>]}</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>                             [<span class="at">:b</span> <span class="at">:a</span> <span class="dv">3</span>])))))</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>  (<span class="kw">testing</span> <span class="st">&quot;a seen node where the new route is longer is unchanged&quot;</span></span>
+<span id="cb2-19"><a aria-hidden="true" href="#cb2-19" tabindex="-1"></a>    (<span class="kw">is</span> (<span class="kw">=</span> [<span class="dv">6</span> <span class="at">:b</span>]</span>
+<span id="cb2-20"><a aria-hidden="true" href="#cb2-20" tabindex="-1"></a>           (<span class="at">:d</span> (update-queue {<span class="at">:a</span> [<span class="dv">5</span> <span class="at">:b</span>] <span class="at">:l</span> [<span class="dv">5</span> <span class="at">:c</span>] <span class="at">:g</span> [<span class="dv">5</span> <span class="at">:h</span>] <span class="at">:d</span> [<span class="dv">6</span> <span class="at">:b</span>] <span class="at">:f</span> [<span class="dv">6</span> <span class="at">:h</span>]}</span>
+<span id="cb2-21"><a aria-hidden="true" href="#cb2-21" tabindex="-1"></a>                             [<span class="at">:a</span> <span class="at">:d</span> <span class="dv">4</span>]))))))</span></code></pre></div>
+<p>Our Dijkstra is going to take:</p>
+<ul>
+<li>an array of ‘done’ nodes, in the format [node path-length
+from-node]</li>
+<li>the graph</li>
+<li>the target node</li>
+<li>the priority queue</li>
+</ul>
+<p>And will return the list of done nodes when the target is
+reached.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> dijkstra</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>  ([graph start end] (dijkstra [] graph end {start [<span class="dv">0</span>]}))</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>  ([done graph target queue]</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>   (<span class="kw">let</span> [pri (priority queue)]</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>     (<span class="kw">if</span> (target queue)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>       (<span class="kw">conj</span> done (<span class="kw">cons</span> target (target queue)))</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>       (<span class="kw">recur</span> (<span class="kw">conj</span> done (<span class="kw">cons</span> pri (pri queue)))</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>              graph</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>              target</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>              (<span class="kw">dissoc</span> (<span class="kw">reduce</span> update-queue queue (connections graph pri))</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>                      pri))))))</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>(dijkstra graph <span class="at">:s</span> <span class="at">:e</span>)</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a><span class="co">;; =&gt; [(:s 0) (:b 2 :s) (:c 3 :s) (:h 3 :b) (:b 4 :h) (:s 4 :b) (:a 5 :b) (:g 5 :h) (:e 7 :g)]</span></span></code></pre></div>
+<p>Finally, we backtrack through the Dijkstra result to get to the
+path</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> follow </span>[<span class="kw">path</span> m <span class="kw">node</span>]</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">node</span> m)</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    (<span class="kw">recur</span> (<span class="kw">conj</span> <span class="kw">path</span> <span class="kw">node</span>) m (<span class="kw">node</span> m))</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    (<span class="kw">reverse</span> (<span class="kw">conj</span> <span class="kw">path</span> <span class="kw">node</span>))))</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> find-path </span>[dijkstra-result]</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>  (follow [] (<span class="kw">reduce</span> (<span class="kw">fn</span> [A [this _ from]]</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>                       (<span class="kw">assoc</span> A this from))</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>                     {}</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>                     (<span class="kw">reverse</span> dijkstra-result))</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>          (<span class="kw">first</span> (<span class="kw">last</span> dijkstra-result))))</span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>(<span class="bu">deftest</span><span class="fu"> t</span></span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>  (<span class="kw">is</span> (<span class="kw">=</span> [<span class="at">:s</span> <span class="at">:b</span> <span class="at">:h</span> <span class="at">:g</span> <span class="at">:e</span>]</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>         (find-path (dijkstra graph <span class="at">:s</span> <span class="at">:e</span>)))))</span></code></pre></div>
+<h2 id="new-nov-2022-an-elixir-implementation">New Nov 2022: An Elixir
+implementation</h2>
+<p>Basically the same implementation.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode elixir"><code class="sourceCode elixir"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="kw">defmodule</span> <span class="cn">Dijkstra</span> <span class="kw">do</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>  <span class="im">import</span> <span class="cn">Utils</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>  <span class="im">import</span> <span class="cn">Enum</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>  <span class="co"># General graph stuff</span></span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>  <span class="co"># adding _bidirectional_ edge</span></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>  <span class="kw">def</span> add_edge(graph, {start, finish, weight}) <span class="kw">do</span></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    graph</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    <span class="op">|&gt;</span> <span class="cn">MapSet</span><span class="op">.</span>put({start, finish, weight})</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    <span class="op">|&gt;</span> <span class="cn">MapSet</span><span class="op">.</span>put({finish, start, weight})</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>  <span class="kw">def</span> nodes(graph), <span class="kw">do</span>: map(graph, <span class="op">&amp;</span>first<span class="op">/</span><span class="dv">1</span>) <span class="op">|&gt;</span> uniq</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>  <span class="kw">def</span> connections(graph, node), <span class="kw">do</span>: filter(graph, <span class="kw">fn</span> {start, _, _} <span class="op">-&gt;</span> start <span class="op">==</span> node <span class="kw">end</span>)</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>  <span class="co"># Priority Queue stuff</span></span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>  <span class="co"># queue is a map of:</span></span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>  <span class="co">#       entry =&gt; {priority, origin}</span></span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>  <span class="co"># e.g %{:s    =&gt; {0, :s}}</span></span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>  <span class="co"># priority is the thing with the shortest distance</span></span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>  <span class="kw">def</span> priority(queue) <span class="kw">do</span></span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    {node, {dist, origin}} <span class="op">=</span> min_by(queue, compose(<span class="op">&amp;</span>second<span class="op">/</span><span class="dv">1</span>, <span class="op">&amp;</span>first<span class="op">/</span><span class="dv">1</span>))</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>    {node, dist, origin}</span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a></span>
+<span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>  <span class="co"># Updating the queue is passed an edge</span></span>
+<span id="cb5-27"><a aria-hidden="true" href="#cb5-27" tabindex="-1"></a>  <span class="co"># updating looks up the to and from nodes in the queue</span></span>
+<span id="cb5-28"><a aria-hidden="true" href="#cb5-28" tabindex="-1"></a>  <span class="co"># if the to-node isn't in the queue, just put it in the queue</span></span>
+<span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a>  <span class="co"># if the to-node is already there, and the existing distance to</span></span>
+<span id="cb5-30"><a aria-hidden="true" href="#cb5-30" tabindex="-1"></a>  <span class="co"># reach that nde is greater than the 'new' one, then put the new distance</span></span>
+<span id="cb5-31"><a aria-hidden="true" href="#cb5-31" tabindex="-1"></a>  <span class="co"># in the queue, along with the new origin.</span></span>
+<span id="cb5-32"><a aria-hidden="true" href="#cb5-32" tabindex="-1"></a>  <span class="kw">def</span> update_queue({from, to, dist}, queue) <span class="kw">do</span></span>
+<span id="cb5-33"><a aria-hidden="true" href="#cb5-33" tabindex="-1"></a>    base_from <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get(queue, from)</span>
+<span id="cb5-34"><a aria-hidden="true" href="#cb5-34" tabindex="-1"></a>    base_to <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get(queue, to)</span>
+<span id="cb5-35"><a aria-hidden="true" href="#cb5-35" tabindex="-1"></a>    new_dist <span class="op">=</span> (base_from <span class="op">|&gt;</span> first) <span class="op">+</span> dist</span>
+<span id="cb5-36"><a aria-hidden="true" href="#cb5-36" tabindex="-1"></a></span>
+<span id="cb5-37"><a aria-hidden="true" href="#cb5-37" tabindex="-1"></a>    <span class="cf">if</span><span class="op"> !</span>base_to <span class="op">||</span> new_dist <span class="op">&lt;</span> (base_to <span class="op">|&gt;</span> first) <span class="kw">do</span></span>
+<span id="cb5-38"><a aria-hidden="true" href="#cb5-38" tabindex="-1"></a>      <span class="cn">Map</span><span class="op">.</span>put(queue, to, {new_dist, from})</span>
+<span id="cb5-39"><a aria-hidden="true" href="#cb5-39" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb5-40"><a aria-hidden="true" href="#cb5-40" tabindex="-1"></a>      queue</span>
+<span id="cb5-41"><a aria-hidden="true" href="#cb5-41" tabindex="-1"></a>    <span class="kw">end</span></span>
+<span id="cb5-42"><a aria-hidden="true" href="#cb5-42" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb5-43"><a aria-hidden="true" href="#cb5-43" tabindex="-1"></a></span>
+<span id="cb5-44"><a aria-hidden="true" href="#cb5-44" tabindex="-1"></a>  <span class="kw">def</span> dijsktra(graph, start, finish), <span class="kw">do</span>: dijsktra([], graph, finish, %{start <span class="op">=&gt;</span> {<span class="dv">0</span>, start}})</span>
+<span id="cb5-45"><a aria-hidden="true" href="#cb5-45" tabindex="-1"></a>  <span class="co"># Done is list of {node, dist, from}</span></span>
+<span id="cb5-46"><a aria-hidden="true" href="#cb5-46" tabindex="-1"></a>  <span class="co"># the shortest path is the distance (second element) of the first entry</span></span>
+<span id="cb5-47"><a aria-hidden="true" href="#cb5-47" tabindex="-1"></a>  <span class="co"># in done</span></span>
+<span id="cb5-48"><a aria-hidden="true" href="#cb5-48" tabindex="-1"></a>  <span class="kw">def</span> dijsktra(done, graph, target, queue) <span class="kw">do</span></span>
+<span id="cb5-49"><a aria-hidden="true" href="#cb5-49" tabindex="-1"></a>    reached? <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get(queue, target)</span>
+<span id="cb5-50"><a aria-hidden="true" href="#cb5-50" tabindex="-1"></a>    <span class="cf">if</span> reached? <span class="kw">do</span></span>
+<span id="cb5-51"><a aria-hidden="true" href="#cb5-51" tabindex="-1"></a>      {dist, from} <span class="op">=</span> reached?</span>
+<span id="cb5-52"><a aria-hidden="true" href="#cb5-52" tabindex="-1"></a>      [{target, dist, from} <span class="op">|</span> done]</span>
+<span id="cb5-53"><a aria-hidden="true" href="#cb5-53" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb5-54"><a aria-hidden="true" href="#cb5-54" tabindex="-1"></a>      pri <span class="op">=</span> priority(queue)</span>
+<span id="cb5-55"><a aria-hidden="true" href="#cb5-55" tabindex="-1"></a>      new_done <span class="op">=</span> [pri <span class="op">|</span> done]</span>
+<span id="cb5-56"><a aria-hidden="true" href="#cb5-56" tabindex="-1"></a>      new_queue <span class="op">=</span> graph</span>
+<span id="cb5-57"><a aria-hidden="true" href="#cb5-57" tabindex="-1"></a>                  <span class="op">|&gt;</span> connections(pri <span class="op">|&gt;</span> first)</span>
+<span id="cb5-58"><a aria-hidden="true" href="#cb5-58" tabindex="-1"></a>                  <span class="op">|&gt;</span> reduce(queue, <span class="op">&amp;</span>update_queue<span class="op">/</span><span class="dv">2</span>)</span>
+<span id="cb5-59"><a aria-hidden="true" href="#cb5-59" tabindex="-1"></a>                  <span class="op">|&gt;</span> <span class="cn">Map</span><span class="op">.</span>delete(pri <span class="op">|&gt;</span> first)</span>
+<span id="cb5-60"><a aria-hidden="true" href="#cb5-60" tabindex="-1"></a>      dijsktra(new_done, graph, target, new_queue)</span>
+<span id="cb5-61"><a aria-hidden="true" href="#cb5-61" tabindex="-1"></a>    <span class="kw">end</span></span>
+<span id="cb5-62"><a aria-hidden="true" href="#cb5-62" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb5-63"><a aria-hidden="true" href="#cb5-63" tabindex="-1"></a></span>
+<span id="cb5-64"><a aria-hidden="true" href="#cb5-64" tabindex="-1"></a>  <span class="co"># dijkstra returns all the nodes visited before you hit the target,</span></span>
+<span id="cb5-65"><a aria-hidden="true" href="#cb5-65" tabindex="-1"></a>  <span class="co"># so some won't be on the shortest path. You need to 'walk' the result</span></span>
+<span id="cb5-66"><a aria-hidden="true" href="#cb5-66" tabindex="-1"></a>  <span class="co"># to find the path</span></span>
+<span id="cb5-67"><a aria-hidden="true" href="#cb5-67" tabindex="-1"></a>  <span class="kw">def</span> find_path([]), <span class="kw">do</span>: []</span>
+<span id="cb5-68"><a aria-hidden="true" href="#cb5-68" tabindex="-1"></a>  <span class="kw">def</span> find_path([{to, dist, from} <span class="op">|</span> rst]) <span class="kw">do</span></span>
+<span id="cb5-69"><a aria-hidden="true" href="#cb5-69" tabindex="-1"></a>    unconnected <span class="op">=</span> <span class="kw">fn</span> {x,_,_} <span class="op">-&gt;</span> x<span class="op"> !=</span> from <span class="kw">end</span></span>
+<span id="cb5-70"><a aria-hidden="true" href="#cb5-70" tabindex="-1"></a>    [{to, dist} <span class="op">|</span> rst <span class="op">|&gt;</span> drop_while(unconnected) <span class="op">|&gt;</span> find_path]</span>
+<span id="cb5-71"><a aria-hidden="true" href="#cb5-71" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb5-72"><a aria-hidden="true" href="#cb5-72" tabindex="-1"></a></span>
+<span id="cb5-73"><a aria-hidden="true" href="#cb5-73" tabindex="-1"></a>  <span class="kw">def</span> demo <span class="kw">do</span></span>
+<span id="cb5-74"><a aria-hidden="true" href="#cb5-74" tabindex="-1"></a>    <span class="cn">MapSet</span><span class="op">.</span>new</span>
+<span id="cb5-75"><a aria-hidden="true" href="#cb5-75" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:s</span>, <span class="va">:a</span>, <span class="dv">7</span>})</span>
+<span id="cb5-76"><a aria-hidden="true" href="#cb5-76" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:s</span>, <span class="va">:b</span>, <span class="dv">2</span>})</span>
+<span id="cb5-77"><a aria-hidden="true" href="#cb5-77" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:s</span>, <span class="va">:c</span>, <span class="dv">3</span>})</span>
+<span id="cb5-78"><a aria-hidden="true" href="#cb5-78" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:a</span>, <span class="va">:d</span>, <span class="dv">4</span>})</span>
+<span id="cb5-79"><a aria-hidden="true" href="#cb5-79" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:a</span>, <span class="va">:b</span>, <span class="dv">3</span>})</span>
+<span id="cb5-80"><a aria-hidden="true" href="#cb5-80" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:b</span>, <span class="va">:d</span>, <span class="dv">4</span>})</span>
+<span id="cb5-81"><a aria-hidden="true" href="#cb5-81" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:b</span>, <span class="va">:h</span>, <span class="dv">1</span>})</span>
+<span id="cb5-82"><a aria-hidden="true" href="#cb5-82" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:c</span>, <span class="va">:l</span>, <span class="dv">2</span>})</span>
+<span id="cb5-83"><a aria-hidden="true" href="#cb5-83" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:d</span>, <span class="va">:f</span>, <span class="dv">5</span>})</span>
+<span id="cb5-84"><a aria-hidden="true" href="#cb5-84" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:e</span>, <span class="va">:g</span>, <span class="dv">2</span>})</span>
+<span id="cb5-85"><a aria-hidden="true" href="#cb5-85" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:e</span>, <span class="va">:k</span>, <span class="dv">5</span>})</span>
+<span id="cb5-86"><a aria-hidden="true" href="#cb5-86" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:f</span>, <span class="va">:h</span>, <span class="dv">3</span>})</span>
+<span id="cb5-87"><a aria-hidden="true" href="#cb5-87" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:g</span>, <span class="va">:h</span>, <span class="dv">2</span>})</span>
+<span id="cb5-88"><a aria-hidden="true" href="#cb5-88" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:i</span>, <span class="va">:l</span>, <span class="dv">4</span>})</span>
+<span id="cb5-89"><a aria-hidden="true" href="#cb5-89" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:i</span>, <span class="va">:j</span>, <span class="dv">6</span>})</span>
+<span id="cb5-90"><a aria-hidden="true" href="#cb5-90" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:i</span>, <span class="va">:k</span>, <span class="dv">4</span>})</span>
+<span id="cb5-91"><a aria-hidden="true" href="#cb5-91" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:j</span>, <span class="va">:l</span>, <span class="dv">4</span>})</span>
+<span id="cb5-92"><a aria-hidden="true" href="#cb5-92" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:j</span>, <span class="va">:j</span>, <span class="dv">4</span>})</span>
+<span id="cb5-93"><a aria-hidden="true" href="#cb5-93" tabindex="-1"></a>    <span class="op">|&gt;</span> dijsktra(<span class="va">:s</span>, <span class="va">:e</span>)</span>
+<span id="cb5-94"><a aria-hidden="true" href="#cb5-94" tabindex="-1"></a>    <span class="op">|&gt;</span> find_path()</span>
+<span id="cb5-95"><a aria-hidden="true" href="#cb5-95" tabindex="-1"></a>    <span class="co"># =&gt; [e: 7, g: 5, h: 3, b: 2, s: 0]</span></span>
+<span id="cb5-96"><a aria-hidden="true" href="#cb5-96" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb5-97"><a aria-hidden="true" href="#cb5-97" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+
+
+</body></html>

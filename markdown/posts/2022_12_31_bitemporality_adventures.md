@@ -2,17 +2,13 @@
 
 Let's say we're a company that provides regular services to other companies, and we periodically bill them for them. 
 We have a system which calculates the billable amounts.
-
 We a simple reference system to track our customers.
 For now, the only attribute we care about is their name. 
 We also assign each company an internal ID.
-
 We set up our system on 01-15 (MM-DD), and want to put a company in our database.
 One of our clients is called 'Old Name'. It was incorporated on 01-01 (note: we're not actually _tracking_ incorporation dates).
-
 They want to change their name to 'New name'. 
 They do it on 02-01, but we only find out about it on on 02-15.
-
 So we have the following events:
 
 * 01-01: the company 'Old Name' is incorporated
@@ -48,7 +44,6 @@ But a) your system doesn't even 'remember' the old name, and b) it couldn't know
 
 What we need to maintain, instead of the current state of the entity, is a the **history** of the entity:
 An unbroken series, from 'birth' to 'now' of the attributes of an entity.
-
 A common way to implement this is to replace our entity table with a 'history' table.
 
 ```
@@ -92,9 +87,7 @@ uid   eid  from_date  to_date    name
 ```
 
 We have had to change record 2 so the 'to' date is no longer `Null`, and inserted the line with `uid=3`.
-
 To generalise this, we can say that what we are creating for each 'entity' we care about is a **timeline**. A timeline-entry has the structure `{FROM TO <DATA>}`. A timeline is a collection of timeline-entries. `[{FROM TO <DATA>}]`.
-
 There are certain invariants for a timeline:
 
 1. the records in a timeline must be 'contiguous': there must be no instant between the earliest `to` to the last `from` which is not covered by a record.
@@ -113,7 +106,6 @@ But what if you do want to do that?
 There are certainly real-world circumstances when you might need to do that.
 And there's nothing _stopping_ you from doing it.
 But it is not trivial.
-
 Say you want to insert into the timeline 'Tween Name', from 1-15 to 2-15:
 
 ```
@@ -125,7 +117,6 @@ uid   eid  from  to    name
 ```
 
 Notice that _both_ existing records had to be modified: the from and to date respectively. Also, the rid is now 'out of order' - i.e. doesn't follow the actual timeline.
-
 If we now insert another record, 'OW name', valid from 1-14 to 2-16, we get this
 
 ```
@@ -137,7 +128,6 @@ uid   eid  from  to    name
 ```
 
 Here, we not only modified records 1 and 2 _again_, but we actually had to _delete_ record 3.
-
 All this deleting and updating-in-place should be starting to make your skin crawl.
 Writing SQL to do this safely and reliably would not be a fun thing.
 
@@ -150,10 +140,9 @@ Say you're giving a presentation, and one of the slides (prepared a while ago) s
 Someone asks "who is that?"
 You look in the system, and you see no reference to a company called 'Tween Name' - only Old Name, OW Name, and New Name.
 You have forgotten, again.[^1]
+What we need is to record the history of the history.
 
 [^1]: Of course this example is quite unrealistic - the company name itself is unlikely to change that frequently. But it could easily be the case for other attributes.
-
-What we need is to record the history of the history.
 
 ## Perception and Bitemporality
 
@@ -172,7 +161,6 @@ In the second case, we recorded the name change on 2-15 because that's when we (
 
 What we have, in effect, are _two separate timelines_: One representing events that actually happened, and one which represents when we recorded the effect of those events.
 Call these two timelines the 'actual timeline', and the 'knowledge timeline'.
-
 On a knowledge date basis, you could represent the situation like this.
 
 ```
@@ -190,7 +178,6 @@ uid   eid  from  to    name
 
 I called the first timeline the 'actual' timeline.
 But there's a bit of subtly there.
-
 Consider these two timelines as being observations of the same events from the perspective of two different participants.
 The first (where the incorporation happened on 1-1 and the name change on 2-1) is the perception of the Company itself, and importantly also of the 'Company Registry', who is legally responsible for maintaining company records.
 
@@ -245,7 +232,6 @@ KD    1 1 1 1 1 1
 ```
 
 Thinking in multi-dimensional time is hard, so the semantics of this can be tough to unpack.
-
 You can read the 'rows' as views of history.
 So at `KD=2-14` we thought the company started existing on 1-1, and from that point up to 'now' (2-14) the name was Old Name.
 But b `KD=2-15` we learned that this was incorrect: the company did start existing on 1-1, and was initially named 'Old Name', but from 2-1 it was called 'New Name'.
@@ -258,7 +244,6 @@ Note that this is `KD=AD`.
 This has special significance, because it represents 'what we knew at the time'.
 At `KD=2-14` we still thought the name at `AD=2-1` was 'Old Name'.
 But at `KD=2-15` we finally realize that the name at `AD=2-1` was actually 'New Name'.
-
 So to coin a few terms, we broadly have three 'queries' we can do over two time dimensions:
 
 1. **Co-temporal**: AD=KD. "What we knew at the time". Based on what we knew at the time, the name of the company at 2-1 was 'Old Name'
@@ -439,4 +424,4 @@ Note the `d<` functions are just ordering predicates for whatever representation
 
 ## Next
 
-Persisting bitemporal timelines in a SQ
+Persisting bitemporal timelines in a SQL Database
