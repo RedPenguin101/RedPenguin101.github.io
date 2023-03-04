@@ -15,6 +15,8 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -78,7 +80,6 @@
     code span.va { color: #19177c; } /* Variable */
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
   <!--[if lt IE 9]>
@@ -196,7 +197,7 @@ display.</p>
 <span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>  screen_w <span class="op">=</span> DisplayWidth<span class="op">(</span>display<span class="op">,</span> screen<span class="op">);</span></span>
 <span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>  screen_h <span class="op">=</span> DisplayHeight<span class="op">(</span>display<span class="op">,</span> screen<span class="op">);</span></span>
 <span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>  root <span class="op">=</span> RootWindow<span class="op">(</span>display<span class="op">,</span> screen<span class="op">);</span></span>
-<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Root window %ld</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> root<span class="op">);</span></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Root window </span><span class="sc">%ld\n</span><span class="st">&quot;</span><span class="op">,</span> root<span class="op">);</span></span>
 <span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
 <span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>  <span class="co">//3. reconfiguring root</span></span>
 <span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>  XSetWindowAttributes wa<span class="op">;</span></span>
@@ -247,7 +248,7 @@ ride.</p>
 <span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>        keypress_handler<span class="op">(&amp;</span>event<span class="op">);</span></span>
 <span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
 <span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>      <span class="cf">default</span><span class="op">:</span></span>
-<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>        fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Unhandled event-type: %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> event<span class="op">.</span>type<span class="op">);</span></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>        fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Unhandled event-type: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> event<span class="op">.</span>type<span class="op">);</span></span>
 <span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a><span class="op">}</span></span>
@@ -255,7 +256,7 @@ ride.</p>
 <span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a><span class="dt">static</span> <span class="dt">void</span> keypress_handler<span class="op">(</span>XEvent<span class="op">*</span> event<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>  XKeyEvent<span class="op">*</span> ev <span class="op">=</span> <span class="op">&amp;</span>event<span class="op">-&gt;</span>xkey<span class="op">;</span></span>
 <span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>  KeySym keysym <span class="op">=</span> XKeycodeToKeysym<span class="op">(</span>display<span class="op">,</span> ev<span class="op">-&gt;</span>keycode<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Keypress </span><span class="sc">\t\t</span><span class="st"> KeySym: %ld modifier = 0x%x</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> keysym<span class="op">,</span> ev<span class="op">-&gt;</span>state<span class="op">);</span></span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>  fprintf<span class="op">(</span>logfile<span class="op">,</span> <span class="st">&quot;Keypress </span><span class="sc">\t\t</span><span class="st"> KeySym: </span><span class="sc">%ld</span><span class="st"> modifier = 0x</span><span class="sc">%x\n</span><span class="st">&quot;</span><span class="op">,</span> keysym<span class="op">,</span> ev<span class="op">-&gt;</span>state<span class="op">);</span></span>
 <span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>keysym <span class="op">==</span> XK_q<span class="op">)</span></span>
 <span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>    running <span class="op">=</span> false<span class="op">;</span></span>
 <span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>

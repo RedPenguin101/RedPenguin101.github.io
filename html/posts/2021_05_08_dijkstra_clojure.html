@@ -15,6 +15,8 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -78,7 +80,6 @@
     code span.va { color: #19177c; } /* Variable */
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link href="../../css/style.css" rel="stylesheet" />
   <!--[if lt IE 9]>
@@ -302,23 +303,23 @@ implementation</h2>
 <span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a></span>
 <span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>  <span class="co"># General graph stuff</span></span>
 <span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>  <span class="co"># adding _bidirectional_ edge</span></span>
-<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>  <span class="kw">def</span> add_edge(graph, {start, finish, weight}) <span class="kw">do</span></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>  <span class="kw">def</span> add_edge<span class="fu">(</span>graph, <span class="fu">{</span>start, finish, weight<span class="fu">})</span> <span class="kw">do</span></span>
 <span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    graph</span>
-<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    <span class="op">|&gt;</span> <span class="cn">MapSet</span><span class="op">.</span>put({start, finish, weight})</span>
-<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    <span class="op">|&gt;</span> <span class="cn">MapSet</span><span class="op">.</span>put({finish, start, weight})</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    <span class="op">|&gt;</span> <span class="cn">MapSet</span><span class="op">.</span>put<span class="fu">({</span>start, finish, weight<span class="fu">})</span></span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    <span class="op">|&gt;</span> <span class="cn">MapSet</span><span class="op">.</span>put<span class="fu">({</span>finish, start, weight<span class="fu">})</span></span>
 <span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a></span>
-<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>  <span class="kw">def</span> nodes(graph), <span class="kw">do</span>: map(graph, <span class="op">&amp;</span>first<span class="op">/</span><span class="dv">1</span>) <span class="op">|&gt;</span> uniq</span>
-<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>  <span class="kw">def</span> connections(graph, node), <span class="kw">do</span>: filter(graph, <span class="kw">fn</span> {start, _, _} <span class="op">-&gt;</span> start <span class="op">==</span> node <span class="kw">end</span>)</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>  <span class="kw">def</span> nodes<span class="fu">(</span>graph<span class="fu">)</span>, <span class="va">do:</span> map<span class="fu">(</span>graph, <span class="op">&amp;</span>first<span class="op">/</span><span class="dv">1</span><span class="fu">)</span> <span class="op">|&gt;</span> uniq</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>  <span class="kw">def</span> connections<span class="fu">(</span>graph, node<span class="fu">)</span>, <span class="va">do:</span> filter<span class="fu">(</span>graph, <span class="kw">fn</span> <span class="fu">{</span>start, _, _<span class="fu">}</span> <span class="op">-&gt;</span> start <span class="op">==</span> node <span class="kw">end</span><span class="fu">)</span></span>
 <span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a></span>
 <span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>  <span class="co"># Priority Queue stuff</span></span>
 <span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>  <span class="co"># queue is a map of:</span></span>
 <span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>  <span class="co">#       entry =&gt; {priority, origin}</span></span>
 <span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>  <span class="co"># e.g %{:s    =&gt; {0, :s}}</span></span>
 <span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>  <span class="co"># priority is the thing with the shortest distance</span></span>
-<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>  <span class="kw">def</span> priority(queue) <span class="kw">do</span></span>
-<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    {node, {dist, origin}} <span class="op">=</span> min_by(queue, compose(<span class="op">&amp;</span>second<span class="op">/</span><span class="dv">1</span>, <span class="op">&amp;</span>first<span class="op">/</span><span class="dv">1</span>))</span>
-<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>    {node, dist, origin}</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>  <span class="kw">def</span> priority<span class="fu">(</span>queue<span class="fu">)</span> <span class="kw">do</span></span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    <span class="fu">{</span>node, <span class="fu">{</span>dist, origin<span class="fu">}}</span> <span class="op">=</span> min_by<span class="fu">(</span>queue, compose<span class="fu">(</span><span class="op">&amp;</span>second<span class="op">/</span><span class="dv">1</span>, <span class="op">&amp;</span>first<span class="op">/</span><span class="dv">1</span><span class="fu">))</span></span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>    <span class="fu">{</span>node, dist, origin<span class="fu">}</span></span>
 <span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a></span>
 <span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>  <span class="co"># Updating the queue is passed an edge</span></span>
@@ -327,69 +328,69 @@ implementation</h2>
 <span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a>  <span class="co"># if the to-node is already there, and the existing distance to</span></span>
 <span id="cb5-30"><a aria-hidden="true" href="#cb5-30" tabindex="-1"></a>  <span class="co"># reach that nde is greater than the 'new' one, then put the new distance</span></span>
 <span id="cb5-31"><a aria-hidden="true" href="#cb5-31" tabindex="-1"></a>  <span class="co"># in the queue, along with the new origin.</span></span>
-<span id="cb5-32"><a aria-hidden="true" href="#cb5-32" tabindex="-1"></a>  <span class="kw">def</span> update_queue({from, to, dist}, queue) <span class="kw">do</span></span>
-<span id="cb5-33"><a aria-hidden="true" href="#cb5-33" tabindex="-1"></a>    base_from <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get(queue, from)</span>
-<span id="cb5-34"><a aria-hidden="true" href="#cb5-34" tabindex="-1"></a>    base_to <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get(queue, to)</span>
-<span id="cb5-35"><a aria-hidden="true" href="#cb5-35" tabindex="-1"></a>    new_dist <span class="op">=</span> (base_from <span class="op">|&gt;</span> first) <span class="op">+</span> dist</span>
+<span id="cb5-32"><a aria-hidden="true" href="#cb5-32" tabindex="-1"></a>  <span class="kw">def</span> update_queue<span class="fu">({</span>from, to, dist<span class="fu">}</span>, queue<span class="fu">)</span> <span class="kw">do</span></span>
+<span id="cb5-33"><a aria-hidden="true" href="#cb5-33" tabindex="-1"></a>    base_from <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get<span class="fu">(</span>queue, from<span class="fu">)</span></span>
+<span id="cb5-34"><a aria-hidden="true" href="#cb5-34" tabindex="-1"></a>    base_to <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get<span class="fu">(</span>queue, to<span class="fu">)</span></span>
+<span id="cb5-35"><a aria-hidden="true" href="#cb5-35" tabindex="-1"></a>    new_dist <span class="op">=</span> <span class="fu">(</span>base_from <span class="op">|&gt;</span> first<span class="fu">)</span> <span class="op">+</span> dist</span>
 <span id="cb5-36"><a aria-hidden="true" href="#cb5-36" tabindex="-1"></a></span>
-<span id="cb5-37"><a aria-hidden="true" href="#cb5-37" tabindex="-1"></a>    <span class="cf">if</span><span class="op"> !</span>base_to <span class="op">||</span> new_dist <span class="op">&lt;</span> (base_to <span class="op">|&gt;</span> first) <span class="kw">do</span></span>
-<span id="cb5-38"><a aria-hidden="true" href="#cb5-38" tabindex="-1"></a>      <span class="cn">Map</span><span class="op">.</span>put(queue, to, {new_dist, from})</span>
+<span id="cb5-37"><a aria-hidden="true" href="#cb5-37" tabindex="-1"></a>    <span class="cf">if</span><span class="op"> !</span>base_to <span class="op">||</span> new_dist <span class="op">&lt;</span> <span class="fu">(</span>base_to <span class="op">|&gt;</span> first<span class="fu">)</span> <span class="kw">do</span></span>
+<span id="cb5-38"><a aria-hidden="true" href="#cb5-38" tabindex="-1"></a>      <span class="cn">Map</span><span class="op">.</span>put<span class="fu">(</span>queue, to, <span class="fu">{</span>new_dist, from<span class="fu">})</span></span>
 <span id="cb5-39"><a aria-hidden="true" href="#cb5-39" tabindex="-1"></a>    <span class="cf">else</span></span>
 <span id="cb5-40"><a aria-hidden="true" href="#cb5-40" tabindex="-1"></a>      queue</span>
 <span id="cb5-41"><a aria-hidden="true" href="#cb5-41" tabindex="-1"></a>    <span class="kw">end</span></span>
 <span id="cb5-42"><a aria-hidden="true" href="#cb5-42" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb5-43"><a aria-hidden="true" href="#cb5-43" tabindex="-1"></a></span>
-<span id="cb5-44"><a aria-hidden="true" href="#cb5-44" tabindex="-1"></a>  <span class="kw">def</span> dijsktra(graph, start, finish), <span class="kw">do</span>: dijsktra([], graph, finish, %{start <span class="op">=&gt;</span> {<span class="dv">0</span>, start}})</span>
+<span id="cb5-44"><a aria-hidden="true" href="#cb5-44" tabindex="-1"></a>  <span class="kw">def</span> dijsktra<span class="fu">(</span>graph, start, finish<span class="fu">)</span>, <span class="va">do:</span> dijsktra<span class="fu">(</span><span class="ot">[]</span>, graph, finish, %<span class="fu">{</span>start <span class="op">=&gt;</span> <span class="fu">{</span><span class="dv">0</span>, start<span class="fu">}})</span></span>
 <span id="cb5-45"><a aria-hidden="true" href="#cb5-45" tabindex="-1"></a>  <span class="co"># Done is list of {node, dist, from}</span></span>
 <span id="cb5-46"><a aria-hidden="true" href="#cb5-46" tabindex="-1"></a>  <span class="co"># the shortest path is the distance (second element) of the first entry</span></span>
 <span id="cb5-47"><a aria-hidden="true" href="#cb5-47" tabindex="-1"></a>  <span class="co"># in done</span></span>
-<span id="cb5-48"><a aria-hidden="true" href="#cb5-48" tabindex="-1"></a>  <span class="kw">def</span> dijsktra(done, graph, target, queue) <span class="kw">do</span></span>
-<span id="cb5-49"><a aria-hidden="true" href="#cb5-49" tabindex="-1"></a>    reached? <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get(queue, target)</span>
+<span id="cb5-48"><a aria-hidden="true" href="#cb5-48" tabindex="-1"></a>  <span class="kw">def</span> dijsktra<span class="fu">(</span>done, graph, target, queue<span class="fu">)</span> <span class="kw">do</span></span>
+<span id="cb5-49"><a aria-hidden="true" href="#cb5-49" tabindex="-1"></a>    reached? <span class="op">=</span> <span class="cn">Map</span><span class="op">.</span>get<span class="fu">(</span>queue, target<span class="fu">)</span></span>
 <span id="cb5-50"><a aria-hidden="true" href="#cb5-50" tabindex="-1"></a>    <span class="cf">if</span> reached? <span class="kw">do</span></span>
-<span id="cb5-51"><a aria-hidden="true" href="#cb5-51" tabindex="-1"></a>      {dist, from} <span class="op">=</span> reached?</span>
-<span id="cb5-52"><a aria-hidden="true" href="#cb5-52" tabindex="-1"></a>      [{target, dist, from} <span class="op">|</span> done]</span>
+<span id="cb5-51"><a aria-hidden="true" href="#cb5-51" tabindex="-1"></a>      <span class="fu">{</span>dist, from<span class="fu">}</span> <span class="op">=</span> reached?</span>
+<span id="cb5-52"><a aria-hidden="true" href="#cb5-52" tabindex="-1"></a>      <span class="ot">[</span><span class="fu">{</span>target, dist, from<span class="fu">}</span> <span class="op">|</span> done<span class="ot">]</span></span>
 <span id="cb5-53"><a aria-hidden="true" href="#cb5-53" tabindex="-1"></a>    <span class="cf">else</span></span>
-<span id="cb5-54"><a aria-hidden="true" href="#cb5-54" tabindex="-1"></a>      pri <span class="op">=</span> priority(queue)</span>
-<span id="cb5-55"><a aria-hidden="true" href="#cb5-55" tabindex="-1"></a>      new_done <span class="op">=</span> [pri <span class="op">|</span> done]</span>
+<span id="cb5-54"><a aria-hidden="true" href="#cb5-54" tabindex="-1"></a>      pri <span class="op">=</span> priority<span class="fu">(</span>queue<span class="fu">)</span></span>
+<span id="cb5-55"><a aria-hidden="true" href="#cb5-55" tabindex="-1"></a>      new_done <span class="op">=</span> <span class="ot">[</span>pri <span class="op">|</span> done<span class="ot">]</span></span>
 <span id="cb5-56"><a aria-hidden="true" href="#cb5-56" tabindex="-1"></a>      new_queue <span class="op">=</span> graph</span>
-<span id="cb5-57"><a aria-hidden="true" href="#cb5-57" tabindex="-1"></a>                  <span class="op">|&gt;</span> connections(pri <span class="op">|&gt;</span> first)</span>
-<span id="cb5-58"><a aria-hidden="true" href="#cb5-58" tabindex="-1"></a>                  <span class="op">|&gt;</span> reduce(queue, <span class="op">&amp;</span>update_queue<span class="op">/</span><span class="dv">2</span>)</span>
-<span id="cb5-59"><a aria-hidden="true" href="#cb5-59" tabindex="-1"></a>                  <span class="op">|&gt;</span> <span class="cn">Map</span><span class="op">.</span>delete(pri <span class="op">|&gt;</span> first)</span>
-<span id="cb5-60"><a aria-hidden="true" href="#cb5-60" tabindex="-1"></a>      dijsktra(new_done, graph, target, new_queue)</span>
+<span id="cb5-57"><a aria-hidden="true" href="#cb5-57" tabindex="-1"></a>                  <span class="op">|&gt;</span> connections<span class="fu">(</span>pri <span class="op">|&gt;</span> first<span class="fu">)</span></span>
+<span id="cb5-58"><a aria-hidden="true" href="#cb5-58" tabindex="-1"></a>                  <span class="op">|&gt;</span> reduce<span class="fu">(</span>queue, <span class="op">&amp;</span>update_queue<span class="op">/</span><span class="dv">2</span><span class="fu">)</span></span>
+<span id="cb5-59"><a aria-hidden="true" href="#cb5-59" tabindex="-1"></a>                  <span class="op">|&gt;</span> <span class="cn">Map</span><span class="op">.</span>delete<span class="fu">(</span>pri <span class="op">|&gt;</span> first<span class="fu">)</span></span>
+<span id="cb5-60"><a aria-hidden="true" href="#cb5-60" tabindex="-1"></a>      dijsktra<span class="fu">(</span>new_done, graph, target, new_queue<span class="fu">)</span></span>
 <span id="cb5-61"><a aria-hidden="true" href="#cb5-61" tabindex="-1"></a>    <span class="kw">end</span></span>
 <span id="cb5-62"><a aria-hidden="true" href="#cb5-62" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb5-63"><a aria-hidden="true" href="#cb5-63" tabindex="-1"></a></span>
 <span id="cb5-64"><a aria-hidden="true" href="#cb5-64" tabindex="-1"></a>  <span class="co"># dijkstra returns all the nodes visited before you hit the target,</span></span>
 <span id="cb5-65"><a aria-hidden="true" href="#cb5-65" tabindex="-1"></a>  <span class="co"># so some won't be on the shortest path. You need to 'walk' the result</span></span>
 <span id="cb5-66"><a aria-hidden="true" href="#cb5-66" tabindex="-1"></a>  <span class="co"># to find the path</span></span>
-<span id="cb5-67"><a aria-hidden="true" href="#cb5-67" tabindex="-1"></a>  <span class="kw">def</span> find_path([]), <span class="kw">do</span>: []</span>
-<span id="cb5-68"><a aria-hidden="true" href="#cb5-68" tabindex="-1"></a>  <span class="kw">def</span> find_path([{to, dist, from} <span class="op">|</span> rst]) <span class="kw">do</span></span>
-<span id="cb5-69"><a aria-hidden="true" href="#cb5-69" tabindex="-1"></a>    unconnected <span class="op">=</span> <span class="kw">fn</span> {x,_,_} <span class="op">-&gt;</span> x<span class="op"> !=</span> from <span class="kw">end</span></span>
-<span id="cb5-70"><a aria-hidden="true" href="#cb5-70" tabindex="-1"></a>    [{to, dist} <span class="op">|</span> rst <span class="op">|&gt;</span> drop_while(unconnected) <span class="op">|&gt;</span> find_path]</span>
+<span id="cb5-67"><a aria-hidden="true" href="#cb5-67" tabindex="-1"></a>  <span class="kw">def</span> find_path<span class="fu">(</span><span class="ot">[]</span><span class="fu">)</span>, <span class="va">do:</span> <span class="ot">[]</span></span>
+<span id="cb5-68"><a aria-hidden="true" href="#cb5-68" tabindex="-1"></a>  <span class="kw">def</span> find_path<span class="fu">(</span><span class="ot">[</span><span class="fu">{</span>to, dist, from<span class="fu">}</span> <span class="op">|</span> rst<span class="ot">]</span><span class="fu">)</span> <span class="kw">do</span></span>
+<span id="cb5-69"><a aria-hidden="true" href="#cb5-69" tabindex="-1"></a>    unconnected <span class="op">=</span> <span class="kw">fn</span> <span class="fu">{</span>x,_,_<span class="fu">}</span> <span class="op">-&gt;</span> x<span class="op"> !=</span> from <span class="kw">end</span></span>
+<span id="cb5-70"><a aria-hidden="true" href="#cb5-70" tabindex="-1"></a>    <span class="ot">[</span><span class="fu">{</span>to, dist<span class="fu">}</span> <span class="op">|</span> rst <span class="op">|&gt;</span> drop_while<span class="fu">(</span>unconnected<span class="fu">)</span> <span class="op">|&gt;</span> find_path<span class="ot">]</span></span>
 <span id="cb5-71"><a aria-hidden="true" href="#cb5-71" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb5-72"><a aria-hidden="true" href="#cb5-72" tabindex="-1"></a></span>
 <span id="cb5-73"><a aria-hidden="true" href="#cb5-73" tabindex="-1"></a>  <span class="kw">def</span> demo <span class="kw">do</span></span>
 <span id="cb5-74"><a aria-hidden="true" href="#cb5-74" tabindex="-1"></a>    <span class="cn">MapSet</span><span class="op">.</span>new</span>
-<span id="cb5-75"><a aria-hidden="true" href="#cb5-75" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:s</span>, <span class="va">:a</span>, <span class="dv">7</span>})</span>
-<span id="cb5-76"><a aria-hidden="true" href="#cb5-76" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:s</span>, <span class="va">:b</span>, <span class="dv">2</span>})</span>
-<span id="cb5-77"><a aria-hidden="true" href="#cb5-77" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:s</span>, <span class="va">:c</span>, <span class="dv">3</span>})</span>
-<span id="cb5-78"><a aria-hidden="true" href="#cb5-78" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:a</span>, <span class="va">:d</span>, <span class="dv">4</span>})</span>
-<span id="cb5-79"><a aria-hidden="true" href="#cb5-79" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:a</span>, <span class="va">:b</span>, <span class="dv">3</span>})</span>
-<span id="cb5-80"><a aria-hidden="true" href="#cb5-80" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:b</span>, <span class="va">:d</span>, <span class="dv">4</span>})</span>
-<span id="cb5-81"><a aria-hidden="true" href="#cb5-81" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:b</span>, <span class="va">:h</span>, <span class="dv">1</span>})</span>
-<span id="cb5-82"><a aria-hidden="true" href="#cb5-82" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:c</span>, <span class="va">:l</span>, <span class="dv">2</span>})</span>
-<span id="cb5-83"><a aria-hidden="true" href="#cb5-83" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:d</span>, <span class="va">:f</span>, <span class="dv">5</span>})</span>
-<span id="cb5-84"><a aria-hidden="true" href="#cb5-84" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:e</span>, <span class="va">:g</span>, <span class="dv">2</span>})</span>
-<span id="cb5-85"><a aria-hidden="true" href="#cb5-85" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:e</span>, <span class="va">:k</span>, <span class="dv">5</span>})</span>
-<span id="cb5-86"><a aria-hidden="true" href="#cb5-86" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:f</span>, <span class="va">:h</span>, <span class="dv">3</span>})</span>
-<span id="cb5-87"><a aria-hidden="true" href="#cb5-87" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:g</span>, <span class="va">:h</span>, <span class="dv">2</span>})</span>
-<span id="cb5-88"><a aria-hidden="true" href="#cb5-88" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:i</span>, <span class="va">:l</span>, <span class="dv">4</span>})</span>
-<span id="cb5-89"><a aria-hidden="true" href="#cb5-89" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:i</span>, <span class="va">:j</span>, <span class="dv">6</span>})</span>
-<span id="cb5-90"><a aria-hidden="true" href="#cb5-90" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:i</span>, <span class="va">:k</span>, <span class="dv">4</span>})</span>
-<span id="cb5-91"><a aria-hidden="true" href="#cb5-91" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:j</span>, <span class="va">:l</span>, <span class="dv">4</span>})</span>
-<span id="cb5-92"><a aria-hidden="true" href="#cb5-92" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge({<span class="va">:j</span>, <span class="va">:j</span>, <span class="dv">4</span>})</span>
-<span id="cb5-93"><a aria-hidden="true" href="#cb5-93" tabindex="-1"></a>    <span class="op">|&gt;</span> dijsktra(<span class="va">:s</span>, <span class="va">:e</span>)</span>
-<span id="cb5-94"><a aria-hidden="true" href="#cb5-94" tabindex="-1"></a>    <span class="op">|&gt;</span> find_path()</span>
+<span id="cb5-75"><a aria-hidden="true" href="#cb5-75" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:s</span>, <span class="va">:a</span>, <span class="dv">7</span><span class="fu">})</span></span>
+<span id="cb5-76"><a aria-hidden="true" href="#cb5-76" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:s</span>, <span class="va">:b</span>, <span class="dv">2</span><span class="fu">})</span></span>
+<span id="cb5-77"><a aria-hidden="true" href="#cb5-77" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:s</span>, <span class="va">:c</span>, <span class="dv">3</span><span class="fu">})</span></span>
+<span id="cb5-78"><a aria-hidden="true" href="#cb5-78" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:a</span>, <span class="va">:d</span>, <span class="dv">4</span><span class="fu">})</span></span>
+<span id="cb5-79"><a aria-hidden="true" href="#cb5-79" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:a</span>, <span class="va">:b</span>, <span class="dv">3</span><span class="fu">})</span></span>
+<span id="cb5-80"><a aria-hidden="true" href="#cb5-80" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:b</span>, <span class="va">:d</span>, <span class="dv">4</span><span class="fu">})</span></span>
+<span id="cb5-81"><a aria-hidden="true" href="#cb5-81" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:b</span>, <span class="va">:h</span>, <span class="dv">1</span><span class="fu">})</span></span>
+<span id="cb5-82"><a aria-hidden="true" href="#cb5-82" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:c</span>, <span class="va">:l</span>, <span class="dv">2</span><span class="fu">})</span></span>
+<span id="cb5-83"><a aria-hidden="true" href="#cb5-83" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:d</span>, <span class="va">:f</span>, <span class="dv">5</span><span class="fu">})</span></span>
+<span id="cb5-84"><a aria-hidden="true" href="#cb5-84" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:e</span>, <span class="va">:g</span>, <span class="dv">2</span><span class="fu">})</span></span>
+<span id="cb5-85"><a aria-hidden="true" href="#cb5-85" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:e</span>, <span class="va">:k</span>, <span class="dv">5</span><span class="fu">})</span></span>
+<span id="cb5-86"><a aria-hidden="true" href="#cb5-86" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:f</span>, <span class="va">:h</span>, <span class="dv">3</span><span class="fu">})</span></span>
+<span id="cb5-87"><a aria-hidden="true" href="#cb5-87" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:g</span>, <span class="va">:h</span>, <span class="dv">2</span><span class="fu">})</span></span>
+<span id="cb5-88"><a aria-hidden="true" href="#cb5-88" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:i</span>, <span class="va">:l</span>, <span class="dv">4</span><span class="fu">})</span></span>
+<span id="cb5-89"><a aria-hidden="true" href="#cb5-89" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:i</span>, <span class="va">:j</span>, <span class="dv">6</span><span class="fu">})</span></span>
+<span id="cb5-90"><a aria-hidden="true" href="#cb5-90" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:i</span>, <span class="va">:k</span>, <span class="dv">4</span><span class="fu">})</span></span>
+<span id="cb5-91"><a aria-hidden="true" href="#cb5-91" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:j</span>, <span class="va">:l</span>, <span class="dv">4</span><span class="fu">})</span></span>
+<span id="cb5-92"><a aria-hidden="true" href="#cb5-92" tabindex="-1"></a>    <span class="op">|&gt;</span> add_edge<span class="fu">({</span><span class="va">:j</span>, <span class="va">:j</span>, <span class="dv">4</span><span class="fu">})</span></span>
+<span id="cb5-93"><a aria-hidden="true" href="#cb5-93" tabindex="-1"></a>    <span class="op">|&gt;</span> dijsktra<span class="fu">(</span><span class="va">:s</span>, <span class="va">:e</span><span class="fu">)</span></span>
+<span id="cb5-94"><a aria-hidden="true" href="#cb5-94" tabindex="-1"></a>    <span class="op">|&gt;</span> find_path<span class="fu">()</span></span>
 <span id="cb5-95"><a aria-hidden="true" href="#cb5-95" tabindex="-1"></a>    <span class="co"># =&gt; [e: 7, g: 5, h: 3, b: 2, s: 0]</span></span>
 <span id="cb5-96"><a aria-hidden="true" href="#cb5-96" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb5-97"><a aria-hidden="true" href="#cb5-97" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
