@@ -1,0 +1,172 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>book_on_lisp</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="on-lisp">On Lisp</h1>
+<h2 id="plan">Plan</h2>
+<p>Chapters 2 through 6 cover functions, including the functional style,
+first class functions, and using functions in place of data structures.
+Chapters 7 through 10 are an introduction to macros. Chapters 8 through
+11 are about macro techniques. Chapters 19 through 24 are about embedded
+languages. The book concludes with a discussion of OOP, and the Common
+Lisp Object System.</p>
+<h2 id="bottom-up-design">Bottom-up Design</h2>
+<p>A program broken into a ‘layers’, starting from the language
+primitives, where each layer defines a language of nouns and verbs, and
+each successive layer is built from the language of the layers below
+it.</p>
+<p>Lisp is especially good at this, because operations, once defined,
+are not distinguishable from those defined by the language itself. The
+separation between the language you write in and the language you
+<em>create</em> is much smaller than in other programming languages.</p>
+<p>Thus, rather than writing your program <em>in</em> lisp, you write
+your language <em>on</em> lisp, with the language primitives acting as
+the lowest layer, and on which you built.</p>
+<p>The benefits of bottom up design are code-reuse, and
+extensibility.</p>
+<p>BUD is the antithesis of top-down design, where the overall purpose
+of the program is defined and broken down into x functional things, and
+the sub-parts of the program are those x things.</p>
+<h2 id="design-by-evolution">Design by evolution</h2>
+<p>Lisp is a malleable language. You can turn in into the language you
+need. Elisp is a moulding of lisp into a language for configuring a text
+editor. This gives it the property that, if you don’t know what you’re
+building yet, lisp is a good shout, because you can always change it
+later. And that’s the case with a lot of programs. It turns out, the
+‘plan and implement’ style of design doesn’t work that well with
+programs. With lisp, you can afford to plan as you write.</p>
+<h2 id="functions">Functions</h2>
+<p>Functions are lisp objects - data types.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> double </span>(x) (<span class="op">*</span> x <span class="dv">2</span>))</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>(double <span class="dv">1</span>)</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co">;; =&gt; 2</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="op">#'</span>double</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="co">;; =&gt; &lt;Interpreted-Function C66ACE&gt;</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>((<span class="kw">lambda</span> (x) (<span class="op">*</span> x <span class="dv">2</span>)) <span class="dv">3</span>)</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="co">;; =&gt; 6</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>(<span class="kw">setf</span> (<span class="kw">symbol-function</span> <span class="dt">'double</span>)</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>      <span class="op">#'</span>(<span class="kw">lambda</span> (x) (<span class="op">*</span> x <span class="dv">2</span>)))</span></code></pre></div>
+<p><code>defun</code> is a macro which builds the function-object, and
+stores it under the symbol passed as the first argument - two separate
+operations.</p>
+<p>All the below have the same effect. All but the first accept an
+<em>function object</em> as its first argument.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>(<span class="op">+</span> <span class="dv">1</span> <span class="dv">2</span>)</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>(<span class="kw">apply</span> <span class="op">#'</span>+ '(<span class="dv">1</span> <span class="dv">2</span>))</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>(<span class="kw">apply</span> (<span class="kw">symbol-function</span> <span class="dt">'+</span>) '(<span class="dv">1</span> <span class="dv">2</span>))</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>(<span class="kw">apply</span> <span class="op">#'</span>(<span class="kw">lambda</span> (x y) (<span class="op">+</span> x y)) '(<span class="dv">1</span> <span class="dv">2</span>))</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>(<span class="kw">apply</span> <span class="op">#'</span>+ <span class="dv">1</span> '(<span class="dv">2</span>))</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>(<span class="kw">funcall</span> <span class="op">#'</span>+ <span class="dv">1</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>Many lisp functions, especially in CL, take functions as
+arguments:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>(<span class="kw">sort</span> '(<span class="dv">1</span> <span class="dv">4</span> <span class="dv">2</span> <span class="dv">5</span> <span class="dv">6</span> <span class="dv">7</span> <span class="dv">3</span>) <span class="op">#'</span>&lt;)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>(<span class="kw">remove-if</span> <span class="op">#'</span>evenp '(<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span> <span class="dv">7</span>))</span></code></pre></div>
+<p>With remove-if implemented something like</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> our-remove-if </span>(fn lst)</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null</span> lst)</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>     <span class="kw">nil</span></span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>     (<span class="kw">if</span> (<span class="kw">funcall</span> fn (<span class="kw">car</span> lst))</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>         (our-remove-if fn (<span class="kw">cdr</span> lst))</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>         (<span class="kw">cons</span> (<span class="kw">car</span> lst) (our-remove-if fn (<span class="kw">cdr</span> lst))))))</span></code></pre></div>
+<p>Functions can be attached to other objects as properties. This allows
+a polymorphism:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> behave </span>(animal)</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>  (<span class="kw">funcall</span> (<span class="kw">get</span> animal <span class="dt">'behaviour</span>)))</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>  </span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>(<span class="kw">setf</span> (<span class="kw">get</span> <span class="dt">'dog</span> <span class="dt">'behaviour</span>)</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>      <span class="op">#'</span>(<span class="kw">lambda</span> ()</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>          (wag-tail)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>          (bark)))</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>          </span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>(behave <span class="dt">'dog</span>)</span></code></pre></div>
+
+
+</body></html>
