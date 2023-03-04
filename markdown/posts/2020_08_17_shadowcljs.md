@@ -1,7 +1,7 @@
-= How to set up shadow-cljs
-_2020-08-17_
+# How to set up shadow-cljs
 
-== Installation
+## Installation
+
 Note, this was written for Ubuntu linux. Other distros, Mac and especially Windows will have differences in how you install these, but each of them have good instructions.
 
 You need 3 things to get shadow-cljs up and running.
@@ -10,26 +10,31 @@ You need 3 things to get shadow-cljs up and running.
 * npm (the node package manager, that comes with nodejs)
 * the shadow-cljs command line tool
 
-=== Install Nodejs
+### Install Nodejs
+
 https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
 
 from the command line, add the node repository, and install node. Here, we're installing the LTS variant.
-[source,bash]
-----
+
+```bash
 # Using Ubuntu
 curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
-----
-=== Install Shadow-cljs
+```
+
+### Install Shadow-cljs
+
 This will install shadow-cljs globally. It's the most convenient way to use it.
 
 `sudo npm install -g shadow-cljs`
 
-== Project Setup
-=== Quick reference
+## Project Setup
+
+### Quick reference
 * `npm init`
 * `npm install --save-dev shadow-cljs`
 * `shadow-cljs init`
+* update package.json to include react
 * update shadow-cljs.edn per below
 * create public/index.html per below
 * create src/[projectname]/main/main.cljs per below
@@ -37,7 +42,8 @@ This will install shadow-cljs globally. It's the most convenient way to use it.
 * go to http://localhost:9090/ to check your app is running - you should see "hello world" on the page
 * change the text of the h1 element in main.cljs, save the file and make sure it updates in your browser.
 
-=== Detailed
+### Detailed
+
 From the terminal:
 
 Create the directory you want to make your project in.
@@ -80,19 +86,37 @@ Once the build is complete, navigate your browser to http://localhost:9090/. You
 
 Next, make sure the 'reload' is working properly - while the app is running, go to main.cljs and change the text in the h1 div from "hello world" to something else. When you save, your terminal should show that the project is recompiling, and your browser should quickly reflect the changed text.
 
-== Further resources
+## Further resources
 For actually learning how build a clojurescript application with reagent and re-frame, I recommend Eric Normands various courses. They're not free, but the quality is excellent, and he explains how all the pieces work very well.
 
 * https://purelyfunctional.tv/courses/markdown-editor/[Your first re-frame app - a markdown editor]
 * https://purelyfunctional.tv/courses/understanding-re-frame/[Understanding re-frame] (and reagent, and react, and the DOM)
 * https://purelyfunctional.tv/courses/building-re-frame-components/[Building re-frame components]
 
-== File templates
+## File templates
+### package.json
 
-=== shadow-cljs.edn
+```json
+{
+  "name": "qniform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "shadow-cljs": "^2.20.1"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
+```
 
-[source,clojure]
-----
+### shadow-cljs.edn
+
+```clojure
 ;; shadow-cljs configuration
 {:source-paths
  ["src/dev"
@@ -111,10 +135,11 @@ For actually learning how build a clojurescript application with reagent and re-
         :target     :browser
         :modules    {:main {:init-fn my-project.main/main}}
         :devtools   {:after-load my-project.main/reload}}}}
-----
-=== Index.html
-[source,html]
-----
+```
+
+### Index.html
+
+```html
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
     <head>
@@ -124,11 +149,11 @@ For actually learning how build a clojurescript application with reagent and re-
         <script src="/compiledjs/main.js"></script>
     </body>
 </html>
-----
-=== main.cljs
+```
 
-[source,clojure]
-----
+### main.cljs
+
+```clojure
 (ns my-project.main
   (:require [reagent.core :as r]
             [reagent.dom :as rd]))
@@ -146,4 +171,4 @@ For actually learning how build a clojurescript application with reagent and re-
 
 (defn reload []
   (mount))
-----
+```
