@@ -9,8 +9,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -233,9 +236,9 @@ solution to this, which is below in full in about 30 lines of code.</p>
 <span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>  <span class="co">;; =&gt; 353</span></span>
 <span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a></span>
 <span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a></span>
-<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>  (<span class="kw">count</span> (<span class="kw">last</span> (<span class="kw">take</span> <span class="dv">7</span> (<span class="kw">iterate</span> (<span class="kw">partial</span> step neighbors-4d) (parse-input-4d (<span class="kw">slurp</span> <span class="st">&quot;resources/day17example&quot;</span>))))))</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>  (<span class="kw">count</span> (<span class="kw">last</span> (<span class="kw">take</span> <span class="dv">7</span> (<span class="kw">iterate</span> (<span class="kw">partial</span> step neighbors<span class="dv">-4</span>d) (parse-input<span class="dv">-4</span>d (<span class="kw">slurp</span> <span class="st">&quot;resources/day17example&quot;</span>))))))</span>
 <span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>  <span class="co">;; =&gt; 848</span></span>
-<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>  (<span class="kw">time</span> (<span class="kw">count</span> (<span class="kw">last</span> (<span class="kw">take</span> <span class="dv">7</span> (<span class="kw">iterate</span> (<span class="kw">partial</span> step neighbors-4d) (parse-input-4d (<span class="kw">slurp</span> <span class="st">&quot;resources/day17input&quot;</span>)))))))</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>  (<span class="kw">time</span> (<span class="kw">count</span> (<span class="kw">last</span> (<span class="kw">take</span> <span class="dv">7</span> (<span class="kw">iterate</span> (<span class="kw">partial</span> step neighbors<span class="dv">-4</span>d) (parse-input<span class="dv">-4</span>d (<span class="kw">slurp</span> <span class="st">&quot;resources/day17input&quot;</span>)))))))</span>
 <span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>  <span class="co">;; =&gt; 2472</span></span>
 <span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>)</span></code></pre></div>
 <h3 id="others">Others</h3>
