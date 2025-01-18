@@ -1,0 +1,499 @@
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="utf-8" />
+  <meta content="pandoc" name="generator" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport" />
+  <title>2025_01_18_clojure_flows</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link href="../../css/style.css" rel="stylesheet" />
+</head>
+<body>
+<h1 id="clojure-core.async.flow-a-first-look">Clojure core.async.flow: A
+first look</h1>
+<blockquote>
+<p>“There comes a time in all good programs when components or
+subsystems must stop communicating directly with one another.”</p>
+</blockquote>
+<h2 id="the-basics">The basics</h2>
+<p>Core.async provides <em>channels</em> which allow processes to
+communicate in a decoupled way, by putting messages on queues.
+core.async.flow (C.A.F) is built on top of these channels, and provides
+2 higher level abstractions: The <strong>Process</strong> - a thread of
+activity - and the <strong>Flow</strong> - a directed graph of Processes
+which communicate via channels. The objective of C.A.F: is separation of
+the application logic from:</p>
+<ul>
+<li>topology</li>
+<li>execution</li>
+<li>communication</li>
+<li>lifecycle</li>
+<li>monitoring</li>
+<li>error handling</li>
+</ul>
+<p>Flows provide and centralize these things. Use it by:</p>
+<ol type="1">
+<li>defining pure functions that do the computational part of processing
+messages.</li>
+<li>wrap these in Processes which read from inchans and write to
+outchans.</li>
+<li>defining a Flow that collects these processes and defines the
+connections between them.</li>
+</ol>
+<p>The flow is a directed graph, where the nodes are the processes, and
+the edges are connections between the inputs and outputs of the
+processes. C.A.F handles all the internals of channel creation and
+process instantiation. The C.A.F API provides functions for
+starting/stopping, pausing/resuming, state-querying, and injecting data
+into the flow.</p>
+<h2 id="running-through-the-gist">Running through the gist</h2>
+<p>The usage API:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="co">;; Create a flow by providing its config - i.e. the flow graph definition</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> g </span>(flow/create-flow gdef))</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co">;; start the flow, wrapping it in a monitoring function</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>(monitoring (flow/start g))</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="co">;; the flow actually starts paused, so you need to resume it to make</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="co">;; it do stuff</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>(flow/resume g)</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a><span class="co">;; wait a bit for some output to print to repl, then pause it</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>(flow/pause g)</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>(flow/inject g [<span class="at">:craps-finder</span> <span class="at">:in</span>] [[<span class="dv">1</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">1</span>] [<span class="dv">2</span> <span class="dv">1</span>] [<span class="dv">6</span> <span class="dv">6</span>] [<span class="dv">6</span> <span class="dv">6</span>] [<span class="dv">4</span> <span class="dv">3</span>] [<span class="dv">1</span> <span class="dv">1</span>]])</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>(flow/ping g)</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>(flow/stop g)</span></code></pre></div>
+<p>A flow-graph definition has two primary top-level keys: processes and
+connections, called <code>:procs</code> and <code>:conns</code>. These
+are your nodes and edges.</p>
+<p>The flow-graph in the gist linked below is very simple, without any
+branching. It looks like this:</p>
+<pre><code> dice-source
+     ↓
+   dedupe
+     ↓
+craps-finder
+     ↓
+  printer</code></pre>
+<p>The <code>dice-source</code> rolls two 6-sided dice. After going
+through a deduplication function to remove consecutive identical rolls,
+the <code>craps</code> finder removes cases where the dice don’t sum to
+2, 3 or 12 (presumably to do with the rules of craps, which I don’t
+know). The output is then printed.</p>
+<p>The full definition of graph looks like this.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> gdef</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>  {<span class="at">:procs</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>   {<span class="at">:dice-source</span></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    {<span class="at">:proc</span> (flow/process</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>            {<span class="at">:describe</span> (<span class="kw">fn</span> [] {<span class="at">:outs</span> {<span class="at">:out</span> <span class="st">&quot;roll the dice!&quot;</span>}})</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>             <span class="at">:introduce</span> (<span class="kw">fn</span> [_]</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>                          (Thread/sleep <span class="dv">200</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>                          [<span class="va">nil</span> {<span class="at">:out</span> [[(<span class="kw">inc</span> (<span class="kw">rand-int</span> <span class="dv">6</span>)) (<span class="kw">inc</span> (<span class="kw">rand-int</span> <span class="dv">6</span>))]]}])})}</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    <span class="at">:craps-finder</span></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    {<span class="at">:proc</span> (<span class="kw">-&gt;</span> #(<span class="kw">when</span> (#{<span class="dv">2</span> <span class="dv">3</span> <span class="dv">12</span>} (<span class="kw">apply</span> <span class="kw">+</span> <span class="va">%</span>)) <span class="va">%</span>) flow/lift1-&gt;step flow/step-process)}</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>    <span class="at">:dedupe</span></span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    {<span class="at">:proc</span> (flow/step-process <span class="va">#'ddupe</span>)}</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>    <span class="at">:prn-sink</span></span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>    {<span class="at">:proc</span> (flow/process</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>            {<span class="at">:describe</span> (<span class="kw">fn</span> [] {<span class="at">:ins</span> {<span class="at">:in</span> <span class="st">&quot;gimme stuff to print!&quot;</span>}})</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>             <span class="at">:transform</span> (<span class="kw">fn</span> [_ _ v] (<span class="kw">prn</span> v))})}}</span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>   <span class="at">:conns</span></span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>   [[[<span class="at">:dice-source</span> <span class="at">:out</span>] [<span class="at">:dedupe</span> <span class="at">:in</span>]]</span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>    [[<span class="at">:dedupe</span> <span class="at">:out</span>] [<span class="at">:craps-finder</span> <span class="at">:in</span>]]</span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>    [[<span class="at">:craps-finder</span> <span class="at">:out</span>] [<span class="at">:prn-sink</span> <span class="at">:in</span>]]]})</span></code></pre></div>
+<p>The connections part is pretty simple: a sequence of outchan to
+inchan pairs creating a link between the two. The
+<code>flow/process</code> takes a map of functions:</p>
+<p>Describe (required) is a 0-arity function which returns a map of keys
+<code>:ins</code>, <code>:outs</code>, which enumerate the inchans and
+outchans. The values are just docstrings. For each key in
+<code>:ins</code>, a channel will be created, and same for
+<code>:outs</code>. No key can be in both ins and outs. These keys will
+be used to coordinate the flow in the connections section. If you
+provide an ins key <code>:foo</code> for node <code>:bar</code>, your
+connection tuple will be <code>[:bar :foo]</code>.</p>
+<p>A process can be a <em>transforming</em> process, taking inputs, or
+an <em>introducing</em> process, with no input channel. For any process
+you create, you have to provide either the transform or introduce key,
+but not both.</p>
+<p>Transform is a 3-arity function which is called whenever a message
+arrives. It does stuff with the input messages and (usually) will drop a
+message on an output channel. The 3 params are
+<code>state in-name msg</code>, and it returns a
+<code>[state' output-map]</code>. The output-map is a map of
+output-channel names to values. output-map can be nil. You can see this
+most clearly in the <code>dice-source</code> process:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>[<span class="va">nil</span> <span class="co">;; no state, so state is nil</span></span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a> <span class="co">;; puts two random numbers on the :out chan</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a> {<span class="at">:out</span> [[(<span class="kw">inc</span> (<span class="kw">rand-int</span> <span class="dv">6</span>)) (<span class="kw">inc</span> (<span class="kw">rand-int</span> <span class="dv">6</span>))]]}]</span></code></pre></div>
+<p>Introduce is 1-arity function which takes a state and returns a
+<code>[state' output-map]</code>. It will be called repeatedly to
+introduce data into the flow.</p>
+<p>Init is a 1-arity function returning the initial state. It’s not
+shown explicitly in the gist, but I mention it because it comes up
+later.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="co">;; prn-sink</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>(flow/process</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>  <span class="co">;; a process with a single inchan 'in' and no outchan.</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>  <span class="co">;; it prints any messages it receives. Note the transform returns nil</span></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>  {<span class="at">:describe</span> (<span class="kw">fn</span> [] {<span class="at">:ins</span> {<span class="at">:in</span> <span class="st">&quot;gimme stuff to print!&quot;</span>}})</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>   <span class="at">:transform</span> (<span class="kw">fn</span> [_ _ v] (<span class="kw">prn</span> v))})</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a><span class="co">;; dice-source</span></span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>(flow/process</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>  <span class="co">;; a stateless introducing process which generates 2 random dice rolls</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>  <span class="co">;; every 200ms and puts it on the only outchan 'out'</span></span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>  {<span class="at">:describe</span> (<span class="kw">fn</span> [] {<span class="at">:outs</span> {<span class="at">:out</span> <span class="st">&quot;roll the dice!&quot;</span>}})</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>   <span class="at">:introduce</span> (<span class="kw">fn</span> [_]</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>                (Thread/sleep <span class="dv">200</span>)</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>                [<span class="va">nil</span> {<span class="at">:out</span> [[(<span class="kw">inc</span> (<span class="kw">rand-int</span> <span class="dv">6</span>)) (<span class="kw">inc</span> (<span class="kw">rand-int</span> <span class="dv">6</span>))]]}])})}</span></code></pre></div>
+<p>The second way of describing a process is a
+<code>step-process</code>. It’s just sugar on top of the process
+function. A step process takes a single function with 0, 1 and 3 arity,
+with the arities corresponding to the describe, init, and transform keys
+defined above. Looking at the ddupe:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> ddupe</span></span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>  ([] {<span class="at">:ins</span> {<span class="at">:in</span> <span class="st">&quot;stuff&quot;</span>}</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>       <span class="at">:outs</span> {<span class="at">:out</span> <span class="st">&quot;stuff w/o consecutive dupes&quot;</span>}})</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>  ([_] {<span class="at">:last</span> <span class="va">nil</span>})</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>  ([{<span class="at">:keys</span> [<span class="kw">last</span>]} _ v]</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>   <span class="co">;; updates the state to the msg</span></span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>   [{<span class="at">:last</span> v}</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    <span class="co">;; returns the input message, provided it's not the same as the</span></span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>    <span class="co">;; last one</span></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>    (<span class="kw">when</span> (<span class="kw">not=</span> <span class="kw">last</span> v) {<span class="at">:out</span> [v]})]))</span></code></pre></div>
+<p>This could equally be described as</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> ddupe2</span></span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>  {<span class="at">:describe</span> (<span class="kw">fn</span> [] {<span class="at">:ins</span> {<span class="at">:in</span> <span class="st">&quot;stuff&quot;</span>}</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>                     <span class="at">:outs</span> {<span class="at">:out</span> <span class="st">&quot;stuff w/o consecutive dupes&quot;</span>}})</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>   <span class="at">:init</span> (<span class="kw">fn</span> [_] {<span class="at">:last</span> <span class="va">nil</span>})</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>   <span class="at">:transform</span> (<span class="kw">fn</span> [{<span class="at">:keys</span> [<span class="kw">last</span>]} _ v]</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>                [{<span class="at">:last</span> v} (<span class="kw">when</span> (<span class="kw">not=</span> <span class="kw">last</span> v) {<span class="at">:out</span> [v]})])})</span></code></pre></div>
+<p>The final process is craps-finder:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>(<span class="kw">-&gt;</span> #(<span class="kw">when</span> (#{<span class="dv">2</span> <span class="dv">3</span> <span class="dv">12</span>} (<span class="kw">apply</span> <span class="kw">+</span> <span class="va">%</span>)) <span class="va">%</span>)</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    flow/lift1-&gt;step</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    flow/step-process)</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a><span class="co">;; separating out the function more explicitly:</span></span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a><span class="co">;; The function returns the roll when it sums 2, 3 or 12. Otherwise nil</span></span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> craps-finder </span>[roll]</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a>  (<span class="kw">when</span> (#{<span class="dv">2</span> <span class="dv">3</span> <span class="dv">12</span>} (<span class="kw">apply</span> <span class="kw">+</span> roll)) roll))</span></code></pre></div>
+<p><code>lift1</code> is a specific case of a more general function
+<code>lift*</code>. <code>lift*</code> takes a stateless function of
+<code>msg-&gt;[msg']</code> and turns it into a step-process with a
+single inchan and outchan.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>(<span class="kw">fn</span> [_ _ msg] [<span class="va">nil</span> {<span class="at">:out</span> (f msg)}])</span></code></pre></div>
+<p>Note that the out value must be a <em>vector</em>. Which is no good
+if your function is, say an <code>int-&gt;int</code> function. When
+<code>lift*</code> is applied it’ll put an <code>int</code> on the
+outchan, which isn’t allowed. lift1 wraps the vector for you:
+<code>(fn [x] (when-some [m (f x)] (vector m)))</code></p>
+<p>The last part of the gist has the following, which doesn’t actually
+use flows, but illustrates the monitoring functionality of flows:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> monitoring </span>[{<span class="at">:keys</span> [report-chan error-chan]}]</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>  (<span class="kw">prn</span> <span class="st">&quot;========= monitoring start&quot;</span>)</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>  (async/thread</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>    (<span class="kw">loop</span> []</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>      (<span class="kw">let</span> [[<span class="kw">val</span> port] (async/alts!! [report-chan error-chan])]</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>        (<span class="kw">if</span> (<span class="kw">nil?</span> <span class="kw">val</span>)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>          (<span class="kw">prn</span> <span class="st">&quot;========= monitoring shutdown&quot;</span>)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>          (<span class="kw">do</span></span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>            (<span class="kw">prn</span> (<span class="kw">str</span> <span class="st">&quot;======== message from &quot;</span> (<span class="kw">if</span> (<span class="kw">=</span> port error-chan) <span class="at">:error-chan</span> <span class="at">:report-chan</span>)))</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>            (pp/pprint <span class="kw">val</span>)</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>            (<span class="kw">recur</span>))))))</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>  <span class="va">nil</span>)</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a></span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>(monitoring (flow/start g))</span></code></pre></div>
+<p>from this you can see that <code>flow/start</code> returns a map with
+keys <code>report-chan</code> and <code>error-chan</code>. The
+monitoring function just takes stuff off these two channels and prints
+them. As we’ll see this is used with the <code>ping</code> function,
+which writes to these channels. Presumably this would be used for
+logging and stuff - stdout/stderr like.</p>
+<h2 id="running-the-gist">Running the gist</h2>
+<p>Loading up the gist (you need to have
+<code>{io.github.clojure/core.async {:git/sha &quot;c5a524c6607a792bc51a81f727e7d24ef4cae23b&quot;}}</code>
+in your deps), we can play around with it.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>(<span class="bu">def</span><span class="fu"> g </span>(flow/create-flow gdef))</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>g <span class="co">;; it's a flow object</span></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a><span class="co">;; #object[clojure.core.async.flow.impl$create_flow$reify__17448 0x5c36347f &quot;clojure.core.async.flow.impl$create_flow$reify__17448@5c36347f&quot;]</span></span></code></pre></div>
+<p>If we start the flow, we can see that it does the ‘monitoring
+start’</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>(monitoring (flow/start g))</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a><span class="co">;; printed to repl</span></span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a><span class="st">&quot;========= monitoring start&quot;</span></span></code></pre></div>
+<p>We can ping the flow, which prints the messages from the report-chan
+(and presumably the error-chan) to the repl. Note that the procs are all
+paused initially.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>(flow/ping g)</span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a><span class="st">&quot;======== message from :report-chan&quot;</span></span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a>#<span class="at">:clojure.core.async.flow</span>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>                          <span class="at">:pid</span> <span class="at">:prn-sink</span>,</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a>                          <span class="at">:status</span> <span class="at">:paused</span>,</span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>                          <span class="at">:state</span> <span class="va">nil</span>,</span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a>                          <span class="at">:count</span> <span class="dv">0</span>,</span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a>                          <span class="at">:ins</span></span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a>                          {<span class="at">:in</span></span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>                           {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>                            <span class="at">:buffer-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>                            <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-13"><a aria-hidden="true" href="#cb13-13" tabindex="-1"></a>                            <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-14"><a aria-hidden="true" href="#cb13-14" tabindex="-1"></a>                            <span class="at">:closed</span>? <span class="va">false</span>}},</span>
+<span id="cb13-15"><a aria-hidden="true" href="#cb13-15" tabindex="-1"></a>                          <span class="at">:outs</span> {}}</span>
+<span id="cb13-16"><a aria-hidden="true" href="#cb13-16" tabindex="-1"></a><span class="st">&quot;======== message from :report-chan&quot;</span></span>
+<span id="cb13-17"><a aria-hidden="true" href="#cb13-17" tabindex="-1"></a>#<span class="at">:clojure.core.async.flow</span>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb13-18"><a aria-hidden="true" href="#cb13-18" tabindex="-1"></a>                          <span class="at">:pid</span> <span class="at">:craps-finder</span>,</span>
+<span id="cb13-19"><a aria-hidden="true" href="#cb13-19" tabindex="-1"></a>                          <span class="at">:status</span> <span class="at">:paused</span>,</span>
+<span id="cb13-20"><a aria-hidden="true" href="#cb13-20" tabindex="-1"></a>                          <span class="at">:state</span> <span class="va">nil</span>,</span>
+<span id="cb13-21"><a aria-hidden="true" href="#cb13-21" tabindex="-1"></a>                          <span class="at">:count</span> <span class="dv">0</span>,</span>
+<span id="cb13-22"><a aria-hidden="true" href="#cb13-22" tabindex="-1"></a>                          <span class="at">:ins</span></span>
+<span id="cb13-23"><a aria-hidden="true" href="#cb13-23" tabindex="-1"></a>                          {<span class="at">:in</span></span>
+<span id="cb13-24"><a aria-hidden="true" href="#cb13-24" tabindex="-1"></a>                           {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb13-25"><a aria-hidden="true" href="#cb13-25" tabindex="-1"></a>                            <span class="at">:buffer-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-26"><a aria-hidden="true" href="#cb13-26" tabindex="-1"></a>                            <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-27"><a aria-hidden="true" href="#cb13-27" tabindex="-1"></a>                            <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-28"><a aria-hidden="true" href="#cb13-28" tabindex="-1"></a>                            <span class="at">:closed</span>? <span class="va">false</span>}},</span>
+<span id="cb13-29"><a aria-hidden="true" href="#cb13-29" tabindex="-1"></a>                          <span class="at">:outs</span></span>
+<span id="cb13-30"><a aria-hidden="true" href="#cb13-30" tabindex="-1"></a>                          {<span class="at">:out</span></span>
+<span id="cb13-31"><a aria-hidden="true" href="#cb13-31" tabindex="-1"></a>                           {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb13-32"><a aria-hidden="true" href="#cb13-32" tabindex="-1"></a>                            <span class="at">:buffer-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-33"><a aria-hidden="true" href="#cb13-33" tabindex="-1"></a>                            <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-34"><a aria-hidden="true" href="#cb13-34" tabindex="-1"></a>                            <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-35"><a aria-hidden="true" href="#cb13-35" tabindex="-1"></a>                            <span class="at">:closed</span>? <span class="va">false</span>}}}</span>
+<span id="cb13-36"><a aria-hidden="true" href="#cb13-36" tabindex="-1"></a><span class="st">&quot;======== message from :report-chan&quot;</span></span>
+<span id="cb13-37"><a aria-hidden="true" href="#cb13-37" tabindex="-1"></a>#<span class="at">:clojure.core.async.flow</span>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb13-38"><a aria-hidden="true" href="#cb13-38" tabindex="-1"></a>                          <span class="at">:pid</span> <span class="at">:dedupe</span>,</span>
+<span id="cb13-39"><a aria-hidden="true" href="#cb13-39" tabindex="-1"></a>                          <span class="at">:status</span> <span class="at">:paused</span>,</span>
+<span id="cb13-40"><a aria-hidden="true" href="#cb13-40" tabindex="-1"></a>                          <span class="at">:state</span> {<span class="at">:last</span> <span class="va">nil</span>},</span>
+<span id="cb13-41"><a aria-hidden="true" href="#cb13-41" tabindex="-1"></a>                          <span class="at">:count</span> <span class="dv">0</span>,</span>
+<span id="cb13-42"><a aria-hidden="true" href="#cb13-42" tabindex="-1"></a>                          <span class="at">:ins</span></span>
+<span id="cb13-43"><a aria-hidden="true" href="#cb13-43" tabindex="-1"></a>                          {<span class="at">:in</span></span>
+<span id="cb13-44"><a aria-hidden="true" href="#cb13-44" tabindex="-1"></a>                           {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb13-45"><a aria-hidden="true" href="#cb13-45" tabindex="-1"></a>                            <span class="at">:buffer-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-46"><a aria-hidden="true" href="#cb13-46" tabindex="-1"></a>                            <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-47"><a aria-hidden="true" href="#cb13-47" tabindex="-1"></a>                            <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-48"><a aria-hidden="true" href="#cb13-48" tabindex="-1"></a>                            <span class="at">:closed</span>? <span class="va">false</span>}},</span>
+<span id="cb13-49"><a aria-hidden="true" href="#cb13-49" tabindex="-1"></a>                          <span class="at">:outs</span></span>
+<span id="cb13-50"><a aria-hidden="true" href="#cb13-50" tabindex="-1"></a>                          {<span class="at">:out</span></span>
+<span id="cb13-51"><a aria-hidden="true" href="#cb13-51" tabindex="-1"></a>                           {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb13-52"><a aria-hidden="true" href="#cb13-52" tabindex="-1"></a>                            <span class="at">:buffer-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-53"><a aria-hidden="true" href="#cb13-53" tabindex="-1"></a>                            <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-54"><a aria-hidden="true" href="#cb13-54" tabindex="-1"></a>                            <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-55"><a aria-hidden="true" href="#cb13-55" tabindex="-1"></a>                            <span class="at">:closed</span>? <span class="va">false</span>}}}</span>
+<span id="cb13-56"><a aria-hidden="true" href="#cb13-56" tabindex="-1"></a><span class="st">&quot;======== message from :report-chan&quot;</span></span>
+<span id="cb13-57"><a aria-hidden="true" href="#cb13-57" tabindex="-1"></a>#<span class="at">:clojure.core.async.flow</span>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb13-58"><a aria-hidden="true" href="#cb13-58" tabindex="-1"></a>                          <span class="at">:pid</span> <span class="at">:dice-source</span>,</span>
+<span id="cb13-59"><a aria-hidden="true" href="#cb13-59" tabindex="-1"></a>                          <span class="at">:status</span> <span class="at">:paused</span>,</span>
+<span id="cb13-60"><a aria-hidden="true" href="#cb13-60" tabindex="-1"></a>                          <span class="at">:state</span> <span class="va">nil</span>,</span>
+<span id="cb13-61"><a aria-hidden="true" href="#cb13-61" tabindex="-1"></a>                          <span class="at">:count</span> <span class="dv">0</span>,</span>
+<span id="cb13-62"><a aria-hidden="true" href="#cb13-62" tabindex="-1"></a>                          <span class="at">:ins</span> {},</span>
+<span id="cb13-63"><a aria-hidden="true" href="#cb13-63" tabindex="-1"></a>                          <span class="at">:outs</span></span>
+<span id="cb13-64"><a aria-hidden="true" href="#cb13-64" tabindex="-1"></a>                          {<span class="at">:out</span></span>
+<span id="cb13-65"><a aria-hidden="true" href="#cb13-65" tabindex="-1"></a>                           {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb13-66"><a aria-hidden="true" href="#cb13-66" tabindex="-1"></a>                            <span class="at">:buffer-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-67"><a aria-hidden="true" href="#cb13-67" tabindex="-1"></a>                            <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-68"><a aria-hidden="true" href="#cb13-68" tabindex="-1"></a>                            <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb13-69"><a aria-hidden="true" href="#cb13-69" tabindex="-1"></a>                            <span class="at">:closed</span>? <span class="va">false</span>}}}</span></code></pre></div>
+<p>When I resume, I start to get output printed to the repl</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>(flow/resume g)</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a><span class="co">;; to repl</span></span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>[<span class="dv">1</span> <span class="dv">2</span>]</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>[<span class="dv">2</span> <span class="dv">1</span>]</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a>[<span class="dv">2</span> <span class="dv">1</span>]</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a>[<span class="dv">1</span> <span class="dv">1</span>]</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a>[<span class="dv">2</span> <span class="dv">1</span>]</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>[<span class="dv">6</span> <span class="dv">6</span>]</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a>[<span class="dv">6</span> <span class="dv">6</span>]</span></code></pre></div>
+<p>And a ping shows the following (edited).</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a> <span class="at">:pid</span> <span class="at">:craps-finder</span>,</span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a> <span class="at">:status</span> <span class="at">:running</span>,</span>
+<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a> <span class="at">:state</span> <span class="va">nil</span>,</span>
+<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a> <span class="at">:count</span> <span class="dv">76</span>,</span>
+<span id="cb15-6"><a aria-hidden="true" href="#cb15-6" tabindex="-1"></a> <span class="at">:ins</span> {<span class="at">:in</span> <span class="at">:snipped</span>},</span>
+<span id="cb15-7"><a aria-hidden="true" href="#cb15-7" tabindex="-1"></a> <span class="at">:outs</span> {<span class="at">:out</span> <span class="at">:snipped</span>}}</span>
+<span id="cb15-8"><a aria-hidden="true" href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a aria-hidden="true" href="#cb15-9" tabindex="-1"></a>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb15-10"><a aria-hidden="true" href="#cb15-10" tabindex="-1"></a> <span class="at">:pid</span> <span class="at">:dedupe</span>,</span>
+<span id="cb15-11"><a aria-hidden="true" href="#cb15-11" tabindex="-1"></a> <span class="at">:status</span> <span class="at">:running</span>,</span>
+<span id="cb15-12"><a aria-hidden="true" href="#cb15-12" tabindex="-1"></a> <span class="at">:state</span> {<span class="at">:last</span> [<span class="dv">3</span> <span class="dv">4</span>]},</span>
+<span id="cb15-13"><a aria-hidden="true" href="#cb15-13" tabindex="-1"></a> <span class="at">:count</span> <span class="dv">79</span>,</span>
+<span id="cb15-14"><a aria-hidden="true" href="#cb15-14" tabindex="-1"></a> <span class="at">:ins</span> {<span class="at">:in</span> <span class="at">:snipped</span>},</span>
+<span id="cb15-15"><a aria-hidden="true" href="#cb15-15" tabindex="-1"></a> <span class="at">:outs</span> {<span class="at">:out</span> <span class="at">:snipped</span>}}</span></code></pre></div>
+<p>If I do the pause, then the inject, I get the following report on the
+craps finder - note the 7 buffer-count on the craps-finder in and dedupe
+out (i.e. they are the same channel, and the inject just put the
+messages on that channel)</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>(flow/pause g)</span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a>(flow/inject g [<span class="at">:craps-finder</span> <span class="at">:in</span>] [[<span class="dv">1</span> <span class="dv">2</span>] [<span class="dv">2</span> <span class="dv">1</span>] [<span class="dv">2</span> <span class="dv">1</span>] [<span class="dv">6</span> <span class="dv">6</span>] [<span class="dv">6</span> <span class="dv">6</span>] [<span class="dv">4</span> <span class="dv">3</span>] [<span class="dv">1</span> <span class="dv">1</span>]])</span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>(flow/ping g)</span>
+<span id="cb16-4"><a aria-hidden="true" href="#cb16-4" tabindex="-1"></a></span>
+<span id="cb16-5"><a aria-hidden="true" href="#cb16-5" tabindex="-1"></a>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb16-6"><a aria-hidden="true" href="#cb16-6" tabindex="-1"></a> <span class="at">:pid</span> <span class="at">:craps-finder</span>,</span>
+<span id="cb16-7"><a aria-hidden="true" href="#cb16-7" tabindex="-1"></a> <span class="at">:status</span> <span class="at">:paused</span>,</span>
+<span id="cb16-8"><a aria-hidden="true" href="#cb16-8" tabindex="-1"></a> <span class="at">:state</span> <span class="va">nil</span>,</span>
+<span id="cb16-9"><a aria-hidden="true" href="#cb16-9" tabindex="-1"></a> <span class="at">:count</span> <span class="dv">85</span>,</span>
+<span id="cb16-10"><a aria-hidden="true" href="#cb16-10" tabindex="-1"></a> <span class="at">:ins</span></span>
+<span id="cb16-11"><a aria-hidden="true" href="#cb16-11" tabindex="-1"></a> {<span class="at">:in</span></span>
+<span id="cb16-12"><a aria-hidden="true" href="#cb16-12" tabindex="-1"></a>  {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb16-13"><a aria-hidden="true" href="#cb16-13" tabindex="-1"></a>   <span class="at">:buffer-count</span> <span class="dv">7</span>,</span>
+<span id="cb16-14"><a aria-hidden="true" href="#cb16-14" tabindex="-1"></a>   <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb16-15"><a aria-hidden="true" href="#cb16-15" tabindex="-1"></a>   <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb16-16"><a aria-hidden="true" href="#cb16-16" tabindex="-1"></a>   <span class="at">:closed</span>? <span class="va">false</span>}},</span>
+<span id="cb16-17"><a aria-hidden="true" href="#cb16-17" tabindex="-1"></a> <span class="at">:outs</span> {<span class="at">:out</span> <span class="at">:snip</span>}}</span>
+<span id="cb16-18"><a aria-hidden="true" href="#cb16-18" tabindex="-1"></a></span>
+<span id="cb16-19"><a aria-hidden="true" href="#cb16-19" tabindex="-1"></a>{<span class="at">:report</span> <span class="at">:ping</span>,</span>
+<span id="cb16-20"><a aria-hidden="true" href="#cb16-20" tabindex="-1"></a> <span class="at">:pid</span> <span class="at">:dedupe</span>,</span>
+<span id="cb16-21"><a aria-hidden="true" href="#cb16-21" tabindex="-1"></a> <span class="at">:status</span> <span class="at">:paused</span>,</span>
+<span id="cb16-22"><a aria-hidden="true" href="#cb16-22" tabindex="-1"></a> <span class="at">:state</span> {<span class="at">:last</span> [<span class="dv">1</span> <span class="dv">1</span>]},</span>
+<span id="cb16-23"><a aria-hidden="true" href="#cb16-23" tabindex="-1"></a> <span class="at">:count</span> <span class="dv">88</span>,</span>
+<span id="cb16-24"><a aria-hidden="true" href="#cb16-24" tabindex="-1"></a> <span class="at">:ins</span> {<span class="at">:in</span> <span class="at">:snip</span>},</span>
+<span id="cb16-25"><a aria-hidden="true" href="#cb16-25" tabindex="-1"></a> <span class="at">:outs</span></span>
+<span id="cb16-26"><a aria-hidden="true" href="#cb16-26" tabindex="-1"></a> {<span class="at">:out</span></span>
+<span id="cb16-27"><a aria-hidden="true" href="#cb16-27" tabindex="-1"></a>  {<span class="at">:buffer-type</span> FixedBuffer,</span>
+<span id="cb16-28"><a aria-hidden="true" href="#cb16-28" tabindex="-1"></a>   <span class="at">:buffer-count</span> <span class="dv">7</span>,</span>
+<span id="cb16-29"><a aria-hidden="true" href="#cb16-29" tabindex="-1"></a>   <span class="at">:put-count</span> <span class="dv">0</span>,</span>
+<span id="cb16-30"><a aria-hidden="true" href="#cb16-30" tabindex="-1"></a>   <span class="at">:take-count</span> <span class="dv">0</span>,</span>
+<span id="cb16-31"><a aria-hidden="true" href="#cb16-31" tabindex="-1"></a>   <span class="at">:closed</span>? <span class="va">false</span>}}}</span></code></pre></div>
+<p>If I resume the flow again, I get the values I injected (except the
+[4,3] which was filtered out by craps-finder) on the repl</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>(flow/resume g)</span>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a></span>
+<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a>[<span class="dv">1</span> <span class="dv">2</span>]</span>
+<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a>[<span class="dv">2</span> <span class="dv">1</span>]</span>
+<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a>[<span class="dv">2</span> <span class="dv">1</span>]</span>
+<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a>[<span class="dv">6</span> <span class="dv">6</span>]</span>
+<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a>[<span class="dv">6</span> <span class="dv">6</span>]</span>
+<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a>[<span class="dv">1</span> <span class="dv">1</span>]</span></code></pre></div>
+<p>Doing the stop just shuts it all down.</p>
+<h2 id="things-not-covered-in-the-gist">Things not covered in the
+Gist</h2>
+<p>There are several things in the docs which are not covered by the
+Gist:</p>
+<p>All the processes in the <code>:procs</code> map of the graph only
+has the <code>:proc</code> key (i.e. the actual process) in it. It can
+also take an <code>:args</code> key (a map which is passed on to the
+process constructor), and a <code>:chan-opts</code> map of
+configurations for the channels that will be created. By default the
+channels created have a buffer size of 10 before they start rejecting
+input and exerting back pressure.</p>
+<p>Multiple inputs/outputs for a proc are not shown here, but possible.
+A consequence of not having a multiple inchan process is that there’s no
+illustration of using the second argument of the transform, which is the
+inchan name, but presumably the pattern will be a pretty standard “if
+inchan is a, do this, but if it’s b, do this” sort of thing.</p>
+<p>Multiple <em>connections</em>, e.g. one proc connects one output to
+the inputs of two separate procs, isn’t shown here. I think it’s just
+more tuples in the conns map, but it’s not explicit.</p>
+<p>There’s a final set of keys to flow creation which allows the
+ExecutorService to be specified. I don’t know what that is, but the keys
+are <code>:mixed-exec/:io-exec/:compute-exec</code></p>
+<p>For most of the flow-level controls there are proc-level equivalents
+- e.g. <code>(pause-proc flow pid)</code></p>
+<p>The <code>:params</code> and <code>:workload</code> keys of the
+<code>:describe</code> key in process creation are not illustrated, but
+I think they’re just documentation, as opposed to ins and outs, which
+are used in channel creation.</p>
+<p>Proc can have a <code>:transition</code> function, which will be
+called when the proc (or flow) is paused, resumed or stopped. This
+allows stuff like cleaning up state.</p>
+<p>It’s not shown how to use <code>:introduce</code> for more
+‘realistic’ workflows, which would presumably be taking input from an
+API or something. The docs mention a <code>::flow/control</code>
+channel.</p>
+<p>Processes accept an option key which can include a
+<code>:workload</code> key, which can be <code>:mixed</code>,
+<code>:io</code> or <code>:compute</code>. I think this affects the
+internals of what kinds of threads are used, or how they are used.</p>
+<p>There is one other function in the API ns: <code>futurize</code>,
+though I don’t know enough about async programming to understand what it
+does.</p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://github.com/clojure/core.async/blob/master/doc/flow.md">Overview</a></li>
+<li><a href="https://github.com/clojure/core.async/blob/master/src/main/clojure/clojure/core/async/flow.clj">src</a></li>
+<li><a href="https://gist.github.com/richhickey/fbc1439372b1f5319bb37aa1934d19b8">gist</a></li>
+<li><a href="https://www.reddit.com/r/Clojure/comments/1i27n1k/rich_introduces_new_namespace_in_coreasync_flow/">reddit</a></li>
+</ul>
+
+
+</body></html>
