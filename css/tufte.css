@@ -5,7 +5,8 @@ body {
   font: 0.8em "Vollkorn", Palatino, Times;
 	padding:1em;
 	line-height: 1.4;
-	background:#fefefe;
+	background:#fffff8;
+        color: #111111;
 	text-align: justify;
 }
 
@@ -27,12 +28,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-	color: #000000;
 }
 
 h2 {
 	/* border-bottom: 1px solid #CCCCCC; */
-	color: #000000;
 	font-weight: normal;
 	font-style: italic;
 }

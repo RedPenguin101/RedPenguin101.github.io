@@ -5,7 +5,8 @@ body {
   font: 1em "Vollkorn", Palatino, Times;
   padding: 1em;
   line-height: 1.4;
-  background: #fefefe;
+  background: #fffff8;
+  color: #111111;
   text-align: justify;
 }
 
